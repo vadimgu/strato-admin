@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import CloudscapeAppLayout from '@cloudscape-design/components/app-layout';
 import SideNavigation from '@cloudscape-design/components/side-navigation';
-import { useResourceDefinitions } from 'ra-core';
+import { useResourceDefinitions, useTranslate } from 'ra-core';
 import { useNavigate } from 'react-router-dom';
-import { AppBar } from './AppBar';
+import { TopNavigation } from './TopNavigation';
 
 export interface AppLayoutProps {
     children: React.ReactNode;
@@ -13,18 +13,21 @@ export interface AppLayoutProps {
 
 export const AppLayout = ({ children, header, title }: AppLayoutProps) => {
     const resources = useResourceDefinitions();
+    const translate = useTranslate();
     const navigate = useNavigate();
     const [navigationOpen, setNavigationOpen] = useState(true);
 
     const items = Object.values(resources).map((resource) => ({
         type: 'link' as const,
-        text: resource.options?.label || resource.name,
+        text: resource.options?.label
+            ? translate(resource.options.label, { _: resource.options.label })
+            : translate(`resource.${resource.name}.name`, { _: resource.name }),
         href: `/${resource.name}`,
     }));
 
     return (
         <>
-            {header || <AppBar title={title} />}
+            {header || <TopNavigation identity={{ title, href: '/' }} />}
             <CloudscapeAppLayout
                 headerSelector="#header"
                 navigationOpen={navigationOpen}

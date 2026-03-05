@@ -19,6 +19,8 @@ describe('useCollection', () => {
       isFetching: false,
       isLoading: false,
       setPage: mockSetPage,
+      selectedIds: [],
+      onSelect: vi.fn(),
     });
 
     const { result } = renderHook(() => useCollection({}));
@@ -38,15 +40,147 @@ describe('useCollection', () => {
       isFetching: false,
       isLoading: false,
       setPage: mockSetPage,
+      selectedIds: [],
+      onSelect: vi.fn(),
     });
 
     const { result } = renderHook(() => useCollection({}));
 
     act(() => {
-      result.current.paginationProps.onChange({ detail: { currentPageIndex: 1 } });
+      result.current.paginationProps.onChange({ detail: { currentPageIndex: 2 } });
     });
 
-    expect(mockSetPage).toHaveBeenCalledWith(2); // React Admin uses 1-based indexing, Cloudscape uses 0-based indexing (implied by currentPageIndex + 1 in useCollection)
+    expect(mockSetPage).toHaveBeenCalledWith(2); // React Admin and Cloudscape both use 1-based indexing
+  });
+
+  it('should return selected items based on selectedIds', () => {
+    const mockData = [
+      { id: 1, name: 'Item 1' },
+      { id: 2, name: 'Item 2' },
+      { id: 3, name: 'Item 3' },
+    ];
+    const mockSelectedIds = [1, 3];
+    
+    (useListContext as any).mockReturnValue({
+      data: mockData,
+      page: 1,
+      isPending: false,
+      isFetching: false,
+      isLoading: false,
+      setPage: vi.fn(),
+      selectedIds: mockSelectedIds,
+      onSelect: vi.fn(),
+    });
+
+    const { result } = renderHook(() => useCollection({}));
+
+    expect(result.current.collectionProps.selectedItems).toEqual([
+      { id: 1, name: 'Item 1' },
+      { id: 3, name: 'Item 3' },
+    ]);
+  });
+
+  it('should include dummy objects for selectedIds not in current data', () => {
+    const mockData = [{ id: 1, name: 'Item 1' }];
+    const mockSelectedIds = [1, 2];
+    
+    (useListContext as any).mockReturnValue({
+      data: mockData,
+      page: 1,
+      isPending: false,
+      isFetching: false,
+      isLoading: false,
+      setPage: vi.fn(),
+      selectedIds: mockSelectedIds,
+      onSelect: vi.fn(),
+    });
+
+    const { result } = renderHook(() => useCollection({}));
+
+    expect(result.current.collectionProps.selectedItems).toEqual([
+      { id: 1, name: 'Item 1' },
+      { id: 2 },
+    ]);
+  });
+
+  it('should call onSelect when onSelectionChange is called', () => {
+    const mockOnSelect = vi.fn();
+    const mockData = [
+      { id: 1, name: 'Item 1' },
+      { id: 2, name: 'Item 2' },
+    ];
+    
+    (useListContext as any).mockReturnValue({
+      data: mockData,
+      page: 1,
+      isPending: false,
+      isFetching: false,
+      isLoading: false,
+      setPage: vi.fn(),
+      selectedIds: [],
+      onSelect: mockOnSelect,
+    });
+
+    const { result } = renderHook(() => useCollection({}));
+
+    act(() => {
+      result.current.collectionProps.onSelectionChange({
+        detail: {
+          selectedItems: [{ id: 2, name: 'Item 2' }],
+        },
+      });
+    });
+
+    expect(mockOnSelect).toHaveBeenCalledWith([2]);
+  });
+
+  it('should return sorting props from sort object', () => {
+    (useListContext as any).mockReturnValue({
+      data: [],
+      sort: { field: 'name', order: 'DESC' },
+      setSort: vi.fn(),
+      page: 1,
+      isPending: false,
+      isFetching: false,
+      isLoading: false,
+      setPage: vi.fn(),
+      selectedIds: [],
+      onSelect: vi.fn(),
+    });
+
+    const { result } = renderHook(() => useCollection({}));
+
+    expect(result.current.collectionProps.sortingColumn).toEqual({ sortingField: 'name' });
+    expect(result.current.collectionProps.sortingDescending).toBe(true);
+  });
+
+  it('should call setSort when onSortingChange is called', () => {
+    const mockSetSort = vi.fn();
+    (useListContext as any).mockReturnValue({
+      data: [],
+      sort: { field: 'name', order: 'ASC' },
+      setSort: mockSetSort,
+      page: 1,
+      isPending: false,
+      isFetching: false,
+      isLoading: false,
+      setPage: vi.fn(),
+      selectedIds: [],
+      onSelect: vi.fn(),
+    });
+
+    const { result } = renderHook(() => useCollection({}));
+
+    act(() => {
+      result.current.collectionProps.onSortingChange!({
+        detail: {
+          sortingColumn: { sortingField: 'price' },
+          isDescending: true,
+        },
+      });
+    });
+
+    expect(mockSetSort).toHaveBeenCalledWith({ field: 'price', order: 'DESC' });
   });
 
   it('should disable pagination if loading, fetching, or pending', () => {
@@ -57,21 +191,11 @@ describe('useCollection', () => {
       isFetching: false,
       isLoading: false,
       setPage: vi.fn(),
+      selectedIds: [],
+      onSelect: vi.fn(),
     });
 
     const { result } = renderHook(() => useCollection({}));
-    expect(result.current.paginationProps.disabled).toBe(true);
-
-    (useListContext as any).mockReturnValue({
-      data: [],
-      page: 1,
-      isPending: false,
-      isFetching: true,
-      isLoading: false,
-      setPage: vi.fn(),
-    });
-
-    const { rerender } = renderHook(() => useCollection({}));
     expect(result.current.paginationProps.disabled).toBe(true);
   });
 });

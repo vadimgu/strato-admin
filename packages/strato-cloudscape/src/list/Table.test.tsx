@@ -9,7 +9,16 @@ import CloudscapeTable from '@cloudscape-design/components/table';
 // Mock ra-core
 vi.mock('ra-core', () => ({
   useResourceContext: vi.fn(),
+  useTranslate: vi.fn(() => (key: string, options: any) => options?._ || key),
   RecordContextProvider: ({ children }: any) => <>{children}</>,
+  useRecordContext: vi.fn(),
+  useFieldValue: vi.fn(({ source, record }) => record?.[source]),
+  useCreatePath: vi.fn(() => (params: any) => `/${params.resource}/${params.id}/${params.type}`),
+}));
+
+// Mock react-router-dom
+vi.mock('react-router-dom', () => ({
+  useNavigate: vi.fn(),
 }));
 
 // Mock useCollection
@@ -56,6 +65,19 @@ describe('DataTable', () => {
     const tableProps = (CloudscapeTable as any).mock.calls[0][0];
     expect(tableProps.columnDefinitions[0].id).toBe('products___name');
     expect(tableProps.columnDefinitions[1].id).toBe('products___price');
+  });
+
+  it('should include sortingField in column definitions', () => {
+    (useResourceContext as any).mockReturnValue('products');
+
+    render(
+      <DataTable>
+        <DataTable.Col source="name" label="Product Name" />
+      </DataTable>
+    );
+
+    const tableProps = (CloudscapeTable as any).mock.calls[0][0];
+    expect(tableProps.columnDefinitions[0].sortingField).toBe('name');
   });
 
   it('should generate column IDs with index if source is missing', () => {

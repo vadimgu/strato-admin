@@ -15,7 +15,7 @@ export const Admin = ({ children, title, ...props }: AdminProps) => {
     return (
         <CoreAdminContext {...props}>
             <AdminRouter>
-                <CoreAdminUI layout={Layout}>
+                <CoreAdminUI layout={Layout} title={title}>
                     {children}
                 </CoreAdminUI>
             </AdminRouter>

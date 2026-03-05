@@ -11,6 +11,14 @@ export interface UseCollectionOptions<_T> {
 
 export interface UseCollectionResult<T> {
     items: ReadonlyArray<T> | undefined;
+    collectionProps: {
+        selectedItems: T[];
+        onSelectionChange(event: CustomEventLike<{ selectedItems: T[] }>): void;
+        trackBy: string | ((item: T) => string | number);
+        sortingColumn?: { sortingField?: string };
+        sortingDescending?: boolean;
+        onSortingChange?(event: CustomEventLike<{ sortingColumn: { sortingField?: string }; isDescending?: boolean }>): void;
+    };
     paginationProps: {
         disabled?: boolean;
         currentPageIndex: number;

@@ -6,6 +6,7 @@ import {
     useRecordContext,
     useResourceDefinition,
 } from 'ra-core';
+import FieldLink, { type FieldLinkType } from './FieldLink';
 
 export type ReferenceFieldProps<RecordType extends RaRecord = RaRecord> =
     Omit<BoxProps, 'children'> & {
@@ -14,6 +15,7 @@ export type ReferenceFieldProps<RecordType extends RaRecord = RaRecord> =
         children?: ReactNode;
         emptyText?: ReactNode;
         record?: RecordType;
+        link?: FieldLinkType;
     };
 
 const ReferenceField = <RecordType extends RaRecord = RaRecord>(
@@ -25,6 +27,7 @@ const ReferenceField = <RecordType extends RaRecord = RaRecord>(
         children,
         emptyText,
         record,
+        link,
         ...boxProps
     } = props;
 
@@ -35,14 +38,14 @@ const ReferenceField = <RecordType extends RaRecord = RaRecord>(
             record={record}
             empty={<Box {...boxProps}>{emptyText ?? null}</Box>}
         >
-            <ReferenceFieldValue emptyText={emptyText} {...boxProps}>
+            <ReferenceFieldValue emptyText={emptyText} link={link} {...boxProps}>
                 {children}
             </ReferenceFieldValue>
         </ReferenceFieldBase>
     );
 };
 
-const ReferenceFieldValue = ({ children, emptyText, ...boxProps }: any) => {
+const ReferenceFieldValue = ({ children, emptyText, link, ...boxProps }: any) => {
     const record = useRecordContext();
     const { recordRepresentation } = useResourceDefinition();
 
@@ -51,7 +54,13 @@ const ReferenceFieldValue = ({ children, emptyText, ...boxProps }: any) => {
     }
 
     if (children) {
-        return <Box {...boxProps}>{children}</Box>;
+        return (
+            <Box {...boxProps}>
+                <FieldLink link={link}>
+                    {children}
+                </FieldLink>
+            </Box>
+        );
     }
 
     let representation: ReactNode = '';
@@ -65,7 +74,9 @@ const ReferenceFieldValue = ({ children, emptyText, ...boxProps }: any) => {
 
     return (
         <Box {...boxProps}>
-            {representation ? String(representation) : (emptyText ?? null)}
+            <FieldLink link={link}>
+                {representation ? String(representation) : (emptyText ?? null)}
+            </FieldLink>
         </Box>
     );
 

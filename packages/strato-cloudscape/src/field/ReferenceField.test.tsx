@@ -9,12 +9,24 @@ vi.mock('ra-core', () => ({
   ReferenceFieldBase: vi.fn(({ children }: any) => <div data-testid="ra-reference-field-base">{children}</div>),
   useRecordContext: vi.fn(),
   useResourceDefinition: vi.fn(),
+  useResourceContext: vi.fn(() => 'categories'),
+  useCreatePath: vi.fn(() => (params: any) => `/${params.resource}/${params.id}/${params.type}`),
   ResourceContextProvider: ({ children }: any) => <div data-testid="resource-context-provider">{children}</div>,
+}));
+
+// Mock react-router-dom
+vi.mock('react-router-dom', () => ({
+  useNavigate: vi.fn(),
 }));
 
 // Mock Cloudscape Box
 vi.mock('@cloudscape-design/components/box', () => ({
   default: ({ children }: any) => <div>{children}</div>,
+}));
+
+// Mock Cloudscape Link
+vi.mock('@cloudscape-design/components/link', () => ({
+  default: ({ children, href }: any) => <a href={href} data-testid="cloudscape-link">{children}</a>,
 }));
 
 describe('ReferenceField', () => {
@@ -68,5 +80,18 @@ describe('ReferenceField', () => {
     render(<ReferenceField source="categoryId" reference="categories" />);
 
     expect(screen.getByText('1')).toBeDefined();
+  });
+
+  it('should render a link when link prop is provided', () => {
+    const record = { id: 1, name: 'Category 1' };
+    (useRecordContext as any).mockReturnValue(record);
+    (useResourceDefinition as any).mockReturnValue({ recordRepresentation: 'name' });
+
+    render(<ReferenceField source="categoryId" reference="categories" link="show" />);
+
+    const link = screen.getByTestId('cloudscape-link');
+    expect(link).toBeDefined();
+    expect(link.getAttribute('href')).toBe('/categories/1/show');
+    expect(link.textContent).toBe('Category 1');
   });
 });

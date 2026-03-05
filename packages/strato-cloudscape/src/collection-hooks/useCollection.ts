@@ -13,15 +13,40 @@ export function useCollection<T extends RaRecord>(_options: UseCollectionOptions
         page, // Current page. Starts at 1
         perPage, // Number of results per page. Defaults to 25
         setPage, // Callback to change the page, e.g. setPage(3)
+        // Selection
+        selectedIds, // Array of the selected record IDs
+        onSelect, // Callback to change the selection, e.g. onSelect([123, 456])
+        // Sorting
+        sort, // Current sort. E.g. { field: 'id', order: 'ASC' }
+        setSort, // Callback to change the sort. E.g. setSort({ field: 'id', order: 'ASC' })
     } = useListContext<T>();
+
+    const selectedItems = (selectedIds || []).map(id => {
+        const item = data?.find(i => i.id === id);
+        if (item) return item;
+        return { id } as T;
+    });
 
     return {
         items: data,
+        collectionProps: {
+            selectedItems,
+            onSelectionChange: (event) => onSelect(event.detail.selectedItems.map((item) => item.id)),
+            trackBy: 'id',
+            sortingColumn: sort ? { sortingField: sort.field } : undefined,
+            sortingDescending: sort?.order === 'DESC',
+            onSortingChange: (event) => {
+                const { sortingColumn, isDescending } = event.detail;
+                if (sortingColumn?.sortingField) {
+                    setSort({ field: sortingColumn.sortingField, order: isDescending ? 'DESC' : 'ASC' });
+                }
+            },
+        },
         paginationProps: {
             disabled: isPending || isFetching || isLoading,
             currentPageIndex: page,
             pagesCount: total !== undefined && perPage ? Math.ceil(total / perPage) : 1,
-            onChange: (event) => setPage(event.detail.currentPageIndex + 1),
+            onChange: (event) => setPage(event.detail.currentPageIndex),
         },
     };
 }
