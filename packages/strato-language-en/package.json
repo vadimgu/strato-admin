@@ -1,12 +1,16 @@
 {
   "name": "strato-language-en",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "English translations for Strato Admin",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "i18n:extract": "formatjs extract '../*/src/**/*.{ts,tsx}' --out-file messages.json",
+    "i18n:compile": "formatjs compile messages.json --out-file src/messages.json"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC"
+  "license": "MIT",
+  "devDependencies": {
+    "@formatjs/cli": "^6.13.0"
+  }
 }

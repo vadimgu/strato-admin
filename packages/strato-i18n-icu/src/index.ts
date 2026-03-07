@@ -1,19 +1,5 @@
 import { IntlMessageFormat } from 'intl-messageformat';
-import type { I18nProvider } from 'ra-core';
-
-export type TranslationMessages = Record<string, any>;
-
-// Helper to get nested value
-const getNestedValue = (obj: any, path: string) => {
-    if (!obj || typeof obj !== 'object') return undefined;
-    const keys = path.split('.');
-    let value = obj;
-    for (const key of keys) {
-        if (value === undefined || value === null) return undefined;
-        value = value[key];
-    }
-    return value;
-};
+import type { I18nProvider, TranslationMessages } from 'ra-core';
 
 export const icuI18nProvider = (
     getMessages: (locale: string) => TranslationMessages | Promise<TranslationMessages>,
@@ -32,11 +18,12 @@ export const icuI18nProvider = (
 
     return {
         translate: (key: string, options: any = {}) => {
-            const { _, ...values } = options;
-            let message = getNestedValue(messages, key);
+            const { _: defaultMessage, ...values } = options;
+
+            let message = (messages as any)[key];
 
             if (message === undefined) {
-                return _ !== undefined ? _ : key;
+                return defaultMessage !== undefined ? defaultMessage : key;
             }
 
             if (typeof message !== 'string') {
@@ -52,7 +39,7 @@ export const icuI18nProvider = (
                     formatters.set(cacheKey, formatter);
                 } catch (error) {
                     console.error(`Error parsing message for key "${key}":`, error);
-                    return _ !== undefined ? _ : key;
+                    return defaultMessage !== undefined ? defaultMessage : key;
                 }
             }
 
@@ -60,7 +47,7 @@ export const icuI18nProvider = (
                 return formatter.format(values) as string;
             } catch (error) {
                 console.error(`Error formatting message for key "${key}":`, error);
-                return _ !== undefined ? _ : key;
+                return defaultMessage !== undefined ? defaultMessage : key;
             }
         },
         changeLocale: (newLocale: string) => {

@@ -8,9 +8,7 @@ describe('icuI18nProvider', () => {
                 simple: 'Hello',
                 withParam: 'Hello {name}',
                 plural: 'You have {count, plural, =0 {no messages} one {1 message} other {# messages}}.',
-                nested: {
-                    key: 'Nested value',
-                },
+                'nested.key': 'Nested value',
             };
         }
         if (locale === 'fr') {
@@ -38,7 +36,7 @@ describe('icuI18nProvider', () => {
         expect(i18n.translate('plural', { count: 2 })).toBe('You have 2 messages.');
     });
 
-    it('translates nested keys', () => {
+    it('translates keys with dots (flat)', () => {
         const i18n = icuI18nProvider(getMessages, 'en');
         expect(i18n.translate('nested.key')).toBe('Nested value');
     });

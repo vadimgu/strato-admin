@@ -13,7 +13,7 @@ import { ListHeader } from './ListHeader';
 
 export interface ColProps {
     source?: string;
-    label?: string;
+    label?: string | React.ReactNode;
     header?: React.ReactNode;
     children?: React.ReactNode;
     sortable?: boolean;

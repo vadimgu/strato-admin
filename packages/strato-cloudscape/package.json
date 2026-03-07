@@ -17,7 +17,9 @@
   "dependencies": {
     "@cloudscape-design/components": "^3.0.1217",
     "ra-core": "^5.14.3",
-    "react-router-dom": "^6.22.3"
+    "react-router-dom": "^6.22.3",
+    "strato-i18n-icu": "workspace:*",
+    "strato-language-en": "workspace:*"
   },
   "devDependencies": {
     "@types/react": "^19.0.0",
