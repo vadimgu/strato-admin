@@ -49,6 +49,14 @@ describe('DataTable', () => {
     (useCollection as any).mockReturnValue({
       items: [],
       paginationProps: {},
+      collectionProps: {},
+      filterProps: {},
+      preferencesProps: {
+        preferences: {
+          stripedRows: false,
+          wrapLines: false,
+        },
+      },
     });
   });
 
@@ -59,12 +67,16 @@ describe('DataTable', () => {
       <DataTable>
         <DataTable.Col source="name" label="Product Name" />
         <DataTable.Col source="price" label="Price" />
-      </DataTable>
+        <DataTable.DateCol source="lastRestocked" label="Last Restocked" />
+        <DataTable.BooleanCol source="isEcoFriendly" label="Eco-Friendly" />
+      </DataTable>,
     );
 
     const tableProps = (CloudscapeTable as any).mock.calls[0][0];
     expect(tableProps.columnDefinitions[0].id).toBe('products___name');
     expect(tableProps.columnDefinitions[1].id).toBe('products___price');
+    expect(tableProps.columnDefinitions[2].id).toBe('products___lastRestocked');
+    expect(tableProps.columnDefinitions[3].id).toBe('products___isEcoFriendly');
   });
 
   it('should include sortingField in column definitions', () => {
@@ -73,7 +85,7 @@ describe('DataTable', () => {
     render(
       <DataTable>
         <DataTable.Col source="name" label="Product Name" />
-      </DataTable>
+      </DataTable>,
     );
 
     const tableProps = (CloudscapeTable as any).mock.calls[0][0];
@@ -86,7 +98,7 @@ describe('DataTable', () => {
     render(
       <DataTable>
         <DataTable.Col label="No Source" />
-      </DataTable>
+      </DataTable>,
     );
 
     const tableProps = (CloudscapeTable as any).mock.calls[0][0];
@@ -99,10 +111,42 @@ describe('DataTable', () => {
     render(
       <DataTable>
         <DataTable.Col source="name" />
-      </DataTable>
+      </DataTable>,
     );
 
     const tableProps = (CloudscapeTable as any).mock.calls[0][0];
     expect(tableProps.columnDefinitions[0].id).toBe('name');
+  });
+
+  it('should reorder columns based on preferences', () => {
+    (useResourceContext as any).mockReturnValue('products');
+    (useCollection as any).mockReturnValue({
+      items: [],
+      paginationProps: {},
+      collectionProps: {},
+      filterProps: {},
+      preferencesProps: {
+        preferences: {
+          contentDisplay: [
+            { id: 'products___price', visible: true },
+            { id: 'products___name', visible: true },
+          ],
+        },
+      },
+    });
+
+    render(
+      <DataTable>
+        <DataTable.Col source="name" label="Product Name" />
+        <DataTable.Col source="price" label="Price" />
+      </DataTable>,
+    );
+
+    const tableProps = (CloudscapeTable as any).mock.calls[0][0];
+    // Cloudscape handles the ordering via columnDisplay prop
+    expect(tableProps.columnDisplay).toEqual([
+      { id: 'products___price', visible: true },
+      { id: 'products___name', visible: true },
+    ]);
   });
 });

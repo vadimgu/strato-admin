@@ -26,7 +26,11 @@ vi.mock('@cloudscape-design/components/box', () => ({
 
 // Mock Cloudscape Link
 vi.mock('@cloudscape-design/components/link', () => ({
-  default: ({ children, href }: any) => <a href={href} data-testid="cloudscape-link">{children}</a>,
+  default: ({ children, href }: any) => (
+    <a href={href} data-testid="cloudscape-link">
+      {children}
+    </a>
+  ),
 }));
 
 describe('ReferenceField', () => {
@@ -41,7 +45,7 @@ describe('ReferenceField', () => {
     render(
       <ReferenceField source="categoryId" reference="categories">
         <span data-testid="child">Child Content</span>
-      </ReferenceField>
+      </ReferenceField>,
     );
 
     expect(screen.getByTestId('child')).toBeDefined();
@@ -51,8 +55,8 @@ describe('ReferenceField', () => {
   it('should render record representation when no children provided (function)', () => {
     const record = { id: 1, name: 'Category 1' };
     (useRecordContext as any).mockReturnValue(record);
-    (useResourceDefinition as any).mockReturnValue({ 
-        recordRepresentation: (rec: any) => rec.name 
+    (useResourceDefinition as any).mockReturnValue({
+      recordRepresentation: (rec: any) => rec.name,
     });
 
     render(<ReferenceField source="categoryId" reference="categories" />);
@@ -63,8 +67,8 @@ describe('ReferenceField', () => {
   it('should render record representation when no children provided (string)', () => {
     const record = { id: 1, name: 'Category 1' };
     (useRecordContext as any).mockReturnValue(record);
-    (useResourceDefinition as any).mockReturnValue({ 
-        recordRepresentation: 'name' 
+    (useResourceDefinition as any).mockReturnValue({
+      recordRepresentation: 'name',
     });
 
     render(<ReferenceField source="categoryId" reference="categories" />);

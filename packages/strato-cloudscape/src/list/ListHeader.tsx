@@ -5,54 +5,46 @@ import { useResourceContext, useListContext, useTranslate, useResourceDefinition
 import { BulkDeleteButton } from '../button/BulkDeleteButton';
 
 export interface ListHeaderProps extends Omit<HeaderProps, 'children'> {
-    title?: React.ReactNode;
+  title?: React.ReactNode;
 }
 
 export const ListHeader = ({ title, actions, ...props }: ListHeaderProps) => {
-    const resource = useResourceContext();
-    const translate = useTranslate();
-    const definitions = useResourceDefinitions();
-    const locale = useLocale();
-    const { total, isPending } = useListContext();
+  const resource = useResourceContext();
+  const translate = useTranslate();
+  const definitions = useResourceDefinitions();
+  const locale = useLocale();
+  const { total, isPending } = useListContext();
 
-    const headerTitle = React.useMemo(() => {
-        if (title !== undefined) {
-            return title;
-        }
-        if (!resource) {
-            return '';
-        }
+  const headerTitle = React.useMemo(() => {
+    if (title !== undefined) {
+      return title;
+    }
+    if (!resource) {
+      return '';
+    }
 
-        const definition = definitions[resource];
-        const defaultLabel = definition?.options?.label 
-            ? translate(definition.options.label, { _: definition.options.label })
-            : resource.charAt(0).toUpperCase() + resource.slice(1);
+    const definition = definitions[resource];
+    const defaultLabel = definition?.options?.label
+      ? translate(definition.options.label, { _: definition.options.label })
+      : resource.charAt(0).toUpperCase() + resource.slice(1);
 
-        return translate(`resources.${resource}.name`, { _: defaultLabel });
-    }, [title, resource, definitions, translate, locale]);
+    return translate(`resources.${resource}.name`, { _: defaultLabel });
+  }, [title, resource, definitions, translate, locale]);
 
-    const counter = props.counter !== undefined 
-        ? props.counter 
-        : (!isPending && total !== undefined) 
-        ? `(${total})` 
-        : undefined;
+  const counter =
+    props.counter !== undefined ? props.counter : !isPending && total !== undefined ? `(${total})` : undefined;
 
-    const headerActions = actions || (
-        <SpaceBetween direction="horizontal" size="xs">
-            <BulkDeleteButton />
-        </SpaceBetween>
-    );
+  const headerActions = actions || (
+    <SpaceBetween direction="horizontal" size="xs">
+      <BulkDeleteButton />
+    </SpaceBetween>
+  );
 
-    return (
-        <Header 
-            variant="h2"
-            {...props}
-            actions={headerActions}
-            counter={counter}
-        >
-            {headerTitle}
-        </Header>
-    );
+  return (
+    <Header variant="h2" {...props} actions={headerActions} counter={counter}>
+      {headerTitle}
+    </Header>
+  );
 };
 
 export default ListHeader;

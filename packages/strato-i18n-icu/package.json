@@ -17,6 +17,5 @@
   "dependencies": {
     "intl-messageformat": "^11.1.2"
   },
-  "devDependencies": {
-  }
+  "devDependencies": {}
 }

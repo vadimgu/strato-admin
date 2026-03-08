@@ -1,27 +1,20 @@
 import React from 'react';
 import CloudscapeKeyValuePairs, {
-    type KeyValuePairsProps as CloudscapeKeyValuePairsProps,
+  type KeyValuePairsProps as CloudscapeKeyValuePairsProps,
 } from '@cloudscape-design/components/key-value-pairs';
-import {
-    useResourceContext,
-    useRecordContext,
-    FieldTitle,
-    RecordContextProvider,
-    type RaRecord,
-} from 'ra-core';
+import { useResourceContext, useRecordContext, FieldTitle, RecordContextProvider, type RaRecord } from 'ra-core';
 import TextField from '../field/TextField';
 
-export interface KeyValuePairsProps
-    extends Partial<Omit<CloudscapeKeyValuePairsProps, 'items'>> {
-    children: React.ReactNode;
-    columns?: number;
-    minColumnWidth?: number;
+export interface KeyValuePairsProps extends Partial<Omit<CloudscapeKeyValuePairsProps, 'items'>> {
+  children: React.ReactNode;
+  columns?: number;
+  minColumnWidth?: number;
 }
 
 export interface KeyValueFieldProps {
-    source?: string;
-    label?: string;
-    children?: React.ReactNode;
+  source?: string;
+  label?: string;
+  children?: React.ReactNode;
 }
 
 /**
@@ -29,13 +22,13 @@ export interface KeyValueFieldProps {
  * It mirrors the DataTable.Col pattern.
  */
 export const KeyValueField = ({ children, source }: KeyValueFieldProps) => {
-    if (children) {
-        return <>{children}</>;
-    }
-    if (source) {
-        return <TextField source={source} />;
-    }
-    return null;
+  if (children) {
+    return <>{children}</>;
+  }
+  if (source) {
+    return <TextField source={source} />;
+  }
+  return null;
 };
 
 /**
@@ -49,40 +42,28 @@ export const KeyValueField = ({ children, source }: KeyValueFieldProps) => {
  * </KeyValuePairs>
  */
 export const KeyValuePairs = <RecordType extends RaRecord = RaRecord>({
-    children,
-    columns,
-    minColumnWidth,
-    ...props
+  children,
+  columns,
+  minColumnWidth,
+  ...props
 }: KeyValuePairsProps) => {
-    const resource = useResourceContext();
-    const record = useRecordContext<RecordType>();
+  const resource = useResourceContext();
+  const record = useRecordContext<RecordType>();
 
-    const items =
-        React.Children.map(children, (child) => {
-            if (!React.isValidElement(child)) {
-                return null;
-            }
+  const items =
+    React.Children.map(children, (child) => {
+      if (!React.isValidElement(child)) {
+        return null;
+      }
 
-            const { source, label } = child.props as any;
-            return {
-                label: <FieldTitle source={source} resource={resource} label={label} />,
-                value: (
-                    <RecordContextProvider value={record}>
-                        {child}
-                    </RecordContextProvider>
-                ),
-            };
-        })?.filter((item): item is Exclude<typeof item, null> => item !== null) ||
-        [];
+      const { source, label } = child.props as any;
+      return {
+        label: <FieldTitle source={source} resource={resource} label={label} />,
+        value: <RecordContextProvider value={record}>{child}</RecordContextProvider>,
+      };
+    })?.filter((item): item is Exclude<typeof item, null> => item !== null) || [];
 
-    return (
-        <CloudscapeKeyValuePairs
-            {...props}
-            items={items}
-            columns={columns}
-            minColumnWidth={minColumnWidth}
-        />
-    );
+  return <CloudscapeKeyValuePairs {...props} items={items} columns={columns} minColumnWidth={minColumnWidth} />;
 };
 
 KeyValuePairs.Field = KeyValueField;

@@ -2,14 +2,16 @@
 
 WORK IN PROGRESS
 
-A frontend Framework for building admin interfaces, built on top of React-Admin with Cloudscape Design System. It provides a set of reusable components and tools to help developers create efficient and user-friendly admin interfaces.
+A frontend framework for building admin interfaces, built on top of React-Admin and the Cloudscape Design System. It provides a set of reusable components and tools to help developers create efficient and user-friendly admin interfaces.
 
-High speed development without compromising on versatility.
+High-speed development without compromising on versatility.
 
 ## Features
 
-- Backend agnostic: Using React-Admin data providers, you can connect to any backend API.
-- Great development experience: Declarative API.
+- **Backend Agnostic**: Connect to any backend using React-Admin data providers.
+- **Great Developer Experience**: Declarative, type-safe API.
+- **Modern UI**: Built with AWS's Cloudscape Design System for accessibility and consistency.
+- **I18n Built-in**: Robust internationalization support.
 
 ## Installation
 
@@ -19,37 +21,41 @@ npm install strato-admin
 pnpm install strato-admin
 ```
 
-## Documentation
-
-...
-
-
-## At a Glance
+## Quick Start
 
 ```tsx
-export const UsersList = () => (
-    <List resource="users">
-      <Table>
-        <TextField source="id" />
-        <TextField source="name" />
-        <TextField source="email" />
-      </Table>
-    </List>
+import { Admin, Resource, List, DataTable, TextField } from 'strato-admin';
+import { jsonServerDataProvider } from 'ra-data-json-server';
+
+const dataProvider = jsonServerDataProvider('https://jsonplaceholder.typicode.com');
+
+const UsersList = () => (
+  <List>
+    <DataTable header="Users" filtering preferences>
+      <DataTable.Col source="id" label="ID" link="show" />
+      <DataTable.Col source="name" label="Name" sortable />
+      <DataTable.Col source="email" label="Email" />
+      <DataTable.Col source="website" label="Website" />
+    </DataTable>
+  </List>
+);
+
+export const App = () => (
+  <Admin dataProvider={dataProvider}>
+    <Resource name="users" list={UsersList} />
+  </Admin>
 );
 ```
 
-## Does It Work With My Backend
-
-Yes! Strato Admin is built on top of React-Admin, which uses data providers to connect to any backend API. You can use existing data providers or create your own to connect to your backend.
-
 ## Flexibility
 
-You can use Cloudscape Design System components directly with "headless"
-components provided by Strato Admin. This allows you to create custom interfaces
-while still benefiting from the design system's consistency and accessibility.
+You can use Cloudscape Design System components directly with "headless" components provided by Strato Admin. This allows you to create custom interfaces while still benefiting from the design system's consistency and accessibility.
 
 ## Examples
 
-... (coming soon)
-
-
+Check out the [demo example](./examples/demo) for a more comprehensive showcase of features including:
+- Complex data types (Dates, Booleans, Numbers)
+- Reference fields and relationships
+- Detail views (Show)
+- Selection and bulk actions
+- Column reordering and visibility preferences

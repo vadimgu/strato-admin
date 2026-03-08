@@ -1,10 +1,12 @@
 export { default as TextField } from './TextField';
 export { default as NumberField } from './NumberField';
 export { default as DateField } from './DateField';
+export { default as BooleanField } from './BooleanField';
 export { default as ReferenceField } from './ReferenceField';
 export { default as FieldLink } from './FieldLink';
 export * from './TextField';
 export * from './NumberField';
 export * from './DateField';
+export * from './BooleanField';
 export * from './ReferenceField';
 export * from './FieldLink';

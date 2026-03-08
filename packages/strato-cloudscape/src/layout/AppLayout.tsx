@@ -6,55 +6,51 @@ import { useNavigate } from 'react-router-dom';
 import { TopNavigation } from './TopNavigation';
 
 export interface AppLayoutProps {
-    children: React.ReactNode;
-    header?: React.ReactNode;
-    title?: string;
+  children: React.ReactNode;
+  header?: React.ReactNode;
+  title?: string;
 }
 
 export const AppLayout = ({ children, header, title }: AppLayoutProps) => {
-    const resources = useResourceDefinitions();
-    const translate = useTranslate();
-    const navigate = useNavigate();
-    const [navigationOpen, setNavigationOpen] = useState(true);
+  const resources = useResourceDefinitions();
+  const translate = useTranslate();
+  const navigate = useNavigate();
+  const [navigationOpen, setNavigationOpen] = useState(true);
 
-    const items = Object.values(resources).map((resource) => ({
-        type: 'link' as const,
-        text: resource.options?.label
-            ? translate(resource.options.label, { _: resource.options.label })
-            : translate(`resource.${resource.name}.name`, { _: resource.name }),
-        href: `/${resource.name}`,
-    }));
+  const items = Object.values(resources).map((resource) => ({
+    type: 'link' as const,
+    text: resource.options?.label
+      ? translate(resource.options.label, { _: resource.options.label })
+      : translate(`resource.${resource.name}.name`, { _: resource.name }),
+    href: `/${resource.name}`,
+  }));
 
-    return (
-        <>
-            {header || <TopNavigation identity={{ title, href: '/' }} />}
-            <CloudscapeAppLayout
-                headerSelector="#header"
-                navigationOpen={navigationOpen}
-                onNavigationChange={({ detail }) => setNavigationOpen(detail.open)}
-                navigation={
-                    <SideNavigation
-                        //header={{
-                        //    href: '/',
-                        //    text: 'Dashboard',
-                        //}}
-                        items={items}
-                        onFollow={(event) => {
-                            if (!event.detail.external) {
-                                event.preventDefault();
-                                navigate(event.detail.href);
-                            }
-                        }}
-                    />
-                }
-                content={
-                    <div>
-                        {children}
-                    </div>
-                }
-            />
-        </>
-    );
+  return (
+    <>
+      {header || <TopNavigation identity={{ title, href: '/' }} />}
+      <CloudscapeAppLayout
+        headerSelector="#header"
+        navigationOpen={navigationOpen}
+        onNavigationChange={({ detail }) => setNavigationOpen(detail.open)}
+        navigation={
+          <SideNavigation
+            //header={{
+            //    href: '/',
+            //    text: 'Dashboard',
+            //}}
+            items={items}
+            onFollow={(event) => {
+              if (!event.detail.external) {
+                event.preventDefault();
+                navigate(event.detail.href);
+              }
+            }}
+          />
+        }
+        content={<div>{children}</div>}
+      />
+    </>
+  );
 };
 
 export default AppLayout;
