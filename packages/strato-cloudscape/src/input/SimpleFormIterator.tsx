@@ -11,8 +11,9 @@ export interface SimpleFormIteratorItemProps {
     source: string;
     label?: string | false;
     field?: React.ComponentType<any>;
+    validate?: any;
+    defaultValue?: any;
     children?: React.ReactNode;
-    [key: string]: any;
 }
 
 export const Item = (props: SimpleFormIteratorItemProps) => {
@@ -84,15 +85,15 @@ export const SimpleFormIterator = (props: SimpleFormIteratorProps) => {
                     
                     let content;
                     if (child.type === Item) {
-                        const { field: FieldComponent, children: itemChildren, ...itemProps } = childProps;
+                        const { field: FieldComponent, children: itemChildren, validate, defaultValue } = childProps;
                         content = itemChildren ? (
-                            <FormField {...itemProps} source={prefixedSource} label={false}>
+                            <FormField source={prefixedSource} label={false} validate={validate} defaultValue={defaultValue}>
                                 {itemChildren}
                             </FormField>
                         ) : FieldComponent ? (
-                            <FieldComponent {...itemProps} source={prefixedSource} label={false} />
+                            <FieldComponent source={prefixedSource} label={false} validate={validate} defaultValue={defaultValue} />
                         ) : (
-                            <TextInput {...itemProps} source={prefixedSource} label={false} />
+                            <TextInput source={prefixedSource} label={false} validate={validate} defaultValue={defaultValue} />
                         );
                     } else {
                         // Standard child (e.g. TextInput)

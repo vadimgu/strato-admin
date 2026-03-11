@@ -23,16 +23,15 @@ export interface ColProps {
   sortable?: boolean;
   link?: FieldLinkType;
   field?: React.ComponentType<any>;
-  [key: string]: any;
 }
 
-export const Col = ({ children, source, link, field: FieldComponent, ...props }: ColProps) => {
+export const Col = ({ children, source, link, field: FieldComponent }: ColProps) => {
   const content = children ? (
     <>{children}</>
   ) : FieldComponent ? (
-    <FieldComponent link={link} {...props} />
+    <FieldComponent link={link} />
   ) : (
-    <TextField link={link} {...props} />
+    <TextField link={link} />
   );
   return (
     <FieldContext.Provider value={{ source }}>
@@ -41,19 +40,19 @@ export const Col = ({ children, source, link, field: FieldComponent, ...props }:
   );
 };
 
-export interface NumberColProps extends ColProps, Omit<NumberFieldProps, 'source'> {
+export interface NumberColProps extends ColProps {
   source?: string;
 }
 
-export const NumberCol = ({ children, source, link, field: FieldComponent, ...props }: NumberColProps) => {
+export const NumberCol = ({ children, source, link, field: FieldComponent }: NumberColProps) => {
   const content = children ? (
-    <Box textAlign="right" {...props}>
+    <Box textAlign="right">
       {children}
     </Box>
   ) : FieldComponent ? (
-    <FieldComponent textAlign="right" link={link} {...props} />
+    <FieldComponent textAlign="right" link={link} />
   ) : (
-    <NumberField textAlign="right" link={link} {...props} />
+    <NumberField textAlign="right" link={link} />
   );
   return (
     <FieldContext.Provider value={{ source }}>
@@ -63,17 +62,17 @@ export const NumberCol = ({ children, source, link, field: FieldComponent, ...pr
 };
 (NumberCol as any).isNumberCol = true;
 
-export interface DateColProps extends ColProps, Omit<DateFieldProps, 'source'> {
+export interface DateColProps extends ColProps {
   source?: string;
 }
 
-export const DateCol = ({ children, source, link, field: FieldComponent, ...props }: DateColProps) => {
+export const DateCol = ({ children, source, link, field: FieldComponent }: DateColProps) => {
   const content = children ? (
     <>{children}</>
   ) : FieldComponent ? (
-    <FieldComponent link={link} {...props} />
+    <FieldComponent link={link} />
   ) : (
-    <DateField link={link} {...props} />
+    <DateField link={link} />
   );
   return (
     <FieldContext.Provider value={{ source }}>
@@ -82,17 +81,17 @@ export const DateCol = ({ children, source, link, field: FieldComponent, ...prop
   );
 };
 
-export interface BooleanColProps extends ColProps, Omit<BooleanFieldProps, 'source'> {
+export interface BooleanColProps extends ColProps {
   source?: string;
 }
 
-export const BooleanCol = ({ children, source, field: FieldComponent, ...props }: BooleanColProps) => {
+export const BooleanCol = ({ children, source, field: FieldComponent }: BooleanColProps) => {
   const content = children ? (
     <>{children}</>
   ) : FieldComponent ? (
-    <FieldComponent {...props} />
+    <FieldComponent />
   ) : (
-    <BooleanField {...props} />
+    <BooleanField />
   );
   return (
     <FieldContext.Provider value={{ source }}>
@@ -101,17 +100,17 @@ export const BooleanCol = ({ children, source, field: FieldComponent, ...props }
   );
 };
 
-export interface ReferenceColProps extends ColProps, Omit<ReferenceFieldProps, 'source'> {
+export interface ReferenceColProps extends ColProps {
   source?: string;
   reference: string;
 }
 
-export const ReferenceCol = ({ children, source, reference, link, field: FieldComponent, ...props }: ReferenceColProps) => {
+export const ReferenceCol = ({ children, source, reference, link, field: FieldComponent }: ReferenceColProps) => {
   // ReferenceCol requires reference, so we pass it down
   const content = FieldComponent ? (
-    <FieldComponent reference={reference} link={link} {...props}>{children}</FieldComponent>
+    <FieldComponent reference={reference} link={link}>{children}</FieldComponent>
   ) : (
-    <ReferenceField reference={reference} link={link} {...props}>{children}</ReferenceField>
+    <ReferenceField reference={reference} link={link}>{children}</ReferenceField>
   );
   return (
     <FieldContext.Provider value={{ source }}>

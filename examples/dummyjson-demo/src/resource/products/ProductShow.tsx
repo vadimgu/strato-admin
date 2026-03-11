@@ -9,7 +9,9 @@ export const ProductShow = () => (
             <KeyValuePairs.Field source="category" label="Category">
                 <ReferenceField reference="products/categories" link="show" />
             </KeyValuePairs.Field>
-            <KeyValuePairs.Field source="price" label="Price" field={NumberField} options={{ style: 'currency', currency: 'USD' }} />
+            <KeyValuePairs.Field source="price" label="Price">
+                <NumberField options={{ style: 'currency', currency: 'USD' }} />
+            </KeyValuePairs.Field>
             <KeyValuePairs.Field source="discountPercentage" label="Discount %" field={NumberField} />
             <KeyValuePairs.Field source="rating" label="Rating" field={NumberField} />
             <KeyValuePairs.Field source="stock" label="Stock" field={NumberField} />

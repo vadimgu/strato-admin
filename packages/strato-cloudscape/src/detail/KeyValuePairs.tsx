@@ -17,20 +17,19 @@ export interface KeyValueFieldProps {
   label?: string;
   children?: React.ReactNode;
   field?: React.ComponentType<any>;
-  [key: string]: any;
 }
 
 /**
  * KeyValuePairs.Field is a helper component to define a field in a KeyValuePairs component.
  * It mirrors the DataTable.Col pattern.
  */
-export const KeyValueField = ({ children, source, field: FieldComponent, ...props }: KeyValueFieldProps) => {
+export const KeyValueField = ({ children, source, field: FieldComponent }: KeyValueFieldProps) => {
   const content = children ? (
     <>{children}</>
   ) : FieldComponent ? (
-    <FieldComponent {...props} />
+    <FieldComponent />
   ) : (
-    <TextField {...props} />
+    <TextField />
   );
   return (
     <FieldContext.Provider value={{ source }}>

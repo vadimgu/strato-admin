@@ -17,7 +17,9 @@ export const CartEdit = () => (
                                 <AutocompleteInput />
                             </ReferenceInput>
                         </SimpleFormIterator.Item>
-                        <SimpleFormIterator.Item source="quantity" label="Quantity" field={NumberInput} validate={[required(), minValue(1)]} />
+                        <SimpleFormIterator.Item source="quantity" label="Quantity" validate={[required(), minValue(1)]}>
+                            <NumberInput />
+                        </SimpleFormIterator.Item>
                     </SimpleFormIterator>
                 </ArrayInput>
             </FormField>
