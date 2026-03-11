@@ -2,6 +2,7 @@ import React from 'react';
 import { useInput, useResourceContext, useChoicesContext, useGetRecordRepresentation, type InputProps } from 'ra-core';
 import CloudscapeSelect, { SelectProps as CloudscapeSelectProps } from '@cloudscape-design/components/select';
 import { FormField } from './FormField';
+import { FormFieldContext, useFormFieldContext } from './FormFieldContext';
 
 export interface SelectInputProps extends Omit<CloudscapeSelectProps, 'onChange' | 'selectedOption' | 'options' | 'onBlur'>, InputProps {
     label?: string | false;
@@ -13,15 +14,15 @@ export const SelectInput = (props: SelectInputProps) => {
     const resource = useResourceContext();
     const { allChoices, isPending } = useChoicesContext(props);
     const getRecordRepresentation = useGetRecordRepresentation(resource);
-    const {
-        id,
-        field,
-    } = useInput({
+    const context = useFormFieldContext();
+    const inputState = context ?? useInput({
         source,
         defaultValue,
         validate,
         ...rest,
     });
+
+    const { id, field } = inputState;
 
     const choices = choicesProp || allChoices || [];
 
@@ -35,8 +36,7 @@ export const SelectInput = (props: SelectInputProps) => {
 
     const selectedOption = options.find(option => option.value === String(field.value)) || null;
 
-    return (
-        <FormField {...props}>
+    const inner = (
             <CloudscapeSelect
                 {...rest}
                 id={id}
@@ -46,7 +46,18 @@ export const SelectInput = (props: SelectInputProps) => {
                 onChange={({ detail }) => field.onChange(detail.selectedOption.value)}
                 onBlur={() => field.onBlur()}
             />
-        </FormField>
+    );
+
+    if (context) {
+        return inner;
+    }
+
+    return (
+        <FormFieldContext.Provider value={inputState}>
+            <FormField {...props}>
+                {inner}
+            </FormField>
+        </FormFieldContext.Provider>
     );
 };
 

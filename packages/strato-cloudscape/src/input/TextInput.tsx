@@ -2,6 +2,7 @@ import React from 'react';
 import { useInput, type InputProps } from 'ra-core';
 import CloudscapeInput, { InputProps as CloudscapeInputProps } from '@cloudscape-design/components/input';
 import { FormField } from './FormField';
+import { FormFieldContext, useFormFieldContext } from './FormFieldContext';
 
 export interface TextInputProps extends Omit<CloudscapeInputProps, 'onChange' | 'value' | 'onBlur' | 'type'>, InputProps {
   label?: string | false;
@@ -10,18 +11,17 @@ export interface TextInputProps extends Omit<CloudscapeInputProps, 'onChange' | 
 
 export const TextInput = (props: TextInputProps) => {
   const { label, source, defaultValue, validate, type = 'text', ...rest } = props;
-  const {
-    id,
-    field,
-  } = useInput({
+  const context = useFormFieldContext();
+  const inputState = context ?? useInput({
     source,
     defaultValue,
     validate,
     ...rest,
   });
 
-  return (
-    <FormField {...props}>
+  const { id, field } = inputState;
+
+  const inner = (
       <CloudscapeInput
         {...rest}
         {...field}
@@ -31,7 +31,18 @@ export const TextInput = (props: TextInputProps) => {
         onChange={(event) => field.onChange(event.detail.value)}
         onBlur={() => field.onBlur()}
       />
-    </FormField>
+  );
+
+  if (context) {
+      return inner;
+  }
+
+  return (
+    <FormFieldContext.Provider value={inputState}>
+      <FormField {...props}>
+        {inner}
+      </FormField>
+    </FormFieldContext.Provider>
   );
 };
 

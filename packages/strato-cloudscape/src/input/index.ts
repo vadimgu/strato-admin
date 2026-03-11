@@ -6,3 +6,5 @@ export * from './SimpleFormIterator';
 export * from './SelectInput';
 export * from './AutocompleteInput';
 export * from './ReferenceInput';
+export * from './FormFieldContext';
+export * from './FormField';

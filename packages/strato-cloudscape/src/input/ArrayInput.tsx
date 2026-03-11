@@ -1,30 +1,31 @@
 import React, { useMemo } from 'react';
-import { ArrayInputContext, useInput, type InputProps, useResourceContext } from 'ra-core';
+import { ArrayInputContext, useInput, type InputProps } from 'ra-core';
 import { useFieldArray, useFormContext } from 'react-hook-form';
-import FormField from '@cloudscape-design/components/form-field';
-import { FieldTitle } from './FieldTitle';
-import { ValidationError } from '../form';
+import { FormField } from './FormField';
+import { FormFieldContext, useFormFieldContext } from './FormFieldContext';
 
 export interface ArrayInputProps extends InputProps {
     children: React.ReactNode;
-    label?: string;
+    label?: string | false;
 }
 
 export const ArrayInput = (props: ArrayInputProps) => {
-    const { children, label, source, validate, defaultValue, ...rest } = props;
-    const resource = useResourceContext();
+    const { children, label, source: sourceProp, validate, defaultValue, ...rest } = props;
     const { control } = useFormContext();
-    const {
-        id,
-        fieldState: { isTouched, invalid, error },
-        formState: { isSubmitted },
-        isRequired,
-    } = useInput({
-        source,
+    const contextValue = useFormFieldContext();
+    
+    const inputState = contextValue ?? useInput({
+        source: sourceProp!,
         validate,
         defaultValue,
         ...rest,
     });
+    
+    const {
+        fieldState: { error },
+    } = inputState;
+
+    const source = sourceProp || contextValue?.source || '';
 
     const {
         fields,
@@ -57,24 +58,22 @@ export const ArrayInput = (props: ArrayInputProps) => {
         [append, fields, insert, move, prepend, remove, replace, swap, update, source]
     );
 
-    const errorText = useMemo(() => {
-        if (!(isTouched || isSubmitted) || !invalid || !error) {
-            return undefined;
-        }
-        const errorToProcess = (error as any).message || (error as any).root?.message || error;
-        return <ValidationError error={errorToProcess} />;
-    }, [isTouched, isSubmitted, invalid, error]);
+    const inner = (
+        <ArrayInputContext.Provider value={context}>
+            {children}
+        </ArrayInputContext.Provider>
+    );
+
+    if (contextValue) {
+        return inner;
+    }
 
     return (
-        <ArrayInputContext.Provider value={context}>
-            <FormField
-                id={id}
-                label={<FieldTitle label={label} source={source} resource={resource} isRequired={isRequired} />}
-                errorText={errorText}
-            >
-                {children}
+        <FormFieldContext.Provider value={{ ...inputState, source }}>
+            <FormField {...props} source={source}>
+                {inner}
             </FormField>
-        </ArrayInputContext.Provider>
+        </FormFieldContext.Provider>
     );
 };
 

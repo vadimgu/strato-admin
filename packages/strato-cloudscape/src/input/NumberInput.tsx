@@ -2,6 +2,7 @@ import React from 'react';
 import { useInput, type InputProps } from 'ra-core';
 import CloudscapeInput, { InputProps as CloudscapeInputProps } from '@cloudscape-design/components/input';
 import { FormField } from './FormField';
+import { FormFieldContext, useFormFieldContext } from './FormFieldContext';
 
 export interface NumberInputProps extends Omit<CloudscapeInputProps, 'onChange' | 'value' | 'onBlur' | 'type'>, InputProps {
   label?: string | false;
@@ -10,23 +11,22 @@ export interface NumberInputProps extends Omit<CloudscapeInputProps, 'onChange' 
 
 export const NumberInput = (props: NumberInputProps) => {
   const { label, source, defaultValue, validate, type = 'number', ...rest } = props;
-  const {
-    id,
-    field,
-  } = useInput({
+  const context = useFormFieldContext();
+  const inputState = context ?? useInput({
     source,
     defaultValue,
     validate,
     ...rest,
   });
 
+  const { id, field } = inputState;
+
   const handleChange = (value: string) => {
     const floatValue = parseFloat(value);
     field.onChange(isNaN(floatValue) ? null : floatValue);
   };
 
-  return (
-    <FormField {...props}>
+  const inner = (
       <CloudscapeInput
         {...rest}
         {...field}
@@ -36,7 +36,18 @@ export const NumberInput = (props: NumberInputProps) => {
         onChange={(event) => handleChange(event.detail.value)}
         onBlur={() => field.onBlur()}
       />
-    </FormField>
+  );
+
+  if (context) {
+      return inner;
+  }
+
+  return (
+    <FormFieldContext.Provider value={inputState}>
+      <FormField {...props}>
+        {inner}
+      </FormField>
+    </FormFieldContext.Provider>
   );
 };
 

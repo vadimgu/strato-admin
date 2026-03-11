@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useInput, useResourceContext, useChoicesContext, useGetRecordRepresentation, type InputProps } from 'ra-core';
 import CloudscapeAutosuggest, { AutosuggestProps as CloudscapeAutosuggestProps } from '@cloudscape-design/components/autosuggest';
 import { FormField } from './FormField';
+import { FormFieldContext, useFormFieldContext } from './FormFieldContext';
 
 export interface AutocompleteInputProps extends Omit<CloudscapeAutosuggestProps, 'onChange' | 'value' | 'options' | 'onBlur'>, InputProps {
     label?: string | false;
@@ -13,15 +14,15 @@ export const AutocompleteInput = (props: AutocompleteInputProps) => {
     const resource = useResourceContext();
     const { allChoices, isPending, setFilters } = useChoicesContext(props);
     const getRecordRepresentation = useGetRecordRepresentation(resource);
-    const {
-        id,
-        field,
-    } = useInput({
+    const context = useFormFieldContext();
+    const inputState = context ?? useInput({
         source,
         defaultValue,
         validate,
         ...rest,
     });
+
+    const { id, field } = inputState;
 
     const choices = choicesProp || allChoices || [];
 
@@ -32,15 +33,25 @@ export const AutocompleteInput = (props: AutocompleteInputProps) => {
 
     const [filterValue, setFilterValue] = useState('');
 
+    // Keep track of the last value we synced from the field
+    const lastSyncedValue = React.useRef<any>(undefined);
+
     useEffect(() => {
         if (selectedChoice) {
             setFilterValue(String(getRecordRepresentation(selectedChoice)));
+            lastSyncedValue.current = field.value;
         } else if (!field.value) {
             setFilterValue('');
-        } else {
-            setFilterValue(String(field.value));
+            lastSyncedValue.current = field.value;
+        } else if (field.value !== lastSyncedValue.current) {
+            // If we have a value but no choice yet, and we are not loading,
+            // we show the ID as a last resort.
+            if (!isPending) {
+                setFilterValue(String(field.value));
+                lastSyncedValue.current = field.value;
+            }
         }
-    }, [field.value, selectedChoice, getRecordRepresentation]);
+    }, [field.value, selectedChoice, getRecordRepresentation, isPending]);
 
     const options = useMemo(() =>
         choices.map(choice => ({
@@ -65,8 +76,7 @@ export const AutocompleteInput = (props: AutocompleteInputProps) => {
         field.onChange(detail.value);
     };
 
-    return (
-        <FormField {...props}>
+    const inner = (
             <CloudscapeAutosuggest
                 {...rest}
                 id={id}
@@ -77,7 +87,18 @@ export const AutocompleteInput = (props: AutocompleteInputProps) => {
                 onSelect={handleSelect}
                 onBlur={() => field.onBlur()}
             />
-        </FormField>
+    );
+
+    if (context) {
+        return inner;
+    }
+
+    return (
+        <FormFieldContext.Provider value={inputState}>
+            <FormField {...props}>
+                {inner}
+            </FormField>
+        </FormFieldContext.Provider>
     );
 };
 

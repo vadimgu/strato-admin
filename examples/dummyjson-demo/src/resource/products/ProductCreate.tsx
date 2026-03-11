@@ -1,11 +1,13 @@
-import { Create, SimpleForm, TextInput, NumberInput, TextAreaInput } from 'strato-admin';
+import { Create, SimpleForm, TextInput, NumberInput, TextAreaInput, FormField } from 'strato-admin';
 
 const required = (value: any) => (value ? undefined : 'Required');
 
 export const ProductCreate = () => (
     <Create title="Create Product">
         <SimpleForm>
-            <TextInput source="title" label="Title" validate={required} />
+            <FormField source="title" label="Title" validate={required}>
+                <TextInput />
+            </FormField>
             <TextInput source="brand" label="Brand" />
             <NumberInput source="price" label="Price" validate={required} />
             <NumberInput source="discountPercentage" label="Discount %" />
