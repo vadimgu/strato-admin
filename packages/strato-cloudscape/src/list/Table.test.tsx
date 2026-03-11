@@ -1,7 +1,7 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
-import { useResourceContext } from 'ra-core';
+import { useResourceContext, useListContext, useResourceDefinitions } from 'ra-core';
 import { useCollection } from '../collection-hooks';
 import DataTable from './Table';
 import CloudscapeTable from '@cloudscape-design/components/table';
@@ -9,11 +9,19 @@ import CloudscapeTable from '@cloudscape-design/components/table';
 // Mock ra-core
 vi.mock('ra-core', () => ({
   useResourceContext: vi.fn(),
+  useListContext: vi.fn(),
   useTranslate: vi.fn(() => (key: string, options: any) => options?._ || key),
   RecordContextProvider: ({ children }: any) => <>{children}</>,
   useRecordContext: vi.fn(),
   useFieldValue: vi.fn(({ source, record }) => record?.[source]),
   useCreatePath: vi.fn(() => (params: any) => `/${params.resource}/${params.id}/${params.type}`),
+  useResourceDefinitions: vi.fn(() => ({})),
+  useLocale: vi.fn(() => 'en'),
+  useBulkDeleteController: vi.fn(() => ({
+    handleDelete: vi.fn(),
+    isPending: false,
+    isLoading: false,
+  })),
 }));
 
 // Mock react-router-dom
@@ -28,7 +36,11 @@ vi.mock('../collection-hooks', () => ({
 
 // Mock Cloudscape components
 vi.mock('@cloudscape-design/components/table', () => ({
-  default: vi.fn(() => <div data-testid="cloudscape-table" />),
+  default: vi.fn(({ header }: any) => (
+    <div data-testid="cloudscape-table">
+      {header && <div data-testid="table-header">{header}</div>}
+    </div>
+  )),
 }));
 
 vi.mock('@cloudscape-design/components/pagination', () => ({
@@ -36,10 +48,19 @@ vi.mock('@cloudscape-design/components/pagination', () => ({
 }));
 
 vi.mock('@cloudscape-design/components/header', () => ({
-  default: ({ children }: any) => <header>{children}</header>,
+  default: ({ children, actions }: any) => (
+    <header data-testid="header">
+      <div data-testid="header-title">{children}</div>
+      {actions && <div data-testid="header-actions">{actions}</div>}
+    </header>
+  ),
 }));
 
 vi.mock('@cloudscape-design/components/box', () => ({
+  default: ({ children }: any) => <div>{children}</div>,
+}));
+
+vi.mock('@cloudscape-design/components/space-between', () => ({
   default: ({ children }: any) => <div>{children}</div>,
 }));
 
@@ -58,6 +79,7 @@ describe('DataTable', () => {
         },
       },
     });
+    (useListContext as any).mockReturnValue({ total: 0, isPending: false });
   });
 
   it('should generate column IDs with resource prefix', () => {
@@ -148,5 +170,53 @@ describe('DataTable', () => {
       { id: 'products___price', visible: true },
       { id: 'products___name', visible: true },
     ]);
+  });
+
+  it('should pass actions to ListHeader', () => {
+    (useResourceContext as any).mockReturnValue('products');
+
+    const { getByTestId, queryByText } = render(
+      <DataTable actions={<button>Custom Action</button>}>
+        <DataTable.Col source="name" label="Product Name" />
+      </DataTable>,
+    );
+
+    expect(getByTestId('header-actions')).toBeDefined();
+    expect(queryByText('Custom Action')).toBeDefined();
+  });
+
+  it('should pass actions={null} to ListHeader', () => {
+    (useResourceContext as any).mockReturnValue('products');
+
+    const { queryByTestId } = render(
+      <DataTable actions={null}>
+        <DataTable.Col source="name" label="Product Name" />
+      </DataTable>,
+    );
+
+    // ListHeader.test.tsx already verifies that it doesn't render children if actions={null}
+    // Here we check that header-actions div is not rendered (because of our mock)
+    expect(queryByTestId('header-actions')).toBeNull();
+  });
+
+  it('should pass selectionType to CloudscapeTable', () => {
+    render(
+      <DataTable selectionType="multi">
+        <DataTable.Col source="name" label="Product Name" />
+      </DataTable>,
+    );
+
+    const tableProps = (CloudscapeTable as any).mock.calls[0][0];
+    expect(tableProps.selectionType).toBe('multi');
+  });
+
+  it('should hide header when header={null}', () => {
+    const { queryByTestId } = render(
+      <DataTable header={null}>
+        <DataTable.Col source="name" label="Product Name" />
+      </DataTable>,
+    );
+
+    expect(queryByTestId('table-header')).toBeNull();
   });
 });

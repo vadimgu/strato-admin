@@ -22,11 +22,6 @@ function ProductList() {
         filtering
         filteringPlaceholder="Search products..."
         preferences
-        pageSizeOptions={[
-          { value: 10, label: '10 Items' },
-          { value: 20, label: '20 Items' },
-          { value: 50, label: '50 Items' },
-        ]}
       >
         <DataTable.Col source="id" label="ID" link="show" />
         <DataTable.Col source="name" label="Product Name" sortable />

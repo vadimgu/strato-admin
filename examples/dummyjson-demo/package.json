@@ -1,27 +1,25 @@
 {
-  "name": "i18n-demo-example",
+  "name": "dummyjson-demo",
   "version": "1.0.0",
-  "private": true,
+  "description": "",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview"
   },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
   "dependencies": {
+    "@cloudscape-design/collection-hooks": "^1.0.85",
     "@cloudscape-design/components": "^3.0.1217",
-    "@cloudscape-design/design-tokens": "^3.0.0",
     "@cloudscape-design/global-styles": "^1.0.0",
     "ra-core": "^5.14.3",
-    "ra-data-fakerest": "^5.14.3",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "react-intl": "^8.1.3",
-    "strato-admin": "workspace:*",
-    "strato-cloudscape": "workspace:*",
-    "strato-i18n-icu": "workspace:*"
+    "strato-admin": "workspace:^"
   },
   "devDependencies": {
-    "@formatjs/cli": "^6.13.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
     "@vitejs/plugin-react": "^4.3.4",

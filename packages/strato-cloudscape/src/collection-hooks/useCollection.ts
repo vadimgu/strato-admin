@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useListContext, RaRecord } from 'ra-core';
 import { UseCollectionOptions, UseCollectionResult, TableColumnDisplay } from './interfaces';
 
@@ -40,8 +40,19 @@ export function useCollection<T extends RaRecord>(options: UseCollectionOptions<
     return { id } as T;
   });
 
+  const items = useMemo(() => {
+    // If it's a client-side list (data contains all records), we need to slice it for pagination.
+    // We detect this by checking if data.length equals total and if data.length is greater than perPage.
+    if (data && total === data.length && data.length > (perPage || 0)) {
+      const p = page || 1;
+      const pp = perPage || 25;
+      return data.slice((p - 1) * pp, p * pp);
+    }
+    return data;
+  }, [data, total, page, perPage]);
+
   return {
-    items: data,
+    items,
     collectionProps: {
       selectedItems,
       onSelectionChange: (event) => onSelect(event.detail.selectedItems.map((item) => item.id)),

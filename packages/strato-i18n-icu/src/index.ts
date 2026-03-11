@@ -18,19 +18,37 @@ export const icuI18nProvider = (
 
   return {
     translate: (key: string, options: any = {}) => {
-      const { _: defaultMessage, ...values } = options;
+      let finalKey = key;
+      let finalOptions = options;
 
-      const message = (messages as any)[key];
+      // Handle React Admin's special validation error format
+      if (typeof key === 'string' && key.startsWith('@@react-admin@@')) {
+        try {
+          const parsed = JSON.parse(key.substring(15)); // 15 is the length of '@@react-admin@@'
+          if (typeof parsed === 'object' && parsed !== null) {
+            finalKey = parsed.message;
+            finalOptions = { ...options, ...parsed.args };
+          } else {
+            finalKey = parsed;
+          }
+        } catch (e) {
+          // Fallback to original key if parsing fails
+        }
+      }
+
+      const { _: defaultMessage, ...values } = finalOptions;
+
+      const message = (messages as any)[finalKey];
 
       if (message === undefined) {
-        return defaultMessage !== undefined ? defaultMessage : key;
+        return defaultMessage !== undefined ? defaultMessage : finalKey;
       }
 
       if (typeof message !== 'string') {
-        return key;
+        return finalKey;
       }
 
-      const cacheKey = `${locale}_${key}`;
+      const cacheKey = `${locale}_${finalKey}`;
       let formatter = formatters.get(cacheKey);
 
       if (!formatter) {
@@ -38,16 +56,16 @@ export const icuI18nProvider = (
           formatter = new IntlMessageFormat(message, locale);
           formatters.set(cacheKey, formatter);
         } catch (error) {
-          console.error(`Error parsing message for key "${key}":`, error);
-          return defaultMessage !== undefined ? defaultMessage : key;
+          console.error(`Error parsing message for key "${finalKey}":`, error);
+          return defaultMessage !== undefined ? defaultMessage : finalKey;
         }
       }
 
       try {
         return formatter.format(values) as string;
       } catch (error) {
-        console.error(`Error formatting message for key "${key}":`, error);
-        return defaultMessage !== undefined ? defaultMessage : key;
+        console.error(`Error formatting message for key "${finalKey}":`, error);
+        return defaultMessage !== undefined ? defaultMessage : finalKey;
       }
     },
     changeLocale: (newLocale: string) => {

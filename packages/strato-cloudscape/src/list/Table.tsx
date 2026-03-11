@@ -100,6 +100,7 @@ export interface DataTableProps<RecordType extends RaRecord = any> extends Parti
   Omit<CloudscapeTableProps<RecordType>, 'items' | 'columnDefinitions' | 'preferences'>
 > {
   header?: React.ReactNode;
+  actions?: React.ReactNode;
   children: React.ReactNode;
   filtering?: boolean;
   filteringPlaceholder?: string;
@@ -108,12 +109,20 @@ export interface DataTableProps<RecordType extends RaRecord = any> extends Parti
   reorderable?: boolean;
 }
 
+const defaultPageSizeOptions = [
+  { value: 10, label: '10 items' },
+  { value: 25, label: '25 items' },
+  { value: 50, label: '50 items' },
+  { value: 100, label: '100 items' },
+];
+
 export const DataTable = <RecordType extends RaRecord = any>({
   header,
+  actions,
   children,
   filtering,
   filteringPlaceholder,
-  pageSizeOptions,
+  pageSizeOptions = defaultPageSizeOptions,
   preferences,
   reorderable = true,
   ...props
@@ -183,6 +192,16 @@ export const DataTable = <RecordType extends RaRecord = any>({
     return extractedColumns.columns.filter((col) => preferencesProps.preferences.visibleContent?.includes(col.id));
   }, [extractedColumns.columns, preferencesProps.preferences.visibleContent, reorderable]);
 
+  const tableHeader = React.useMemo(() => {
+    if (header === null || header === false) {
+      return undefined;
+    }
+    if (React.isValidElement(header)) {
+      return header;
+    }
+    return <ListHeader title={header} actions={actions} />;
+  }, [header, actions]);
+
   return (
     <CloudscapeTable
       {...collectionProps}
@@ -192,7 +211,7 @@ export const DataTable = <RecordType extends RaRecord = any>({
       columnDefinitions={columnDefinitions}
       columnDisplay={reorderable ? preferencesProps.preferences.contentDisplay : undefined}
       items={items || []}
-      header={header ? React.isValidElement(header) ? header : <ListHeader title={header} /> : <ListHeader />}
+      header={tableHeader}
       filter={
         filtering && (
           <TextFilter
