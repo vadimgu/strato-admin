@@ -12,3 +12,4 @@ export * from './BooleanField';
 export * from './ReferenceField';
 export * from './FieldLink';
 export * from './ArrayField';
+export * from './FieldContext';

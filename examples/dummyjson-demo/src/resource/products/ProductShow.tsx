@@ -2,15 +2,19 @@ import { Show, KeyValuePairs, TextField, NumberField, ReferenceField } from 'str
 
 export const ProductShow = () => (
     <Show title="Product Details">
-        <KeyValuePairs columns={2}>
-            <TextField source="id" label="ID" />
-            <TextField source="title" label="Title" />
-            <TextField source="brand" label="Brand" />
-            <ReferenceField source="category" reference="products/categories" label="Category" link="show" />
-            <NumberField source="price" label="Price" options={{ style: 'currency', currency: 'USD' }} />
-            <NumberField source="discountPercentage" label="Discount %" />
-            <NumberField source="rating" label="Rating" />
-            <NumberField source="stock" label="Stock" />
+        <KeyValuePairs columns={3}>
+            <KeyValuePairs.Field source="id" label="ID" />
+            <KeyValuePairs.Field source="title" label="Title" />
+            <KeyValuePairs.Field source="brand" label="Brand" />
+            <KeyValuePairs.Field source="category" label="Category">
+                <ReferenceField reference="products/categories" link="show" />
+            </KeyValuePairs.Field>
+            <KeyValuePairs.Field source="price" label="Price" field={NumberField} options={{ style: 'currency', currency: 'USD' }} />
+            <KeyValuePairs.Field source="discountPercentage" label="Discount %" field={NumberField} />
+            <KeyValuePairs.Field source="rating" label="Rating" field={NumberField} />
+            <KeyValuePairs.Field source="stock" label="Stock" field={NumberField} />
+        </KeyValuePairs>
+        <KeyValuePairs columns={1}>
             <KeyValuePairs.Field label="Description" source="description" />
         </KeyValuePairs>
     </Show>

@@ -7,6 +7,7 @@ import { SimpleForm } from './SimpleForm';
 vi.mock('ra-core', () => ({
   Form: ({ children }: any) => <div data-testid="ra-form">{children}</div>,
   useTranslate: vi.fn(() => (key: string, options: any) => options?._ || key),
+  useSaveContext: vi.fn(() => ({ save: vi.fn() })),
 }));
 
 // Mock Cloudscape components

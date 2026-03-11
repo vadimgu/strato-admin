@@ -2,6 +2,7 @@ import React from 'react';
 import Box, { type BoxProps } from '@cloudscape-design/components/box';
 import Icon from '@cloudscape-design/components/icon';
 import { type BaseFieldProps, RaRecord, useFieldValue, useRecordContext } from 'ra-core';
+import { useFieldContext } from './FieldContext';
 
 export type BooleanFieldProps<RecordType extends RaRecord = RaRecord> = BaseFieldProps<RecordType> &
   Omit<BoxProps, 'children'> & {
@@ -11,9 +12,11 @@ export type BooleanFieldProps<RecordType extends RaRecord = RaRecord> = BaseFiel
   };
 
 const BooleanField = <RecordType extends RaRecord = RaRecord>(props: BooleanFieldProps<RecordType>) => {
-  const { source, record: recordProp, trueLabel, falseLabel, showLabel, ...boxProps } = props;
+  const fieldContext = useFieldContext();
+  const source = props.source ?? fieldContext?.source;
+  const { record: recordProp, trueLabel, falseLabel, showLabel, ...boxProps } = props;
   const record = useRecordContext<RecordType>({ record: recordProp });
-  const value = useFieldValue<RecordType>({ source, record });
+  const value = useFieldValue<RecordType>({ source: source as string, record });
 
   const isTrue = !!value;
 

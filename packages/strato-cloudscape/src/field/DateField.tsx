@@ -2,6 +2,7 @@ import React, { type ReactNode } from 'react';
 import Box, { type BoxProps } from '@cloudscape-design/components/box';
 import { type BaseFieldProps, type RaRecord, useFieldValue, useRecordContext, useLocale } from 'ra-core';
 import FieldLink, { type FieldLinkType } from './FieldLink';
+import { useFieldContext } from './FieldContext';
 
 export type DateFieldProps<RecordType extends RaRecord = RaRecord> = BaseFieldProps<RecordType> &
   Omit<BoxProps, 'children'> & {
@@ -12,9 +13,11 @@ export type DateFieldProps<RecordType extends RaRecord = RaRecord> = BaseFieldPr
   };
 
 const DateField = <RecordType extends RaRecord = RaRecord>(props: DateFieldProps<RecordType>) => {
-  const { source, record: recordProp, emptyText, options, locales, link, ...boxProps } = props;
+  const fieldContext = useFieldContext();
+  const source = props.source ?? fieldContext?.source;
+  const { record: recordProp, emptyText, options, locales, link, ...boxProps } = props;
   const record = useRecordContext<RecordType>({ record: recordProp });
-  const value = useFieldValue<RecordType>({ source, record });
+  const value = useFieldValue<RecordType>({ source: source as string, record });
   const currentLocale = useLocale();
   const hasValue = value !== null && value !== undefined && value !== '';
 

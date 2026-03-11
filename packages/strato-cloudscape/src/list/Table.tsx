@@ -12,6 +12,7 @@ import DateField, { type DateFieldProps } from '../field/DateField';
 import BooleanField, { type BooleanFieldProps } from '../field/BooleanField';
 import ReferenceField, { type ReferenceFieldProps } from '../field/ReferenceField';
 import { type FieldLinkType } from '../field/FieldLink';
+import { FieldContext } from '../field/FieldContext';
 import { ListHeader } from './ListHeader';
 
 export interface ColProps {
@@ -21,34 +22,44 @@ export interface ColProps {
   children?: React.ReactNode;
   sortable?: boolean;
   link?: FieldLinkType;
+  field?: React.ComponentType<any>;
+  [key: string]: any;
 }
 
-export const Col = ({ children, source, link }: ColProps) => {
-  if (children) {
-    return <>{children}</>;
-  }
-  if (source) {
-    return <TextField source={source} link={link} />;
-  }
-  return null;
+export const Col = ({ children, source, link, field: FieldComponent, ...props }: ColProps) => {
+  const content = children ? (
+    <>{children}</>
+  ) : FieldComponent ? (
+    <FieldComponent link={link} {...props} />
+  ) : (
+    <TextField link={link} {...props} />
+  );
+  return (
+    <FieldContext.Provider value={{ source }}>
+      {content}
+    </FieldContext.Provider>
+  );
 };
 
 export interface NumberColProps extends ColProps, Omit<NumberFieldProps, 'source'> {
   source?: string;
 }
 
-export const NumberCol = ({ children, source, link, ...props }: NumberColProps) => {
-  if (children) {
-    return (
-      <Box textAlign="right" {...props}>
-        {children}
-      </Box>
-    );
-  }
-  if (source) {
-    return <NumberField source={source} textAlign="right" link={link} {...props} />;
-  }
-  return null;
+export const NumberCol = ({ children, source, link, field: FieldComponent, ...props }: NumberColProps) => {
+  const content = children ? (
+    <Box textAlign="right" {...props}>
+      {children}
+    </Box>
+  ) : FieldComponent ? (
+    <FieldComponent textAlign="right" link={link} {...props} />
+  ) : (
+    <NumberField textAlign="right" link={link} {...props} />
+  );
+  return (
+    <FieldContext.Provider value={{ source }}>
+      {content}
+    </FieldContext.Provider>
+  );
 };
 (NumberCol as any).isNumberCol = true;
 
@@ -56,28 +67,38 @@ export interface DateColProps extends ColProps, Omit<DateFieldProps, 'source'> {
   source?: string;
 }
 
-export const DateCol = ({ children, source, link, ...props }: DateColProps) => {
-  if (children) {
-    return <>{children}</>;
-  }
-  if (source) {
-    return <DateField source={source} link={link} {...props} />;
-  }
-  return null;
+export const DateCol = ({ children, source, link, field: FieldComponent, ...props }: DateColProps) => {
+  const content = children ? (
+    <>{children}</>
+  ) : FieldComponent ? (
+    <FieldComponent link={link} {...props} />
+  ) : (
+    <DateField link={link} {...props} />
+  );
+  return (
+    <FieldContext.Provider value={{ source }}>
+      {content}
+    </FieldContext.Provider>
+  );
 };
 
 export interface BooleanColProps extends ColProps, Omit<BooleanFieldProps, 'source'> {
   source?: string;
 }
 
-export const BooleanCol = ({ children, source, ...props }: BooleanColProps) => {
-  if (children) {
-    return <>{children}</>;
-  }
-  if (source) {
-    return <BooleanField source={source} {...props} />;
-  }
-  return null;
+export const BooleanCol = ({ children, source, field: FieldComponent, ...props }: BooleanColProps) => {
+  const content = children ? (
+    <>{children}</>
+  ) : FieldComponent ? (
+    <FieldComponent {...props} />
+  ) : (
+    <BooleanField {...props} />
+  );
+  return (
+    <FieldContext.Provider value={{ source }}>
+      {content}
+    </FieldContext.Provider>
+  );
 };
 
 export interface ReferenceColProps extends ColProps, Omit<ReferenceFieldProps, 'source'> {
@@ -85,15 +106,18 @@ export interface ReferenceColProps extends ColProps, Omit<ReferenceFieldProps, '
   reference: string;
 }
 
-export const ReferenceCol = ({ children, source, reference, link, ...props }: ReferenceColProps) => {
-  if (source) {
-    return (
-      <ReferenceField source={source} reference={reference} link={link} {...props}>
-        {children}
-      </ReferenceField>
-    );
-  }
-  return null;
+export const ReferenceCol = ({ children, source, reference, link, field: FieldComponent, ...props }: ReferenceColProps) => {
+  // ReferenceCol requires reference, so we pass it down
+  const content = FieldComponent ? (
+    <FieldComponent reference={reference} link={link} {...props}>{children}</FieldComponent>
+  ) : (
+    <ReferenceField reference={reference} link={link} {...props}>{children}</ReferenceField>
+  );
+  return (
+    <FieldContext.Provider value={{ source }}>
+      {content}
+    </FieldContext.Provider>
+  );
 };
 
 export interface DataTableProps<RecordType extends RaRecord = any> extends Partial<

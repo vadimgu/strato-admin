@@ -1,8 +1,9 @@
 import React from 'react';
 import { useRecordContext, useList, ListContextProvider, ResourceContextProvider, type RaRecord } from 'ra-core';
+import { useFieldContext } from './FieldContext';
 
 export interface ArrayFieldProps {
-  source: string;
+  source?: string;
   label?: string;
   resource?: string;
   children: React.ReactNode;
@@ -24,16 +25,15 @@ export interface ArrayFieldProps {
  *   </DataTable>
  * </ArrayField>
  */
-export const ArrayField = <RecordType extends RaRecord = any>({
-  source,
-  resource,
-  children,
-  perPage = 10,
-}: ArrayFieldProps) => {
-  const record = useRecordContext<RecordType>();
-  const data = record?.[source] || [];
+export const ArrayField = <RecordType extends RaRecord = any>(props: ArrayFieldProps) => {
+  const fieldContext = useFieldContext();
+  const source = props.source ?? fieldContext?.source;
+  const { resource, children, perPage = 10 } = props;
 
-  const targetResource = resource || source;
+  const record = useRecordContext<RecordType>();
+  const data = (source && record?.[source]) || [];
+
+  const targetResource = resource || source || '';
 
   const listContext = useList({
     data,

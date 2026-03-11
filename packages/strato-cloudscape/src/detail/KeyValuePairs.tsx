@@ -4,6 +4,7 @@ import CloudscapeKeyValuePairs, {
 } from '@cloudscape-design/components/key-value-pairs';
 import { useResourceContext, useRecordContext, FieldTitle, RecordContextProvider, type RaRecord } from 'ra-core';
 import TextField from '../field/TextField';
+import { FieldContext } from '../field/FieldContext';
 
 export interface KeyValuePairsProps extends Partial<Omit<CloudscapeKeyValuePairsProps, 'items'>> {
   children: React.ReactNode;
@@ -15,20 +16,27 @@ export interface KeyValueFieldProps {
   source?: string;
   label?: string;
   children?: React.ReactNode;
+  field?: React.ComponentType<any>;
+  [key: string]: any;
 }
 
 /**
  * KeyValuePairs.Field is a helper component to define a field in a KeyValuePairs component.
  * It mirrors the DataTable.Col pattern.
  */
-export const KeyValueField = ({ children, source }: KeyValueFieldProps) => {
-  if (children) {
-    return <>{children}</>;
-  }
-  if (source) {
-    return <TextField source={source} />;
-  }
-  return null;
+export const KeyValueField = ({ children, source, field: FieldComponent, ...props }: KeyValueFieldProps) => {
+  const content = children ? (
+    <>{children}</>
+  ) : FieldComponent ? (
+    <FieldComponent {...props} />
+  ) : (
+    <TextField {...props} />
+  );
+  return (
+    <FieldContext.Provider value={{ source }}>
+      {content}
+    </FieldContext.Provider>
+  );
 };
 
 /**

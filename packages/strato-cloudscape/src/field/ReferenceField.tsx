@@ -2,9 +2,10 @@ import React, { type ReactNode } from 'react';
 import Box, { type BoxProps } from '@cloudscape-design/components/box';
 import { ReferenceFieldBase, type RaRecord, useRecordContext, useResourceDefinition } from 'ra-core';
 import FieldLink, { type FieldLinkType } from './FieldLink';
+import { useFieldContext } from './FieldContext';
 
 export type ReferenceFieldProps<RecordType extends RaRecord = RaRecord> = Omit<BoxProps, 'children'> & {
-  source: string;
+  source?: string;
   reference: string;
   label?: ReactNode;
   children?: ReactNode;
@@ -14,7 +15,13 @@ export type ReferenceFieldProps<RecordType extends RaRecord = RaRecord> = Omit<B
 };
 
 const ReferenceField = <RecordType extends RaRecord = RaRecord>(props: ReferenceFieldProps<RecordType>) => {
-  const { source, reference, children, emptyText, record, link, ...boxProps } = props;
+  const fieldContext = useFieldContext();
+  const source = props.source ?? fieldContext?.source;
+  const { reference, children, emptyText, record, link, ...boxProps } = props;
+
+  if (!source) {
+    return null; // Or some fallback
+  }
 
   return (
     <ReferenceFieldBase

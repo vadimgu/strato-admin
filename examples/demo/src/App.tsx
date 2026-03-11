@@ -26,7 +26,9 @@ function ProductList() {
         <DataTable.Col source="id" label="ID" link="show" />
         <DataTable.Col source="name" label="Product Name" sortable />
         <DataTable.ReferenceCol source="categoryId" reference="categories" label="Category" link="show" />
-        <DataTable.NumberCol source="price" label="Price" sortable options={{ style: 'currency', currency: 'USD' }} />
+        <DataTable.NumberCol source="price" label="Price" sortable>
+          <NumberField options={{ style: 'currency', currency: 'USD' }} />
+        </DataTable.NumberCol>
         <DataTable.NumberCol source="stock" label="Stock" sortable />
         <DataTable.DateCol source="lastRestocked" label="Last Restocked" sortable />
         <DataTable.BooleanCol source="isEcoFriendly" label="Eco-Friendly" />
@@ -39,14 +41,24 @@ function ProductShow() {
   return (
     <Show title="Product Details">
       <KeyValuePairs columns={3}>
-        <TextField source="id" label="ID" />
-        <TextField source="name" label="Product Name" />
-        <ReferenceField source="categoryId" reference="categories" label="Category" link="show" />
-        <NumberField source="price" label="Price" options={{ style: 'currency', currency: 'USD' }} />
-        <NumberField source="stock" label="Stock" />
-        <DateField source="lastRestocked" label="Last Restocked" />
-        <BooleanField source="isEcoFriendly" label="Eco-Friendly" showLabel />
-        <TextField source="description" label="Description" />
+        <KeyValuePairs.Field source="id" label="ID" />
+        <KeyValuePairs.Field source="name" label="Product Name" />
+        <KeyValuePairs.Field source="categoryId" label="Category">
+          <ReferenceField reference="categories" link="show" />
+        </KeyValuePairs.Field>
+        <KeyValuePairs.Field source="price" label="Price">
+          <NumberField options={{ style: 'currency', currency: 'USD' }} />
+        </KeyValuePairs.Field>
+        <KeyValuePairs.Field source="stock" label="Stock">
+          <NumberField />
+        </KeyValuePairs.Field>
+        <KeyValuePairs.Field source="lastRestocked" label="Last Restocked">
+          <DateField />
+        </KeyValuePairs.Field>
+        <KeyValuePairs.Field source="isEcoFriendly" label="Eco-Friendly">
+          <BooleanField showLabel />
+        </KeyValuePairs.Field>
+        <KeyValuePairs.Field source="description" label="Description" />
       </KeyValuePairs>
     </Show>
   );
@@ -67,8 +79,8 @@ function CategoryShow() {
   return (
     <Show title="Category Details">
       <KeyValuePairs columns={2}>
-        <TextField source="id" label="ID" />
-        <TextField source="name" label="Category Name" />
+        <KeyValuePairs.Field source="id" label="ID" />
+        <KeyValuePairs.Field source="name" label="Category Name" />
       </KeyValuePairs>
     </Show>
   );
