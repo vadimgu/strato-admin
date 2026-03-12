@@ -1,19 +1,19 @@
-import { List, DataTable } from 'strato-admin';
+import { List, Table } from 'strato-admin';
 
 export const ProductList = () => (
   <List>
-    <DataTable
+    <Table
       header="Products"
       filtering
       preferences
     >
-      <DataTable.Col source="title" label="Title" sortable link="show" />
-      <DataTable.Col source="brand" label="Brand" sortable />
-      <DataTable.ReferenceCol source="category" reference="products/categories" label="Category" sortable />
-      <DataTable.NumberCol source="price" label="Price" sortable />
-      <DataTable.NumberCol source="rating" label="Rating" sortable />
-      <DataTable.NumberCol source="stock" label="Stock" sortable />
-    </DataTable>
+      <Table.Column source="title" label="Title" sortable link="show" />
+      <Table.Column source="brand" label="Brand" sortable />
+      <Table.ReferenceColumn source="category" reference="products/categories" label="Category" sortable />
+      <Table.NumberColumn source="price" label="Price" sortable />
+      <Table.NumberColumn source="rating" label="Rating" sortable />
+      <Table.NumberColumn source="stock" label="Stock" sortable />
+    </Table>
   </List>
 );
 

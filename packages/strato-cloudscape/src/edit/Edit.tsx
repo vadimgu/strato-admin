@@ -63,4 +63,6 @@ export const Edit = <RecordType extends RaRecord = RaRecord>({
   );
 };
 
+Edit.Header = EditHeader;
+
 export default Edit;

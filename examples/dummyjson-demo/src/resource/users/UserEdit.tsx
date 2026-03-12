@@ -1,24 +1,24 @@
-import { Edit, SimpleForm, TextInput, NumberInput, SelectInput, FormField } from 'strato-admin';
+import { Edit, Form, TextInput, NumberInput, SelectInput } from 'strato-admin';
 
 const required = (value: any) => (value ? undefined : 'Required');
 
 export const UserEdit = () => (
     <Edit title="Edit User">
-        <SimpleForm>
-            <FormField source="firstName" label="First Name" validate={required}>
+        <Form>
+            <Form.Field source="firstName" label="First Name" validate={required}>
                 <TextInput />
-            </FormField>
+            </Form.Field>
             <TextInput source="lastName" label="Last Name" validate={required} />
             <TextInput source="username" label="Username" validate={required} />
             <TextInput source="email" label="Email" validate={required} />
             <NumberInput source="age" label="Age" />
-            <FormField source="gender" label="Gender">
+            <Form.Field source="gender" label="Gender">
                 <SelectInput choices={[
                     { id: 'male', name: 'Male' },
                     { id: 'female', name: 'Female' },
                     { id: 'other', name: 'Other' },
                 ]} />
-            </FormField>
+            </Form.Field>
             <SelectInput source="role" label="Role" choices={[
                 { id: 'admin', name: 'Admin' },
                 { id: 'moderator', name: 'Moderator' },
@@ -26,7 +26,7 @@ export const UserEdit = () => (
             ]} />
             <TextInput source="phone" label="Phone" />
             <TextInput source="university" label="University" />
-        </SimpleForm>
+        </Form>
     </Edit>
 );
 

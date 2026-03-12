@@ -1,16 +1,16 @@
 import React from 'react';
-import { Form, type FormProps, useSaveContext } from 'ra-core';
+import { Form as RaForm, type FormProps as RaFormProps, useSaveContext } from 'ra-core';
 import CloudscapeForm from '@cloudscape-design/components/form';
 import SpaceBetween from '@cloudscape-design/components/space-between';
 import { SaveButton } from '../button/SaveButton';
 import { FormField } from '../input/FormField';
 
-export interface SimpleFormProps extends Omit<FormProps, 'children'> {
+export interface FormProps extends Omit<RaFormProps, 'children'> {
   children: React.ReactNode;
   toolbar?: React.ReactNode;
 }
 
-export const SimpleForm = ({ children, toolbar, ...props }: SimpleFormProps) => {
+export const Form = ({ children, toolbar, ...props }: FormProps) => {
   const saveContext = useSaveContext();
   
   const handleSubmit = async (values: any, event: any) => {
@@ -23,7 +23,7 @@ export const SimpleForm = ({ children, toolbar, ...props }: SimpleFormProps) => 
   };
 
   return (
-    <Form {...props} onSubmit={handleSubmit}>
+    <RaForm {...props} onSubmit={handleSubmit}>
       <CloudscapeForm
         actions={
           toolbar || (
@@ -37,10 +37,10 @@ export const SimpleForm = ({ children, toolbar, ...props }: SimpleFormProps) => 
           {children}
         </SpaceBetween>
       </CloudscapeForm>
-    </Form>
+    </RaForm>
   );
 };
 
-SimpleForm.FormField = FormField;
+Form.Field = FormField;
 
-export default SimpleForm;
+export default Form;

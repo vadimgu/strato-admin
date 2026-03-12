@@ -12,7 +12,7 @@
  */
 import { useListContext, ListBase, RecordContextProvider } from 'ra-core';
 import { Box } from '@cloudscape-design/components';
-import { ArrayField, DataTable } from 'strato-admin';
+import { ArrayField, Table } from 'strato-admin';
 
 const CategoryListInternal = () => {
     const { data, isLoading, isFetching } = useListContext();
@@ -22,7 +22,7 @@ const CategoryListInternal = () => {
     return (
         <RecordContextProvider value={{ categories: data || [] }}>
             <ArrayField source="categories" resource="products/categories">
-                <DataTable
+                <Table
                     header="Categories"
                     filtering
                     preferences
@@ -37,10 +37,10 @@ const CategoryListInternal = () => {
                         </Box>
                     }
                 >
-                    <DataTable.Col source="name" label="Name" sortable />
-                    <DataTable.Col source="slug" label="Slug" sortable />
-                    <DataTable.Col source="url" label="URL" sortable />
-                </DataTable>
+                    <Table.Column source="name" label="Name" sortable />
+                    <Table.Column source="slug" label="Slug" sortable />
+                    <Table.Column source="url" label="URL" sortable />
+                </Table>
             </ArrayField>
         </RecordContextProvider>
     );

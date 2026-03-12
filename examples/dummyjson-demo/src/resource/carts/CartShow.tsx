@@ -1,4 +1,4 @@
-import { Show, KeyValuePairs, NumberField, DataTable, ArrayField, ReferenceField } from 'strato-admin';
+import { Show, KeyValuePairs, NumberField, Table, ArrayField, ReferenceField } from 'strato-admin';
 import SpaceBetween from '@cloudscape-design/components/space-between';
 
 export const CartShow = () => (
@@ -23,18 +23,18 @@ export const CartShow = () => (
                 </KeyValuePairs.Field>
             </KeyValuePairs>
             <ArrayField source="products" resource="products">
-                <DataTable variant="embedded" actions={null}>
-                    <DataTable.Col source="title" label="Title" />
-                    <DataTable.NumberCol source="price" label="Price">
+                <Table variant="embedded" actions={null}>
+                    <Table.Column source="title" label="Title" />
+                    <Table.NumberColumn source="price" label="Price">
                         <NumberField options={{ style: 'currency', currency: 'USD' }} />
-                    </DataTable.NumberCol>
-                    <DataTable.NumberCol source="quantity" label="Quantity">
+                    </Table.NumberColumn>
+                    <Table.NumberColumn source="quantity" label="Quantity">
                         <NumberField />
-                    </DataTable.NumberCol>
-                    <DataTable.NumberCol source="total" label="Total">
+                    </Table.NumberColumn>
+                    <Table.NumberColumn source="total" label="Total">
                         <NumberField options={{ style: 'currency', currency: 'USD' }} />
-                    </DataTable.NumberCol>
-                </DataTable>
+                    </Table.NumberColumn>
+                </Table>
             </ArrayField>
         </SpaceBetween>
     </Show>

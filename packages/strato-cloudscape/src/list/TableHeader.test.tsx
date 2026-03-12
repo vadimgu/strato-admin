@@ -2,7 +2,7 @@ import React from 'react';
 import { render } from '@testing-library/react';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 import { useResourceContext, useListContext, useResourceDefinitions } from 'ra-core';
-import { ListHeader } from './ListHeader';
+import { TableHeader } from './TableHeader';
 
 // Mock ra-core
 vi.mock('ra-core', () => ({
@@ -43,7 +43,7 @@ vi.mock('@cloudscape-design/components/button', () => ({
   default: ({ children }: any) => <button>{children}</button>,
 }));
 
-describe('ListHeader', () => {
+describe('TableHeader', () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
@@ -53,7 +53,7 @@ describe('ListHeader', () => {
     (useListContext as any).mockReturnValue({ total: 10, isPending: false, selectedIds: [] });
     (useResourceDefinitions as any).mockReturnValue({ products: { hasCreate: false } });
 
-    const { getByTestId, getByText } = render(<ListHeader />);
+    const { getByTestId, getByText } = render(<TableHeader />);
 
     expect(getByTestId('header-title').textContent).toBe('Products');
     expect(getByTestId('header-counter').textContent).toBe('(10)');
@@ -64,7 +64,7 @@ describe('ListHeader', () => {
     (useListContext as any).mockReturnValue({ total: 10, isPending: false, selectedIds: [] });
     (useResourceDefinitions as any).mockReturnValue({ products: { hasCreate: true } });
 
-    const { getByText } = render(<ListHeader />);
+    const { getByText } = render(<TableHeader />);
 
     expect(getByText('Create')).toBeDefined();
   });
@@ -74,7 +74,7 @@ describe('ListHeader', () => {
     (useListContext as any).mockReturnValue({ total: 10, isPending: false, selectedIds: [] });
     (useResourceDefinitions as any).mockReturnValue({ products: { hasCreate: false } });
 
-    const { queryByText } = render(<ListHeader />);
+    const { queryByText } = render(<TableHeader />);
 
     expect(queryByText('Create')).toBeNull();
   });
@@ -84,7 +84,7 @@ describe('ListHeader', () => {
     (useListContext as any).mockReturnValue({ total: 10, isPending: false, selectedIds: [] });
     (useResourceDefinitions as any).mockReturnValue({ products: { hasCreate: true } });
 
-    const { queryByText, getByTestId } = render(<ListHeader actions={null} />);
+    const { queryByText, getByTestId } = render(<TableHeader actions={null} />);
 
     expect(queryByText('Create')).toBeNull();
     expect(getByTestId('header-actions').children.length).toBe(0);

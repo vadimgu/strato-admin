@@ -1,29 +1,25 @@
 import { required, minValue } from 'ra-core';
-import { Edit, SimpleForm, NumberInput, ArrayInput, SimpleFormIterator, ReferenceInput, AutocompleteInput, FormField } from 'strato-admin';
+import { Edit, Form, NumberInput, AttributeEditor, ReferenceInput, AutocompleteInput } from 'strato-admin';
 
 export const CartEdit = () => (
     <Edit title="Edit Cart" mutationMode="pessimistic">
-        <SimpleForm>
-            <FormField source="userId" label="User" validate={[required()]}>
+        <Form>
+            <Form.Field source="userId" label="User" validate={[required()]}>
                 <ReferenceInput reference="users">
                     <AutocompleteInput />
                 </ReferenceInput>
-            </FormField>
-            <FormField source="products" label="Products" validate={[required()]}>
-                <ArrayInput>
-                    <SimpleFormIterator>
-                        <SimpleFormIterator.Item source="id" label="Product ID" validate={[required()]} >
-                            <ReferenceInput reference="products">
-                                <AutocompleteInput />
-                            </ReferenceInput>
-                        </SimpleFormIterator.Item>
-                        <SimpleFormIterator.Item source="quantity" label="Quantity" validate={[required(), minValue(1)]}>
-                            <NumberInput />
-                        </SimpleFormIterator.Item>
-                    </SimpleFormIterator>
-                </ArrayInput>
-            </FormField>
-        </SimpleForm>
+            </Form.Field>
+            <AttributeEditor source="products" label="Products" validate={[required()]}>
+                <AttributeEditor.Item source="id" label="Product ID" validate={[required()]} >
+                    <ReferenceInput reference="products">
+                        <AutocompleteInput />
+                    </ReferenceInput>
+                </AttributeEditor.Item>
+                <AttributeEditor.Item source="quantity" label="Quantity" validate={[required(), minValue(1)]}>
+                    <NumberInput />
+                </AttributeEditor.Item>
+            </AttributeEditor>
+        </Form>
     </Edit>
 );
 

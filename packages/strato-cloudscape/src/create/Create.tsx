@@ -55,4 +55,6 @@ export const Create = <RecordType extends RaRecord = RaRecord>({
   );
 };
 
+Create.Header = CreateHeader;
+
 export default Create;

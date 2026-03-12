@@ -1,10 +1,10 @@
-import { Create, SimpleForm, TextInput, NumberInput, SelectInput } from 'strato-admin';
+import { Create, Form, TextInput, NumberInput, SelectInput } from 'strato-admin';
 
 const required = (value: any) => (value ? undefined : 'Required');
 
 export const UserCreate = () => (
     <Create title="Create User">
-        <SimpleForm>
+        <Form>
             <TextInput source="firstName" label="First Name" validate={required} />
             <TextInput source="lastName" label="Last Name" validate={required} />
             <TextInput source="username" label="Username" validate={required} />
@@ -21,7 +21,7 @@ export const UserCreate = () => (
                 { id: 'moderator', name: 'Moderator' },
                 { id: 'user', name: 'User' },
             ]} defaultValue="user" />
-        </SimpleForm>
+        </Form>
     </Create>
 );
 

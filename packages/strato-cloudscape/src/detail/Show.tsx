@@ -65,4 +65,6 @@ export const Show = <RecordType extends RaRecord = RaRecord>({
   );
 };
 
+Show.Header = ShowHeader;
+
 export default Show;

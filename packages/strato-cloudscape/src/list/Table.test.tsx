@@ -3,7 +3,7 @@ import { render } from '@testing-library/react';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 import { useResourceContext, useListContext, useResourceDefinitions } from 'ra-core';
 import { useCollection } from '../collection-hooks';
-import DataTable from './Table';
+import Table from './Table';
 import CloudscapeTable from '@cloudscape-design/components/table';
 
 // Mock ra-core
@@ -86,12 +86,12 @@ describe('DataTable', () => {
     (useResourceContext as any).mockReturnValue('products');
 
     render(
-      <DataTable>
-        <DataTable.Col source="name" label="Product Name" />
-        <DataTable.Col source="price" label="Price" />
-        <DataTable.DateCol source="lastRestocked" label="Last Restocked" />
-        <DataTable.BooleanCol source="isEcoFriendly" label="Eco-Friendly" />
-      </DataTable>,
+      <Table>
+        <Table.Column source="name" label="Product Name" />
+        <Table.Column source="price" label="Price" />
+        <Table.DateColumn source="lastRestocked" label="Last Restocked" />
+        <Table.BooleanColumn source="isEcoFriendly" label="Eco-Friendly" />
+      </Table>,
     );
 
     const tableProps = (CloudscapeTable as any).mock.calls[0][0];
@@ -105,9 +105,9 @@ describe('DataTable', () => {
     (useResourceContext as any).mockReturnValue('products');
 
     render(
-      <DataTable>
-        <DataTable.Col source="name" label="Product Name" />
-      </DataTable>,
+      <Table>
+        <Table.Column source="name" label="Product Name" />
+      </Table>,
     );
 
     const tableProps = (CloudscapeTable as any).mock.calls[0][0];
@@ -118,9 +118,9 @@ describe('DataTable', () => {
     (useResourceContext as any).mockReturnValue('categories');
 
     render(
-      <DataTable>
-        <DataTable.Col label="No Source" />
-      </DataTable>,
+      <Table>
+        <Table.Column label="No Source" />
+      </Table>,
     );
 
     const tableProps = (CloudscapeTable as any).mock.calls[0][0];
@@ -131,9 +131,9 @@ describe('DataTable', () => {
     (useResourceContext as any).mockReturnValue(undefined);
 
     render(
-      <DataTable>
-        <DataTable.Col source="name" />
-      </DataTable>,
+      <Table>
+        <Table.Column source="name" />
+      </Table>,
     );
 
     const tableProps = (CloudscapeTable as any).mock.calls[0][0];
@@ -158,10 +158,10 @@ describe('DataTable', () => {
     });
 
     render(
-      <DataTable>
-        <DataTable.Col source="name" label="Product Name" />
-        <DataTable.Col source="price" label="Price" />
-      </DataTable>,
+      <Table>
+        <Table.Column source="name" label="Product Name" />
+        <Table.Column source="price" label="Price" />
+      </Table>,
     );
 
     const tableProps = (CloudscapeTable as any).mock.calls[0][0];
@@ -172,38 +172,38 @@ describe('DataTable', () => {
     ]);
   });
 
-  it('should pass actions to ListHeader', () => {
+  it('should pass actions to TableHeader', () => {
     (useResourceContext as any).mockReturnValue('products');
 
     const { getByTestId, queryByText } = render(
-      <DataTable actions={<button>Custom Action</button>}>
-        <DataTable.Col source="name" label="Product Name" />
-      </DataTable>,
+      <Table actions={<button>Custom Action</button>}>
+        <Table.Column source="name" label="Product Name" />
+      </Table>,
     );
 
     expect(getByTestId('header-actions')).toBeDefined();
     expect(queryByText('Custom Action')).toBeDefined();
   });
 
-  it('should pass actions={null} to ListHeader', () => {
+  it('should pass actions={null} to TableHeader', () => {
     (useResourceContext as any).mockReturnValue('products');
 
     const { queryByTestId } = render(
-      <DataTable actions={null}>
-        <DataTable.Col source="name" label="Product Name" />
-      </DataTable>,
+      <Table actions={null}>
+        <Table.Column source="name" label="Product Name" />
+      </Table>,
     );
 
-    // ListHeader.test.tsx already verifies that it doesn't render children if actions={null}
+    // TableHeader.test.tsx already verifies that it doesn't render children if actions={null}
     // Here we check that header-actions div is not rendered (because of our mock)
     expect(queryByTestId('header-actions')).toBeNull();
   });
 
   it('should pass selectionType to CloudscapeTable', () => {
     render(
-      <DataTable selectionType="multi">
-        <DataTable.Col source="name" label="Product Name" />
-      </DataTable>,
+      <Table selectionType="multi">
+        <Table.Column source="name" label="Product Name" />
+      </Table>,
     );
 
     const tableProps = (CloudscapeTable as any).mock.calls[0][0];
@@ -212,9 +212,9 @@ describe('DataTable', () => {
 
   it('should hide header when header={null}', () => {
     const { queryByTestId } = render(
-      <DataTable header={null}>
-        <DataTable.Col source="name" label="Product Name" />
-      </DataTable>,
+      <Table header={null}>
+        <Table.Column source="name" label="Product Name" />
+      </Table>,
     );
 
     expect(queryByTestId('table-header')).toBeNull();

@@ -5,11 +5,11 @@ import { useResourceContext, useListContext, useTranslate, useResourceDefinition
 import { BulkDeleteButton } from '../button/BulkDeleteButton';
 import { CreateButton } from '../button/CreateButton';
 
-export interface ListHeaderProps extends Omit<HeaderProps, 'children'> {
+export interface TableHeaderProps extends Omit<HeaderProps, 'children'> {
   title?: React.ReactNode;
 }
 
-export const ListHeader = ({ title, actions, ...props }: ListHeaderProps) => {
+export const TableHeader = ({ title, actions, ...props }: TableHeaderProps) => {
   const resource = useResourceContext();
   const translate = useTranslate();
   const definitions = useResourceDefinitions();
@@ -49,4 +49,4 @@ export const ListHeader = ({ title, actions, ...props }: ListHeaderProps) => {
   );
 };
 
-export default ListHeader;
+export default TableHeader;

@@ -1,13 +1,14 @@
-import React, { useMemo, useContext } from 'react';
-import { ArrayInputContext, RecordContextProvider, useResourceContext } from 'ra-core';
-import AttributeEditor from '@cloudscape-design/components/attribute-editor';
+import React, { useMemo } from 'react';
+import { useInput, type InputProps, RecordContextProvider, useResourceContext } from 'ra-core';
+import { useFieldArray, useFormContext } from 'react-hook-form';
+import CloudscapeAttributeEditor from '@cloudscape-design/components/attribute-editor';
 import Box from '@cloudscape-design/components/box';
 import { FieldTitle } from './FieldTitle';
 import TextInput from './TextInput';
 import FormField from './FormField';
-import { FormFieldContext } from './FormFieldContext';
+import { FormFieldContext, useFormFieldContext } from './FormFieldContext';
 
-export interface SimpleFormIteratorItemProps {
+export interface AttributeEditorItemProps {
     source: string;
     label?: string | false;
     field?: React.ComponentType<any>;
@@ -16,14 +17,16 @@ export interface SimpleFormIteratorItemProps {
     children?: React.ReactNode;
 }
 
-export const Item = (props: SimpleFormIteratorItemProps) => {
+export const Item = (props: AttributeEditorItemProps) => {
     // This is a placeholder component used to collect props.
-    // The actual rendering is handled by the SimpleFormIterator.
+    // The actual rendering is handled by the AttributeEditor.
     return null;
 };
 
-export interface SimpleFormIteratorProps {
+export interface AttributeEditorProps extends Omit<InputProps, 'source'> {
+    source?: string;
     children: React.ReactNode;
+    label?: string | false;
     addButtonText?: string;
     removeButtonText?: string;
     empty?: React.ReactNode;
@@ -31,23 +34,39 @@ export interface SimpleFormIteratorProps {
     hideAddButton?: boolean;
 }
 
-export const SimpleFormIterator = (props: SimpleFormIteratorProps) => {
+export const AttributeEditor = (props: AttributeEditorProps) => {
     const {
         children,
+        label,
+        source: sourceProp,
+        validate,
+        defaultValue,
         addButtonText = 'Add item',
         removeButtonText = 'Remove item',
         empty,
         disableAddButton,
         hideAddButton,
+        ...rest
     } = props;
-    const context = useContext(ArrayInputContext) as any;
 
-    if (!context) {
-        throw new Error('SimpleFormIterator must be used inside an ArrayInput');
-    }
-
-    const { source: parentSource, fields, append, remove } = context;
+    const { control } = useFormContext();
+    const contextValue = useFormFieldContext();
     const resource = useResourceContext();
+    
+    // Attempt to get source from context if not provided
+    const source = sourceProp || contextValue?.source || '';
+
+    const inputState = contextValue ?? useInput({
+        source,
+        validate,
+        defaultValue,
+        ...rest,
+    });
+    
+    const { fields, append, remove } = useFieldArray({
+        control,
+        name: source,
+    });
 
     const handleAdd = () => {
         append({});
@@ -62,38 +81,38 @@ export const SimpleFormIterator = (props: SimpleFormIteratorProps) => {
             if (!React.isValidElement(child)) return null;
 
             const childProps = child.props as any;
-            const source = childProps.source;
-            const label = childProps.label;
-            const validate = childProps.validate;
+            const childSource = childProps.source;
+            const childLabel = childProps.label;
+            const childValidate = childProps.validate;
 
             // Determine if the field is required by checking validators
-            const isRequired = Array.isArray(validate)
-                ? validate.some((v: any) => v.isRequired)
-                : validate?.isRequired || childProps.isRequired;
+            const isRequired = Array.isArray(childValidate)
+                ? childValidate.some((v: any) => v.isRequired)
+                : childValidate?.isRequired || childProps.isRequired;
 
             return {
                 label: (
                     <FieldTitle
-                        label={label}
-                        source={source}
+                        label={childLabel}
+                        source={childSource}
                         resource={resource}
                         isRequired={isRequired}
                     />
                 ),
                 control: (item: any, index: number) => {
-                    const prefixedSource = `${parentSource}.${index}.${source}`;
+                    const prefixedSource = `${source}.${index}.${childSource}`;
                     
                     let content;
                     if (child.type === Item) {
-                        const { field: FieldComponent, children: itemChildren, validate, defaultValue } = childProps;
+                        const { field: FieldComponent, children: itemChildren, validate: itemValidate, defaultValue: itemDefaultValue } = childProps;
                         content = itemChildren ? (
-                            <FormField source={prefixedSource} label={false} validate={validate} defaultValue={defaultValue}>
+                            <FormField source={prefixedSource} label={false} validate={itemValidate} defaultValue={itemDefaultValue}>
                                 {itemChildren}
                             </FormField>
                         ) : FieldComponent ? (
-                            <FieldComponent source={prefixedSource} label={false} validate={validate} defaultValue={defaultValue} />
+                            <FieldComponent source={prefixedSource} label={false} validate={itemValidate} defaultValue={itemDefaultValue} />
                         ) : (
-                            <TextInput source={prefixedSource} label={false} validate={validate} defaultValue={defaultValue} />
+                            <TextInput source={prefixedSource} label={false} validate={itemValidate} defaultValue={itemDefaultValue} />
                         );
                     } else {
                         // Standard child (e.g. TextInput)
@@ -113,11 +132,11 @@ export const SimpleFormIterator = (props: SimpleFormIteratorProps) => {
                 },
             };
         })?.filter(Boolean) as any[];
-    }, [children, parentSource, resource]);
+    }, [children, source, resource]);
 
-    return (
+    const inner = (
         <FormFieldContext.Provider value={undefined}>
-            <AttributeEditor
+            <CloudscapeAttributeEditor
                 items={fields}
                 definition={definition}
                 onAddButtonClick={handleAdd}
@@ -130,8 +149,20 @@ export const SimpleFormIterator = (props: SimpleFormIteratorProps) => {
             />
         </FormFieldContext.Provider>
     );
+
+    if (contextValue) {
+        return inner;
+    }
+
+    return (
+        <FormFieldContext.Provider value={{ ...inputState, source }}>
+            <FormField {...props} source={source}>
+                {inner}
+            </FormField>
+        </FormFieldContext.Provider>
+    );
 };
 
-SimpleFormIterator.Item = Item;
+AttributeEditor.Item = Item;
 
-export default SimpleFormIterator;
+export default AttributeEditor;

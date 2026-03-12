@@ -13,9 +13,13 @@ import BooleanField, { type BooleanFieldProps } from '../field/BooleanField';
 import ReferenceField, { type ReferenceFieldProps } from '../field/ReferenceField';
 import { type FieldLinkType } from '../field/FieldLink';
 import { FieldContext } from '../field/FieldContext';
-import { ListHeader } from './ListHeader';
+import { TableHeader } from './TableHeader';
 
-export interface ColProps {
+export type CloudscapeColumnDefinitionProps = Partial<
+  Omit<CloudscapeTableProps.ColumnDefinition<any>, 'id' | 'header' | 'cell' | 'sortingField'>
+>;
+
+export interface ColumnProps extends CloudscapeColumnDefinitionProps {
   source?: string;
   label?: string | React.ReactNode;
   header?: React.ReactNode;
@@ -25,7 +29,7 @@ export interface ColProps {
   field?: React.ComponentType<any>;
 }
 
-export const Col = ({ children, source, link, field: FieldComponent }: ColProps) => {
+export const Column = ({ children, source, link, field: FieldComponent }: ColumnProps) => {
   const content = children ? (
     <>{children}</>
   ) : FieldComponent ? (
@@ -40,11 +44,11 @@ export const Col = ({ children, source, link, field: FieldComponent }: ColProps)
   );
 };
 
-export interface NumberColProps extends ColProps {
+export interface NumberColumnProps extends ColumnProps {
   source?: string;
 }
 
-export const NumberCol = ({ children, source, link, field: FieldComponent }: NumberColProps) => {
+export const NumberColumn = ({ children, source, link, field: FieldComponent }: NumberColumnProps) => {
   const content = children ? (
     <Box textAlign="right">
       {children}
@@ -60,13 +64,13 @@ export const NumberCol = ({ children, source, link, field: FieldComponent }: Num
     </FieldContext.Provider>
   );
 };
-(NumberCol as any).isNumberCol = true;
+(NumberColumn as any).isNumberColumn = true;
 
-export interface DateColProps extends ColProps {
+export interface DateColumnProps extends ColumnProps {
   source?: string;
 }
 
-export const DateCol = ({ children, source, link, field: FieldComponent }: DateColProps) => {
+export const DateColumn = ({ children, source, link, field: FieldComponent }: DateColumnProps) => {
   const content = children ? (
     <>{children}</>
   ) : FieldComponent ? (
@@ -81,11 +85,11 @@ export const DateCol = ({ children, source, link, field: FieldComponent }: DateC
   );
 };
 
-export interface BooleanColProps extends ColProps {
+export interface BooleanColumnProps extends ColumnProps {
   source?: string;
 }
 
-export const BooleanCol = ({ children, source, field: FieldComponent }: BooleanColProps) => {
+export const BooleanColumn = ({ children, source, field: FieldComponent }: BooleanColumnProps) => {
   const content = children ? (
     <>{children}</>
   ) : FieldComponent ? (
@@ -100,12 +104,12 @@ export const BooleanCol = ({ children, source, field: FieldComponent }: BooleanC
   );
 };
 
-export interface ReferenceColProps extends ColProps {
+export interface ReferenceColumnProps extends ColumnProps {
   source?: string;
   reference: string;
 }
 
-export const ReferenceCol = ({ children, source, reference, link, field: FieldComponent }: ReferenceColProps) => {
+export const ReferenceColumn = ({ children, source, reference, link, field: FieldComponent }: ReferenceColumnProps) => {
   // ReferenceCol requires reference, so we pass it down
   const content = FieldComponent ? (
     <FieldComponent reference={reference} link={link}>{children}</FieldComponent>
@@ -119,7 +123,7 @@ export const ReferenceCol = ({ children, source, reference, link, field: FieldCo
   );
 };
 
-export interface DataTableProps<RecordType extends RaRecord = any> extends Partial<
+export interface TableProps<RecordType extends RaRecord = any> extends Partial<
   Omit<CloudscapeTableProps<RecordType>, 'items' | 'columnDefinitions' | 'preferences'>
 > {
   header?: React.ReactNode;
@@ -139,7 +143,7 @@ const defaultPageSizeOptions = [
   { value: 100, label: '100 items' },
 ];
 
-export const DataTable = <RecordType extends RaRecord = any>({
+export const Table = <RecordType extends RaRecord = any>({
   header,
   actions,
   children,
@@ -149,7 +153,7 @@ export const DataTable = <RecordType extends RaRecord = any>({
   preferences,
   reorderable = true,
   ...props
-}: DataTableProps<RecordType>) => {
+}: TableProps<RecordType>) => {
   const resource = useResourceContext();
   const translate = useTranslate();
 
@@ -163,19 +167,20 @@ export const DataTable = <RecordType extends RaRecord = any>({
         return;
       }
 
-      const { source, label, header: childHeader, sortable } = child.props as any;
-      const isNumberCol = (child.type as any)?.isNumberCol;
+      const { source, label, header: childHeader, sortable, link, field, children: childChildren, ...restColumnProps } = child.props as any;
+      const isNumberColumn = (child.type as any)?.isNumberColumn;
 
       const headerLabel =
         childHeader ||
         label ||
         (source && resource ? translate(`resources.${resource}.fields.${source}`, { _: source }) : source);
-      const finalHeader = isNumberCol ? <Box textAlign="right">{headerLabel}</Box> : headerLabel;
+      const finalHeader = isNumberColumn ? <Box textAlign="right">{headerLabel}</Box> : headerLabel;
 
       const columnId = source || `col-${index}`;
       const id = resource ? `${resource}___${columnId}` : columnId;
 
       columns.push({
+        ...restColumnProps,
         id,
         header: finalHeader,
         cell: (item: RecordType) => (
@@ -222,7 +227,7 @@ export const DataTable = <RecordType extends RaRecord = any>({
     if (React.isValidElement(header)) {
       return header;
     }
-    return <ListHeader title={header} actions={actions} />;
+    return <TableHeader title={header} actions={actions} />;
   }, [header, actions]);
 
   return (
@@ -299,12 +304,11 @@ export const DataTable = <RecordType extends RaRecord = any>({
   );
 };
 
-DataTable.Col = Col;
-DataTable.NumberCol = NumberCol;
-DataTable.DateCol = DateCol;
-DataTable.BooleanCol = BooleanCol;
-DataTable.ReferenceCol = ReferenceCol;
+Table.Column = Column;
+Table.NumberColumn = NumberColumn;
+Table.DateColumn = DateColumn;
+Table.BooleanColumn = BooleanColumn;
+Table.ReferenceColumn = ReferenceColumn;
+Table.Header = TableHeader;
 
-export const Table = DataTable;
-
-export default DataTable;
+export default Table;

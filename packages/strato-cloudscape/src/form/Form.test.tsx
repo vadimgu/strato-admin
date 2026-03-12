@@ -1,7 +1,7 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
-import { SimpleForm } from './SimpleForm';
+import { Form } from './Form';
 
 // Mock ra-core
 vi.mock('ra-core', () => ({
@@ -28,16 +28,16 @@ vi.mock('@cloudscape-design/components/button', () => ({
   default: ({ children, type }: any) => <button type={type}>{children}</button>,
 }));
 
-describe('SimpleForm', () => {
+describe('Form', () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
   it('should render children and default toolbar', () => {
     const { getByTestId, getByText } = render(
-      <SimpleForm>
+      <Form>
         <div data-testid="child" />
-      </SimpleForm>,
+      </Form>,
     );
 
     expect(getByTestId('ra-form')).toBeDefined();
@@ -48,9 +48,9 @@ describe('SimpleForm', () => {
 
   it('should render custom toolbar', () => {
     const { getByText, queryByText } = render(
-      <SimpleForm toolbar={<button>Custom Save</button>}>
+      <Form toolbar={<button>Custom Save</button>}>
         <div />
-      </SimpleForm>,
+      </Form>,
     );
 
     expect(getByText('Custom Save')).toBeDefined();
