@@ -1,0 +1,6 @@
+
+> strato-cloudscape@1.0.0 storybook /Users/vgubergrits/pers/strato-admin/packages/strato-cloudscape
+> storybook dev -p 6006 "--ci" "--quiet"
+
+
+┌  storybook v10.2.17

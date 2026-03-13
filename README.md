@@ -47,6 +47,28 @@ export const App = () => (
 );
 ```
 
+## Documentation
+
+The documentation is built with Docusaurus. To start it locally:
+
+```bash
+pnpm run docs:dev
+```
+
+## UI Components Library (Storybook)
+
+We use Storybook to develop and showcase our UI components in isolation.
+
+```bash
+pnpm run storybook
+```
+
+To update the static screenshots used in the documentation:
+
+```bash
+cd packages/strato-cloudscape && npx playwright test e2e/screenshots.spec.ts
+```
+
 ## Flexibility
 
 You can use Cloudscape Design System components directly with "headless" components provided by Strato Admin. This allows you to create custom interfaces while still benefiting from the design system's consistency and accessibility.

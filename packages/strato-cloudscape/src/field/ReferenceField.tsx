@@ -1,23 +1,22 @@
 import React, { type ReactNode } from 'react';
-import Box, { type BoxProps } from '@cloudscape-design/components/box';
 import { ReferenceFieldBase, type RaRecord, useRecordContext, useResourceDefinition } from 'ra-core';
-import FieldLink, { type FieldLinkType } from './FieldLink';
+import RecordLink, { type RecordLinkType } from '../RecordLink';
 import { useFieldContext } from './FieldContext';
 
-export type ReferenceFieldProps<RecordType extends RaRecord = RaRecord> = Omit<BoxProps, 'children'> & {
+export type ReferenceFieldProps<RecordType extends RaRecord = RaRecord> = {
   source?: string;
   reference: string;
   label?: ReactNode;
   children?: ReactNode;
   emptyText?: ReactNode;
   record?: RecordType;
-  link?: FieldLinkType;
+  link?: RecordLinkType;
 };
 
 const ReferenceField = <RecordType extends RaRecord = RaRecord>(props: ReferenceFieldProps<RecordType>) => {
   const fieldContext = useFieldContext();
   const source = props.source ?? fieldContext?.source;
-  const { reference, children, emptyText, record, link, ...boxProps } = props;
+  const { reference, children, emptyText, record, link } = props;
 
   if (!source) {
     return null; // Or some fallback
@@ -28,28 +27,26 @@ const ReferenceField = <RecordType extends RaRecord = RaRecord>(props: Reference
       source={source}
       reference={reference}
       record={record}
-      empty={<Box {...boxProps}>{emptyText ?? null}</Box>}
+      empty={<>{emptyText ?? null}</>}
     >
-      <ReferenceFieldValue emptyText={emptyText} link={link} {...boxProps}>
+      <ReferenceFieldValue emptyText={emptyText} link={link} reference={reference}>
         {children}
       </ReferenceFieldValue>
     </ReferenceFieldBase>
   );
 };
 
-const ReferenceFieldValue = ({ children, emptyText, link, ...boxProps }: any) => {
+const ReferenceFieldValue = ({ children, emptyText, link, reference }: any) => {
   const record = useRecordContext();
   const { recordRepresentation } = useResourceDefinition();
 
   if (!record) {
-    return <Box {...boxProps}>{emptyText ?? null}</Box>;
+    return <>{emptyText ?? null}</>;
   }
 
   if (children) {
     return (
-      <Box {...boxProps}>
-        <FieldLink link={link}>{children}</FieldLink>
-      </Box>
+      <RecordLink link={link} resource={reference}>{children}</RecordLink>
     );
   }
 
@@ -63,9 +60,7 @@ const ReferenceFieldValue = ({ children, emptyText, link, ...boxProps }: any) =>
   }
 
   return (
-    <Box {...boxProps}>
-      <FieldLink link={link}>{representation ? String(representation) : (emptyText ?? null)}</FieldLink>
-    </Box>
+    <RecordLink link={link} resource={reference}>{representation ? String(representation) : (emptyText ?? null)}</RecordLink>
   );
 };
 

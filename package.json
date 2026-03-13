@@ -12,7 +12,8 @@
     "lint:fix": "eslint . --fix",
     "docs:dev": "pnpm --filter docs start",
     "docs:build": "pnpm --filter docs build",
-    "docs:deploy": "pnpm --filter docs deploy"
+    "docs:deploy": "pnpm --filter docs deploy",
+    "storybook": "pnpm --filter strato-cloudscape storybook"
   },
   "keywords": [],
   "author": "Vadim Gubergrits <vadim.gubergrits@gmail.com>",

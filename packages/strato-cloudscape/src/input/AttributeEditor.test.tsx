@@ -127,7 +127,7 @@ describe('AttributeEditor', () => {
 
         const { getByTestId } = render(
             <AttributeEditor source="products" disableAddButton>
-                <div source="id" />
+                <div resource="id" />
             </AttributeEditor>
         );
 
@@ -142,7 +142,7 @@ describe('AttributeEditor', () => {
 
         const { queryByTestId } = render(
             <AttributeEditor source="products" hideAddButton>
-                <div source="id" />
+                <div resource="id" />
             </AttributeEditor>
         );
 

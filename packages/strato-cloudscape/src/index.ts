@@ -9,4 +9,6 @@ export * from './form';
 export * from './layout';
 export * from './button';
 export * from './Admin';
+export { default as RecordLink } from './RecordLink';
+export * from './RecordLink';
 export { Resource } from 'ra-core';

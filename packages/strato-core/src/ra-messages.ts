@@ -105,6 +105,18 @@ defineMessage({
 });
 
 defineMessage({
+  id: 'ra.boolean.true',
+  defaultMessage: 'Yes',
+  description: 'Label for the true boolean value',
+});
+
+defineMessage({
+  id: 'ra.boolean.false',
+  defaultMessage: 'No',
+  description: 'Label for the false boolean value',
+});
+
+defineMessage({
   id: 'ra.input.references.all_missing',
   defaultMessage: 'Unable to find references data.',
   description: 'Error message when all references are missing',

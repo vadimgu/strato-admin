@@ -15,6 +15,8 @@
   "ra.action.undo": "Undo",
   "ra.action.update": "Update",
   "ra.auth.auth_check_error": "Please login to continue",
+  "ra.boolean.false": "No",
+  "ra.boolean.true": "Yes",
   "ra.input.references.all_missing": "Unable to find references data.",
   "ra.input.references.many_missing": "At least one of the associated references no longer appears to be available.",
   "ra.input.references.single_missing": "Associated reference no longer appears to be available.",

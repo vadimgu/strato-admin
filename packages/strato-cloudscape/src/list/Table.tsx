@@ -11,7 +11,7 @@ import NumberField, { type NumberFieldProps } from '../field/NumberField';
 import DateField, { type DateFieldProps } from '../field/DateField';
 import BooleanField, { type BooleanFieldProps } from '../field/BooleanField';
 import ReferenceField, { type ReferenceFieldProps } from '../field/ReferenceField';
-import { type FieldLinkType } from '../field/FieldLink';
+import { type RecordLinkType } from '../RecordLink';
 import { FieldContext } from '../field/FieldContext';
 import { TableHeader } from './TableHeader';
 
@@ -25,7 +25,7 @@ export interface ColumnProps extends CloudscapeColumnDefinitionProps {
   header?: React.ReactNode;
   children?: React.ReactNode;
   sortable?: boolean;
-  link?: FieldLinkType;
+  link?: RecordLinkType;
   field?: React.ComponentType<any>;
 }
 
@@ -49,14 +49,16 @@ export interface NumberColumnProps extends ColumnProps {
 }
 
 export const NumberColumn = ({ children, source, link, field: FieldComponent }: NumberColumnProps) => {
-  const content = children ? (
+  const content = (
     <Box textAlign="right">
-      {children}
+      {children ? (
+        <>{children}</>
+      ) : FieldComponent ? (
+        <FieldComponent link={link} />
+      ) : (
+        <NumberField link={link} />
+      )}
     </Box>
-  ) : FieldComponent ? (
-    <FieldComponent textAlign="right" link={link} />
-  ) : (
-    <NumberField textAlign="right" link={link} />
   );
   return (
     <FieldContext.Provider value={{ source }}>
@@ -123,16 +125,47 @@ export const ReferenceColumn = ({ children, source, reference, link, field: Fiel
   );
 };
 
+/**
+ * Properties for the Table component.
+ */
 export interface TableProps<RecordType extends RaRecord = any> extends Partial<
   Omit<CloudscapeTableProps<RecordType>, 'items' | 'columnDefinitions' | 'preferences'>
 > {
+  /**
+   * The header content of the table. Can be a string or a React node.
+   */
   header?: React.ReactNode;
+  /**
+   * Actions to display in the table header, typically a button group.
+   */
   actions?: React.ReactNode;
+  /**
+   * The columns to display, usually using `Table.Column` and its variants.
+   */
   children: React.ReactNode;
+  /**
+   * Whether to enable text filtering.
+   * @default false
+   */
   filtering?: boolean;
+  /**
+   * Placeholder text for the filter input.
+   * @default "Search..."
+   */
   filteringPlaceholder?: string;
+  /**
+   * Options for the page size selector.
+   */
   pageSizeOptions?: ReadonlyArray<{ value: number; label?: string }>;
+  /**
+   * Whether to show the preferences button or custom preferences content.
+   * @default false
+   */
   preferences?: boolean | React.ReactNode;
+  /**
+   * Whether columns can be reordered by the user.
+   * @default true
+   */
   reorderable?: boolean;
 }
 
@@ -143,6 +176,18 @@ const defaultPageSizeOptions = [
   { value: 100, label: '100 items' },
 ];
 
+/**
+ * The Table component provides a declarative way to build data tables with Cloudscape components
+ * while integrating with React Admin's data fetching and state management.
+ *
+ * @example
+ * ```tsx
+ * <Table header="Products">
+ *   <Table.Column source="name" label="Name" />
+ *   <Table.NumberColumn source="price" label="Price" />
+ * </Table>
+ * ```
+ */
 export const Table = <RecordType extends RaRecord = any>({
   header,
   actions,
