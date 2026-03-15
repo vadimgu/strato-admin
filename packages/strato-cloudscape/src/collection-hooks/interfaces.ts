@@ -36,6 +36,7 @@ export interface UseCollectionOptions<_T> {
     wrapLines?: boolean;
     stripedRows?: boolean;
     visibleContent?: ReadonlyArray<string>;
+    contentDisplay?: ReadonlyArray<TableColumnDisplay>;
   };
 }
 

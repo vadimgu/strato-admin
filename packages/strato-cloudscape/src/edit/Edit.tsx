@@ -1,10 +1,12 @@
 import React from 'react';
-import { EditBase, useEditContext, type RaRecord } from 'ra-core';
+import { EditBase, useEditContext, type RaRecord, ResourceSchemaProvider } from 'strato-core';
 import Container from '@cloudscape-design/components/container';
 import { EditHeader } from './EditHeader';
+import Form from '../form/Form';
 
-export interface EditProps<RecordType extends RaRecord = RaRecord> {
-  children: React.ReactNode;
+export interface EditProps<_RecordType extends RaRecord = RaRecord> {
+  children?: React.ReactNode;
+  inputSchema?: React.ReactNode;
   title?: React.ReactNode;
   actions?: React.ReactNode;
   resource?: string;
@@ -14,16 +16,26 @@ export interface EditProps<RecordType extends RaRecord = RaRecord> {
   queryOptions?: any;
   redirect?: any;
   transform?: any;
+  include?: string[];
+  exclude?: string[];
 }
 
 const EditUI = ({
   children,
+  resource,
+  inputSchema,
   title,
   actions,
+  include,
+  exclude,
 }: {
-  children: React.ReactNode;
+  children?: React.ReactNode;
+  resource?: string;
+  inputSchema?: React.ReactNode;
   title?: React.ReactNode;
   actions?: React.ReactNode;
+  include?: string[];
+  exclude?: string[];
 }) => {
   const { record, isLoading } = useEditContext();
 
@@ -31,10 +43,12 @@ const EditUI = ({
     return null;
   }
 
+  const finalChildren = children || <Form include={include} exclude={exclude} />;
+
   return (
-    <Container header={<EditHeader title={title} actions={actions} />}>
-      {children}
-    </Container>
+    <ResourceSchemaProvider resource={resource} inputSchema={inputSchema}>
+      <Container header={<EditHeader title={title} actions={actions} />}>{finalChildren}</Container>
+    </ResourceSchemaProvider>
   );
 };
 
@@ -43,20 +57,40 @@ const EditUI = ({
  *
  * @example
  * <Edit>
- *   <SimpleForm>
+ *   <Form>
  *     <TextInput source="name" />
- *   </SimpleForm>
+ *   </Form>
+ * </Edit>
+ * 
+ * @example
+ * // Using InputSchema from context
+ * <Edit include={['name', 'price']} />
+ * 
+ * @example
+ * // Passing a custom input schema
+ * <Edit inputSchema={<InputSchema>...</InputSchema>}>
+ *   <Form />
  * </Edit>
  */
-export const Edit = <RecordType extends RaRecord = RaRecord>({
+export const Edit = <RecordType extends RaRecord = any>({
   children,
+  inputSchema,
   title,
   actions,
+  include,
+  exclude,
   ...props
 }: EditProps<RecordType>) => {
   return (
     <EditBase {...props}>
-      <EditUI title={title} actions={actions}>
+      <EditUI 
+        resource={props.resource}
+        title={title} 
+        actions={actions} 
+        include={include} 
+        exclude={exclude}
+        inputSchema={inputSchema}
+      >
         {children}
       </EditUI>
     </EditBase>

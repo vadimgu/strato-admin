@@ -1,32 +1,33 @@
+
 import React from 'react';
-import { ReferenceInputBase, type ReferenceInputBaseProps, useInput } from 'ra-core';
+import { ReferenceInputBase, type ReferenceInputBaseProps } from 'strato-core';
 import { useFormFieldContext } from './FormFieldContext';
 
 export const ReferenceInput = (props: ReferenceInputBaseProps) => {
-    const { children, source: sourceProp, reference, ...rest } = props;
-    const context = useFormFieldContext();
-    
-    // If we have a context, we use the source from it.
-    const source = sourceProp || context?.source;
+  const { children, source: sourceProp, reference, ...rest } = props;
+  const context = useFormFieldContext();
 
-    if (!source) {
-        throw new Error('ReferenceInput requires a source prop or a parent FormField Master');
-    }
+  // If we have a context, we use the source from it.
+  const source = sourceProp || context?.source;
 
-    const inner = (
-        <ReferenceInputBase source={source} reference={reference} {...rest}>
-            {React.isValidElement(children)
-                ? React.cloneElement(children as React.ReactElement<any>, {
-                      source,
-                  })
-                : children}
-        </ReferenceInputBase>
-    );
+  if (!source) {
+    throw new Error('ReferenceInput requires a source prop or a parent FormField Master');
+  }
 
-    // ReferenceInput is unique because it's a wrapper.
-    // It doesn't use FormFieldContext for its state directly (ReferenceInputBase does),
-    // but it needs to ensure its children can consume the state it provides via ReferenceInputBase.
-    return inner;
+  const inner = (
+    <ReferenceInputBase source={source} reference={reference} {...rest}>
+      {React.isValidElement(children)
+        ? React.cloneElement(children as React.ReactElement<any>, {
+            source,
+          })
+        : (children as any)}
+    </ReferenceInputBase>
+  );
+
+  // ReferenceInput is unique because it's a wrapper.
+  // It doesn't use FormFieldContext for its state directly (ReferenceInputBase does),
+  // but it needs to ensure its children can consume the state it provides via ReferenceInputBase.
+  return inner;
 };
 
 export default ReferenceInput;

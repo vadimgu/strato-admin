@@ -16,45 +16,45 @@ import { UserEdit } from './resource/users/UserEdit';
 import { UserCreate } from './resource/users/UserCreate';
 
 export default function App() {
-    return (
-        <Admin
-            title="Strato Admin DummyJSON"
-            dataProvider={dummyJsonDataProvider}
-        // authProvider={dummyJsonAuthProvider}
-        >
-            <Resource
-                options={{ label: 'Products' }}
-                name="products"
-                list={ProductList}
-                show={ProductShow}
-                edit={ProductEdit}
-                create={ProductCreate}
-                recordRepresentation={(record) => record.title}
-            />
-            <Resource
-                options={{ label: 'Categories' }}
-                name="products/categories"
-                list={CategoryList}
-                recordRepresentation={(record) => record.name}
-            />
-            <Resource
-                options={{ label: 'Carts' }}
-                name="carts"
-                list={CartList}
-                show={CartShow}
-                edit={CartEdit}
-                create={CartCreate}
-                recordRepresentation={(record) => `Cart #${record.id}`}
-            />
-            <Resource
-                options={{ label: 'Users' }}
-                name="users"
-                list={UserList}
-                show={UserShow}
-                edit={UserEdit}
-                create={UserCreate}
-                recordRepresentation={(record) => `${record.firstName} ${record.lastName}`}
-            />
-        </Admin>
-    );
+  return (
+    <Admin
+      title="Strato Admin DummyJSON"
+      dataProvider={dummyJsonDataProvider}
+      // authProvider={dummyJsonAuthProvider}
+    >
+      <Resource
+        options={{ label: 'Products' }}
+        name="products"
+        list={ProductList}
+        show={ProductShow}
+        edit={ProductEdit}
+        create={ProductCreate}
+        recordRepresentation={(record) => record.title}
+      />
+      <Resource
+        options={{ label: 'Categories' }}
+        name="products/categories"
+        list={CategoryList}
+        recordRepresentation={(record) => record.name}
+      />
+      <Resource
+        options={{ label: 'Carts' }}
+        name="carts"
+        list={CartList}
+        show={CartShow}
+        edit={CartEdit}
+        create={CartCreate}
+        recordRepresentation={(record) => `Cart #${record.id}`}
+      />
+      <Resource
+        options={{ label: 'Users' }}
+        name="users"
+        list={UserList}
+        show={UserShow}
+        edit={UserEdit}
+        create={UserCreate}
+        recordRepresentation={(record) => `${record.firstName} ${record.lastName}`}
+      />
+    </Admin>
+  );
 }

@@ -1,10 +1,10 @@
-import React from 'react';
+
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import { BulkDeleteButton } from './BulkDeleteButton';
-import { useListContext, useBulkDeleteController, useTranslate } from 'ra-core';
+import { useListContext, useBulkDeleteController, useTranslate } from 'strato-core';
 
-vi.mock('ra-core', () => ({
+vi.mock('strato-core', () => ({
   useListContext: vi.fn(),
   useBulkDeleteController: vi.fn(),
   useTranslate: vi.fn(),

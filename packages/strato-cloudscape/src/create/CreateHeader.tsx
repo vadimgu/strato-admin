@@ -1,7 +1,7 @@
 import React from 'react';
 import Header, { HeaderProps } from '@cloudscape-design/components/header';
 import SpaceBetween from '@cloudscape-design/components/space-between';
-import { useResourceContext, useCreateContext, useTranslate, useResourceDefinitions } from 'ra-core';
+import { useResourceContext, useTranslate, useResourceDefinitions } from 'strato-core';
 
 export interface CreateHeaderProps extends Omit<HeaderProps, 'children'> {
   title?: React.ReactNode;

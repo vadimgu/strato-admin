@@ -1,12 +1,12 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
-import { useResourceContext, useTranslate, useRecordContext } from 'ra-core';
+import { useResourceContext, useTranslate, useRecordContext } from 'strato-core';
 import KeyValuePairs from './KeyValuePairs';
 import CloudscapeKeyValuePairs from '@cloudscape-design/components/key-value-pairs';
 
 // Mock ra-core
-vi.mock('ra-core', () => ({
+vi.mock('strato-core', () => ({
   useResourceContext: vi.fn(),
   useTranslate: vi.fn(() => (key: string, options: any) => options?._ || key),
   useRecordContext: vi.fn(),

@@ -6,9 +6,7 @@ const meta: Meta<typeof TextField> = {
   title: 'Fields/TextField',
   component: TextField,
   tags: ['autodocs'],
-  decorators: [
-    withRaContext({ id: 1, title: 'Sample Title', description: 'This is a description', empty: '' }),
-  ],
+  decorators: [withRaContext({ id: 1, title: 'Sample Title', description: 'This is a description', empty: '' })],
 };
 
 export default meta;
@@ -21,10 +19,10 @@ export const Basic: Story = {
 };
 
 export const WithDescription: Story = {
-    args: {
-        source: 'description',
-    }
-}
+  args: {
+    source: 'description',
+  },
+};
 
 export const Empty: Story = {
   args: {

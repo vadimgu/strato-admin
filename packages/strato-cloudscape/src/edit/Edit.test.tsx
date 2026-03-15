@@ -1,11 +1,11 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
-import { useEditContext, useResourceContext } from 'ra-core';
+import { useEditContext, useResourceContext } from 'strato-core';
 import { Edit } from './Edit';
 
 // Mock ra-core
-vi.mock('ra-core', () => ({
+vi.mock('strato-core', () => ({
   EditBase: ({ children }: any) => <div data-testid="edit-base">{children}</div>,
   useEditContext: vi.fn(),
   useTranslate: vi.fn(() => (key: string, options: any) => options?._ || key),

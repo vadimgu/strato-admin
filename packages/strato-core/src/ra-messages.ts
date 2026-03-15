@@ -1,10 +1,13 @@
 /*
 This file contains a subset of react-admin messages used by ra-core directly.
 
-Some translations have issues in languages with gender and case. There's no easy fix for this. We cannot interpolate the resource name in a message like "Delete {name}" and expect it to be grammatically correct in all languages.
+Some translations have issues in languages with gender and case. There's no easy
+fix for this. We cannot interpolate the resource name in a message like "Delete
+{name}" and expect it to be grammatically correct in all languages.
 
-A workaround requires the translator to torture the phrase in order to place the interpolated variable in nominative case.
-Message with translation issues are marked with a comment starting with "Translation issue".
+A workaround requires the translator to torture the phrase in order to place the
+interpolated variable in nominative case. Message with translation issues are
+marked with a comment starting with "Translation issue".
 */
 import { defineMessage } from 'react-intl';
 

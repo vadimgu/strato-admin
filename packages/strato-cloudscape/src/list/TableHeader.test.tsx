@@ -1,11 +1,11 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
-import { useResourceContext, useListContext, useResourceDefinitions } from 'ra-core';
+import { useResourceContext, useListContext, useResourceDefinitions } from 'strato-core';
 import { TableHeader } from './TableHeader';
 
 // Mock ra-core
-vi.mock('ra-core', () => ({
+vi.mock('strato-core', () => ({
   useResourceContext: vi.fn(),
   useListContext: vi.fn(),
   useTranslate: vi.fn(() => (key: string, options: any) => options?._ || key),

@@ -1,34 +1,29 @@
-import React, { type ReactNode } from 'react';
-import { ReferenceFieldBase, type RaRecord, useRecordContext, useResourceDefinition } from 'ra-core';
-import RecordLink, { type RecordLinkType } from '../RecordLink';
-import { useFieldContext } from './FieldContext';
+import { type ReactNode } from 'react';
+import { ReferenceFieldBase, type RaRecord, useRecordContext, useResourceDefinition } from 'strato-core';
+import RecordLink from '../RecordLink';
+import { type FieldProps } from './types';
 
-export type ReferenceFieldProps<RecordType extends RaRecord = RaRecord> = {
-  source?: string;
+export type ReferenceFieldProps<RecordType extends RaRecord = RaRecord> = FieldProps<RecordType> & {
+  /**
+   * The resource name that this field refers to.
+   */
   reference: string;
-  label?: ReactNode;
+  /**
+   * Optional custom representation of the related record. If not provided,
+   * the recordRepresentation of the referenced resource will be used.
+   */
   children?: ReactNode;
-  emptyText?: ReactNode;
-  record?: RecordType;
-  link?: RecordLinkType;
 };
 
 const ReferenceField = <RecordType extends RaRecord = RaRecord>(props: ReferenceFieldProps<RecordType>) => {
-  const fieldContext = useFieldContext();
-  const source = props.source ?? fieldContext?.source;
-  const { reference, children, emptyText, record, link } = props;
+  const { source, reference, children, emptyText, record, link } = props;
 
   if (!source) {
     return null; // Or some fallback
   }
 
   return (
-    <ReferenceFieldBase
-      source={source}
-      reference={reference}
-      record={record}
-      empty={<>{emptyText ?? null}</>}
-    >
+    <ReferenceFieldBase source={source} reference={reference} record={record} empty={<>{emptyText ?? null}</>}>
       <ReferenceFieldValue emptyText={emptyText} link={link} reference={reference}>
         {children}
       </ReferenceFieldValue>
@@ -46,7 +41,9 @@ const ReferenceFieldValue = ({ children, emptyText, link, reference }: any) => {
 
   if (children) {
     return (
-      <RecordLink link={link} resource={reference}>{children}</RecordLink>
+      <RecordLink link={link} resource={reference}>
+        {children}
+      </RecordLink>
     );
   }
 
@@ -60,7 +57,9 @@ const ReferenceFieldValue = ({ children, emptyText, link, reference }: any) => {
   }
 
   return (
-    <RecordLink link={link} resource={reference}>{representation ? String(representation) : (emptyText ?? null)}</RecordLink>
+    <RecordLink link={link} resource={reference}>
+      {representation ? String(representation) : (emptyText ?? null)}
+    </RecordLink>
   );
 };
 

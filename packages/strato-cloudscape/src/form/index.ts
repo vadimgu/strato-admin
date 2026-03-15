@@ -1,2 +1,2 @@
 export * from './Form';
-export { ValidationError } from 'ra-core';
+export { ValidationError } from 'strato-core';

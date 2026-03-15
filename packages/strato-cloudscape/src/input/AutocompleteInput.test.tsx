@@ -1,11 +1,11 @@
-import React from 'react';
+
 import { render, fireEvent } from '@testing-library/react';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
-import { useInput, useResourceContext, useChoicesContext } from 'ra-core';
+import { useInput, useResourceContext, useChoicesContext } from 'strato-core';
 import { AutocompleteInput } from './AutocompleteInput';
 
 // Mock ra-core
-vi.mock('ra-core', () => ({
+vi.mock('strato-core', () => ({
   useInput: vi.fn(),
   useResourceContext: vi.fn(),
   useChoicesContext: vi.fn().mockReturnValue({ allChoices: [], isPending: false }),
@@ -31,8 +31,8 @@ vi.mock('@cloudscape-design/components/autosuggest', () => ({
       />
       <ul>
         {options.map((opt: any) => (
-          <li 
-            key={opt.value} 
+          <li
+            key={opt.value}
             onClick={() => onSelect({ detail: { value: opt.value } })}
             data-testid={`option-${opt.value}`}
           >
@@ -77,7 +77,7 @@ describe('AutocompleteInput', () => {
     (useResourceContext as any).mockReturnValue('products');
 
     const { getByTestId, getByText } = render(
-      <AutocompleteInput source="category" label="Category" choices={choices} />
+      <AutocompleteInput source="category" label="Category" choices={choices} />,
     );
 
     expect(getByTestId('cloudscape-autosuggest')).toBeDefined();
@@ -99,9 +99,7 @@ describe('AutocompleteInput', () => {
       isRequired: false,
     });
 
-    const { getByTestId } = render(
-      <AutocompleteInput source="category" />
-    );
+    const { getByTestId } = render(<AutocompleteInput source="category" />);
 
     const input = getByTestId('cloudscape-autosuggest').querySelector('input');
     expect(input?.value).toBe('');
@@ -116,9 +114,7 @@ describe('AutocompleteInput', () => {
       isRequired: true,
     });
 
-    const { getByTestId } = render(
-      <AutocompleteInput source="category" choices={choices} />
-    );
+    const { getByTestId } = render(<AutocompleteInput source="category" choices={choices} />);
 
     expect(getByTestId('error-text').textContent).toBe('Required');
   });
@@ -134,13 +130,11 @@ describe('AutocompleteInput', () => {
     });
     (useChoicesContext as any).mockReturnValue({ allChoices: choices, isPending: false });
 
-    const { getByTestId } = render(
-      <AutocompleteInput source="category" choices={choices} />
-    );
+    const { getByTestId } = render(<AutocompleteInput source="category" choices={choices} />);
 
     const option = getByTestId('option-1');
     fireEvent.click(option);
-    
+
     expect(onChange).toHaveBeenCalledWith('1');
   });
 
@@ -154,9 +148,7 @@ describe('AutocompleteInput', () => {
       isRequired: false,
     });
 
-    const { getByTestId } = render(
-      <AutocompleteInput source="category" choices={choices} />
-    );
+    const { getByTestId } = render(<AutocompleteInput source="category" choices={choices} />);
 
     const input = getByTestId('cloudscape-autosuggest').querySelector('input');
     if (input) {
@@ -175,9 +167,7 @@ describe('AutocompleteInput', () => {
       isRequired: false,
     });
 
-    const { getByTestId } = render(
-      <AutocompleteInput source="category" choices={choices} />
-    );
+    const { getByTestId } = render(<AutocompleteInput source="category" choices={choices} />);
 
     const input = getByTestId('cloudscape-autosuggest').querySelector('input');
     if (input) {

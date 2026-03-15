@@ -14,7 +14,6 @@
     "@cloudscape-design/collection-hooks": "^1.0.85",
     "@cloudscape-design/components": "^3.0.1217",
     "@cloudscape-design/global-styles": "^1.0.0",
-    "ra-core": "^5.14.3",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "strato-admin": "workspace:^"

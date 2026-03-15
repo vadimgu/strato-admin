@@ -1,107 +1,55 @@
-import {
-  DataTable,
-  Admin,
-  List,
-  Resource,
-  Show,
-  KeyValuePairs,
-  TextField,
-  NumberField,
-  ReferenceField,
-  DateField,
-  BooleanField,
-} from 'strato-admin';
+import { Admin, ResourceSchema } from 'strato-admin';
 import { dataProvider } from './dataProvider';
-
-function ProductList() {
-  return (
-    <List perPage={10}>
-      <DataTable
-        header="Products"
-        selectionType="multi"
-        filtering
-        filteringPlaceholder="Search products..."
-        preferences
-      >
-        <DataTable.Col source="id" label="ID" link="show" />
-        <DataTable.Col source="name" label="Product Name" sortable />
-        <DataTable.ReferenceCol source="categoryId" reference="categories" label="Category" link="show" />
-        <DataTable.NumberCol source="price" label="Price" sortable>
-          <NumberField options={{ style: 'currency', currency: 'USD' }} />
-        </DataTable.NumberCol>
-        <DataTable.NumberCol source="stock" label="Stock" sortable />
-        <DataTable.DateCol source="lastRestocked" label="Last Restocked" sortable />
-        <DataTable.BooleanCol source="isEcoFriendly" label="Eco-Friendly" />
-      </DataTable>
-    </List>
-  );
-}
-
-function ProductShow() {
-  return (
-    <Show title="Product Details">
-      <KeyValuePairs columns={3}>
-        <KeyValuePairs.Field source="id" label="ID" />
-        <KeyValuePairs.Field source="name" label="Product Name" />
-        <KeyValuePairs.Field source="categoryId" label="Category">
-          <ReferenceField reference="categories" link="show" />
-        </KeyValuePairs.Field>
-        <KeyValuePairs.Field source="price" label="Price">
-          <NumberField options={{ style: 'currency', currency: 'USD' }} />
-        </KeyValuePairs.Field>
-        <KeyValuePairs.Field source="stock" label="Stock">
-          <NumberField />
-        </KeyValuePairs.Field>
-        <KeyValuePairs.Field source="lastRestocked" label="Last Restocked">
-          <DateField />
-        </KeyValuePairs.Field>
-        <KeyValuePairs.Field source="isEcoFriendly" label="Eco-Friendly">
-          <BooleanField showLabel />
-        </KeyValuePairs.Field>
-        <KeyValuePairs.Field source="description" label="Description" />
-      </KeyValuePairs>
-    </Show>
-  );
-}
-
-function CategoryList() {
-  return (
-    <List>
-      <DataTable header="Categories" selectionType="multi">
-        <DataTable.Col source="id" label="ID" link="show" />
-        <DataTable.Col source="name" label="Category Name" link="show" />
-      </DataTable>
-    </List>
-  );
-}
-
-function CategoryShow() {
-  return (
-    <Show title="Category Details">
-      <KeyValuePairs columns={2}>
-        <KeyValuePairs.Field source="id" label="ID" />
-        <KeyValuePairs.Field source="name" label="Category Name" />
-      </KeyValuePairs>
-    </Show>
-  );
-}
+import { ProductList, ProductShow, ProductCreate, ProductEdit, productSchema, productInputSchema, productRepresentation } from './resources/products';
+import { CategoryList, CategoryShow, categorySchema } from './resources/categories';
+import { CustomerList, CustomerShow, customerSchema } from './resources/customers';
+import { OrderList, OrderShow, orderSchema } from './resources/orders';
+import { ReviewList, ReviewShow, reviewSchema } from './resources/reviews';
 
 export default function App() {
   return (
-    <Admin dataProvider={dataProvider} title="Strato Demo">
-      <Resource
+    <Admin dataProvider={dataProvider} title="Strato E-commerce Demo">
+      <ResourceSchema
         options={{ label: 'Products' }}
         name="products"
         list={ProductList}
         show={ProductShow}
-        recordRepresentation={(record) => record.name}
+        create={ProductCreate}
+        edit={ProductEdit}
+        recordRepresentation={productRepresentation}
+        fieldSchema={productSchema}
+        inputSchema={productInputSchema}
       />
-      <Resource
+      <ResourceSchema
         options={{ label: 'Categories' }}
         name="categories"
         list={CategoryList}
         show={CategoryShow}
         recordRepresentation={(record) => record.name}
+        fieldSchema={categorySchema}
+      />
+      <ResourceSchema
+        options={{ label: 'Customers' }}
+        name="customers"
+        list={CustomerList}
+        show={CustomerShow}
+        recordRepresentation={(record) => `${record.first_name} ${record.last_name}`}
+        fieldSchema={customerSchema}
+      />
+      <ResourceSchema
+        options={{ label: 'Orders' }}
+        name="orders"
+        list={OrderList}
+        show={OrderShow}
+        recordRepresentation={(record) => record.reference}
+        fieldSchema={orderSchema}
+      />
+      <ResourceSchema
+        options={{ label: 'Reviews' }}
+        name="reviews"
+        list={ReviewList}
+        show={ReviewShow}
+        fieldSchema={reviewSchema}
       />
     </Admin>
   );

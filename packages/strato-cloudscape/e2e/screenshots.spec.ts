@@ -15,7 +15,7 @@ test.describe('Storybook Screenshots', () => {
       // Go to the iframe directly for a clean screenshot without the Storybook UI
       const url = `http://localhost:6006/iframe.html?id=${story.id}&viewMode=story`;
       await page.goto(url);
-      
+
       // Wait for the component to be rendered in the root
       await page.waitForLoadState('networkidle');
       const root = page.locator('#storybook-root');
@@ -31,11 +31,11 @@ test.describe('Storybook Screenshots', () => {
         // For tables and other layout components, the root container is better
         element = root.locator('> *').first();
       }
-      
+
       await expect(element).toBeVisible();
-      
+
       // Take a cropped screenshot of the element
-      await element.screenshot({ 
+      await element.screenshot({
         path: path.join(OUTPUT_DIR, `${story.name}.png`),
         animations: 'disabled',
       });

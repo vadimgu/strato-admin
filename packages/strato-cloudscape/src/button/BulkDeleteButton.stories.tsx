@@ -13,30 +13,45 @@ type Story = StoryObj<typeof BulkDeleteButton>;
 
 export const Default: Story = {
   decorators: [
-    withRaContext(undefined, 'posts', { posts: { name: 'posts' } }, {
-      selectedIds: [1, 2, 3],
-      resource: 'posts',
-    }),
+    withRaContext(
+      undefined,
+      'posts',
+      { posts: { name: 'posts' } },
+      {
+        selectedIds: [1, 2, 3],
+        resource: 'posts',
+      },
+    ),
   ],
   args: {},
 };
 
 export const Disabled: Story = {
   decorators: [
-    withRaContext(undefined, 'posts', { posts: { name: 'posts' } }, {
-      selectedIds: [],
-      resource: 'posts',
-    }),
+    withRaContext(
+      undefined,
+      'posts',
+      { posts: { name: 'posts' } },
+      {
+        selectedIds: [],
+        resource: 'posts',
+      },
+    ),
   ],
   args: {},
 };
 
 export const Loading: Story = {
   decorators: [
-    withRaContext(undefined, 'posts', { posts: { name: 'posts' } }, {
-      selectedIds: [1, 2, 3],
-      resource: 'posts',
-    }),
+    withRaContext(
+      undefined,
+      'posts',
+      { posts: { name: 'posts' } },
+      {
+        selectedIds: [1, 2, 3],
+        resource: 'posts',
+      },
+    ),
   ],
   args: {
     label: 'Deleting...',

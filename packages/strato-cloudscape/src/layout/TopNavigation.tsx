@@ -1,10 +1,23 @@
-import React from 'react';
 import CloudscapeTopNavigation, { TopNavigationProps } from '@cloudscape-design/components/top-navigation';
-import { useLocale, useSetLocale, useLocales, useTranslate, useAuthProvider } from 'ra-core';
+import { useLocale, useSetLocale, useLocales, useTranslate, useAuthProvider, useStore } from 'strato-core';
 
 export interface MyTopNavigationProps extends Omit<TopNavigationProps, 'identity'> {
   identity?: TopNavigationProps.Identity;
 }
+
+const LightModeIcon = (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" focusable="false">
+    <path d="M8 1.5v13a6.5 6.5 0 0 0 0-13z" fill="currentColor" />
+    <circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5" />
+  </svg>
+);
+
+const DarkModeIcon = (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" focusable="false">
+    <path d="M8 1.5v13a6.5 6.5 0 0 1 0-13z" fill="currentColor" />
+    <circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5" />
+  </svg>
+);
 
 export const TopNavigation = ({ utilities: providedUtilities, identity, ...props }: MyTopNavigationProps) => {
   const locale = useLocale();
@@ -12,11 +25,21 @@ export const TopNavigation = ({ utilities: providedUtilities, identity, ...props
   const locales = useLocales();
   const translate = useTranslate();
   const authProvider = useAuthProvider();
+  const [theme, setTheme] = useStore('theme', 'light');
 
   let utilities = providedUtilities;
 
   if (!utilities) {
     const autoUtilities: any[] = [];
+
+    autoUtilities.push({
+      type: 'button',
+      iconSvg: theme === 'light' ? LightModeIcon : DarkModeIcon,
+      onClick: () => {
+        setTheme(theme === 'dark' ? 'light' : 'dark');
+      },
+      ariaLabel: translate('strato.action.toggle_theme', { _: 'Toggle theme' }),
+    });
 
     if (locales && locales.length > 1) {
       autoUtilities.push({

@@ -1,7 +1,7 @@
 import React from 'react';
 import Header, { HeaderProps } from '@cloudscape-design/components/header';
 import SpaceBetween from '@cloudscape-design/components/space-between';
-import { useResourceContext, useListContext, useTranslate, useResourceDefinitions, useLocale } from 'ra-core';
+import { useResourceContext, useListContext, useTranslate, useResourceDefinitions, useLocale } from 'strato-core';
 import { BulkDeleteButton } from '../button/BulkDeleteButton';
 import { CreateButton } from '../button/CreateButton';
 
@@ -35,12 +35,15 @@ export const TableHeader = ({ title, actions, ...props }: TableHeaderProps) => {
   const counter =
     props.counter !== undefined ? props.counter : !isPending && total !== undefined ? `(${total})` : undefined;
 
-  const headerActions = actions !== undefined ? actions : (
-    <SpaceBetween direction="horizontal" size="xs">
-      <BulkDeleteButton />
-      <CreateButton />
-    </SpaceBetween>
-  );
+  const headerActions =
+    actions !== undefined ? (
+      actions
+    ) : (
+      <SpaceBetween direction="horizontal" size="xs">
+        <BulkDeleteButton />
+        <CreateButton />
+      </SpaceBetween>
+    );
 
   return (
     <Header variant="h2" {...props} actions={headerActions} counter={counter}>

@@ -1,5 +1,5 @@
-import React from 'react';
-import { useBulkDeleteController, useTranslate, useListContext } from 'ra-core';
+
+import { useBulkDeleteController, useTranslate, useListContext } from 'strato-core';
 import { Button } from './Button';
 
 export interface BulkDeleteButtonProps {

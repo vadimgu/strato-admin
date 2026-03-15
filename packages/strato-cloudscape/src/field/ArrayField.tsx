@@ -1,12 +1,14 @@
-import React from 'react';
-import { useRecordContext, useList, ListContextProvider, ResourceContextProvider, type RaRecord } from 'ra-core';
-import { useFieldContext } from './FieldContext';
+import { useRecordContext, useList, ListContextProvider, ResourceContextProvider, type RaRecord } from 'strato-core';
+import { type FieldProps } from './types';
 
-export interface ArrayFieldProps {
-  source?: string;
-  label?: string;
-  resource?: string;
+export interface ArrayFieldProps<RecordType extends RaRecord = RaRecord> extends FieldProps<RecordType> {
+  /**
+   * Thecomponents to render for each item in the array.
+   */
   children: React.ReactNode;
+  /**
+   * Number of items per page if pagination is used within the field.
+   */
   perPage?: number;
 }
 
@@ -25,10 +27,8 @@ export interface ArrayFieldProps {
  *   </DataTable>
  * </ArrayField>
  */
-export const ArrayField = <RecordType extends RaRecord = any>(props: ArrayFieldProps) => {
-  const fieldContext = useFieldContext();
-  const source = props.source ?? fieldContext?.source;
-  const { resource, children, perPage = 10 } = props;
+export const ArrayField = <RecordType extends RaRecord = any>(props: ArrayFieldProps<RecordType>) => {
+  const { source, resource, children, perPage = 10 } = props;
 
   const record = useRecordContext<RecordType>();
   const data = (source && record?.[source]) || [];
@@ -43,9 +43,7 @@ export const ArrayField = <RecordType extends RaRecord = any>(props: ArrayFieldP
 
   return (
     <ResourceContextProvider value={targetResource}>
-      <ListContextProvider value={listContext}>
-        {children}
-      </ListContextProvider>
+      <ListContextProvider value={listContext}>{children as any}</ListContextProvider>
     </ResourceContextProvider>
   );
 };

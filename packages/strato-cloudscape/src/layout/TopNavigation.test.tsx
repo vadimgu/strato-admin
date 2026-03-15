@@ -1,17 +1,18 @@
-import React from 'react';
+
 import { render } from '@testing-library/react';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
-import { useAuthProvider } from 'ra-core';
+import { useAuthProvider } from 'strato-core';
 import CloudscapeTopNavigation from '@cloudscape-design/components/top-navigation';
 import TopNavigation from './TopNavigation';
 
 // Mock ra-core
-vi.mock('ra-core', () => ({
+vi.mock('strato-core', () => ({
   useLocale: vi.fn(() => 'en'),
   useSetLocale: vi.fn(),
   useLocales: vi.fn(() => []),
   useTranslate: vi.fn(() => (key: string, options: any) => options?._ || key),
   useAuthProvider: vi.fn(),
+  useStore: vi.fn(() => ['light', vi.fn()]),
 }));
 
 // Mock Cloudscape components
@@ -19,9 +20,24 @@ vi.mock('@cloudscape-design/components/top-navigation', () => ({
   default: vi.fn(() => <div data-testid="top-navigation" />),
 }));
 
+// Mock global-styles
+vi.mock('@cloudscape-design/global-styles', () => ({
+  Mode: { Light: 'light', Dark: 'dark' },
+  applyMode: vi.fn(),
+}));
+
 describe('TopNavigation', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+  });
+
+  it('should display theme toggle', () => {
+    render(<TopNavigation />);
+
+    const navigationProps = (CloudscapeTopNavigation as any).mock.calls[0][0];
+    const themeToggle = navigationProps.utilities.find((u: any) => u.iconSvg !== undefined);
+    expect(themeToggle).toBeDefined();
+    expect(themeToggle.type).toBe('button');
   });
 
   it('should not display user menu when authProvider is missing', () => {

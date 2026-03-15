@@ -1,11 +1,11 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
-import { useResourceContext } from 'ra-core';
+import { useResourceContext } from 'strato-core';
 import { Create } from './Create';
 
 // Mock ra-core
-vi.mock('ra-core', () => ({
+vi.mock('strato-core', () => ({
   CreateBase: ({ children }: any) => <div data-testid="create-base">{children}</div>,
   useTranslate: vi.fn(() => (key: string, options: any) => options?._ || key),
   useResourceContext: vi.fn(),

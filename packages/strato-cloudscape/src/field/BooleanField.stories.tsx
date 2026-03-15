@@ -6,9 +6,7 @@ const meta: Meta<typeof BooleanField> = {
   title: 'Fields/BooleanField',
   component: BooleanField,
   tags: ['autodocs'],
-  decorators: [
-    withRaContext({ id: 1, isTrue: true, isFalse: false, isUndefined: undefined }),
-  ],
+  decorators: [withRaContext({ id: 1, isTrue: true, isFalse: false, isUndefined: undefined })],
 };
 
 export default meta;

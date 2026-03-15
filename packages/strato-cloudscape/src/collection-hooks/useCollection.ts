@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { useListContext, RaRecord } from 'ra-core';
+import { useListContext, RaRecord } from 'strato-core';
 import { UseCollectionOptions, UseCollectionResult, TableColumnDisplay } from './interfaces';
 
 export function useCollection<T extends RaRecord>(options: UseCollectionOptions<T>): UseCollectionResult<T> {
@@ -28,11 +28,20 @@ export function useCollection<T extends RaRecord>(options: UseCollectionOptions<
   const [wrapLines, setWrapLines] = useState(options.preferences?.wrapLines);
   const [stripedRows, setStripedRows] = useState(options.preferences?.stripedRows);
   const [visibleContent, setVisibleContent] = useState<ReadonlyArray<string> | undefined>(
-    options.preferences?.visibleContentOptions?.map((o) => o.id),
+    options.preferences?.visibleContent ?? options.preferences?.visibleContentOptions?.map((o) => o.id),
   );
   const [contentDisplay, setContentDisplay] = useState<ReadonlyArray<TableColumnDisplay> | undefined>(
-    options.preferences?.contentDisplayOptions?.map((o) => ({ id: o.id, visible: true })),
+    options.preferences?.contentDisplay ?? options.preferences?.contentDisplayOptions?.map((o) => ({ id: o.id, visible: true })),
   );
+
+  useMemo(() => {
+    setVisibleContent(
+      options.preferences?.visibleContent ?? options.preferences?.visibleContentOptions?.map((o) => o.id),
+    );
+    setContentDisplay(
+      options.preferences?.contentDisplay ?? options.preferences?.contentDisplayOptions?.map((o) => ({ id: o.id, visible: true })),
+    );
+  }, [options.preferences?.visibleContent, options.preferences?.visibleContentOptions, options.preferences?.contentDisplay, options.preferences?.contentDisplayOptions]);
 
   const selectedItems = (selectedIds || []).map((id) => {
     const item = data?.find((i) => i.id === id);

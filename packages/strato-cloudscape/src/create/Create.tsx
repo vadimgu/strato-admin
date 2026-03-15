@@ -1,10 +1,12 @@
 import React from 'react';
-import { CreateBase, type RaRecord } from 'ra-core';
+import { CreateBase, type RaRecord, ResourceSchemaProvider } from 'strato-core';
 import Container from '@cloudscape-design/components/container';
 import { CreateHeader } from './CreateHeader';
+import Form from '../form/Form';
 
 export interface CreateProps<RecordType extends RaRecord = RaRecord> {
-  children: React.ReactNode;
+  children?: React.ReactNode;
+  inputSchema?: React.ReactNode;
   title?: React.ReactNode;
   actions?: React.ReactNode;
   resource?: string;
@@ -12,21 +14,32 @@ export interface CreateProps<RecordType extends RaRecord = RaRecord> {
   redirect?: any;
   transform?: any;
   mutationOptions?: any;
+  include?: string[];
+  exclude?: string[];
 }
 
 const CreateUI = ({
   children,
+  resource,
+  inputSchema,
   title,
   actions,
+  include,
+  exclude,
 }: {
-  children: React.ReactNode;
+  children?: React.ReactNode;
+  resource?: string;
+  inputSchema?: React.ReactNode;
   title?: React.ReactNode;
   actions?: React.ReactNode;
+  include?: string[];
+  exclude?: string[];
 }) => {
+  const finalChildren = children || <Form include={include} exclude={exclude} />;
   return (
-    <Container header={<CreateHeader title={title} actions={actions} />}>
-      {children}
-    </Container>
+    <ResourceSchemaProvider resource={resource} inputSchema={inputSchema}>
+      <Container header={<CreateHeader title={title} actions={actions} />}>{finalChildren}</Container>
+    </ResourceSchemaProvider>
   );
 };
 
@@ -35,20 +48,40 @@ const CreateUI = ({
  *
  * @example
  * <Create>
- *   <SimpleForm>
+ *   <Form>
  *     <TextInput source="name" />
- *   </SimpleForm>
+ *   </Form>
+ * </Create>
+ * 
+ * @example
+ * // Using InputSchema from context
+ * <Create include={['name', 'price']} />
+ * 
+ * @example
+ * // Passing a custom input schema
+ * <Create inputSchema={<InputSchema>...</InputSchema>}>
+ *   <Form />
  * </Create>
  */
 export const Create = <RecordType extends RaRecord = RaRecord>({
   children,
+  inputSchema,
   title,
   actions,
+  include,
+  exclude,
   ...props
 }: CreateProps<RecordType>) => {
   return (
     <CreateBase {...props}>
-      <CreateUI title={title} actions={actions}>
+      <CreateUI 
+        resource={props.resource}
+        title={title} 
+        actions={actions} 
+        include={include} 
+        exclude={exclude}
+        inputSchema={inputSchema}
+      >
         {children}
       </CreateUI>
     </CreateBase>

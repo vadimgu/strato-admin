@@ -1,4 +1,4 @@
-import { DataProvider, fetchUtils } from 'ra-core';
+import { DataProvider, fetchUtils } from 'strato-admin';
 
 const API_URL = 'https://dummyjson.com';
 
@@ -82,13 +82,12 @@ export const dummyJsonDataProvider: DataProvider = {
 
     const resourceKey = getResourceKey(resource);
     let data = json[resourceKey] || [];
-    
+
     // Handle products/categories specially as it returns an array directly
     if (resource === 'products/categories' && Array.isArray(json)) {
-        data = json.map((item: any) => typeof item === 'string' 
-            ? { id: item, name: item } 
-            : { ...item, id: item.slug || item.name || item }
-        );
+      data = json.map((item: any) =>
+        typeof item === 'string' ? { id: item, name: item } : { ...item, id: item.slug || item.name || item },
+      );
     }
 
     const total = json.total ?? data.length;
@@ -121,13 +120,14 @@ export const dummyJsonDataProvider: DataProvider = {
     if (resource === 'products/categories') {
       const url = `${API_URL}/${resource}`;
       const { json } = await httpClient(url);
-      
-      const allCategories = Array.isArray(json) ? json.map((item: any) => typeof item === 'string' 
-        ? { id: item, name: item } 
-        : { ...item, id: item.slug || item.name || item }
-      ) : [];
 
-      const data = allCategories.filter(cat => params.ids.includes(cat.id));
+      const allCategories = Array.isArray(json)
+        ? json.map((item: any) =>
+            typeof item === 'string' ? { id: item, name: item } : { ...item, id: item.slug || item.name || item },
+          )
+        : [];
+
+      const data = allCategories.filter((cat) => params.ids.includes(cat.id));
       return { data };
     }
 

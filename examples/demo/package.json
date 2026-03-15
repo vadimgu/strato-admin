@@ -11,8 +11,9 @@
     "@cloudscape-design/components": "^3.0.1217",
     "@cloudscape-design/design-tokens": "^3.0.0",
     "@cloudscape-design/global-styles": "^1.0.0",
-    "ra-core": "^5.14.3",
+    "ra-core": "workspace:*",
     "ra-data-fakerest": "^5.14.3",
+    "strato-faker-ecommerce": "workspace:*",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "strato-admin": "workspace:*"

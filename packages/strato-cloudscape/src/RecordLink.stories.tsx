@@ -6,9 +6,7 @@ const meta: Meta<typeof RecordLink> = {
   title: 'Components/RecordLink',
   component: RecordLink,
   tags: ['autodocs'],
-  decorators: [
-    withRaContext({ id: 123, name: 'Sample Record' }, 'samples'),
-  ],
+  decorators: [withRaContext({ id: 123, name: 'Sample Record' }, 'samples')],
 };
 
 export default meta;

@@ -1,4 +1,4 @@
-import { Admin, Resource, List, Table } from 'strato-cloudscape';
+import { Admin, Resource, List, Table } from 'strato-admin';
 import { icuI18nProvider } from 'strato-i18n-icu';
 import fakeRestProvider from 'ra-data-fakerest';
 

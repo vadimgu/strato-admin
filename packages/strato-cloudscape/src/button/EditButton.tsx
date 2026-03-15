@@ -1,5 +1,5 @@
-import React from 'react';
-import { useResourceContext, useRecordContext, useTranslate, useCreatePath, RaRecord } from 'ra-core';
+
+import { useResourceContext, useRecordContext, useTranslate, useCreatePath, RaRecord } from 'strato-core';
 import { useNavigate } from 'react-router-dom';
 import { Button, ButtonProps } from './Button';
 

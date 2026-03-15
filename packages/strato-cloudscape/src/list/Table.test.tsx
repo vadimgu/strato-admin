@@ -1,13 +1,13 @@
 import React from 'react';
-import { render } from '@testing-library/react';
-import { vi, describe, it, expect, beforeEach } from 'vitest';
-import { useResourceContext, useListContext, useResourceDefinitions } from 'ra-core';
+import { render, cleanup } from '@testing-library/react';
+import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { useResourceContext, useListContext, useResourceDefinitions } from 'strato-core';
 import { useCollection } from '../collection-hooks';
 import Table from './Table';
 import CloudscapeTable from '@cloudscape-design/components/table';
 
 // Mock ra-core
-vi.mock('ra-core', () => ({
+vi.mock('strato-core', () => ({
   useResourceContext: vi.fn(),
   useListContext: vi.fn(),
   useTranslate: vi.fn(() => (key: string, options: any) => options?._ || key),
@@ -22,6 +22,7 @@ vi.mock('ra-core', () => ({
     isPending: false,
     isLoading: false,
   })),
+  useFieldSchema: vi.fn(),
 }));
 
 // Mock react-router-dom
@@ -37,9 +38,7 @@ vi.mock('../collection-hooks', () => ({
 // Mock Cloudscape components
 vi.mock('@cloudscape-design/components/table', () => ({
   default: vi.fn(({ header }: any) => (
-    <div data-testid="cloudscape-table">
-      {header && <div data-testid="table-header">{header}</div>}
-    </div>
+    <div data-testid="cloudscape-table">{header && <div data-testid="table-header">{header}</div>}</div>
   )),
 }));
 
@@ -80,6 +79,10 @@ describe('DataTable', () => {
       },
     });
     (useListContext as any).mockReturnValue({ total: 0, isPending: false });
+  });
+
+  afterEach(() => {
+    cleanup();
   });
 
   it('should generate column IDs with resource prefix', () => {
@@ -208,6 +211,52 @@ describe('DataTable', () => {
 
     const tableProps = (CloudscapeTable as any).mock.calls[0][0];
     expect(tableProps.selectionType).toBe('multi');
+  });
+
+  it('should pass default visible fields to useCollection', () => {
+    (useResourceContext as any).mockReturnValue('products');
+
+    render(
+      <Table defaultVisibleFields={['name', 'price']}>
+        <Table.Column source="id" label="ID" />
+        <Table.Column source="name" label="Name" />
+        <Table.Column source="price" label="Price" />
+        <Table.Column source="category" label="Category" />
+      </Table>,
+    );
+
+    const collectionCall = (useCollection as any).mock.calls[0][0];
+    expect(collectionCall.preferences.visibleContent).toEqual(['products___name', 'products___price']);
+    expect(collectionCall.preferences.contentDisplay).toEqual([
+      { id: 'products___id', visible: false },
+      { id: 'products___name', visible: true },
+      { id: 'products___price', visible: true },
+      { id: 'products___category', visible: false },
+    ]);
+  });
+
+  it('should default to first 5 columns if defaultVisibleFields is not provided', () => {
+    (useResourceContext as any).mockReturnValue('products');
+
+    render(
+      <Table>
+        <Table.Column source="c1" />
+        <Table.Column source="c2" />
+        <Table.Column source="c3" />
+        <Table.Column source="c4" />
+        <Table.Column source="c5" />
+        <Table.Column source="c6" />
+      </Table>,
+    );
+
+    const collectionCall = (useCollection as any).mock.calls[0][0];
+    expect(collectionCall.preferences.visibleContent).toEqual([
+      'products___c1',
+      'products___c2',
+      'products___c3',
+      'products___c4',
+      'products___c5',
+    ]);
   });
 
   it('should hide header when header={null}', () => {

@@ -1,6 +1,7 @@
+
 import React from 'react';
-import { useTranslate, useResourceDefinitions } from 'ra-core';
-import inflection from 'inflection';
+import { useTranslate, useResourceDefinitions } from 'strato-core';
+import { humanize } from 'inflection';
 
 export interface FieldTitleProps {
   resource?: string;
@@ -19,7 +20,7 @@ export const FieldTitle = (props: FieldTitleProps) => {
       return translate(label, { _: label });
     }
     if (!resource || !source) {
-      return source ? inflection.humanize(source) : '';
+      return source ? humanize(source) : '';
     }
 
     const definition = definitions[resource] as any;
@@ -27,8 +28,8 @@ export const FieldTitle = (props: FieldTitleProps) => {
     const defaultLabel = fieldDefinition?.label
       ? translate(fieldDefinition.label, { _: fieldDefinition.label })
       : source
-      ? inflection.humanize(source)
-      : '';
+        ? humanize(source)
+        : '';
 
     return translate(`resources.${resource}.fields.${source}`, {
       _: defaultLabel,
@@ -39,7 +40,9 @@ export const FieldTitle = (props: FieldTitleProps) => {
     <span>
       {labelString}
       {!isRequired && (
-        <span style={{ color: '#687078', fontWeight: 'normal', fontStyle: 'italic', fontSize: '12px', marginLeft: '4px' }}>
+        <span
+          style={{ color: '#687078', fontWeight: 'normal', fontStyle: 'italic', fontSize: '12px', marginLeft: '4px' }}
+        >
           (optional)
         </span>
       )}

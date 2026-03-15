@@ -1,23 +1,27 @@
-import React from 'react';
-import { useInput, type InputProps } from 'ra-core';
+
+import { useInput } from 'strato-core';
 import CloudscapeInput, { InputProps as CloudscapeInputProps } from '@cloudscape-design/components/input';
 import { FormField } from './FormField';
 import { FormFieldContext, useFormFieldContext } from './FormFieldContext';
+import { InputProps } from './types';
 
-export interface NumberInputProps extends Omit<CloudscapeInputProps, 'onChange' | 'value' | 'onBlur' | 'type'>, InputProps {
-  label?: string | false;
-  type?: CloudscapeInputProps['type'];
+export interface NumberInputProps
+    extends Omit<CloudscapeInputProps, 'onChange' | 'value' | 'onBlur' | 'type'>,
+        InputProps {
+    type?: CloudscapeInputProps['type'];
 }
 
 export const NumberInput = (props: NumberInputProps) => {
-  const { label, source, defaultValue, validate, type = 'number', ...rest } = props;
+    const { label, source, defaultValue, validate, type = 'number', ...rest } = props;
   const context = useFormFieldContext();
-  const inputState = context ?? useInput({
-    source,
-    defaultValue,
-    validate,
-    ...rest,
-  });
+  const inputState =
+    context ??
+    useInput({
+      source,
+      defaultValue,
+      validate,
+      ...rest,
+    });
 
   const { id, field } = inputState;
 
@@ -27,26 +31,24 @@ export const NumberInput = (props: NumberInputProps) => {
   };
 
   const inner = (
-      <CloudscapeInput
-        {...rest}
-        {...field}
-        id={id}
-        type={type}
-        value={field.value?.toString() || ''}
-        onChange={(event) => handleChange(event.detail.value)}
-        onBlur={() => field.onBlur()}
-      />
+    <CloudscapeInput
+      {...rest}
+      {...field}
+      id={id}
+      type={type}
+      value={field.value?.toString() || ''}
+      onChange={(event) => handleChange(event.detail.value)}
+      onBlur={() => field.onBlur()}
+    />
   );
 
   if (context) {
-      return inner;
+    return inner;
   }
 
   return (
     <FormFieldContext.Provider value={inputState}>
-      <FormField {...props}>
-        {inner}
-      </FormField>
+      <FormField {...props}>{inner}</FormField>
     </FormFieldContext.Provider>
   );
 };

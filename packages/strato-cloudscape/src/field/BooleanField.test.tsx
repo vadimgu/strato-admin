@@ -1,11 +1,11 @@
-import React from 'react';
+
 import { render } from '@testing-library/react';
 import { vi, describe, it, expect } from 'vitest';
-import { useFieldValue, useRecordContext } from 'ra-core';
+import { useFieldValue, useRecordContext } from 'strato-core';
 import BooleanField from './BooleanField';
 
 // Mock ra-core
-vi.mock('ra-core', () => ({
+vi.mock('strato-core', () => ({
   useRecordContext: vi.fn(),
   useFieldValue: vi.fn(),
 }));

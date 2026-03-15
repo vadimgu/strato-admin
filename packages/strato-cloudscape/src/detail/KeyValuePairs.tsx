@@ -2,12 +2,20 @@ import React from 'react';
 import CloudscapeKeyValuePairs, {
   type KeyValuePairsProps as CloudscapeKeyValuePairsProps,
 } from '@cloudscape-design/components/key-value-pairs';
-import { useResourceContext, useRecordContext, FieldTitle, RecordContextProvider, type RaRecord } from 'ra-core';
+import {
+  useResourceContext,
+  useRecordContext,
+  FieldTitle,
+  RecordContextProvider,
+  type RaRecord,
+  useFieldSchema,
+} from 'strato-core';
 import TextField from '../field/TextField';
-import { FieldContext } from '../field/FieldContext';
 
 export interface KeyValuePairsProps extends Partial<Omit<CloudscapeKeyValuePairsProps, 'items'>> {
-  children: React.ReactNode;
+  children?: React.ReactNode;
+  include?: string[];
+  exclude?: string[];
   columns?: number;
   minColumnWidth?: number;
 }
@@ -24,18 +32,19 @@ export interface KeyValueFieldProps {
  * It mirrors the DataTable.Col pattern.
  */
 export const KeyValueField = ({ children, source, field: FieldComponent }: KeyValueFieldProps) => {
-  const content = children ? (
-    <>{children}</>
-  ) : FieldComponent ? (
-    <FieldComponent />
-  ) : (
-    <TextField />
-  );
-  return (
-    <FieldContext.Provider value={{ source }}>
-      {content}
-    </FieldContext.Provider>
-  );
+  if (children) {
+    return (
+      <>
+        {React.Children.map(children, (child) =>
+          React.isValidElement(child) ? React.cloneElement(child, { source } as any) : child
+        )}
+      </>
+    );
+  }
+  if (FieldComponent) {
+    return <FieldComponent source={source} />;
+  }
+  return <TextField source={source} />;
 };
 
 /**
@@ -50,15 +59,35 @@ export const KeyValueField = ({ children, source, field: FieldComponent }: KeyVa
  */
 export const KeyValuePairs = <RecordType extends RaRecord = RaRecord>({
   children,
+  include,
+  exclude,
   columns,
   minColumnWidth,
   ...props
 }: KeyValuePairsProps) => {
   const resource = useResourceContext();
   const record = useRecordContext<RecordType>();
+  const schemaChildren = useFieldSchema();
+
+  const finalChildren = React.useMemo(() => {
+    const baseChildren = children || schemaChildren;
+    let result = React.Children.toArray(baseChildren);
+
+    if (include) {
+      result = result.filter(
+        (child) => React.isValidElement(child) && include.includes((child.props as any).source)
+      );
+    } else if (exclude) {
+      result = result.filter(
+        (child) => React.isValidElement(child) && !exclude.includes((child.props as any).source)
+      );
+    }
+
+    return result;
+  }, [children, schemaChildren, include, exclude]);
 
   const items =
-    React.Children.map(children, (child) => {
+    React.Children.map(finalChildren, (child) => {
       if (!React.isValidElement(child)) {
         return null;
       }
@@ -66,7 +95,7 @@ export const KeyValuePairs = <RecordType extends RaRecord = RaRecord>({
       const { source, label } = child.props as any;
       return {
         label: <FieldTitle source={source} resource={resource} label={label} />,
-        value: <RecordContextProvider value={record}>{child}</RecordContextProvider>,
+        value: <RecordContextProvider value={record}>{child as any}</RecordContextProvider>,
       };
     })?.filter((item): item is Exclude<typeof item, null> => item !== null) || [];
 

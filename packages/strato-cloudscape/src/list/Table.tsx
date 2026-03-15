@@ -4,15 +4,14 @@ import Pagination from '@cloudscape-design/components/pagination';
 import Box from '@cloudscape-design/components/box';
 import TextFilter from '@cloudscape-design/components/text-filter';
 import CollectionPreferences from '@cloudscape-design/components/collection-preferences';
-import { RecordContextProvider, RaRecord, useResourceContext, useTranslate } from 'ra-core';
+import { RecordContextProvider, RaRecord, useResourceContext, useTranslate, useFieldSchema } from 'strato-core';
 import { useCollection } from '../collection-hooks';
 import TextField from '../field/TextField';
-import NumberField, { type NumberFieldProps } from '../field/NumberField';
-import DateField, { type DateFieldProps } from '../field/DateField';
-import BooleanField, { type BooleanFieldProps } from '../field/BooleanField';
-import ReferenceField, { type ReferenceFieldProps } from '../field/ReferenceField';
+import NumberField from '../field/NumberField';
+import DateField from '../field/DateField';
+import BooleanField from '../field/BooleanField';
+import ReferenceField from '../field/ReferenceField';
 import { type RecordLinkType } from '../RecordLink';
-import { FieldContext } from '../field/FieldContext';
 import { TableHeader } from './TableHeader';
 
 export type CloudscapeColumnDefinitionProps = Partial<
@@ -30,18 +29,19 @@ export interface ColumnProps extends CloudscapeColumnDefinitionProps {
 }
 
 export const Column = ({ children, source, link, field: FieldComponent }: ColumnProps) => {
-  const content = children ? (
-    <>{children}</>
-  ) : FieldComponent ? (
-    <FieldComponent link={link} />
-  ) : (
-    <TextField link={link} />
-  );
-  return (
-    <FieldContext.Provider value={{ source }}>
-      {content}
-    </FieldContext.Provider>
-  );
+  if (children) {
+    return (
+      <>
+        {React.Children.map(children, (child) =>
+          React.isValidElement(child) ? React.cloneElement(child, { source } as any) : child
+        )}
+      </>
+    );
+  }
+  if (FieldComponent) {
+    return <FieldComponent link={link} source={source} />;
+  }
+  return <TextField link={link} source={source} />;
 };
 
 export interface NumberColumnProps extends ColumnProps {
@@ -49,22 +49,19 @@ export interface NumberColumnProps extends ColumnProps {
 }
 
 export const NumberColumn = ({ children, source, link, field: FieldComponent }: NumberColumnProps) => {
-  const content = (
-    <Box textAlign="right">
-      {children ? (
-        <>{children}</>
-      ) : FieldComponent ? (
-        <FieldComponent link={link} />
-      ) : (
-        <NumberField link={link} />
-      )}
-    </Box>
-  );
-  return (
-    <FieldContext.Provider value={{ source }}>
-      {content}
-    </FieldContext.Provider>
-  );
+  if (children) {
+    return (
+      <>
+        {React.Children.map(children, (child) =>
+          React.isValidElement(child) ? React.cloneElement(child, { source } as any) : child
+        )}
+      </>
+    );
+  }
+  if (FieldComponent) {
+    return <FieldComponent link={link} source={source} />;
+  }
+  return <NumberField link={link} source={source} />;
 };
 (NumberColumn as any).isNumberColumn = true;
 
@@ -73,18 +70,19 @@ export interface DateColumnProps extends ColumnProps {
 }
 
 export const DateColumn = ({ children, source, link, field: FieldComponent }: DateColumnProps) => {
-  const content = children ? (
-    <>{children}</>
-  ) : FieldComponent ? (
-    <FieldComponent link={link} />
-  ) : (
-    <DateField link={link} />
-  );
-  return (
-    <FieldContext.Provider value={{ source }}>
-      {content}
-    </FieldContext.Provider>
-  );
+  if (children) {
+    return (
+      <>
+        {React.Children.map(children, (child) =>
+          React.isValidElement(child) ? React.cloneElement(child, { source } as any) : child
+        )}
+      </>
+    );
+  }
+  if (FieldComponent) {
+    return <FieldComponent link={link} source={source} />;
+  }
+  return <DateField link={link} source={source} />;
 };
 
 export interface BooleanColumnProps extends ColumnProps {
@@ -92,18 +90,19 @@ export interface BooleanColumnProps extends ColumnProps {
 }
 
 export const BooleanColumn = ({ children, source, field: FieldComponent }: BooleanColumnProps) => {
-  const content = children ? (
-    <>{children}</>
-  ) : FieldComponent ? (
-    <FieldComponent />
-  ) : (
-    <BooleanField />
-  );
-  return (
-    <FieldContext.Provider value={{ source }}>
-      {content}
-    </FieldContext.Provider>
-  );
+  if (children) {
+    return (
+      <>
+        {React.Children.map(children, (child) =>
+          React.isValidElement(child) ? React.cloneElement(child, { source } as any) : child
+        )}
+      </>
+    );
+  }
+  if (FieldComponent) {
+    return <FieldComponent source={source} />;
+  }
+  return <BooleanField source={source} />;
 };
 
 export interface ReferenceColumnProps extends ColumnProps {
@@ -113,15 +112,17 @@ export interface ReferenceColumnProps extends ColumnProps {
 
 export const ReferenceColumn = ({ children, source, reference, link, field: FieldComponent }: ReferenceColumnProps) => {
   // ReferenceCol requires reference, so we pass it down
-  const content = FieldComponent ? (
-    <FieldComponent reference={reference} link={link}>{children}</FieldComponent>
-  ) : (
-    <ReferenceField reference={reference} link={link}>{children}</ReferenceField>
-  );
+  if (FieldComponent) {
+    return (
+      <FieldComponent reference={reference} link={link} source={source}>
+        {children}
+      </FieldComponent>
+    );
+  }
   return (
-    <FieldContext.Provider value={{ source }}>
-      {content}
-    </FieldContext.Provider>
+    <ReferenceField reference={reference} link={link} source={source}>
+      {children}
+    </ReferenceField>
   );
 };
 
@@ -142,10 +143,18 @@ export interface TableProps<RecordType extends RaRecord = any> extends Partial<
   /**
    * The columns to display, usually using `Table.Column` and its variants.
    */
-  children: React.ReactNode;
+  children?: React.ReactNode;
+  /**
+   * Include only these fields from the schema.
+   */
+  include?: string[];
+  /**
+   * Exclude these fields from the schema.
+   */
+  exclude?: string[];
   /**
    * Whether to enable text filtering.
-   * @default false
+   * @default true
    */
   filtering?: boolean;
   /**
@@ -159,7 +168,7 @@ export interface TableProps<RecordType extends RaRecord = any> extends Partial<
   pageSizeOptions?: ReadonlyArray<{ value: number; label?: string }>;
   /**
    * Whether to show the preferences button or custom preferences content.
-   * @default false
+   * @default true
    */
   preferences?: boolean | React.ReactNode;
   /**
@@ -167,6 +176,12 @@ export interface TableProps<RecordType extends RaRecord = any> extends Partial<
    * @default true
    */
   reorderable?: boolean;
+  /**
+   * The fields to display by default.
+   * Can be an array of field sources/IDs.
+   * If not specified, the first 5 fields will be shown.
+   */
+  defaultVisibleFields?: string[];
 }
 
 const defaultPageSizeOptions = [
@@ -192,27 +207,58 @@ export const Table = <RecordType extends RaRecord = any>({
   header,
   actions,
   children,
-  filtering,
+  include,
+  exclude,
+  filtering = true,
   filteringPlaceholder,
   pageSizeOptions = defaultPageSizeOptions,
-  preferences,
+  preferences = true,
   reorderable = true,
+  defaultVisibleFields,
   ...props
 }: TableProps<RecordType>) => {
   const resource = useResourceContext();
   const translate = useTranslate();
+  const schemaChildren = useFieldSchema();
+
+  const finalChildren = React.useMemo(() => {
+    const baseChildren = children || schemaChildren;
+    let result = React.Children.toArray(baseChildren);
+
+    if (include) {
+      result = result.filter(
+        (child) => React.isValidElement(child) && include.includes((child.props as any).source)
+      );
+    } else if (exclude) {
+      result = result.filter(
+        (child) => React.isValidElement(child) && !exclude.includes((child.props as any).source)
+      );
+    }
+
+    return result;
+  }, [children, schemaChildren, include, exclude]);
 
   // 1. Extract columns and options before calling useCollection
   const extractedColumns = React.useMemo(() => {
     const columns: any[] = [];
     const options: { id: string; label: string; alwaysVisible?: boolean }[] = [];
 
-    React.Children.forEach(children, (child, index) => {
+    finalChildren.forEach((child, index) => {
       if (!React.isValidElement(child)) {
         return;
       }
 
-      const { source, label, header: childHeader, sortable, link, field, children: childChildren, ...restColumnProps } = child.props as any;
+      const {
+        source,
+        label,
+        header: childHeader,
+        sortable,
+        link,
+        field,
+        children: childChildren,
+        ...restColumnProps
+      } = child.props as any;
+      
       const isNumberColumn = (child.type as any)?.isNumberColumn;
 
       const headerLabel =
@@ -228,9 +274,10 @@ export const Table = <RecordType extends RaRecord = any>({
         ...restColumnProps,
         id,
         header: finalHeader,
-        cell: (item: RecordType) => (
-          <RecordContextProvider value={item}>{child as React.ReactElement}</RecordContextProvider>
-        ),
+        cell: (item: RecordType) => {
+          const content = <RecordContextProvider value={item}>{child as any}</RecordContextProvider>;
+          return isNumberColumn ? <Box textAlign="right">{content}</Box> : content;
+        },
         sortingField: sortable !== false ? source : undefined,
       });
 
@@ -244,7 +291,35 @@ export const Table = <RecordType extends RaRecord = any>({
     });
 
     return { columns, options };
-  }, [children, resource, translate]);
+  }, [finalChildren, resource, translate]);
+
+  const defaultVisibleContent = React.useMemo(() => {
+    if (extractedColumns.options.length === 0) return undefined;
+    
+    if (defaultVisibleFields) {
+      // Map user-provided fields to their actual IDs
+      return extractedColumns.options
+        .filter(opt => {
+          const column = extractedColumns.columns.find(c => c.id === opt.id);
+          return defaultVisibleFields.includes(opt.id) || (column?.sortingField && defaultVisibleFields.includes(column.sortingField));
+        })
+        .map(opt => opt.id);
+    }
+    
+    // Default to first 5 toggleable columns
+    return extractedColumns.options.slice(0, 5).map(opt => opt.id);
+  }, [extractedColumns, defaultVisibleFields]);
+
+  const defaultContentDisplay = React.useMemo(() => {
+    if (extractedColumns.options.length === 0) return undefined;
+    
+    const visibleIds = defaultVisibleContent || [];
+
+    return extractedColumns.options.map(opt => ({
+      id: opt.id,
+      visible: visibleIds.includes(opt.id)
+    }));
+  }, [extractedColumns.options, defaultVisibleContent]);
 
   const { items, paginationProps, collectionProps, filterProps, preferencesProps } = useCollection<RecordType>({
     filtering: {},
@@ -254,6 +329,8 @@ export const Table = <RecordType extends RaRecord = any>({
       pageSizeOptions,
       visibleContentOptions: !reorderable && extractedColumns.options.length > 0 ? extractedColumns.options : undefined,
       contentDisplayOptions: reorderable && extractedColumns.options.length > 0 ? extractedColumns.options : undefined,
+      visibleContent: defaultVisibleContent,
+      contentDisplay: defaultContentDisplay,
     },
   });
 
@@ -262,8 +339,14 @@ export const Table = <RecordType extends RaRecord = any>({
     if (reorderable || !preferencesProps.preferences.visibleContent) {
       return extractedColumns.columns;
     }
-    return extractedColumns.columns.filter((col) => preferencesProps.preferences.visibleContent?.includes(col.id));
-  }, [extractedColumns.columns, preferencesProps.preferences.visibleContent, reorderable]);
+    return extractedColumns.columns.filter((col) => {
+      // Always show columns that are not in options (non-toggleable columns like Actions)
+      const isToggleable = extractedColumns.options.some(opt => opt.id === col.id);
+      if (!isToggleable) return true;
+
+      return preferencesProps.preferences.visibleContent?.includes(col.id);
+    });
+  }, [extractedColumns.columns, extractedColumns.options, preferencesProps.preferences.visibleContent, reorderable]);
 
   const tableHeader = React.useMemo(() => {
     if (header === null || header === false) {

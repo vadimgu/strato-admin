@@ -1,9 +1,9 @@
 import { renderHook, act } from '@testing-library/react';
 import { vi, describe, it, expect } from 'vitest';
-import { useListContext } from 'ra-core';
+import { useListContext } from 'strato-core';
 import { useCollection } from './useCollection';
 
-vi.mock('ra-core', () => ({
+vi.mock('strato-core', () => ({
   useListContext: vi.fn(),
 }));
 
@@ -339,6 +339,40 @@ describe('useCollection', () => {
     );
 
     expect(result.current.preferencesProps.preferences.visibleContent).toEqual(['id', 'name']);
+  });
+
+  it('should initialize visibleContent and contentDisplay from preferences if provided', () => {
+    (useListContext as any).mockReturnValue({
+      data: [],
+      perPage: 25,
+      setPerPage: vi.fn(),
+      page: 1,
+      isPending: false,
+      isFetching: false,
+      isLoading: false,
+      setPage: vi.fn(),
+      selectedIds: [],
+      onSelect: vi.fn(),
+    });
+
+    const visibleContent = ['id', 'name'];
+    const contentDisplay = [
+      { id: 'id', visible: true },
+      { id: 'name', visible: true },
+      { id: 'price', visible: false },
+    ];
+
+    const { result } = renderHook(() =>
+      useCollection({
+        preferences: {
+          visibleContent,
+          contentDisplay,
+        },
+      }),
+    );
+
+    expect(result.current.preferencesProps.preferences.visibleContent).toEqual(visibleContent);
+    expect(result.current.preferencesProps.preferences.contentDisplay).toEqual(contentDisplay);
   });
 
   it('should update wrapLines and stripedRows when preferences onConfirm is called', () => {

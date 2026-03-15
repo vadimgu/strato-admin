@@ -1,20 +1,20 @@
-import React, { type ReactNode } from 'react';
-import { type BaseFieldProps, type RaRecord, useFieldValue, useRecordContext, useLocale } from 'ra-core';
-import RecordLink, { type RecordLinkType } from '../RecordLink';
-import { useFieldContext } from './FieldContext';
+import { type RaRecord, useFieldValue, useRecordContext, useLocale } from 'strato-core';
+import RecordLink from '../RecordLink';
+import { type FieldProps } from './types';
 
-export type DateFieldProps<RecordType extends RaRecord = RaRecord> = Omit<BaseFieldProps<RecordType>, 'source'> & {
-  source?: string;
-  emptyText?: ReactNode;
+export type DateFieldProps<RecordType extends RaRecord = RaRecord> = FieldProps<RecordType> & {
+  /**
+   * Options for Intl.DateTimeFormat.
+   */
   options?: Intl.DateTimeFormatOptions;
+  /**
+   * Locale(s) to use for formatting. Defaults to the current app locale.
+   */
   locales?: string | string[];
-  link?: RecordLinkType;
 };
 
 const DateField = <RecordType extends RaRecord = RaRecord>(props: DateFieldProps<RecordType>) => {
-  const fieldContext = useFieldContext();
-  const source = props.source ?? fieldContext?.source;
-  const { record: recordProp, emptyText, options, locales, link } = props;
+  const { source, record: recordProp, emptyText, options, locales, link } = props;
   const record = useRecordContext<RecordType>({ record: recordProp });
   const value = useFieldValue<RecordType>({ source: source as any, record });
   const currentLocale = useLocale();
@@ -27,9 +27,7 @@ const DateField = <RecordType extends RaRecord = RaRecord>(props: DateFieldProps
   const dateValue = value instanceof Date ? value : new Date(value);
   const formattedValue = new Intl.DateTimeFormat(locales || currentLocale, options).format(dateValue);
 
-  return (
-    <RecordLink link={link}>{formattedValue}</RecordLink>
-  );
+  return <RecordLink link={link}>{formattedValue}</RecordLink>;
 };
 
 export default DateField;

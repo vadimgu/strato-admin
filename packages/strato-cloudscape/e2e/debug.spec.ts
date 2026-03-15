@@ -15,14 +15,14 @@ test.describe('Storybook Debug', () => {
       const url = `http://localhost:6006/iframe.html?id=${story.id}&viewMode=story`;
       console.log(`Navigating to ${url}`);
       await page.goto(url);
-      
+
       // Wait for everything
       await page.waitForLoadState('networkidle');
       await page.waitForTimeout(2000); // Give it extra time just in case
 
       const content = await page.content();
       console.log(`Page content length for ${story.name}: ${content.length}`);
-      
+
       // Look for any text on the page
       const bodyText = await page.innerText('body');
       console.log(`Body text for ${story.name}: "${bodyText.substring(0, 100)}"`);

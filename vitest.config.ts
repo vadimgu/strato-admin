@@ -10,26 +10,38 @@ export default defineConfig({
   test: {
     environment: 'jsdom',
     globals: true,
-    projects: [{
-      extends: true,
-      plugins: [
-      // The plugin will run tests for the stories defined in your Storybook config
-      // See options at: https://storybook.js.org/docs/next/writing-tests/integrations/vitest-addon#storybooktest
-      storybookTest({
-        configDir: path.join(dirname, 'packages/strato-cloudscape/.storybook')
-      })],
-      test: {
-        name: 'storybook',
-        browser: {
-          enabled: true,
-          headless: true,
-          provider: playwright({}),
-          instances: [{
-            browser: 'chromium'
-          }]
+    projects: [
+      {
+        name: 'unit-tests',
+        test: {
+          include: ['packages/**/*.test.{ts,tsx}'],
+          environment: 'jsdom',
+        }
+      },
+      {
+        extends: true,
+        plugins: [
+          // The plugin will run tests for the stories defined in your Storybook config
+          // See options at: https://storybook.js.org/docs/next/writing-tests/integrations/vitest-addon#storybooktest
+          storybookTest({
+            configDir: path.join(dirname, 'packages/strato-cloudscape/.storybook'),
+          }),
+        ],
+        test: {
+          name: 'storybook',
+          browser: {
+            enabled: true,
+            headless: true,
+            provider: playwright({}),
+            instances: [
+              {
+                browser: 'chromium',
+              },
+            ],
+          },
+          setupFiles: ['packages/strato-cloudscape/.storybook/vitest.setup.ts'],
         },
-        setupFiles: ['packages/strato-cloudscape/.storybook/vitest.setup.ts']
-      }
-    }]
-  }
+      },
+    ],
+  },
 });

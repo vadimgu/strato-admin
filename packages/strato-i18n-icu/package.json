@@ -9,13 +9,31 @@
     ".": "./src/index.ts"
   },
   "scripts": {
-    "test": "vitest run"
+    "test": "vitest run",
+    "build": "tsc -p tsconfig.build.json"
+  },
+  "bin": {
+    "strato-extract": "./src/cli/extract.js",
+    "strato-compile": "./src/cli/compile.js"
   },
   "peerDependencies": {
-    "ra-core": "^5.14.3"
+    "strato-core": "workspace:*"
   },
   "dependencies": {
-    "intl-messageformat": "^11.1.2"
+    "@babel/core": "^7.29.0",
+    "@babel/parser": "^7.29.0",
+    "@babel/traverse": "^7.29.0",
+    "@babel/types": "^7.29.0",
+    "gettext-parser": "^9.0.1",
+    "glob": "^13.0.6",
+    "intl-messageformat": "^11.1.2",
+    "typescript": "^5.9.3"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "@types/babel__core": "^7.20.5",
+    "@types/babel__traverse": "^7.28.0",
+    "@types/gettext-parser": "^9.0.0",
+    "@types/node": "^25.5.0",
+    "ra-core": "workspace:^"
+  }
 }

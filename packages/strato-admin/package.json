@@ -9,7 +9,6 @@
     ".": "./src/index.ts"
   },
   "dependencies": {
-    "ra-core": "^5.14.3",
     "@cloudscape-design/components": "^3.0.1217",
     "strato-core": "workspace:*",
     "strato-cloudscape": "workspace:*"

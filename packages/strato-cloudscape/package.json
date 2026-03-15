@@ -21,7 +21,7 @@
     "@cloudscape-design/components": "^3.0.1217",
     "@cloudscape-design/global-styles": "^1.0.0",
     "inflection": "^3.0.2",
-    "ra-core": "^5.14.3",
+    "strato-core": "workspace:*",
     "react-hook-form": "^7.71.2",
     "react-router-dom": "^6.22.3",
     "strato-i18n-icu": "workspace:*",

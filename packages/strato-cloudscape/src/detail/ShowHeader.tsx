@@ -1,7 +1,7 @@
 import React from 'react';
 import Header, { HeaderProps } from '@cloudscape-design/components/header';
 import SpaceBetween from '@cloudscape-design/components/space-between';
-import { useResourceContext, useShowContext, useTranslate, useResourceDefinitions } from 'ra-core';
+import { useResourceContext, useShowContext, useTranslate, useResourceDefinitions } from 'strato-core';
 import { EditButton } from '../button/EditButton';
 
 export interface ShowHeaderProps extends Omit<HeaderProps, 'children'> {

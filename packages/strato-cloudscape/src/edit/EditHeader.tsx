@@ -1,7 +1,7 @@
 import React from 'react';
 import Header, { HeaderProps } from '@cloudscape-design/components/header';
 import SpaceBetween from '@cloudscape-design/components/space-between';
-import { useResourceContext, useEditContext, useTranslate, useResourceDefinitions } from 'ra-core';
+import { useResourceContext, useEditContext, useTranslate, useResourceDefinitions } from 'strato-core';
 
 export interface EditHeaderProps extends Omit<HeaderProps, 'children'> {
   title?: React.ReactNode;
@@ -11,7 +11,7 @@ export const EditHeader = ({ title, actions, ...props }: EditHeaderProps) => {
   const resource = useResourceContext();
   const translate = useTranslate();
   const definitions = useResourceDefinitions();
-  const { record } = useEditContext();
+  useEditContext();
 
   const headerTitle = React.useMemo(() => {
     if (title !== undefined) {

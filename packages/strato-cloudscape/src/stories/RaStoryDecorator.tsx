@@ -6,7 +6,7 @@ import {
   ResourceDefinitionContextProvider,
   ListContextProvider,
   type RaRecord,
-} from 'ra-core';
+} from 'strato-core';
 import { icuI18nProvider } from 'strato-i18n-icu';
 import englishMessages from 'strato-language-en';
 
@@ -17,7 +17,7 @@ export const withRaContext =
     record: RaRecord = { id: 1 },
     resource: string = 'samples',
     definitions: any = { samples: { name: 'samples', hasCreate: true, hasEdit: true, hasList: true, hasShow: true } },
-    listContext: any = null
+    listContext: any = null,
   ) =>
   (Story: React.ComponentType) => (
     <CoreAdminContext dataProvider={{} as any} i18nProvider={i18nProvider}>

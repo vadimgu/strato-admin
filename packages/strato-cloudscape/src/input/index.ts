@@ -1,3 +1,4 @@
+export * from './types';
 export * from './TextInput';
 export * from './TextAreaInput';
 export * from './NumberInput';

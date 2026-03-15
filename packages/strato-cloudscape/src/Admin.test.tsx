@@ -2,7 +2,7 @@ import React from 'react';
 import { render } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import { Admin } from './Admin';
-import { Resource } from 'ra-core';
+import { Resource } from 'strato-core';
 
 // Mock react-router-dom
 vi.mock('react-router-dom', () => ({
