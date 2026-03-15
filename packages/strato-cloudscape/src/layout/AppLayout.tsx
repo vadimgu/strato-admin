@@ -26,7 +26,7 @@ export const AppLayout = ({ children, header, title }: AppLayoutProps) => {
     type: 'link' as const,
     text: resource.options?.label
       ? translate(resource.options.label, { _: resource.options.label })
-      : translate(`resource.${resource.name}.name`, { _: resource.name }),
+      : resource.name,
     href: `/${resource.name}`,
   }));
 

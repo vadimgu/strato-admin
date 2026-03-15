@@ -10,7 +10,7 @@ export default function App() {
   return (
     <Admin dataProvider={dataProvider} title="Strato E-commerce Demo">
       <ResourceSchema
-        options={{ label: 'Products' }}
+        label="Products"
         name="products"
         list={ProductList}
         show={ProductShow}
@@ -21,7 +21,7 @@ export default function App() {
         inputSchema={productInputSchema}
       />
       <ResourceSchema
-        options={{ label: 'Categories' }}
+        label="Categories"
         name="categories"
         list={CategoryList}
         show={CategoryShow}
@@ -29,7 +29,7 @@ export default function App() {
         fieldSchema={categorySchema}
       />
       <ResourceSchema
-        options={{ label: 'Customers' }}
+        label="Customers"
         name="customers"
         list={CustomerList}
         show={CustomerShow}
@@ -37,7 +37,7 @@ export default function App() {
         fieldSchema={customerSchema}
       />
       <ResourceSchema
-        options={{ label: 'Orders' }}
+        label="Orders"
         name="orders"
         list={OrderList}
         show={OrderShow}
@@ -45,7 +45,7 @@ export default function App() {
         fieldSchema={orderSchema}
       />
       <ResourceSchema
-        options={{ label: 'Reviews' }}
+        label="Reviews"
         name="reviews"
         list={ReviewList}
         show={ReviewShow}
