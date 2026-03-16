@@ -1,5 +1,5 @@
 
-import { useBulkDeleteController, useTranslate, useListContext } from 'strato-core';
+import { useBulkDeleteController, useTranslate, useListContext, useResourceDefinition } from 'strato-core';
 import { Button } from './Button';
 
 export interface BulkDeleteButtonProps {
@@ -15,9 +15,14 @@ export const BulkDeleteButton = ({
 }: BulkDeleteButtonProps) => {
   const translate = useTranslate();
   const { selectedIds } = useListContext();
+  const { options } = useResourceDefinition();
   const { handleDelete, isPending, isLoading } = useBulkDeleteController({
     mutationMode,
   });
+
+  if (options?.canDelete === false) {
+    return null;
+  }
 
   const isBusy = isPending || isLoading;
 

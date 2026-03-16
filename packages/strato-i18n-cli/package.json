@@ -1,0 +1,30 @@
+{
+  "name": "strato-i18n-cli",
+  "version": "1.0.0",
+  "description": "CLI tools for Strato Admin internationalization",
+  "main": "src/cli/extract.ts",
+  "types": "src/cli/extract.ts",
+  "bin": {
+    "strato-extract": "./dist/extract.js",
+    "strato-compile": "./dist/compile.js"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json"
+  },
+  "dependencies": {
+    "@babel/core": "^7.29.0",
+    "@babel/parser": "^7.29.0",
+    "@babel/traverse": "^7.29.0",
+    "@babel/types": "^7.29.0",
+    "gettext-parser": "^9.0.1",
+    "glob": "^13.0.6",
+    "strato-i18n": "workspace:*",
+    "typescript": "^5.9.3"
+  },
+  "devDependencies": {
+    "@types/babel__core": "^7.20.5",
+    "@types/babel__traverse": "^7.28.0",
+    "@types/gettext-parser": "^9.0.0",
+    "@types/node": "^25.5.0"
+  }
+}

@@ -1,13 +1,21 @@
-import React, { createContext, useContext, ReactNode, useState, useCallback, useMemo } from 'react';
+import React, { createContext, useContext, ReactNode, useState, useCallback, useMemo, ComponentType } from 'react';
 
 export interface ResourceSchemas {
   fieldSchema?: ReactNode;
   inputSchema?: ReactNode;
 }
 
+export interface DefaultResourceComponents {
+  list?: ComponentType<any>;
+  create?: ComponentType<any>;
+  edit?: ComponentType<any>;
+  show?: ComponentType<any>;
+}
+
 export interface SchemaRegistryContextValue {
   registerSchemas: (resource: string, schemas: ResourceSchemas) => void;
   getSchemas: (resource: string) => ResourceSchemas | undefined;
+  defaultComponents: DefaultResourceComponents;
 }
 
 const SchemaRegistryContext = createContext<SchemaRegistryContextValue | undefined>(undefined);
@@ -15,6 +23,7 @@ const SchemaRegistryContext = createContext<SchemaRegistryContextValue | undefin
 // Use a global store for schemas to ensure they are available even before 
 // components have finished their first render/useEffect cycle.
 const globalSchemaRegistry: Record<string, ResourceSchemas> = {};
+let globalDefaultComponents: DefaultResourceComponents = {};
 
 /**
  * Synchronously registers schemas for a resource.
@@ -39,6 +48,15 @@ export const registerGlobalSchemas = (resource: string, schemas: ResourceSchemas
 
 export const getGlobalSchemas = (resource: string) => globalSchemaRegistry[resource];
 
+/**
+ * Registers default components to be used by ResourceSchema when not explicitly provided.
+ */
+export const registerDefaultResourceComponents = (components: DefaultResourceComponents) => {
+  globalDefaultComponents = { ...globalDefaultComponents, ...components };
+};
+
+export const getDefaultResourceComponents = () => globalDefaultComponents;
+
 export const SchemaRegistryProvider = ({ children }: { children: ReactNode }) => {
   // We still use state to trigger re-renders when new schemas are registered dynamically
   const [, setTick] = useState(0);
@@ -52,7 +70,11 @@ export const SchemaRegistryProvider = ({ children }: { children: ReactNode }) =>
 
   const getSchemas = useCallback((resource: string) => globalSchemaRegistry[resource], []);
 
-  const value = useMemo(() => ({ registerSchemas, getSchemas }), [registerSchemas, getSchemas]);
+  const value = useMemo(() => ({ 
+    registerSchemas, 
+    getSchemas, 
+    defaultComponents: globalDefaultComponents 
+  }), [registerSchemas, getSchemas]);
 
   return (
     <SchemaRegistryContext.Provider value={value}>
@@ -67,6 +89,7 @@ export const useSchemaRegistry = () => {
     return {
       registerSchemas: registerGlobalSchemas,
       getSchemas: getGlobalSchemas,
+      defaultComponents: globalDefaultComponents,
     };
   }
   return context;

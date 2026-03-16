@@ -5,6 +5,8 @@ import { ListControllerResult, useList } from '../list';
 import { useNotify } from '../../notification';
 import { UseQueryOptions } from '@tanstack/react-query';
 import { defaultExporter } from '../../export';
+import { useTranslate } from '../../i18n';
+import { useGetResourceLabel } from '../../core';
 
 export interface UseReferenceArrayFieldControllerParams<
     RecordType extends RaRecord = RaRecord,
@@ -75,6 +77,7 @@ export const useReferenceArrayFieldController = <
         queryOptions = {},
     } = props;
     const notify = useNotify();
+    const translate = useTranslate();
     const value = get(record, source);
     const { meta, ...otherQueryOptions } = queryOptions;
     const ids = Array.isArray(value) ? value : emptyArray;
@@ -129,9 +132,16 @@ export const useReferenceArrayFieldController = <
         sort,
     });
 
+    const getResourceLabel = useGetResourceLabel();
+    const defaultTitle = translate(`resources.${reference}.page.list`, {
+        _: translate('ra.page.list', {
+            name: getResourceLabel(reference, 2),
+        }),
+    });
+
     return {
         ...listProps,
-        defaultTitle: undefined,
+        defaultTitle,
         refetch,
         resource: reference,
     };

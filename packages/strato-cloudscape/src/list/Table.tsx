@@ -4,7 +4,7 @@ import Pagination from '@cloudscape-design/components/pagination';
 import Box from '@cloudscape-design/components/box';
 import TextFilter from '@cloudscape-design/components/text-filter';
 import CollectionPreferences from '@cloudscape-design/components/collection-preferences';
-import { RecordContextProvider, RaRecord, useResourceContext, useTranslate, useFieldSchema } from 'strato-core';
+import { RecordContextProvider, RaRecord, useResourceContext, useTranslate, useFieldSchema, useResourceDefinition, useGetResourceLabel } from 'strato-core';
 import { useCollection } from '../collection-hooks';
 import TextField from '../field/TextField';
 import NumberField from '../field/NumberField';
@@ -133,9 +133,9 @@ export interface TableProps<RecordType extends RaRecord = any> extends Partial<
   Omit<CloudscapeTableProps<RecordType>, 'items' | 'columnDefinitions' | 'preferences'>
 > {
   /**
-   * The header content of the table. Can be a string or a React node.
+   * The title content of the table. Can be a string or a React node.
    */
-  header?: React.ReactNode;
+  title?: React.ReactNode;
   /**
    * Actions to display in the table header, typically a button group.
    */
@@ -197,14 +197,14 @@ const defaultPageSizeOptions = [
  *
  * @example
  * ```tsx
- * <Table header="Products">
+ * <Table title="Products">
  *   <Table.Column source="name" label="Name" />
  *   <Table.NumberColumn source="price" label="Price" />
  * </Table>
  * ```
  */
 export const Table = <RecordType extends RaRecord = any>({
-  header,
+  title,
   actions,
   children,
   include,
@@ -215,11 +215,15 @@ export const Table = <RecordType extends RaRecord = any>({
   preferences = true,
   reorderable = true,
   defaultVisibleFields,
+  selectionType,
   ...props
 }: TableProps<RecordType>) => {
   const resource = useResourceContext();
   const translate = useTranslate();
   const schemaChildren = useFieldSchema();
+  const resourceDefinition = useResourceDefinition({ resource });
+
+  const finalSelectionType = selectionType ?? (resourceDefinition?.options?.canDelete ? 'multi' : undefined);
 
   const finalChildren = React.useMemo(() => {
     const baseChildren = children || schemaChildren;
@@ -258,13 +262,17 @@ export const Table = <RecordType extends RaRecord = any>({
         children: childChildren,
         ...restColumnProps
       } = child.props as any;
-      
+
       const isNumberColumn = (child.type as any)?.isNumberColumn;
 
       const headerLabel =
-        childHeader ||
-        label ||
-        (source && resource ? translate(`resources.${resource}.fields.${source}`, { _: source }) : source);
+        (typeof childHeader === 'string' ? translate(childHeader, { _: childHeader }) : childHeader) ||
+        (typeof label === 'string' ? translate(label, { _: label }) : label) ||
+        (source && resource
+          ? translate(`resources.${resource}.fields.${source}`, { _: source })
+          : source
+            ? translate(source, { _: source })
+            : '');
       const finalHeader = isNumberColumn ? <Box textAlign="right">{headerLabel}</Box> : headerLabel;
 
       const columnId = source || `col-${index}`;
@@ -295,29 +303,32 @@ export const Table = <RecordType extends RaRecord = any>({
 
   const defaultVisibleContent = React.useMemo(() => {
     if (extractedColumns.options.length === 0) return undefined;
-    
+
     if (defaultVisibleFields) {
       // Map user-provided fields to their actual IDs
       return extractedColumns.options
-        .filter(opt => {
-          const column = extractedColumns.columns.find(c => c.id === opt.id);
-          return defaultVisibleFields.includes(opt.id) || (column?.sortingField && defaultVisibleFields.includes(column.sortingField));
+        .filter((opt) => {
+          const column = extractedColumns.columns.find((c) => c.id === opt.id);
+          return (
+            defaultVisibleFields.includes(opt.id) ||
+            (column?.sortingField && defaultVisibleFields.includes(column.sortingField))
+          );
         })
-        .map(opt => opt.id);
+        .map((opt) => opt.id);
     }
-    
+
     // Default to first 5 toggleable columns
-    return extractedColumns.options.slice(0, 5).map(opt => opt.id);
+    return extractedColumns.options.slice(0, 5).map((opt) => opt.id);
   }, [extractedColumns, defaultVisibleFields]);
 
   const defaultContentDisplay = React.useMemo(() => {
     if (extractedColumns.options.length === 0) return undefined;
-    
+
     const visibleIds = defaultVisibleContent || [];
 
-    return extractedColumns.options.map(opt => ({
+    return extractedColumns.options.map((opt) => ({
       id: opt.id,
-      visible: visibleIds.includes(opt.id)
+      visible: visibleIds.includes(opt.id),
     }));
   }, [extractedColumns.options, defaultVisibleContent]);
 
@@ -327,8 +338,10 @@ export const Table = <RecordType extends RaRecord = any>({
     sorting: {},
     preferences: {
       pageSizeOptions,
-      visibleContentOptions: !reorderable && extractedColumns.options.length > 0 ? extractedColumns.options : undefined,
-      contentDisplayOptions: reorderable && extractedColumns.options.length > 0 ? extractedColumns.options : undefined,
+      visibleContentOptions:
+        !reorderable && extractedColumns.options.length > 0 ? extractedColumns.options : undefined,
+      contentDisplayOptions:
+        reorderable && extractedColumns.options.length > 0 ? extractedColumns.options : undefined,
       visibleContent: defaultVisibleContent,
       contentDisplay: defaultContentDisplay,
     },
@@ -341,27 +354,31 @@ export const Table = <RecordType extends RaRecord = any>({
     }
     return extractedColumns.columns.filter((col) => {
       // Always show columns that are not in options (non-toggleable columns like Actions)
-      const isToggleable = extractedColumns.options.some(opt => opt.id === col.id);
+      const isToggleable = extractedColumns.options.some((opt) => opt.id === col.id);
       if (!isToggleable) return true;
 
       return preferencesProps.preferences.visibleContent?.includes(col.id);
     });
   }, [extractedColumns.columns, extractedColumns.options, preferencesProps.preferences.visibleContent, reorderable]);
 
+  const getResourceLabel = useGetResourceLabel();
+
   const tableHeader = React.useMemo(() => {
-    if (header === null || header === false) {
+    if (title === null || title === false) {
       return undefined;
     }
-    if (React.isValidElement(header)) {
-      return header;
+    if (React.isValidElement(title)) {
+      return title;
     }
-    return <TableHeader title={header} actions={actions} />;
-  }, [header, actions]);
+    const finalTitle = title !== undefined ? title : getResourceLabel(resource, 2);
+    return <TableHeader title={finalTitle} actions={actions} />;
+  }, [title, actions, resource, getResourceLabel]);
 
   return (
     <CloudscapeTable
       {...collectionProps}
       {...props}
+      selectionType={finalSelectionType}
       stripedRows={preferencesProps.preferences.stripedRows}
       wrapLines={preferencesProps.preferences.wrapLines}
       columnDefinitions={columnDefinitions}
@@ -372,8 +389,6 @@ export const Table = <RecordType extends RaRecord = any>({
         filtering && (
           <TextFilter
             {...filterProps}
-            filteringPlaceholder={filteringPlaceholder || 'Search...'}
-            countText={items?.length ? `${items.length} items` : '0 items'}
           />
         )
       }
@@ -382,45 +397,29 @@ export const Table = <RecordType extends RaRecord = any>({
         preferences === true || pageSizeOptions ? (
           <CollectionPreferences
             {...preferencesProps}
-            title="Preferences"
-            confirmLabel="Confirm"
-            cancelLabel="Cancel"
             pageSizePreference={
               pageSizeOptions
                 ? {
-                    title: 'Page size',
-                    options: pageSizeOptions,
-                  }
+                  options: pageSizeOptions,
+                }
                 : undefined
             }
-            wrapLinesPreference={{
-              label: 'Wrap lines',
-              description: 'Select to wrap lines and see all text.',
-            }}
-            stripedRowsPreference={{
-              label: 'Striped rows',
-              description: 'Select to add alternating shaded rows.',
-            }}
             visibleContentPreference={
               !reorderable && extractedColumns.options.length > 0
                 ? {
-                    title: 'Select visible content',
-                    options: [
-                      {
-                        label: 'Main columns',
-                        options: extractedColumns.options,
-                      },
-                    ],
-                  }
+                  options: [
+                    {
+                      options: extractedColumns.options,
+                    },
+                  ],
+                }
                 : undefined
             }
             contentDisplayPreference={
               reorderable && extractedColumns.options.length > 0
                 ? {
-                    title: 'Column preferences',
-                    description: 'Customize the visibility and order of columns.',
-                    options: extractedColumns.options,
-                  }
+                  options: extractedColumns.options,
+                }
                 : undefined
             }
           />

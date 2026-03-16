@@ -1,0 +1,168 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=utf-8\n"
+"Language: en\n"
+
+#. id: 1kdfstp
+msgid "Products"
+msgstr ""
+
+#. id: 1upw6fh
+msgid "Categories"
+msgstr ""
+
+#. id: 1vweyym
+msgid "Customers"
+msgstr ""
+
+#. id: xf3i18
+msgid "Orders"
+msgstr ""
+
+#. id: 1fc6u0m
+msgid "Reviews"
+msgstr ""
+
+#. id: o4495s
+msgid "ID"
+msgstr ""
+
+#. id: ggjuyh
+msgid "Date"
+msgstr ""
+
+#. id: 2reqex
+msgid "Customer"
+msgstr ""
+
+#. id: mx6d3g
+msgid "Product"
+msgstr ""
+
+#. id: i9emhs
+msgid "Accepted"
+msgstr ""
+
+#. id: e8nfto
+msgid "Pending"
+msgstr ""
+
+#. id: 1uofzaf
+msgid "Rejected"
+msgstr ""
+
+#. id: 169e4n2
+msgid "Comment"
+msgstr ""
+
+#. id: 3iz6df
+msgid "Review Details"
+msgstr ""
+
+#. id: 4el6o6
+msgid "Name"
+msgstr ""
+
+#. id: 1c7vrcq
+msgid "Reference"
+msgstr ""
+
+#. id: 1cr1mz5
+msgid "Category"
+msgstr ""
+
+#. id: 1pdyg96
+msgid "Price"
+msgstr ""
+
+#. id: ssn1v9
+msgid "Stock"
+msgstr ""
+
+#. id: czo7yv
+msgid "Sales"
+msgstr ""
+
+#. id: sjj37t
+msgid "Description"
+msgstr ""
+
+#. id: fph5dc
+msgid "Rating"
+msgstr ""
+
+#. id: 1tu7tki
+msgid "Product Details"
+msgstr ""
+
+#. id: 1lsm6c1
+msgid "Product Reviews"
+msgstr ""
+
+#. id: 2laa7q
+msgid "Create Product"
+msgstr ""
+
+#. id: 1gbs3ve
+msgid "Edit Product"
+msgstr ""
+
+#. id: 1c0as9p
+msgid "Total"
+msgstr ""
+
+#. id: 6krmuu
+msgid "Ordered"
+msgstr ""
+
+#. id: 1sgaj73
+msgid "Delivered"
+msgstr ""
+
+#. id: 1a3t1vg
+msgid "Cancelled"
+msgstr ""
+
+#. id: 1kmy72x
+msgid "Unknown"
+msgstr ""
+
+#. id: yz0hud
+msgid "Order Details"
+msgstr ""
+
+#. id: 6yjm7s
+msgid "First Name"
+msgstr ""
+
+#. id: 16p3u1s
+msgid "Last Name"
+msgstr ""
+
+#. id: inbfc7
+msgid "Email"
+msgstr ""
+
+#. id: 142k4ma
+msgid "City"
+msgstr ""
+
+#. id: 115ed55
+msgid "Total Spent"
+msgstr ""
+
+#. id: wf8g0r
+msgid "Customer Details"
+msgstr ""
+
+#. id: izdfpk
+msgid "Category Name"
+msgstr ""
+
+#. id: 1hv38wj
+msgid "Category Details"
+msgstr ""
+
+#. id: 3pd73
+msgid "Status"
+msgstr ""

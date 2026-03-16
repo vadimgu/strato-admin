@@ -57,7 +57,7 @@ export function ProductList() {
   return (
     <List perPage={10}>
       <Table
-        header="Products"
+        title="Products"
         selectionType="multi"
         filteringPlaceholder="Search products..."
         exclude={['description']}
@@ -72,7 +72,7 @@ export function ProductShow() {
       <KeyValuePairs columns={3} exclude={['description']} />
       <KeyValuePairs columns={1} include={['description']} />
       <ReferenceManyField reference="reviews" target="product_id" sort={{ field: 'date', order: 'DESC' }} >
-        <Table exclude={['product_id']} />
+        <Table exclude={['product_id']} title="Product Reviews" />
       </ReferenceManyField>
     </Show>
   );

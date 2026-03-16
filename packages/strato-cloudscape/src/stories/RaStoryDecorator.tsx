@@ -7,7 +7,7 @@ import {
   ListContextProvider,
   type RaRecord,
 } from 'strato-core';
-import { icuI18nProvider } from 'strato-i18n-icu';
+import { icuI18nProvider } from 'strato-i18n';
 import englishMessages from 'strato-language-en';
 
 const i18nProvider = icuI18nProvider(() => englishMessages as any, 'en');

@@ -24,7 +24,7 @@
     "strato-core": "workspace:*",
     "react-hook-form": "^7.71.2",
     "react-router-dom": "^6.22.3",
-    "strato-i18n-icu": "workspace:*",
+    "strato-i18n": "workspace:*",
     "strato-language-en": "workspace:*"
   },
   "devDependencies": {

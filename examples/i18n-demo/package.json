@@ -16,7 +16,7 @@
     "react-dom": "^19.0.0",
     "react-intl": "^8.1.3",
     "strato-admin": "workspace:*",
-    "strato-i18n-icu": "workspace:*"
+    "strato-i18n": "workspace:*"
   },
   "devDependencies": {
     "@formatjs/cli": "^6.13.0",

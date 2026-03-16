@@ -9,29 +9,15 @@ export interface ShowHeaderProps extends Omit<HeaderProps, 'children'> {
 }
 
 export const ShowHeader = ({ title, actions, ...props }: ShowHeaderProps) => {
-  const resource = useResourceContext();
   const translate = useTranslate();
-  const definitions = useResourceDefinitions();
-  const { record } = useShowContext();
+  const { record, defaultTitle } = useShowContext();
 
   const headerTitle = React.useMemo(() => {
     if (title !== undefined) {
-      return title;
+      return typeof title === 'string' ? translate(title, { _: title }) : title;
     }
-    if (!resource) {
-      return '';
-    }
-
-    const definition = definitions[resource];
-    const defaultLabel = definition?.options?.label
-      ? translate(definition.options.label, { _: definition.options.label })
-      : resource.charAt(0).toUpperCase() + resource.slice(1);
-
-    return translate(`resources.${resource}.name`, {
-      smart_count: 1,
-      _: defaultLabel,
-    });
-  }, [title, resource, definitions, translate]);
+    return defaultTitle;
+  }, [title, defaultTitle, translate]);
 
   const headerActions = actions || (
     <SpaceBetween direction="horizontal" size="xs">

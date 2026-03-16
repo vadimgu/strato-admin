@@ -1,0 +1,28 @@
+{
+  "ra.action.add": {
+    "defaultMessage": "Add",
+    "description": "Label for the button to add a new record"
+  },
+  "ra.action.add_filter": {
+    "defaultMessage": "Add filter"
+  },
+  "ra.action.cancel": {
+    "defaultMessage": "Cancel"
+  },
+  "ra.action.delete": {
+    "defaultMessage": "Delete"
+  },
+  "ra.action.edit": {
+    "defaultMessage": "Edit"
+  },
+  "ra.action.remove_filter": {
+    "defaultMessage": "Remove filter"
+  },
+  "ra.action.save": {
+    "defaultMessage": "Save",
+    "description": "Label for the button to save a record"
+  },
+  "ra.action.search": {
+    "defaultMessage": "Search"
+  }
+}

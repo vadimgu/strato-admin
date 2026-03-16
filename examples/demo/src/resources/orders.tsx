@@ -8,6 +8,7 @@ import {
   NumberField,
   DateField,
   ReferenceField,
+  StatusIndicatorField,
 } from 'strato-admin';
 
 export const orderSchema = (
@@ -22,7 +23,12 @@ export const orderSchema = (
       sortable
       options={{ style: 'currency', currency: 'USD' }}
     />
-    <TextField source="status" label="Status" sortable />
+    <StatusIndicatorField source="status" label="Status" sortable>
+      <StatusIndicatorField.Label value="ordered" type="info" label="Ordered" />
+      <StatusIndicatorField.Label value="delivered" type="success" label="Delivered" />
+      <StatusIndicatorField.Label value="cancelled" type="error" label="Cancelled" />
+      <StatusIndicatorField.Label value="unknown" type="warning" label="Unknown" />
+    </StatusIndicatorField>
   </FieldSchema>
 );
 

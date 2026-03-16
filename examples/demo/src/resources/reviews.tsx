@@ -7,6 +7,7 @@ import {
   TextField,
   DateField,
   ReferenceField,
+  StatusIndicatorField,
 } from 'strato-admin';
 import StarRatingField from '../components/StarRatingField';
 
@@ -17,7 +18,11 @@ export const reviewSchema = (
     <ReferenceField source="customer_id" reference="customers" label="Customer" link="show" />
     <ReferenceField source="product_id" reference="products" label="Product" link="show" />
     <StarRatingField source="rating" label="Rating" sortable />
-    <TextField source="status" label="Status" sortable />
+    <StatusIndicatorField source="status" label="Status" sortable>
+      <StatusIndicatorField.Label value="accepted" type="success" label="Accepted" />
+      <StatusIndicatorField.Label value="pending" type="pending" label="Pending" />
+      <StatusIndicatorField.Label value="rejected" type="error" label="Rejected" />
+    </StatusIndicatorField>
     <TextField source="comment" label="Comment" />
   </FieldSchema>
 );
@@ -28,9 +33,7 @@ export function ReviewList() {
       <Table
         header="Reviews"
         selectionType="multi"
-        filtering
         filteringPlaceholder="Search reviews..."
-        preferences
         exclude={['comment']}
       />
     </List>

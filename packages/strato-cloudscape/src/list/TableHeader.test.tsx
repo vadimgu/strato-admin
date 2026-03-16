@@ -1,7 +1,7 @@
 import React from 'react';
-import { render } from '@testing-library/react';
-import { vi, describe, it, expect, beforeEach } from 'vitest';
-import { useResourceContext, useListContext, useResourceDefinitions } from 'strato-core';
+import { render, cleanup } from '@testing-library/react';
+import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { useResourceContext, useListContext, useResourceDefinitions, useTranslate } from 'strato-core';
 import { TableHeader } from './TableHeader';
 
 // Mock ra-core
@@ -43,50 +43,72 @@ vi.mock('@cloudscape-design/components/button', () => ({
   default: ({ children }: any) => <button>{children}</button>,
 }));
 
+// Mock internal buttons
+vi.mock('../button/BulkDeleteButton', () => ({
+  BulkDeleteButton: () => <button data-testid="bulk-delete">Delete</button>,
+}));
+
+vi.mock('../button/CreateButton', () => ({
+  CreateButton: () => <button data-testid="create-button">Create</button>,
+}));
+
 describe('TableHeader', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    // Reset to default mocks
+    (useResourceDefinitions as any).mockReturnValue({});
+    (useTranslate as any).mockReturnValue((key: string, options: any) => options?._ || key);
+  });
+
+  afterEach(() => {
+    cleanup();
   });
 
   it('should render title and counter', () => {
     (useResourceContext as any).mockReturnValue('products');
-    (useListContext as any).mockReturnValue({ total: 10, isPending: false, selectedIds: [] });
+    (useListContext as any).mockReturnValue({ 
+      total: 10, 
+      isPending: false, 
+      selectedIds: [], 
+      defaultTitle: 'Products' 
+    });
     (useResourceDefinitions as any).mockReturnValue({ products: { hasCreate: false } });
 
-    const { getByTestId, getByText } = render(<TableHeader />);
+    const { getByTestId } = render(<TableHeader />);
 
     expect(getByTestId('header-title').textContent).toBe('Products');
     expect(getByTestId('header-counter').textContent).toBe('(10)');
   });
 
-  it('should render CreateButton when resource has create', () => {
+  it('should render actions by default', () => {
     (useResourceContext as any).mockReturnValue('products');
     (useListContext as any).mockReturnValue({ total: 10, isPending: false, selectedIds: [] });
-    (useResourceDefinitions as any).mockReturnValue({ products: { hasCreate: true } });
 
-    const { getByText } = render(<TableHeader />);
+    const { getByTestId } = render(<TableHeader />);
 
-    expect(getByText('Create')).toBeDefined();
-  });
-
-  it('should NOT render CreateButton when resource does NOT have create', () => {
-    (useResourceContext as any).mockReturnValue('products');
-    (useListContext as any).mockReturnValue({ total: 10, isPending: false, selectedIds: [] });
-    (useResourceDefinitions as any).mockReturnValue({ products: { hasCreate: false } });
-
-    const { queryByText } = render(<TableHeader />);
-
-    expect(queryByText('Create')).toBeNull();
+    expect(getByTestId('bulk-delete')).toBeDefined();
+    expect(getByTestId('create-button')).toBeDefined();
   });
 
   it('should NOT render actions when actions={null}', () => {
     (useResourceContext as any).mockReturnValue('products');
     (useListContext as any).mockReturnValue({ total: 10, isPending: false, selectedIds: [] });
-    (useResourceDefinitions as any).mockReturnValue({ products: { hasCreate: true } });
 
-    const { queryByText, getByTestId } = render(<TableHeader actions={null} />);
+    const { queryByTestId, getByTestId } = render(<TableHeader actions={null} />);
 
-    expect(queryByText('Create')).toBeNull();
+    expect(queryByTestId('bulk-delete')).toBeNull();
+    expect(queryByTestId('create-button')).toBeNull();
     expect(getByTestId('header-actions').children.length).toBe(0);
+  });
+
+  it('should translate string title', () => {
+    const translate = vi.fn((key: string, options: any) => options?._ || key);
+    (useTranslate as any).mockReturnValue(translate);
+    (useResourceContext as any).mockReturnValue('products');
+    (useListContext as any).mockReturnValue({ total: 10, isPending: false, selectedIds: [] });
+
+    render(<TableHeader title="Custom Title" />);
+
+    expect(translate).toHaveBeenCalledWith('Custom Title', { _: 'Custom Title' });
   });
 });

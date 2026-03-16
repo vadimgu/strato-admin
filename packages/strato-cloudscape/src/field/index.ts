@@ -1,4 +1,6 @@
 export * from './types';
+export { default as StatusIndicatorField } from './StatusIndicatorField';
+export * from './StatusIndicatorField';
 export { default as TextField } from './TextField';
 export { default as NumberField } from './NumberField';
 export { default as DateField } from './DateField';

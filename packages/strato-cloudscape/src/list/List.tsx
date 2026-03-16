@@ -7,7 +7,7 @@ export interface ListProps<_RecordType extends RaRecord = any> {
   fieldSchema?: React.ReactNode;
   include?: string[];
   exclude?: string[];
-  header?: React.ReactNode;
+  title?: React.ReactNode;
   actions?: React.ReactNode;
   /**
    * Whether to enable text filtering in the implicit Table.
@@ -47,7 +47,7 @@ export const List = <RecordType extends RaRecord = any>({
   fieldSchema,
   include,
   exclude,
-  header,
+  title,
   actions,
   filtering = true,
   preferences = true,
@@ -57,7 +57,7 @@ export const List = <RecordType extends RaRecord = any>({
     <Table 
       include={include} 
       exclude={exclude} 
-      header={header} 
+      title={title} 
       actions={actions} 
       filtering={filtering} 
       preferences={preferences} 

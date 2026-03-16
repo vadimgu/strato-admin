@@ -23,9 +23,10 @@ import { DEFAULT_MAX_RESULTS } from '../list/useListController';
 import usePaginationState from '../usePaginationState';
 import { useRecordSelection } from '../list/useRecordSelection';
 import useSortState from '../useSortState';
-import { useResourceContext } from '../../core';
+import { useResourceContext, useGetResourceLabel } from '../../core';
 import { useRecordContext } from '../record';
 import { defaultExporter } from '../../export';
+import { useTranslate } from '../../i18n';
 
 /**
  * Fetch reference records, and return them when available
@@ -81,6 +82,7 @@ export const useReferenceManyFieldController = <
         >,
     } = props;
     const notify = useNotify();
+    const translate = useTranslate();
     const record = useRecordContext(props);
     const resource = useResourceContext(props);
     const dataProvider = useDataProvider();
@@ -317,11 +319,18 @@ export const useReferenceManyFieldController = <
         }
     );
 
+    const getResourceLabel = useGetResourceLabel();
+    const defaultTitle = translate(`resources.${reference}.page.list`, {
+        _: translate('ra.page.list', {
+            name: getResourceLabel(reference, 2),
+        }),
+    });
+
     return {
         sort,
         data,
         meta: responseMeta,
-        defaultTitle: undefined,
+        defaultTitle,
         displayedFilters,
         error,
         exporter,

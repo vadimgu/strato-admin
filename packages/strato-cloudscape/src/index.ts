@@ -1,3 +1,9 @@
+import { registerDefaultResourceComponents } from 'strato-core';
+import { List } from './list';
+import { Create } from './create';
+import { Edit } from './edit';
+import { Show } from './detail';
+
 export * from './collection-hooks';
 export * from './list';
 export * from './detail';
@@ -22,3 +28,11 @@ export { Edit, type EditProps } from './edit';
 export { Show, type ShowProps } from './detail';
 
 export * from 'strato-core';
+
+// Register Cloudscape themed components as defaults for ResourceSchema
+registerDefaultResourceComponents({
+  list: List,
+  create: Create,
+  edit: Edit,
+  show: Show,
+});

@@ -16,6 +16,8 @@ vi.mock('strato-core', () => ({
   useFieldValue: vi.fn(({ source, record }) => record?.[source]),
   useCreatePath: vi.fn(() => (params: any) => `/${params.resource}/${params.id}/${params.type}`),
   useResourceDefinitions: vi.fn(() => ({})),
+  useResourceDefinition: vi.fn(() => ({})),
+  useGetResourceLabel: vi.fn(() => (resource: string, count: number) => resource),
   useLocale: vi.fn(() => 'en'),
   useBulkDeleteController: vi.fn(() => ({
     handleDelete: vi.fn(),
@@ -259,9 +261,9 @@ describe('DataTable', () => {
     ]);
   });
 
-  it('should hide header when header={null}', () => {
+  it('should hide header when title={null}', () => {
     const { queryByTestId } = render(
-      <Table header={null}>
+      <Table title={null}>
         <Table.Column source="name" label="Product Name" />
       </Table>,
     );

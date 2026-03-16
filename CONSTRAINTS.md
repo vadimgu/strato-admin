@@ -30,7 +30,7 @@ data context. Conversely, `strato-core` should never import anything from
 ### 3. Mandatory Internationalization (No Hardcoded Strings)
 
 **Constraint:** All user-facing text inside `strato-cloudscape` and application
-examples must be routed through the translation framework (`strato-i18n-icu` /
+examples must be routed through the translation framework (`strato-i18n` /
 `strato-language-en`).
 
 **Why:** The project lists "I18n Built-in" as a core feature. Enforcing no raw

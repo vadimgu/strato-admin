@@ -38,19 +38,22 @@ export const ResourceSchemaProvider = ({
   // We MUST check the registry if resource is provided, even if we have some schemas from props,
   // because props might only contain ONE of them (e.g. only fieldSchema).
   const registrySchemas = useMemo(() => {
-    if (resource) {
-      return getSchemas(resource);
+    const effectiveResource = resource || parentResource;
+    if (effectiveResource) {
+      return getSchemas(effectiveResource);
     }
     return undefined;
-  }, [resource, getSchemas]);
+  }, [resource, parentResource, getSchemas]);
 
   const finalFieldSchema = fieldSchema || registrySchemas?.fieldSchema;
   const finalInputSchema = inputSchema || registrySchemas?.inputSchema;
 
   // Extract children if the schemas are passed as <FieldSchema> or <InputSchema> elements
   const getChildren = (schema: ReactNode) => {
-    if (React.isValidElement(schema) && 'children' in schema.props) {
-      return (schema.props as any).children;
+    if (React.isValidElement(schema)) {
+      if ('children' in schema.props) {
+        return (schema.props as any).children;
+      }
     }
     return schema;
   };

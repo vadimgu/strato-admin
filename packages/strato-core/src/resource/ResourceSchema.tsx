@@ -1,12 +1,17 @@
 import React, { ReactNode } from 'react';
 import { Resource, ResourceProps } from 'ra-core';
 import { ResourceSchemaProvider } from './ResourceSchemaProvider';
-import { registerGlobalSchemas } from './SchemaRegistry';
+import { registerGlobalSchemas, useSchemaRegistry, getDefaultResourceComponents } from './SchemaRegistry';
 
 export interface ResourceSchemaProps extends ResourceProps {
   fieldSchema?: ReactNode;
   inputSchema?: ReactNode;
   label?: string;
+  canCreate?: boolean;
+  canEdit?: boolean;
+  canDelete?: boolean;
+  canShowDetails?: boolean;
+  canList?: boolean;
 }
 
 /**
@@ -29,12 +34,35 @@ export const ResourceSchema = ({
   inputSchema,
   label,
   options,
+  canCreate = true,
+  canEdit = true,
+  canDelete = true,
+  canShowDetails = true,
+  canList = true,
   ...props
 }: ResourceSchemaProps) => {
-  const mergedOptions = label ? { ...options, label } : options;
+  const { defaultComponents } = useSchemaRegistry();
+  const mergedOptions = { 
+    ...options, 
+    ...(label ? { label } : {}),
+    canCreate,
+    canEdit,
+    canDelete,
+    canShowDetails,
+    canList,
+  };
+
+  const finalProps = {
+    ...props,
+    list: canList ? (props.list || defaultComponents.list) : undefined,
+    create: canCreate ? (props.create || defaultComponents.create) : undefined,
+    edit: canEdit ? (props.edit || defaultComponents.edit) : undefined,
+    show: canShowDetails ? (props.show || defaultComponents.show) : undefined,
+  };
+
   return (
     <ResourceSchemaProvider resource={props.name} fieldSchema={fieldSchema} inputSchema={inputSchema}>
-      <Resource {...props} options={mergedOptions} />
+      <Resource {...finalProps} options={mergedOptions} />
     </ResourceSchemaProvider>
   );
 };
@@ -46,10 +74,46 @@ ResourceSchema.raName = 'Resource';
  * We use it to register schemas globally before any component renders.
  */
 ResourceSchema.registerResource = (props: ResourceSchemaProps) => {
-  const { name, fieldSchema, inputSchema, label, options } = props;
+  const { 
+    name, 
+    fieldSchema, 
+    inputSchema, 
+    label, 
+    options, 
+    canCreate = true,
+    canEdit = true,
+    canDelete = true,
+    canShowDetails = true,
+    canList = true,
+    list,
+    create,
+    edit,
+    show,
+  } = props;
+  
   if (name && (fieldSchema || inputSchema)) {
     registerGlobalSchemas(name, { fieldSchema, inputSchema });
   }
-  const mergedOptions = label ? { ...options, label } : options;
-  return (Resource as any).registerResource({ ...props, options: mergedOptions });
+
+  const defaultComponents = getDefaultResourceComponents();
+  const mergedOptions = { 
+    ...options, 
+    ...(label ? { label } : {}),
+    canCreate,
+    canEdit,
+    canDelete,
+    canShowDetails,
+    canList,
+  };
+
+  const finalProps = {
+    ...props,
+    list: canList ? (list || defaultComponents.list) : undefined,
+    create: canCreate ? (create || defaultComponents.create) : undefined,
+    edit: canEdit ? (edit || defaultComponents.edit) : undefined,
+    show: canShowDetails ? (show || defaultComponents.show) : undefined,
+    options: mergedOptions,
+  };
+
+  return (Resource as any).registerResource(finalProps);
 };

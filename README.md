@@ -33,19 +33,19 @@ pnpm install strato-admin
 ## Quick Start
 
 ```tsx
-import { Admin, Resource, List, DataTable, TextField } from 'strato-admin';
+import { Admin, Resource, List, Table, TextField } from 'strato-admin';
 import { jsonServerDataProvider } from 'ra-data-json-server';
 
 const dataProvider = jsonServerDataProvider('https://jsonplaceholder.typicode.com');
 
 const UsersList = () => (
   <List>
-    <DataTable header="Users" filtering preferences>
-      <DataTable.Col source="id" label="ID" link="show" />
-      <DataTable.Col source="name" label="Name" sortable />
-      <DataTable.Col source="email" label="Email" />
-      <DataTable.Col source="website" label="Website" />
-    </DataTable>
+    <Table title="Users" filtering preferences>
+      <Table.Column source="id" label="ID" link="show" />
+      <Table.Column source="name" label="Name" sortable />
+      <Table.Column source="email" label="Email" />
+      <Table.Column source="website" label="Website" />
+    </Table>
   </List>
 );
 

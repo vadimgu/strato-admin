@@ -2,7 +2,7 @@ import { List, Table } from 'strato-admin';
 
 export const UserList = () => (
   <List>
-    <Table header="Users" filtering preferences>
+    <Table title="Users" filtering preferences>
       <Table.Column source="firstName" label="First Name" sortable link="show" />
       <Table.Column source="lastName" label="Last Name" sortable />
       <Table.Column source="username" label="Username" sortable />

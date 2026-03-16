@@ -17,7 +17,7 @@ export const categorySchema = (
 export function CategoryList() {
   return (
     <List>
-      <Table header="Categories" selectionType="multi" />
+      <Table title="Categories" selectionType="multi" />
     </List>
   );
 }

@@ -1,35 +1,22 @@
 import React from 'react';
 import Header, { HeaderProps } from '@cloudscape-design/components/header';
 import SpaceBetween from '@cloudscape-design/components/space-between';
-import { useResourceContext, useTranslate, useResourceDefinitions } from 'strato-core';
+import { useCreateContext, useTranslate } from 'strato-core';
 
 export interface CreateHeaderProps extends Omit<HeaderProps, 'children'> {
   title?: React.ReactNode;
 }
 
 export const CreateHeader = ({ title, actions, ...props }: CreateHeaderProps) => {
-  const resource = useResourceContext();
   const translate = useTranslate();
-  const definitions = useResourceDefinitions();
+  const { defaultTitle } = useCreateContext();
 
   const headerTitle = React.useMemo(() => {
     if (title !== undefined) {
-      return title;
+      return typeof title === 'string' ? translate(title, { _: title }) : title;
     }
-    if (!resource) {
-      return '';
-    }
-
-    const definition = definitions[resource];
-    const defaultLabel = definition?.options?.label
-      ? translate(definition.options.label, { _: definition.options.label })
-      : resource.charAt(0).toUpperCase() + resource.slice(1);
-
-    return translate(`resources.${resource}.name`, {
-      smart_count: 1,
-      _: defaultLabel,
-    });
-  }, [title, resource, definitions, translate]);
+    return defaultTitle;
+  }, [title, defaultTitle, translate]);
 
   const headerActions = actions || (
     <SpaceBetween direction="horizontal" size="xs">

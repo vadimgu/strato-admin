@@ -46,7 +46,7 @@ export interface ReferenceManyFieldProps<
  *
  * @example
  * <ReferenceManyField reference="comments" target="post_id">
- *     <Table header="Comments">
+ *     <Table title="Comments">
  *         <Table.Column source="id" />
  *         <Table.Column source="body" />
  *         <Table.Column source="created_at" />

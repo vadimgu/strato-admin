@@ -62,7 +62,7 @@ export const Basic: Story = {
 export const WithFiltering: Story = {
   render: () => (
     <ListContextProvider value={listContext}>
-      <Table header="Inventory Management" filtering preferences>
+      <Table title="Inventory Management" filtering preferences>
         <Column source="name" label="Product Name" />
         <Column source="category" label="Category" />
         <NumberColumn source="price" label="Price" />
