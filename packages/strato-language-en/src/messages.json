@@ -20,6 +20,8 @@
   "ra.input.references.all_missing": "Unable to find references data.",
   "ra.input.references.many_missing": "At least one of the associated references no longer appears to be available.",
   "ra.input.references.single_missing": "Associated reference no longer appears to be available.",
+  "ra.message.bulk_delete_content": "{smart_count, plural, one {Are you sure you want to delete this item?} other {Are you sure you want to delete these # items?}}",
+  "ra.message.bulk_delete_title": "{smart_count, plural, one {Delete item} other {Delete # items}}",
   "ra.message.clear_array_input": "Are you sure you want to clear the whole list?",
   "ra.message.delete_content": "Are you sure you want to delete this {name}?",
   "ra.message.delete_title": "Delete {name} {recordRepresentation}",

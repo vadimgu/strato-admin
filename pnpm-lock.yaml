@@ -557,7 +557,11 @@ importers:
         specifier: ^6.13.0
         version: 6.13.0
 
-  packages/strato-language-fr: {}
+  packages/strato-language-fr:
+    devDependencies:
+      '@formatjs/cli':
+        specifier: ^6.13.0
+        version: 6.13.0
 
 packages:
 

@@ -2,13 +2,22 @@
 import { render, screen, fireEvent, cleanup } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { BulkDeleteButton } from './BulkDeleteButton';
-import { useListContext, useBulkDeleteController, useTranslate, useResourceDefinition } from '@strato-admin/core';
+import {
+  useListContext,
+  useBulkDeleteController,
+  useTranslate,
+  useResourceDefinition,
+  useResourceContext,
+  useGetResourceLabel,
+} from '@strato-admin/core';
 
 vi.mock('@strato-admin/core', () => ({
   useListContext: vi.fn(),
   useBulkDeleteController: vi.fn(),
   useTranslate: vi.fn(),
   useResourceDefinition: vi.fn(),
+  useResourceContext: vi.fn(),
+  useGetResourceLabel: vi.fn(),
 }));
 
 describe('BulkDeleteButton', () => {
@@ -21,6 +30,8 @@ describe('BulkDeleteButton', () => {
       isLoading: false,
     });
     (useResourceDefinition as any).mockReturnValue({ options: {} });
+    (useResourceContext as any).mockReturnValue('posts');
+    (useGetResourceLabel as any).mockReturnValue(() => 'Posts');
   });
 
   afterEach(() => {
@@ -30,13 +41,12 @@ describe('BulkDeleteButton', () => {
   it('should be disabled when no ids are selected', () => {
     (useListContext as any).mockReturnValue({ selectedIds: [] });
     render(<BulkDeleteButton />);
-    expect(screen.getByRole('button')).toHaveProperty('disabled', true);
+    expect(screen.getByText('Delete').closest('button')).toHaveProperty('disabled', true);
   });
 
   it('should render when ids are selected', () => {
     (useListContext as any).mockReturnValue({ selectedIds: [1, 2] });
     render(<BulkDeleteButton />);
-    expect(screen.getByRole('button')).toBeDefined();
     expect(screen.getByText('Delete')).toBeDefined();
   });
 
@@ -47,7 +57,7 @@ describe('BulkDeleteButton', () => {
     expect(container.firstChild).toBeNull();
   });
 
-  it('should call handleDelete on click', () => {
+  it('should open dialog on click and call handleDelete on confirm', () => {
     const handleDelete = vi.fn();
     (useBulkDeleteController as any).mockReturnValue({
       handleDelete,
@@ -57,8 +67,22 @@ describe('BulkDeleteButton', () => {
     (useListContext as any).mockReturnValue({ selectedIds: [1, 2] });
 
     render(<BulkDeleteButton />);
-    fireEvent.click(screen.getByRole('button'));
+    fireEvent.click(screen.getByText('Delete'));
 
+    expect(handleDelete).not.toHaveBeenCalled();
+    expect(screen.getByText('Delete 2 items')).toBeDefined();
+    expect(screen.getByText('Are you sure you want to delete these 2 items?')).toBeDefined();
+
+    fireEvent.click(screen.getByTestId('confirm-bulk-delete'));
     expect(handleDelete).toHaveBeenCalled();
+  });
+
+  it('should use custom dialogTitle and dialogDescription', () => {
+    (useListContext as any).mockReturnValue({ selectedIds: [1, 2] });
+    render(<BulkDeleteButton dialogTitle="Custom Title" dialogDescription="Custom Description" />);
+    fireEvent.click(screen.getByText('Delete'));
+
+    expect(screen.getByText('Custom Title')).toBeDefined();
+    expect(screen.getByText('Custom Description')).toBeDefined();
   });
 });

@@ -21,7 +21,9 @@
   },
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "i18n:extract": "formatjs extract '../*/src/**/*.{ts,tsx}' --out-file messages.json",
+    "i18n:compile": "formatjs compile messages.json --out-file src/messages.json"
   },
   "keywords": [
     "strato",
@@ -36,5 +38,8 @@
     "type": "git",
     "url": "https://github.com/vadimgu/strato-admin.git",
     "directory": "packages/strato-language-fr"
+  },
+  "devDependencies": {
+    "@formatjs/cli": "^6.13.0"
   }
 }

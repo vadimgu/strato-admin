@@ -20,6 +20,8 @@
   "ra.input.references.all_missing": "Impossible de trouver les données de référence.",
   "ra.input.references.many_missing": "Au moins une des références associées ne semble plus disponible.",
   "ra.input.references.single_missing": "La référence associée ne semble plus disponible.",
+  "ra.message.bulk_delete_content": "{smart_count, plural, one {Êtes-vous sûr de vouloir supprimer cet élément ?} other {Êtes-vous sûr de vouloir supprimer ces # éléments ?}}",
+  "ra.message.bulk_delete_title": "{smart_count, plural, one {Supprimer l'élément} other {Supprimer # éléments}}",
   "ra.message.clear_array_input": "Êtes-vous sûr de vouloir vider toute la liste ?",
   "ra.message.delete_content": "Êtes-vous sûr de vouloir supprimer cet élément {name} ?",
   "ra.message.delete_title": "Supprimer {name} {recordRepresentation}",

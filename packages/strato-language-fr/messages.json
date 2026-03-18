@@ -1,0 +1,83 @@
+{
+  "ra.action.add": { "defaultMessage": "Ajouter" },
+  "ra.action.cancel": { "defaultMessage": "Annuler" },
+  "ra.action.clear_array_input": { "defaultMessage": "Vider la liste" },
+  "ra.action.close": { "defaultMessage": "Fermer" },
+  "ra.action.confirm": { "defaultMessage": "Confirmer" },
+  "ra.action.create": { "defaultMessage": "Créer" },
+  "ra.action.delete": { "defaultMessage": "Supprimer" },
+  "ra.action.edit": { "defaultMessage": "Éditer" },
+  "ra.action.move_down": { "defaultMessage": "Déplacer vers le bas" },
+  "ra.action.move_up": { "defaultMessage": "Déplacer vers le haut" },
+  "ra.action.refresh": { "defaultMessage": "Rafraîchir" },
+  "ra.action.remove": { "defaultMessage": "Supprimer" },
+  "ra.action.save": { "defaultMessage": "Enregistrer" },
+  "ra.action.undo": { "defaultMessage": "Annuler" },
+  "ra.action.update": { "defaultMessage": "Mettre à jour" },
+  "ra.auth.auth_check_error": { "defaultMessage": "Merci de vous connecter pour continuer" },
+  "ra.boolean.true": { "defaultMessage": "Oui" },
+  "ra.boolean.false": { "defaultMessage": "Non" },
+  "ra.input.references.all_missing": { "defaultMessage": "Impossible de trouver les données de référence." },
+  "ra.input.references.many_missing": {
+    "defaultMessage": "Au moins une des références associées ne semble plus disponible."
+  },
+  "ra.input.references.single_missing": { "defaultMessage": "La référence associée ne semble plus disponible." },
+  "ra.message.bulk_delete_content": {
+    "defaultMessage": "{smart_count, plural, one {Êtes-vous sûr de vouloir supprimer cet élément ?} other {Êtes-vous sûr de vouloir supprimer ces # éléments ?}}"
+  },
+  "ra.message.bulk_delete_title": {
+    "defaultMessage": "{smart_count, plural, one {Supprimer l'élément} other {Supprimer # éléments}}"
+  },
+  "ra.message.clear_array_input": { "defaultMessage": "Êtes-vous sûr de vouloir vider toute la liste ?" },
+  "ra.message.delete_content": { "defaultMessage": "Êtes-vous sûr de vouloir supprimer cet élément {name} ?" },
+  "ra.message.delete_title": { "defaultMessage": "Supprimer {name} {recordRepresentation}" },
+  "ra.message.invalid_form": { "defaultMessage": "Le formulaire n'est pas valide. Merci de vérifier les erreurs" },
+  "ra.message.select_all_limit_reached": {
+    "defaultMessage": "{max, plural, one {Il y a trop d'éléments pour tous les sélectionner. Seul le premier élément a été sélectionné.} other {Il y a trop d'éléments pour tous les sélectionner. Seuls les # premiers éléments ont été sélectionnés.}} "
+  },
+  "ra.message.unsaved_changes": {
+    "defaultMessage": "Certains de vos changements n'ont pas été enregistrés. Êtes-vous sûr de vouloir les ignorer ?"
+  },
+  "ra.message.update_content": {
+    "defaultMessage": "{smart_count, plural, one {Êtes-vous sûr de vouloir mettre à jour {name} {recordRepresentation} ?} other {Êtes-vous sûr de vouloir mettre à jour ces # éléments ?}}"
+  },
+  "ra.message.update_title": {
+    "defaultMessage": "{smart_count, plural, one {Mettre à jour {name} {recordRepresentation}} other {Mettre à jour # {name}}}"
+  },
+  "ra.navigation.next": { "defaultMessage": "Page suivante" },
+  "ra.navigation.page": { "defaultMessage": "Aller à la page {page}" },
+  "ra.navigation.page_range_info": { "defaultMessage": "{offsetBegin}-{offsetEnd} sur {total}" },
+  "ra.navigation.previous": { "defaultMessage": "Page précédente" },
+  "ra.notification.created": { "defaultMessage": "Élément créé" },
+  "ra.notification.data_provider_error": {
+    "defaultMessage": "Erreur du dataProvider. Consultez la console pour plus de détails."
+  },
+  "ra.notification.deleted": {
+    "defaultMessage": "{smart_count, plural, one {Élément supprimé} other {# éléments supprimés}}"
+  },
+  "ra.notification.http_error": { "defaultMessage": "Erreur de communication serveur" },
+  "ra.notification.item_doesnt_exist": { "defaultMessage": "L'élément n'existe pas" },
+  "ra.notification.logged_out": { "defaultMessage": "Votre session est terminée, merci de vous reconnecter." },
+  "ra.notification.not_authorized": { "defaultMessage": "Vous n'êtes pas autorisé à accéder à cette ressource." },
+  "ra.notification.updated": {
+    "defaultMessage": "{smart_count, plural, one {Élément mis à jour} other {# éléments mis à jour}}"
+  },
+  "ra.page.create": { "defaultMessage": "Créer {name}" },
+  "ra.page.edit": { "defaultMessage": "{name} {recordRepresentation}" },
+  "ra.page.list": { "defaultMessage": "{name}" },
+  "ra.page.show": { "defaultMessage": "{name} {recordRepresentation}" },
+  "ra.validation.email": { "defaultMessage": "Doit être un email valide" },
+  "ra.validation.maxLength": {
+    "defaultMessage": "{max, plural, one {Doit être de # caractère ou moins} other {Doit être de # caractères ou moins}}"
+  },
+  "ra.validation.maxValue": { "defaultMessage": "{max, plural, other {Doit être de # ou moins}}" },
+  "ra.validation.minLength": {
+    "defaultMessage": "{min, plural, one {Doit être d'au moins # caractère} other {Doit être d'au moins # caractères}}"
+  },
+  "ra.validation.minValue": { "defaultMessage": "{min, plural, other {Doit être d'au moins #}}" },
+  "ra.validation.number": { "defaultMessage": "Doit être un nombre" },
+  "ra.validation.oneOf": { "defaultMessage": "Doit être l'un des suivants : {options}" },
+  "ra.validation.regex": { "defaultMessage": "Doit correspondre au format (regexp) : {pattern}" },
+  "ra.validation.required": { "defaultMessage": "Requis" },
+  "ra.validation.unique": { "defaultMessage": "Doit être unique" }
+}
