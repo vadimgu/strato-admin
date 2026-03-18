@@ -8,6 +8,7 @@ import BooleanField from './BooleanField';
 vi.mock('strato-core', () => ({
   useRecordContext: vi.fn(),
   useFieldValue: vi.fn(),
+  useTranslate: () => (key: string, options: any) => options?._ || key,
 }));
 
 // Mock Cloudscape components

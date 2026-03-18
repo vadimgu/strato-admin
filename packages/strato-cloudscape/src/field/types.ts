@@ -32,4 +32,27 @@ export interface FieldProps<RecordType extends RaRecord = RaRecord>
    * The text to display if the value is empty or null.
    */
   emptyText?: ReactNode;
+  /**
+   * Configuration for the inferred form input.
+   * - object: Props passed to the inferred Input component.
+   * - ReactElement: A specific Input component to use (escape hatch).
+   * - false: Excludes this field from forms.
+   */
+  input?: Record<string, any> | React.ReactElement | false;
+  /**
+   * Whether the field is required. 
+   * This is used to automatically add validation to the inferred input 
+   * and potentially show warnings in display views.
+   */
+  isRequired?: boolean;
+  /**
+   * Additional text to help the user fill in the field.
+   * Passed to the inferred Input component's FormField.
+   */
+  description?: ReactNode;
+  /**
+   * Text describing constraints (e.g., "Must be between 1 and 100").
+   * Passed to the inferred Input component's FormField.
+   */
+  constraintText?: ReactNode;
 }

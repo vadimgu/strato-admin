@@ -1,5 +1,10 @@
 import { type ReactNode } from 'react';
-import { ReferenceFieldBase, type RaRecord, useRecordContext, useResourceDefinition } from 'strato-core';
+import {
+  ReferenceFieldBase,
+  type RaRecord,
+  useRecordContext,
+  useGetRecordRepresentation,
+} from 'strato-core';
 import RecordLink from '../RecordLink';
 import { type FieldProps } from './types';
 
@@ -33,7 +38,7 @@ const ReferenceField = <RecordType extends RaRecord = RaRecord>(props: Reference
 
 const ReferenceFieldValue = ({ children, emptyText, link, reference }: any) => {
   const record = useRecordContext();
-  const { recordRepresentation } = useResourceDefinition();
+  const getRecordRepresentation = useGetRecordRepresentation();
 
   if (!record) {
     return <>{emptyText ?? null}</>;
@@ -47,14 +52,7 @@ const ReferenceFieldValue = ({ children, emptyText, link, reference }: any) => {
     );
   }
 
-  let representation: ReactNode = '';
-  if (typeof recordRepresentation === 'function') {
-    representation = recordRepresentation(record);
-  } else if (typeof recordRepresentation === 'string') {
-    representation = record[recordRepresentation];
-  } else {
-    representation = record.id;
-  }
+  const representation = getRecordRepresentation(record);
 
   return (
     <RecordLink link={link} resource={reference}>

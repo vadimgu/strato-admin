@@ -2,6 +2,7 @@
 import React from 'react';
 import { ReferenceInputBase, type ReferenceInputBaseProps } from 'strato-core';
 import { useFormFieldContext } from './FormFieldContext';
+import { AutocompleteInput } from './AutocompleteInput';
 
 export const ReferenceInput = (props: ReferenceInputBaseProps) => {
   const { children, source: sourceProp, reference, ...rest } = props;
@@ -14,13 +15,15 @@ export const ReferenceInput = (props: ReferenceInputBaseProps) => {
     throw new Error('ReferenceInput requires a source prop or a parent FormField Master');
   }
 
+  const finalChildren = children || <AutocompleteInput source={source} />;
+
   const inner = (
     <ReferenceInputBase source={source} reference={reference} {...rest}>
-      {React.isValidElement(children)
-        ? React.cloneElement(children as React.ReactElement<any>, {
+      {React.isValidElement(finalChildren)
+        ? React.cloneElement(finalChildren as React.ReactElement<any>, {
             source,
           })
-        : (children as any)}
+        : (finalChildren as any)}
     </ReferenceInputBase>
   );
 

@@ -61,7 +61,7 @@ export const KeyValuePairs = <RecordType extends RaRecord = RaRecord>({
   children,
   include,
   exclude,
-  columns,
+  columns = 3, // Default to 3 columns if not specified
   minColumnWidth,
   ...props
 }: KeyValuePairsProps) => {

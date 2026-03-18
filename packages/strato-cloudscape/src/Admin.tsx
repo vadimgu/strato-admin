@@ -1,17 +1,51 @@
 import React, { ReactNode, useState, useEffect } from 'react';
-import { CoreAdmin, type CoreAdminProps, SchemaRegistryProvider, localStorageStore, useLocaleState } from 'strato-core';
+import {
+  CoreAdmin,
+  type CoreAdminProps,
+  type AdminChildren,
+  SchemaRegistryProvider,
+  localStorageStore,
+  useLocaleState,
+  registerDefaultResourceComponents,
+  registerFieldInputMapping,
+} from 'strato-core';
 import { icuI18nProvider } from 'strato-i18n';
 import englishMessages from 'strato-language-en';
 import AppLayout from './layout/AppLayout';
+import { List } from './list';
+import { Create } from './create';
+import { Edit } from './edit';
+import { Show } from './detail';
 
-import { I18nProvider, importMessages, I18nProviderProps } from "@cloudscape-design/components/i18n";
+import { TextField, NumberField, CurrencyField, ReferenceField } from './field';
+import { TextInput, NumberInput, ReferenceInput } from './input';
+
+import { I18nProvider, importMessages, I18nProviderProps } from '@cloudscape-design/components/i18n';
+
+// Register Cloudscape themed components as defaults for ResourceSchema.
+// This is done once, here, to avoid circular dependencies at the module level.
+registerDefaultResourceComponents({
+  list: List,
+  create: Create,
+  edit: Edit,
+  show: Show,
+});
+
+registerFieldInputMapping(
+  new Map<any, any>([
+    [TextField, TextInput],
+    [NumberField, NumberInput],
+    [CurrencyField, NumberInput],
+    [ReferenceField, ReferenceInput],
+  ])
+);
 
 export interface AdminProps extends CoreAdminProps {
-  children?: ReactNode;
+  children?: AdminChildren;
   title?: string;
 }
 
-const defaultI18nProvider = icuI18nProvider(() => englishMessages);
+const defaultI18nProvider = icuI18nProvider(() => englishMessages as any);
 const defaultStore = localStorageStore();
 
 /**
@@ -19,7 +53,7 @@ const defaultStore = localStorageStore();
  */
 const CloudscapeI18n = ({ children }: { children: ReactNode }) => {
   const [locale] = useLocaleState();
-  const [messages, setMessages] = useState<I18nProviderProps.Messages | null>(null);
+  const [messages, setMessages] = useState<ReadonlyArray<I18nProviderProps.Messages>>([]);
 
   useEffect(() => {
     let active = true;
@@ -33,7 +67,7 @@ const CloudscapeI18n = ({ children }: { children: ReactNode }) => {
     };
   }, [locale]);
 
-  if (!messages) {
+  if (messages.length === 0) {
     return null;
   }
 

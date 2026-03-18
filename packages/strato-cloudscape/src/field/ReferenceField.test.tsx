@@ -2,12 +2,13 @@
 import { render, screen } from '@testing-library/react';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 import ReferenceField from './ReferenceField';
-import { useRecordContext, useResourceDefinition } from 'strato-core';
+import { useRecordContext, useGetRecordRepresentation } from 'strato-core';
 
 // Mock ra-core
 vi.mock('strato-core', () => ({
   ReferenceFieldBase: vi.fn(({ children }: any) => <div data-testid="ra-reference-field-base">{children}</div>),
   useRecordContext: vi.fn(),
+  useGetRecordRepresentation: vi.fn(),
   useResourceDefinition: vi.fn(),
   useResourceContext: vi.fn(() => 'categories'),
   useCreatePath: vi.fn(() => (params: any) => `/${params.resource}/${params.id}/${params.type}`),
@@ -40,7 +41,7 @@ describe('ReferenceField', () => {
 
   it('should render children when provided', () => {
     (useRecordContext as any).mockReturnValue({ id: 1, name: 'Category 1' });
-    (useResourceDefinition as any).mockReturnValue({ recordRepresentation: 'name' });
+    (useGetRecordRepresentation as any).mockReturnValue(() => 'Category 1');
 
     render(
       <ReferenceField source="categoryId" reference="categories">
@@ -52,44 +53,30 @@ describe('ReferenceField', () => {
     expect(screen.getByTestId('child').textContent).toBe('Child Content');
   });
 
-  it('should render record representation when no children provided (function)', () => {
+  it('should render record representation when no children provided', () => {
     const record = { id: 1, name: 'Category 1' };
     (useRecordContext as any).mockReturnValue(record);
-    (useResourceDefinition as any).mockReturnValue({
-      recordRepresentation: (rec: any) => rec.name,
-    });
+    (useGetRecordRepresentation as any).mockReturnValue((rec: any) => rec.name);
 
     render(<ReferenceField source="categoryId" reference="categories" />);
 
     expect(screen.getByText('Category 1')).toBeDefined();
   });
 
-  it('should render record representation when no children provided (string)', () => {
-    const record = { id: 1, name: 'Category 1' };
+  it('should render id if no other representation is provided', () => {
+    const record = { id: 1 };
     (useRecordContext as any).mockReturnValue(record);
-    (useResourceDefinition as any).mockReturnValue({
-      recordRepresentation: 'name',
-    });
+    (useGetRecordRepresentation as any).mockReturnValue((rec: any) => `#${rec.id}`);
 
     render(<ReferenceField source="categoryId" reference="categories" />);
 
-    expect(screen.getByText('Category 1')).toBeDefined();
-  });
-
-  it('should render id if no recordRepresentation is provided', () => {
-    const record = { id: 1, name: 'Category 1' };
-    (useRecordContext as any).mockReturnValue(record);
-    (useResourceDefinition as any).mockReturnValue({});
-
-    render(<ReferenceField source="categoryId" reference="categories" />);
-
-    expect(screen.getByText('1')).toBeDefined();
+    expect(screen.getByText('#1')).toBeDefined();
   });
 
   it('should render a link when link prop is provided', () => {
     const record = { id: 1, name: 'Category 1' };
     (useRecordContext as any).mockReturnValue(record);
-    (useResourceDefinition as any).mockReturnValue({ recordRepresentation: 'name' });
+    (useGetRecordRepresentation as any).mockReturnValue(() => 'Category 1');
 
     render(<ReferenceField source="categoryId" reference="categories" link="show" />);
 

@@ -4,7 +4,7 @@ import Pagination from '@cloudscape-design/components/pagination';
 import Box from '@cloudscape-design/components/box';
 import TextFilter from '@cloudscape-design/components/text-filter';
 import CollectionPreferences from '@cloudscape-design/components/collection-preferences';
-import { RecordContextProvider, RaRecord, useResourceContext, useTranslate, useFieldSchema, useResourceDefinition, useGetResourceLabel } from 'strato-core';
+import { RecordContextProvider, RaRecord, useResourceContext, useFieldSchema, useResourceDefinition, useGetResourceLabel, useTranslateLabel } from 'strato-core';
 import { useCollection } from '../collection-hooks';
 import TextField from '../field/TextField';
 import NumberField from '../field/NumberField';
@@ -220,6 +220,7 @@ export const Table = <RecordType extends RaRecord = any>({
 }: TableProps<RecordType>) => {
   const resource = useResourceContext();
   const translate = useTranslate();
+  const translateLabel = useTranslateLabel();
   const schemaChildren = useFieldSchema();
   const resourceDefinition = useResourceDefinition({ resource });
 
@@ -265,14 +266,7 @@ export const Table = <RecordType extends RaRecord = any>({
 
       const isNumberColumn = (child.type as any)?.isNumberColumn;
 
-      const headerLabel =
-        (typeof childHeader === 'string' ? translate(childHeader, { _: childHeader }) : childHeader) ||
-        (typeof label === 'string' ? translate(label, { _: label }) : label) ||
-        (source && resource
-          ? translate(`resources.${resource}.fields.${source}`, { _: source })
-          : source
-            ? translate(source, { _: source })
-            : '');
+      const headerLabel = translateLabel({ label, resource, source });
       const finalHeader = isNumberColumn ? <Box textAlign="right">{headerLabel}</Box> : headerLabel;
 
       const columnId = source || `col-${index}`;
@@ -299,7 +293,7 @@ export const Table = <RecordType extends RaRecord = any>({
     });
 
     return { columns, options };
-  }, [finalChildren, resource, translate]);
+  }, [finalChildren, resource, translateLabel]);
 
   const defaultVisibleContent = React.useMemo(() => {
     if (extractedColumns.options.length === 0) return undefined;
@@ -370,7 +364,7 @@ export const Table = <RecordType extends RaRecord = any>({
     if (React.isValidElement(title)) {
       return title;
     }
-    const finalTitle = title !== undefined ? title : getResourceLabel(resource, 2);
+    const finalTitle = title !== undefined ? title : getResourceLabel(resource as string, 2);
     return <TableHeader title={finalTitle} actions={actions} />;
   }, [title, actions, resource, getResourceLabel]);
 
@@ -407,6 +401,7 @@ export const Table = <RecordType extends RaRecord = any>({
             visibleContentPreference={
               !reorderable && extractedColumns.options.length > 0
                 ? {
+                  title: translate('ra.action.select_columns', { _: 'Select visible columns' }),
                   options: [
                     {
                       options: extractedColumns.options,
@@ -418,6 +413,7 @@ export const Table = <RecordType extends RaRecord = any>({
             contentDisplayPreference={
               reorderable && extractedColumns.options.length > 0
                 ? {
+                  title: translate('ra.action.select_columns', { _: 'Select visible columns' }),
                   options: extractedColumns.options,
                 }
                 : undefined

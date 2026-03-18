@@ -6,5 +6,6 @@ export * from './AttributeEditor';
 export * from './SelectInput';
 export * from './AutocompleteInput';
 export * from './ReferenceInput';
+export * from './SliderInput';
 export * from './FormFieldContext';
 export * from './FormField';

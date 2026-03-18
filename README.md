@@ -1,26 +1,36 @@
-# strato-admin
+# Strato Admin
 
 WORK IN PROGRESS
 
-A frontend framework for building admin interfaces, built on top of React-Admin and the Cloudscape Design System. It provides a set of reusable components and tools to help developers create efficient and user-friendly admin interfaces.
+A frontend framework for building admin interfaces, built on top of React-Admin
+and the Cloudscape Design System. It provides a set of reusable components and
+tools to help developers create efficient and user-friendly admin interfaces.
+
+<p align="center">
+  <img src="docs/images/quickstart_products_list.png" width="600" alt="Strato Admin Products List" />
+</p>
 
 High-speed development without compromising on versatility.
 
-## Features
+## Why Strato Admin?
 
-### ⚡ Development Velocity
-- **Schema-First Architecture**: Define your data model once and let components automatically render the UI for maximum speed.
-- **Declarative View-Based UI**: Standard React-Admin style components for granular control.
-- **Backend Agnostic**: Connect to any backend using the extensive ecosystem of React-Admin data providers.
+Strato Admin bridges the gap between the speed of "low-code" tools and the flexibility of custom development.
 
-### 🏗️ Enterprise-Grade Quality
-- **Accessible by Default**: Built with AWS Cloudscape components, meeting WCAG standards out of the box.
-- **Robust Internationalization**: Built-in ICU message support for a global audience.
-- **Type-Safe Foundation**: First-class TypeScript support for a predictable developer experience.
+### Schema-First Efficiency
 
-### 🧩 Architectural Versatility
-- **Headless Integration Hooks**: First-class "headless" hooks for building entirely custom interfaces.
-- **Themed Logic**: Preserves battle-tested state management while delivering a modern Cloudscape UI.
+Most admin UIs are repetitive. You define a resource, its fields, and then manually build List, Create, and Edit views for each. Strato Admin's **Schema-First** approach flips this: you define your data model once, and the framework automatically generates standard, high-quality views. This reduces boilerplate by up to 80% while ensuring consistency across your entire application.
+
+### Enterprise-Grade Foundation with Cloudscape
+
+While many admin frameworks rely on general-purpose UI libraries, Strato Admin is built on the [AWS Cloudscape Design System](https://cloudscape.design/). Cloudscape is specifically engineered for complex, data-heavy web applications. It provides:
+
+- **Superior Accessibility**: Built-in WCAG compliance for every component.
+- **Complex Data Handling**: Best-in-class tables with column reordering, visibility preferences, and multi-field filtering.
+- **Visual Clarity**: A design language optimized for technical users and density without sacrificing usability.
+
+### The Best of React-Admin
+
+By building on top of `ra-core`, Strato Admin inherits a decade of battle-tested logic for data fetching, state management, and authentication. You get the stability of a mature ecosystem with a modern, high-performance UI.
 
 ## Installation
 
@@ -33,28 +43,74 @@ pnpm install strato-admin
 ## Quick Start
 
 ```tsx
-import { Admin, Resource, List, Table, TextField } from 'strato-admin';
-import { jsonServerDataProvider } from 'ra-data-json-server';
+import React from 'react';
+import { Admin, ResourceSchema, TextField, CurrencyField, ReferenceField, IdField } from 'strato-admin';
+import { dataProvider } from 'strato-faker-ecommerce';
 
-const dataProvider = jsonServerDataProvider('https://jsonplaceholder.typicode.com');
+export const QuickStartApp = () => (
+  <Admin dataProvider={dataProvider} title="Strato Admin Quickstart">
+    <ResourceSchema name="products">
+      <IdField source="id" />
+      <TextField source="name" isRequired link="show" />
+      <CurrencyField source="price" currency="EUR" />
+      <ReferenceField source="category_id" reference="categories" />
+    </ResourceSchema>
 
-const UsersList = () => (
-  <List>
-    <Table title="Users" filtering preferences>
-      <Table.Column source="id" label="ID" link="show" />
-      <Table.Column source="name" label="Name" sortable />
-      <Table.Column source="email" label="Email" />
-      <Table.Column source="website" label="Website" />
-    </Table>
-  </List>
-);
-
-export const App = () => (
-  <Admin dataProvider={dataProvider}>
-    <Resource name="users" list={UsersList} />
+    <ResourceSchema name="categories">
+      <IdField source="id" />
+      <TextField source="name" link="show" isRequired />
+    </ResourceSchema>
   </Admin>
 );
 ```
+
+| List Page                                                                          | Details Page                                                                          |
+| :--------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------ |
+| <img src="docs/images/quickstart_products_list.png" width="600" alt="List Page" /> | <img src="docs/images/quickstart_products_show.png" width="600" alt="Details Page" /> |
+
+| Edit Page                                                                          | Create Page                                                                            |
+| :--------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------- |
+| <img src="docs/images/quickstart_products_edit.png" width="600" alt="Edit Page" /> | <img src="docs/images/quickstart_products_create.png" width="600" alt="Create Page" /> |
+
+## Features
+
+### Development Velocity
+
+- **Schema-First Architecture (In development)**: Define your data model once and let components automatically render the UI.
+- **Declarative View-Based UI**: Standard React-Admin style components for granular control.
+- **Backend Agnostic**: Connect to any backend using the extensive ecosystem of React-Admin data providers.
+
+### Enterprise-Grade Quality
+
+- **Accessibility-First Design**: Leverages AWS Cloudscape's WCAG-compliant components.
+- **Internationalization**: Using ICU MessageFormat for robust multilingual support.
+- **TypeScript Foundation**: Built with TypeScript for a predictable developer experience.
+
+### Architectural Versatility
+
+- **Headless Integration Hooks (In development)**: Low-level hooks for building bespoke interfaces while preserving state logic.
+- **Cloudscape Theme**: A modern UI for React-Admin powered by the Cloudscape Design System.
+
+## Monorepo Structure
+
+Strato Admin is organized as a monorepo with the following packages:
+
+### Core Packages
+
+- **`strato-admin`**: The main entry point that combines core logic with the Cloudscape UI.
+- **`strato-cloudscape`**: UI component library and theme implementation using AWS Cloudscape Design System.
+- **`strato-core`**: Core framework logic, schema definitions, and headless hooks.
+- **`ra-core`**: A vendored version of React-Admin core.
+
+### Internationalization
+
+- **`strato-i18n`**: ICU MessageFormat-based i18n provider for React-Admin.
+- **`strato-i18n-cli`**: Tooling for extracting and compiling translations.
+- **`strato-language-en` / `fr`**: Standard translation packages for English and French.
+
+### Utilities & Tools
+
+- **`strato-faker-ecommerce`**: Mock data generator for e-commerce domains, used for demos and testing.
 
 ## Documentation
 

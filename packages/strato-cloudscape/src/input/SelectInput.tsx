@@ -15,10 +15,15 @@ export interface SelectInputProps
     extends Omit<CloudscapeSelectProps, 'onChange' | 'selectedOption' | 'options' | 'onBlur'>,
         InputProps {
     choices?: Array<{ id: string | number; [key: string]: any }>;
+    /**
+     * The text to display for the empty option when isRequired is false.
+     * @default "-"
+     */
+    emptyText?: string;
 }
 
 export const SelectInput = (props: SelectInputProps) => {
-    const { label, source, defaultValue, validate, choices: choicesProp, ...rest } = props;
+    const { label, source, defaultValue, validate, choices: choicesProp, emptyText = '-', ...rest } = props;
   const resource = useResourceContext();
   const { allChoices, isPending } = useChoicesContext(props);
   const getRecordRepresentation = useGetRecordRepresentation(resource);
@@ -32,20 +37,29 @@ export const SelectInput = (props: SelectInputProps) => {
       ...rest,
     });
 
-  const { id, field } = inputState;
+  const { id, field, isRequired } = inputState;
 
   const choices = choicesProp || allChoices || [];
 
-  const options = React.useMemo(
-    () =>
-      choices.map((choice) => ({
-        label: String(getRecordRepresentation(choice)),
-        value: String(choice.id),
-      })),
-    [choices, getRecordRepresentation],
-  );
+  const options = React.useMemo(() => {
+    const opts = choices.map((choice) => ({
+      label: String(getRecordRepresentation(choice)),
+      value: String(choice.id),
+    }));
 
-  const selectedOption = options.find((option) => option.value === String(field.value)) || null;
+    if (!isRequired) {
+      opts.unshift({ label: emptyText, value: '__EMPTY__' });
+    }
+    return opts;
+  }, [choices, getRecordRepresentation, isRequired, emptyText]);
+
+  const selectedOption =
+    options.find((option) => {
+      if (!field.value) {
+        return option.value === '__EMPTY__';
+      }
+      return option.value === String(field.value);
+    }) || null;
 
   const inner = (
     <CloudscapeSelect
@@ -54,7 +68,11 @@ export const SelectInput = (props: SelectInputProps) => {
       options={options}
       selectedOption={selectedOption}
       statusType={isPending ? 'loading' : 'finished'}
-      onChange={({ detail }) => field.onChange(detail.selectedOption.value)}
+      expandToViewport={true}
+      onChange={({ detail }) => {
+        const value = detail.selectedOption.value === '__EMPTY__' ? null : detail.selectedOption.value;
+        field.onChange(value);
+      }}
       onBlur={() => field.onBlur()}
     />
   );

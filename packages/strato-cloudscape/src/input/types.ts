@@ -3,7 +3,11 @@ import { InputProps as InputPropsBase } from 'strato-core';
 import { FormFieldProps as CloudscapeFormFieldProps } from '@cloudscape-design/components/form-field';
 
 export interface StratoInputProps<T = any>
-  extends Omit<InputPropsBase<T>, 'label'>, Pick<CloudscapeFormFieldProps, 'description' | 'constraintText'> {
+  extends Omit<InputPropsBase<T>, 'label'>,
+    Pick<
+      CloudscapeFormFieldProps,
+      'description' | 'constraintText' | 'info' | 'secondaryControl' | 'stretch' | 'i18nStrings'
+    > {
   label?: string | false;
 }
 

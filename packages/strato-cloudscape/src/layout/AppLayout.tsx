@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import CloudscapeAppLayout from '@cloudscape-design/components/app-layout';
 import SideNavigation from '@cloudscape-design/components/side-navigation';
-import { useResourceDefinitions, useTranslate, useDefaultTitle } from 'strato-core';
+import { useResourceDefinitions, useDefaultTitle, useGetResourceLabel } from 'strato-core';
 import { useNavigate } from 'react-router-dom';
 import { TopNavigation } from './TopNavigation';
 import ThemeManager from '../theme/ThemeManager';
@@ -14,7 +14,7 @@ export interface AppLayoutProps {
 
 export const AppLayout = ({ children, header, title }: AppLayoutProps) => {
   const resources = useResourceDefinitions();
-  const translate = useTranslate();
+  const getResourceLabel = useGetResourceLabel();
   const navigate = useNavigate();
   const defaultTitle = useDefaultTitle();
   const [navigationOpen, setNavigationOpen] = useState(true);
@@ -24,9 +24,7 @@ export const AppLayout = ({ children, header, title }: AppLayoutProps) => {
 
   const items = Object.values(resources).map((resource) => ({
     type: 'link' as const,
-    text: resource.options?.label
-      ? translate(resource.options.label, { _: resource.options.label })
-      : resource.name,
+    text: getResourceLabel(resource.name),
     href: `/${resource.name}`,
   }));
 

@@ -93,7 +93,9 @@ const StatusIndicatorField = <RecordType extends RaRecord = RaRecord>(
       finalColorOverride = matchingLabel.props.color;
     }
     if (matchingLabel.props.label) {
-      label = translate(matchingLabel.props.label);
+      label = typeof matchingLabel.props.label === 'string'
+        ? translate(matchingLabel.props.label)
+        : matchingLabel.props.label;
     }
   } else if (typeof type === 'function') {
     statusType = type(value, record as RecordType);

@@ -95,6 +95,7 @@ export const AutocompleteInput = (props: AutocompleteInputProps) => {
       options={options}
       value={filterValue}
       statusType={isPending ? 'loading' : 'finished'}
+      expandToViewport={true}
       onChange={handleChange}
       onSelect={handleSelect}
       onBlur={() => field.onBlur()}

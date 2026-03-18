@@ -1,11 +1,12 @@
 import React, { ReactNode } from 'react';
 import { Resource, ResourceProps } from 'ra-core';
 import { ResourceSchemaProvider } from './ResourceSchemaProvider';
-import { registerGlobalSchemas, useSchemaRegistry, getDefaultResourceComponents } from './SchemaRegistry';
+import { registerGlobalSchemas, useSchemaRegistry, getDefaultResourceComponents, parseUnifiedSchema } from './SchemaRegistry';
 
 export interface ResourceSchemaProps extends ResourceProps {
   fieldSchema?: ReactNode;
   inputSchema?: ReactNode;
+  children?: ReactNode;
   label?: string;
   canCreate?: boolean;
   canEdit?: boolean;
@@ -16,22 +17,17 @@ export interface ResourceSchemaProps extends ResourceProps {
 
 /**
  * A wrapper around React-Admin's <Resource> that allows defining 
- * the field and input schemas via props.
+ * the field and input schemas via children or props.
  * 
  * @example
- * <ResourceSchema 
- *   name="posts" 
- *   list={PostList}
- *   fieldSchema={
- *     <FieldSchema>
- *       <TextField source="title" />
- *     </FieldSchema>
- *   }
- * />
+ * <ResourceSchema name="posts" list={PostList}>
+ *   <TextField source="title" />
+ * </ResourceSchema>
  */
 export const ResourceSchema = ({
-  fieldSchema,
-  inputSchema,
+  fieldSchema: explicitFieldSchema,
+  inputSchema: explicitInputSchema,
+  children,
   label,
   options,
   canCreate = true,
@@ -42,6 +38,11 @@ export const ResourceSchema = ({
   ...props
 }: ResourceSchemaProps) => {
   const { defaultComponents } = useSchemaRegistry();
+  
+  const parsedSchemas = children ? parseUnifiedSchema(children) : {};
+  const fieldSchema = explicitFieldSchema || parsedSchemas.fieldSchema;
+  const inputSchema = explicitInputSchema || parsedSchemas.inputSchema;
+
   const mergedOptions = { 
     ...options, 
     ...(label ? { label } : {}),
@@ -76,8 +77,9 @@ ResourceSchema.raName = 'Resource';
 ResourceSchema.registerResource = (props: ResourceSchemaProps) => {
   const { 
     name, 
-    fieldSchema, 
-    inputSchema, 
+    fieldSchema: explicitFieldSchema, 
+    inputSchema: explicitInputSchema,
+    children,
     label, 
     options, 
     canCreate = true,
@@ -91,6 +93,10 @@ ResourceSchema.registerResource = (props: ResourceSchemaProps) => {
     show,
   } = props;
   
+  const parsedSchemas = children ? parseUnifiedSchema(children) : {};
+  const fieldSchema = explicitFieldSchema || parsedSchemas.fieldSchema;
+  const inputSchema = explicitInputSchema || parsedSchemas.inputSchema;
+
   if (name && (fieldSchema || inputSchema)) {
     registerGlobalSchemas(name, { fieldSchema, inputSchema });
   }

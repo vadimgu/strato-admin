@@ -3,7 +3,7 @@ import { icuI18nProvider } from 'strato-i18n';
 import englishMessages from 'strato-language-en';
 import frenchMessages from 'strato-language-fr';
 import { dataProvider } from './dataProvider';
-import { ProductList, ProductShow, ProductCreate, ProductEdit, productSchema, productInputSchema, productRepresentation } from './resources/products';
+import { ProductResource } from './resources/products';
 import { CategoryList, CategoryShow, categorySchema } from './resources/categories';
 import { CustomerList, CustomerShow, customerSchema } from './resources/customers';
 import { OrderList, OrderShow, orderSchema } from './resources/orders';
@@ -33,17 +33,7 @@ const i18nProvider = icuI18nProvider(
 export default function App() {
   return (
     <Admin dataProvider={dataProvider} title="Strato E-commerce Demo" i18nProvider={i18nProvider}>
-      <ResourceSchema
-        label="Products"
-        name="products"
-        // list={ProductList}
-        show={ProductShow}
-        // create={ProductCreate}
-        // edit={ProductEdit}
-        recordRepresentation={productRepresentation}
-        fieldSchema={productSchema}
-        inputSchema={productInputSchema}
-      />
+      {ProductResource}
       <ResourceSchema
         label="Categories"
         name="categories"
@@ -53,31 +43,33 @@ export default function App() {
         // list={CategoryList}
         // show={CategoryShow}
         recordRepresentation={(record) => record.name}
-        fieldSchema={categorySchema}
-      />
+      >
+        {categorySchema}
+      </ResourceSchema>
       <ResourceSchema
         label="Customers"
         name="customers"
         list={CustomerList}
         show={CustomerShow}
         recordRepresentation={(record) => `${record.first_name} ${record.last_name}`}
-        fieldSchema={customerSchema}
-      />
+      >
+        {customerSchema}
+      </ResourceSchema>
       <ResourceSchema
         label="Orders"
         name="orders"
         list={OrderList}
         show={OrderShow}
         recordRepresentation={(record) => record.reference}
-        fieldSchema={orderSchema}
-      />
-      <ResourceSchema
-        label="Reviews"
-        name="reviews"
-        list={ReviewList}
-        show={ReviewShow}
-        fieldSchema={reviewSchema}
-      />
+      >
+        {orderSchema}
+      </ResourceSchema>
+      <ResourceSchema name="reviews" label="Reviews" canDelete={false} canCreate={false}
+      // list={ReviewList}
+      // show={ReviewShow}
+      >
+        {reviewSchema}
+      </ResourceSchema>
     </Admin>
   );
 }
