@@ -36,7 +36,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/vgrits/strato-admin.git",
+    "url": "https://github.com/vadimgu/strato-admin.git",
     "directory": "packages/strato-language-en"
   },
   "devDependencies": {

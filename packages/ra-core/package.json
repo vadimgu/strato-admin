@@ -25,9 +25,13 @@
         "François Zaninotto",
         "Gildas Garcia"
     ],
-    "repository": "marmelab/react-admin",
-    "homepage": "https://github.com/marmelab/react-admin#readme",
-    "bugs": "https://github.com/marmelab/react-admin/issues",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/vadimgu/strato-admin.git",
+        "directory": "packages/ra-core"
+    },
+    "homepage": "https://github.com/vadimgu/strato-admin/tree/main/packages/ra-core#readme",
+    "bugs": "https://github.com/vadimgu/strato-admin/issues",
     "license": "MIT",
     "scripts": {
         "build": "zshy --silent"
