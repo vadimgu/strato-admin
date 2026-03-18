@@ -1,6 +1,6 @@
 {
   "name": "@strato-admin/i18n-cli",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Strato Admin I18n CLI - Tools for internationalization and extraction",
   "main": "dist/cli/extract.js",
   "types": "dist/cli/extract.d.ts",

@@ -1,6 +1,6 @@
 {
   "name": "@strato-admin/faker-ecommerce",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Strato Admin Faker Ecommerce - Mock data for E-commerce domain using faker",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
