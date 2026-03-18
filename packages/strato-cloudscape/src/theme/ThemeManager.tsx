@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useStore } from 'strato-core';
+import { useStore } from '@strato-admin/core';
 import { Mode, applyMode } from '@cloudscape-design/global-styles';
 
 export const ThemeManager = () => {

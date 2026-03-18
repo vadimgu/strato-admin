@@ -1,15 +1,44 @@
 {
-  "name": "strato-language-en",
-  "version": "1.0.0",
-  "description": "English translations for Strato Admin",
-  "main": "src/index.ts",
-  "types": "src/index.ts",
+  "name": "@strato-admin/language-en",
+  "version": "0.1.0",
+  "description": "Strato Admin Language - English",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "src",
+    "README.md",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
+    "build": "tsc -p tsconfig.build.json",
     "test": "echo \"Error: no test specified\" && exit 1",
     "i18n:extract": "formatjs extract '../*/src/**/*.{ts,tsx}' --out-file messages.json",
     "i18n:compile": "formatjs compile messages.json --out-file src/messages.json"
   },
+  "keywords": [
+    "strato",
+    "admin",
+    "react-admin",
+    "i18n",
+    "english"
+  ],
+  "author": "Vadim Gubergrits <vadim.gubergrits@gmail.com>",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vgrits/strato-admin.git",
+    "directory": "packages/strato-language-en"
+  },
   "devDependencies": {
     "@formatjs/cli": "^6.13.0"
   }

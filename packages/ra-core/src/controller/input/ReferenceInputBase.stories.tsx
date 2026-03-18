@@ -28,7 +28,7 @@ import {
 } from '../..';
 
 export default {
-    title: 'ra-core/controller/input/ReferenceInputBase',
+    title: '@strato-admin/ra-core/controller/input/ReferenceInputBase',
     excludeStories: ['dataProviderWithAuthors'],
 };
 

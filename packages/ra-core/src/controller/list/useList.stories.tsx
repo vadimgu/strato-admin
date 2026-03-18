@@ -4,7 +4,7 @@ import { ListContextProvider, useList, useListContext } from '.';
 import type { UseListValue } from '.';
 
 export default {
-    title: 'ra-core/controller/list/useList',
+    title: '@strato-admin/ra-core/controller/list/useList',
 };
 
 const ListView = () => {

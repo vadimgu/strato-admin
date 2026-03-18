@@ -1,5 +1,5 @@
 import React from 'react';
-import { useInput } from 'strato-core';
+import { useInput } from '@strato-admin/core';
 import CloudscapeSlider, { SliderProps as CloudscapeSliderProps } from '@cloudscape-design/components/slider';
 import { FormField } from './FormField';
 import { FormFieldContext, useFormFieldContext } from './FormFieldContext';

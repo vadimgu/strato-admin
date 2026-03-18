@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { onlineManager, QueryClient } from '@tanstack/react-query';
-import { RecordsIterator } from 'ra-core';
+import { RecordsIterator } from '@strato-admin/ra-core';
 import { CoreAdmin } from '../../core/CoreAdmin';
 import { Resource } from '../../core/Resource';
 import { ShowBase } from '../../controller/show/ShowBase';
@@ -11,7 +11,7 @@ import fakeRestDataProvider from 'ra-data-fakerest';
 import { useIsOffline } from '../../core';
 
 export default {
-    title: 'ra-core/controller/field/ReferenceManyFieldBase',
+    title: '@strato-admin/ra-core/controller/field/ReferenceManyFieldBase',
     excludeStories: ['dataProviderWithAuthors'],
 };
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { ShowBase, useShowContext, type RaRecord, ResourceSchemaProvider } from 'strato-core';
+import { ShowBase, useShowContext, type RaRecord, ResourceSchemaProvider } from '@strato-admin/core';
 import Container from '@cloudscape-design/components/container';
 import SpaceBetween from '@cloudscape-design/components/space-between';
 import { ShowHeader } from './ShowHeader';

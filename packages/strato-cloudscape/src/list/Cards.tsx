@@ -1,7 +1,7 @@
 import React from 'react';
 import CloudscapeCards, { CardsProps } from '@cloudscape-design/components/cards';
 import Pagination from '@cloudscape-design/components/pagination';
-import { RaRecord, RecordContextProvider, useFieldSchema } from 'strato-core';
+import { RaRecord, RecordContextProvider, useFieldSchema } from '@strato-admin/core';
 import { useCollection } from '../collection-hooks';
 import KeyValuePairs from '../detail/KeyValuePairs';
 

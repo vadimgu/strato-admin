@@ -1,11 +1,11 @@
 import React from 'react';
 import { render, fireEvent, cleanup } from '@testing-library/react';
 import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { useInput, useResourceContext } from 'strato-core';
+import { useInput, useResourceContext } from '@strato-admin/core';
 import { SliderInput } from './SliderInput';
 
 // Mock strato-core
-vi.mock('strato-core', () => ({
+vi.mock('@strato-admin/core', () => ({
   useInput: vi.fn(),
   useResourceContext: vi.fn(),
   useTranslate: () => (key: string) => key,

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import { testDataProvider } from 'ra-core';
+import { testDataProvider } from '@strato-admin/ra-core';
 import { Basic, Offline, WithError } from './ReferenceArrayInputBase.stories';
 import { onlineManager } from '@tanstack/react-query';
 

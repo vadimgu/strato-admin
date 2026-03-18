@@ -1,4 +1,4 @@
-import { type RaRecord, useResourceDefinition } from 'strato-core';
+import { type RaRecord, useResourceDefinition } from '@strato-admin/core';
 import TextField, { type TextFieldProps } from './TextField';
 
 export type IdFieldProps<RecordType extends RaRecord = RaRecord> =

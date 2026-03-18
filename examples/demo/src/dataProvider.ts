@@ -1,1 +1,1 @@
-export { dataProvider } from 'strato-faker-ecommerce';
+export { dataProvider } from '@strato-admin/faker-ecommerce';

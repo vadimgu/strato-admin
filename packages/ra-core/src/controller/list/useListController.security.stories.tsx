@@ -13,7 +13,7 @@ import { TestMemoryRouter, LinkBase } from '../../routing';
 import { useAuthState } from '../..';
 
 export default {
-    title: 'ra-core/controller/list/useListController',
+    title: '@strato-admin/ra-core/controller/list/useListController',
 };
 
 const styles = {

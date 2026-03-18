@@ -9,7 +9,7 @@ import {
   RecordContextProvider,
   type RaRecord,
   useFieldSchema,
-} from 'strato-core';
+} from '@strato-admin/core';
 import TextField from '../field/TextField';
 
 export interface KeyValuePairsProps extends Partial<Omit<CloudscapeKeyValuePairsProps, 'items'>> {

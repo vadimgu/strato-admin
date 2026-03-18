@@ -8,7 +8,7 @@ import { ListController } from '../controller/list';
 import { useDelete } from './useDelete';
 import { useGetList } from './useGetList';
 
-export default { title: 'ra-core/dataProvider/useDelete/pessimistic' };
+export default { title: '@strato-admin/ra-core/dataProvider/useDelete/pessimistic' };
 
 export const SuccessCase = () => {
     const posts = [

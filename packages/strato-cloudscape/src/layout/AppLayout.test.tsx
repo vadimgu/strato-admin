@@ -2,16 +2,11 @@ import React from 'react';
 import { render } from '@testing-library/react';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 import { AppLayout } from './AppLayout';
-import { useDefaultTitle, useResourceDefinitions } from 'strato-core';
+import { useDefaultTitle, useResourceDefinitions } from '@strato-admin/core';
 import { TopNavigation } from './TopNavigation';
 
 // Mock strato-core
-vi.mock('strato-core', () => ({
-  useDefaultTitle: vi.fn(),
-  useResourceDefinitions: vi.fn(() => ({})),
-  useTranslate: vi.fn(() => (key: string, options: any) => options?._ || key),
-  useStore: vi.fn(() => ['light', vi.fn()]),
-}));
+vi.mock('@strato-admin/core', () => import('../__mocks__/strato-core'));
 
 // Mock global-styles
 vi.mock('@cloudscape-design/global-styles', () => ({

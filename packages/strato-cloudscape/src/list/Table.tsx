@@ -4,7 +4,7 @@ import Pagination from '@cloudscape-design/components/pagination';
 import Box from '@cloudscape-design/components/box';
 import TextFilter from '@cloudscape-design/components/text-filter';
 import CollectionPreferences from '@cloudscape-design/components/collection-preferences';
-import { RecordContextProvider, RaRecord, useResourceContext, useFieldSchema, useResourceDefinition, useGetResourceLabel, useTranslateLabel } from 'strato-core';
+import { RecordContextProvider, RaRecord, useResourceContext, useFieldSchema, useResourceDefinition, useGetResourceLabel, useTranslateLabel, useTranslate } from '@strato-admin/core';
 import { useCollection } from '../collection-hooks';
 import TextField from '../field/TextField';
 import NumberField from '../field/NumberField';
@@ -404,6 +404,7 @@ export const Table = <RecordType extends RaRecord = any>({
                   title: translate('ra.action.select_columns', { _: 'Select visible columns' }),
                   options: [
                     {
+                      label: translate('ra.action.select_columns', { _: 'Select visible columns' }),
                       options: extractedColumns.options,
                     },
                   ],

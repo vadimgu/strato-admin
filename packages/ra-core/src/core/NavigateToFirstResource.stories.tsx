@@ -7,7 +7,7 @@ import { QueryClient } from '@tanstack/react-query';
 import { AuthProvider } from '../types';
 
 export default {
-    title: 'ra-core/core/NavigateToFirstResource',
+    title: '@strato-admin/ra-core/core/NavigateToFirstResource',
 };
 
 export const NoAuthProvider = () => (

@@ -5,7 +5,7 @@ import { Resource } from './Resource';
 import { CoreAdmin } from './CoreAdmin';
 
 export default {
-    title: 'ra-core/core/Resource',
+    title: '@strato-admin/ra-core/core/Resource',
 };
 
 const PostList = () => (

@@ -1,16 +1,40 @@
 {
-  "name": "strato-language-fr",
-  "version": "1.0.0",
-  "description": "French translations for Strato Admin",
-  "main": "src/index.ts",
-  "types": "src/index.ts",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "i18n:extract": "formatjs extract '../*/src/**/*.{ts,tsx}' --out-file messages.json",
-    "i18n:compile": "formatjs compile messages.json --out-file src/messages.json"
+  "name": "@strato-admin/language-fr",
+  "version": "0.1.0",
+  "description": "Strato Admin Language - French",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "dist/index.js"
+    }
   },
+  "files": [
+    "dist",
+    "src",
+    "README.md",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "strato",
+    "admin",
+    "react-admin",
+    "i18n",
+    "french"
+  ],
+  "author": "Vadim Gubergrits <vadim.gubergrits@gmail.com>",
   "license": "MIT",
-  "devDependencies": {
-    "@formatjs/cli": "^6.13.0"
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vgrits/strato-admin.git",
+    "directory": "packages/strato-language-fr"
   }
 }

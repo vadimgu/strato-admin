@@ -3,7 +3,7 @@ import { TestTranslationProvider } from './TestTranslationProvider';
 import { Translate } from './Translate';
 
 export default {
-    title: 'ra-core/i18n/Translate',
+    title: '@strato-admin/ra-core/i18n/Translate',
 };
 
 export const Basic = () => (

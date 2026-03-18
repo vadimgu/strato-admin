@@ -1,6 +1,6 @@
 import React from 'react';
-import { Admin, ResourceSchema, TextField, CurrencyField, ReferenceField, IdField, } from 'strato-admin';
-import { dataProvider } from 'strato-faker-ecommerce';
+import { Admin, ResourceSchema, TextField, CurrencyField, ReferenceField, IdField, } from '@strato-admin/admin';
+import { dataProvider } from '@strato-admin/faker-ecommerce';
 
 export const QuickStartApp = () => (
     <Admin dataProvider={dataProvider} title="Strato Admin Quickstart">

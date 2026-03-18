@@ -1,15 +1,38 @@
 {
-  "name": "strato-i18n-cli",
-  "version": "1.0.0",
-  "description": "CLI tools for Strato Admin internationalization",
-  "main": "src/cli/extract.ts",
-  "types": "src/cli/extract.ts",
+  "name": "@strato-admin/i18n-cli",
+  "version": "0.1.0",
+  "description": "Strato Admin I18n CLI - Tools for internationalization and extraction",
+  "main": "dist/cli/extract.js",
+  "types": "dist/cli/extract.d.ts",
   "bin": {
-    "strato-extract": "./dist/extract.js",
-    "strato-compile": "./dist/compile.js"
+    "strato-extract": "./dist/cli/extract.js",
+    "strato-compile": "./dist/cli/compile.js"
+  },
+  "files": [
+    "dist",
+    "src",
+    "README.md",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "access": "public"
   },
   "scripts": {
     "build": "tsc -p tsconfig.build.json"
+  },
+  "keywords": [
+    "strato",
+    "admin",
+    "react-admin",
+    "i18n",
+    "cli"
+  ],
+  "author": "Vadim Gubergrits <vadim.gubergrits@gmail.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vgrits/strato-admin.git",
+    "directory": "packages/strato-i18n-cli"
   },
   "dependencies": {
     "@babel/core": "^7.29.0",
@@ -18,7 +41,7 @@
     "@babel/types": "^7.29.0",
     "gettext-parser": "^9.0.1",
     "glob": "^13.0.6",
-    "strato-i18n": "workspace:*",
+    "@strato-admin/i18n": "workspace:*",
     "typescript": "^5.9.3"
   },
   "devDependencies": {

@@ -6,7 +6,7 @@ import { parse } from '@babel/parser';
 import traverse from '@babel/traverse';
 import * as t from '@babel/types';
 import * as gettextParser from 'gettext-parser';
-import { generateMessageId } from 'strato-i18n';
+import { generateMessageId } from '@strato-admin/i18n';
 
 // List of Strato Admin components to extract from
 const DEFAULT_STRATO_COMPONENTS = new Set([

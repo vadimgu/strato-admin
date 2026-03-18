@@ -51,7 +51,7 @@ export const ResourceSchemaProvider = ({
   // Extract children if the schemas are passed as <FieldSchema> or <InputSchema> elements
   const getChildren = (schema: ReactNode) => {
     if (React.isValidElement(schema)) {
-      if ('children' in schema.props) {
+      if ('children' in (schema.props as any)) {
         return (schema.props as any).children;
       }
     }

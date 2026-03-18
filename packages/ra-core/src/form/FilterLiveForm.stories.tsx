@@ -13,7 +13,7 @@ import { CoreAdminContext } from '../core/CoreAdminContext';
 import { memoryStore } from '../store';
 import { TestMemoryRouter } from '../routing';
 
-export default { title: 'ra-core/form/FilterLiveForm' };
+export default { title: '@strato-admin/ra-core/form/FilterLiveForm' };
 
 const dataProvider = fakeRestDataProvider(
     {

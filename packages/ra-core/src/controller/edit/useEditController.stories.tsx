@@ -8,7 +8,7 @@ import {
 } from '../..';
 
 export default {
-    title: 'ra-core/controller/useEditController',
+    title: '@strato-admin/ra-core/controller/useEditController',
 };
 
 export const EncodedId = ({

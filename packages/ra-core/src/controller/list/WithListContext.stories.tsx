@@ -8,7 +8,7 @@ import { WithListContext } from './WithListContext';
 import { CoreAdminContext } from '../../core/CoreAdminContext';
 
 export default {
-    title: 'ra-core/controller/list/WithListContext',
+    title: '@strato-admin/ra-core/controller/list/WithListContext',
 };
 
 // Date,Apples,Blueberries,Carrots

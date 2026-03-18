@@ -11,7 +11,7 @@ import { RaRecord } from '../../types';
  *
  * @example // basic usage
  *
- * import { useRecordContext } from 'ra-core';
+ * import { useRecordContext } from '@strato-admin/ra-core';
  *
  * const TitleField = () => {
  *     const record = useRecordContext();
@@ -20,7 +20,7 @@ import { RaRecord } from '../../types';
  *
  * @example // allow record override via props
  *
- * import { useRecordContext } from 'ra-core';
+ * import { useRecordContext } from '@strato-admin/ra-core';
  *
  * const TitleField = (props) => {
  *     const record = useRecordContext(props);

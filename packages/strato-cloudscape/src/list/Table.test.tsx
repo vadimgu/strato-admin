@@ -1,31 +1,13 @@
 import React from 'react';
 import { render, cleanup } from '@testing-library/react';
 import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { useResourceContext, useListContext, useResourceDefinitions } from 'strato-core';
+import { useResourceContext, useListContext, useResourceDefinitions } from '@strato-admin/core';
 import { useCollection } from '../collection-hooks';
 import Table from './Table';
 import CloudscapeTable from '@cloudscape-design/components/table';
 
 // Mock ra-core
-vi.mock('strato-core', () => ({
-  useResourceContext: vi.fn(),
-  useListContext: vi.fn(),
-  useTranslate: vi.fn(() => (key: string, options: any) => options?._ || key),
-  RecordContextProvider: ({ children }: any) => <>{children}</>,
-  useRecordContext: vi.fn(),
-  useFieldValue: vi.fn(({ source, record }) => record?.[source]),
-  useCreatePath: vi.fn(() => (params: any) => `/${params.resource}/${params.id}/${params.type}`),
-  useResourceDefinitions: vi.fn(() => ({})),
-  useResourceDefinition: vi.fn(() => ({})),
-  useGetResourceLabel: vi.fn(() => (resource: string, count: number) => resource),
-  useLocale: vi.fn(() => 'en'),
-  useBulkDeleteController: vi.fn(() => ({
-    handleDelete: vi.fn(),
-    isPending: false,
-    isLoading: false,
-  })),
-  useFieldSchema: vi.fn(),
-}));
+vi.mock('@strato-admin/core', () => import('../__mocks__/strato-core'));
 
 // Mock react-router-dom
 vi.mock('react-router-dom', () => ({

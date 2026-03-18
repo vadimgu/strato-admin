@@ -26,7 +26,7 @@ import {
 import { onlineManager, useMutationState } from '@tanstack/react-query';
 
 export default {
-    title: 'ra-core/controller/EditBase',
+    title: '@strato-admin/ra-core/controller/EditBase',
 };
 
 const defaultI18nProvider = polyglotI18nProvider(

@@ -1,4 +1,4 @@
-import { DataProvider, fetchUtils } from 'strato-admin';
+import { DataProvider, fetchUtils } from '@strato-admin/admin';
 
 const API_URL = 'https://dummyjson.com';
 
@@ -16,13 +16,6 @@ const API_URL = 'https://dummyjson.com';
  * - Create endpoint: POST /resource/add (not just POST /resource)
  */
 
-interface DummyJsonListResponse<T> {
-  [key: string]: T[] | number;
-  total: number;
-  skip: number;
-  limit: number;
-}
-
 // Map React-Admin resource names to DummyJSON's response keys
 // (Usually the same, but this gives flexibility)
 const getResourceKey = (resource: string): string => {
@@ -31,7 +24,7 @@ const getResourceKey = (resource: string): string => {
 
 // Some resources support nested reference endpoints
 // e.g., /todos/user/5, /posts/user/1, /carts/user/5
-const RESOURCES_WITH_USER_REFERENCE = ['todos', 'posts', 'carts', 'comments'];
+// const RESOURCES_WITH_USER_REFERENCE = ['todos', 'posts', 'carts', 'comments'];
 
 const httpClient = fetchUtils.fetchJson;
 
@@ -42,8 +35,8 @@ export const dummyJsonDataProvider: DataProvider = {
    * DummyJSON expects: GET /products?limit=10&skip=0&sortBy=title&order=asc
    */
   getList: async (resource, params) => {
-    const { page, perPage } = params.pagination;
-    const { field, order } = params.sort;
+    const { page = 1, perPage = 10 } = params.pagination || {};
+    const { field = 'id', order = 'ASC' } = params.sort || {};
     const filter = params.filter;
 
     const skip = (page - 1) * perPage;
@@ -144,8 +137,8 @@ export const dummyJsonDataProvider: DataProvider = {
    * DummyJSON supports: GET /comments/post/1, GET /todos/user/5, etc.
    */
   getManyReference: async (resource, params) => {
-    const { page, perPage } = params.pagination;
-    const { field, order } = params.sort;
+    const { page = 1, perPage = 10 } = params.pagination || {};
+    const { field = 'id', order = 'ASC' } = params.sort || {};
     const { target, id } = params;
 
     const skip = (page - 1) * perPage;

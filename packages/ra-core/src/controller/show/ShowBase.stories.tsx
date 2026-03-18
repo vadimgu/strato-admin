@@ -23,7 +23,7 @@ import {
 import { onlineManager } from '@tanstack/react-query';
 
 export default {
-    title: 'ra-core/controller/ShowBase',
+    title: '@strato-admin/ra-core/controller/ShowBase',
 };
 
 const defaultI18nProvider = polyglotI18nProvider(

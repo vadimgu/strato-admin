@@ -19,7 +19,7 @@ import {
 import { onlineManager } from '@tanstack/react-query';
 
 export default {
-    title: 'ra-core/controller/list/ListBase',
+    title: '@strato-admin/ra-core/controller/list/ListBase',
 };
 
 const data = {

@@ -8,7 +8,7 @@ import {
 } from './useCanAccessResources';
 
 export default {
-    title: 'ra-core/auth/useCanAccessResources',
+    title: '@strato-admin/ra-core/auth/useCanAccessResources',
 };
 
 const UseCanAccessResources = ({

@@ -1,6 +1,6 @@
 # Strato Admin Examples
 
-This directory contains example applications showcasing the use of `strato-admin` with various features.
+This directory contains example applications showcasing the use of `@strato-admin/admin` with various features.
 
 ## Examples
 

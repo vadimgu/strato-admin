@@ -1,17 +1,11 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
-import { useResourceContext } from 'strato-core';
+import { useResourceContext } from '@strato-admin/core';
 import { Create } from './Create';
 
-// Mock ra-core
-vi.mock('strato-core', () => ({
-  CreateBase: ({ children }: any) => <div data-testid="create-base">{children}</div>,
-  useTranslate: vi.fn(() => (key: string, options: any) => options?._ || key),
-  useResourceContext: vi.fn(),
-  useResourceDefinitions: vi.fn(() => ({})),
-  useCreateContext: vi.fn(() => ({})),
-}));
+// Mock strato-core
+vi.mock('@strato-admin/core', () => import('../__mocks__/strato-core'));
 
 // Mock Cloudscape components
 vi.mock('@cloudscape-design/components/container', () => ({

@@ -11,7 +11,7 @@ import { TestMemoryRouter } from '../../routing';
 import { ReferenceManyCountBase } from './ReferenceManyCountBase';
 
 export default {
-    title: 'ra-core/controller/field/ReferenceManyCountBase',
+    title: '@strato-admin/ra-core/controller/field/ReferenceManyCountBase',
     excludeStories: ['Wrapper'],
 };
 

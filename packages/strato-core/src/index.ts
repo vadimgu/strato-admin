@@ -1,4 +1,4 @@
-export * from 'ra-core';
+export * from '@strato-admin/ra-core';
 export * from './resource';
 
 // Resolve ambiguity between ra-core and strato-core resource exports.

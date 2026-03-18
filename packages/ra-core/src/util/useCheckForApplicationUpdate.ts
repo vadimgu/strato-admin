@@ -24,7 +24,7 @@ export const useCheckForApplicationUpdate = (
         onNewVersionAvailable: onNewVersionAvailableProp,
         disabled = process.env.NODE_ENV !== 'production',
     } = options;
-    const currentHash = useRef<number>();
+    const currentHash = useRef<number | undefined>(undefined);
     const onNewVersionAvailable = useEvent(onNewVersionAvailableProp);
 
     useEffect(() => {

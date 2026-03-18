@@ -1,5 +1,5 @@
 import React from 'react';
-import { CreateBase, type RaRecord, ResourceSchemaProvider } from 'strato-core';
+import { CreateBase, type RaRecord, ResourceSchemaProvider } from '@strato-admin/core';
 import Container from '@cloudscape-design/components/container';
 import { CreateHeader } from './CreateHeader';
 import Form from '../form/Form';

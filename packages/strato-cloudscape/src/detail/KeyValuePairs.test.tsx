@@ -1,20 +1,12 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
-import { useResourceContext, useTranslate, useRecordContext } from 'strato-core';
+import { useResourceContext, useTranslate, useRecordContext } from '@strato-admin/core';
 import KeyValuePairs from './KeyValuePairs';
 import CloudscapeKeyValuePairs from '@cloudscape-design/components/key-value-pairs';
 
-// Mock ra-core
-vi.mock('strato-core', () => ({
-  useResourceContext: vi.fn(),
-  useTranslate: vi.fn(() => (key: string, options: any) => options?._ || key),
-  useRecordContext: vi.fn(),
-  RecordContextProvider: ({ children }: any) => <>{children}</>,
-  useFieldValue: vi.fn(({ source, record }) => record?.[source]),
-  FieldTitle: ({ label, source }: any) => label || source,
-  useCreatePath: vi.fn(() => (params: any) => `/${params.resource}/${params.id}/${params.type}`),
-}));
+// Mock strato-core
+vi.mock('@strato-admin/core', () => import('../__mocks__/strato-core'));
 
 // Mock react-router-dom
 vi.mock('react-router-dom', () => ({

@@ -5,7 +5,7 @@ import { testDataProvider } from './testDataProvider';
 import { useGetList } from './useGetList';
 
 export default {
-    title: 'ra-core/dataProvider/useGetList',
+    title: '@strato-admin/ra-core/dataProvider/useGetList',
 };
 
 const UseGetList = () => {

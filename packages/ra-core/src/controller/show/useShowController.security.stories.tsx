@@ -12,7 +12,7 @@ import { ShowControllerProps, useShowController } from './useShowController';
 import { useAuthState } from '../..';
 
 export default {
-    title: 'ra-core/controller/useShowController',
+    title: '@strato-admin/ra-core/controller/useShowController',
 };
 
 const styles = {

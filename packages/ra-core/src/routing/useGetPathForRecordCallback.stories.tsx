@@ -17,7 +17,7 @@ import {
 } from '..';
 
 export default {
-    title: 'ra-core/routing/useGetPathForRecordCallback',
+    title: '@strato-admin/ra-core/routing/useGetPathForRecordCallback',
 };
 
 export const InferredWithoutAuthProviderWithBothShowAndEditView = () => (

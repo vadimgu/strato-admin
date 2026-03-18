@@ -19,7 +19,7 @@ import { testDataProvider } from './testDataProvider';
 import { useNotificationContext } from '../notification';
 import { useTakeUndoableMutation } from './undo';
 
-export default { title: 'ra-core/dataProvider/useUpdate' };
+export default { title: '@strato-admin/ra-core/dataProvider/useUpdate' };
 
 export const MutationMode = ({ timeout = 1000 }) => {
     const posts = [{ id: 1, title: 'Hello', author: 'John Doe' }];

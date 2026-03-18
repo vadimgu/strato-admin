@@ -1,20 +1,11 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
-import { useEditContext, useResourceContext } from 'strato-core';
+import { useEditContext, useResourceContext } from '@strato-admin/core';
 import { Edit } from './Edit';
 
 // Mock ra-core
-vi.mock('strato-core', () => ({
-  EditBase: ({ children }: any) => <div data-testid="edit-base">{children}</div>,
-  useEditContext: vi.fn(),
-  useTranslate: vi.fn(() => (key: string, options: any) => options?._ || key),
-  useRecordContext: vi.fn((record) => record),
-  useResourceContext: vi.fn(),
-  useResourceDefinitions: vi.fn(() => ({})),
-  useFieldValue: vi.fn(({ source, record }) => record?.[source]),
-  useCreatePath: vi.fn(() => (params: any) => `/${params.resource}/${params.id}/${params.type}`),
-}));
+vi.mock('@strato-admin/core', () => import('../__mocks__/strato-core'));
 
 // Mock Cloudscape components
 vi.mock('@cloudscape-design/components/container', () => ({
@@ -66,7 +57,7 @@ describe('Edit', () => {
   it('should render content and title when record is loaded', () => {
     (useEditContext as any).mockReturnValue({
       isLoading: false,
-      record: { id: 1 },
+      record: { id: 1 }, defaultTitle: 'Products',
       resource: 'products',
     });
     (useResourceContext as any).mockReturnValue('products');
@@ -85,7 +76,7 @@ describe('Edit', () => {
   it('should use provided title', () => {
     (useEditContext as any).mockReturnValue({
       isLoading: false,
-      record: { id: 1 },
+      record: { id: 1 }, defaultTitle: 'Products',
       resource: 'products',
     });
 

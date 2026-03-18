@@ -6,7 +6,7 @@ import { ListController } from './ListController';
 import { useSelectAll } from './useSelectAll';
 
 export default {
-    title: 'ra-core/controller/useSelectAll',
+    title: '@strato-admin/ra-core/controller/useSelectAll',
     excludeStories: ['defaultDataProvider'],
 };
 

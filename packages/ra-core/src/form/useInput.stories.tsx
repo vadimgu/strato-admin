@@ -4,7 +4,7 @@ import { Form } from './Form';
 import { InputProps, useInput } from './useInput';
 
 export default {
-    title: 'ra-core/form/useInput',
+    title: '@strato-admin/ra-core/form/useInput',
 };
 
 const Input = (props: InputProps & { log?: boolean }) => {

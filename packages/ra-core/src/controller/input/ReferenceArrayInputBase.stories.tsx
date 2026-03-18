@@ -22,7 +22,7 @@ import {
 import { useGetRecordRepresentation, useIsOffline } from '../..';
 import { onlineManager } from '@tanstack/react-query';
 
-export default { title: 'ra-core/controller/input/ReferenceArrayInputBase' };
+export default { title: '@strato-admin/ra-core/controller/input/ReferenceArrayInputBase' };
 
 const tags = [
     { id: 0, name: '3D' },

@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { useTranslate, useResourceDefinitions } from 'strato-core';
+import { useTranslate, useResourceDefinitions } from '@strato-admin/core';
 import { humanize } from 'inflection';
 
 export interface FieldTitleProps {

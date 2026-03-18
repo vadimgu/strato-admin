@@ -5,7 +5,7 @@ import { TestMemoryRouter } from '../routing';
 import WithPermissions from './WithPermissions';
 
 export default {
-    title: 'ra-core/auth/WithPermissions',
+    title: '@strato-admin/ra-core/auth/WithPermissions',
 };
 
 export const NoAuthProvider = () => (

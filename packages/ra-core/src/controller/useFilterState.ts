@@ -58,7 +58,7 @@ export default ({
     debounceTime = 500,
 }: UseFilterStateOptions): UseFilterStateProps => {
     const permanentFilterProp = useRef(permanentFilter);
-    const latestValue = useRef<string>();
+    const latestValue = useRef<string | undefined>(undefined);
     const [filter, setFilterValue] = useState<FilterPayload>({
         ...permanentFilter,
         ...filterToQuery(''),

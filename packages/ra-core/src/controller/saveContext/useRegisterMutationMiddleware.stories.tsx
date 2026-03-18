@@ -16,7 +16,7 @@ import set from 'lodash/set.js';
 import fakerestDataProvider from 'ra-data-fakerest';
 
 export default {
-    title: 'ra-core/form/useRegisterMutationMiddleware',
+    title: '@strato-admin/ra-core/form/useRegisterMutationMiddleware',
 };
 
 const handleImageUpload =

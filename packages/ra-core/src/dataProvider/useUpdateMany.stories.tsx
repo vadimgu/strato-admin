@@ -13,7 +13,7 @@ import { TestMemoryRouter, useRedirect } from '../routing';
 import { useNotificationContext, useNotify } from '../notification';
 import { EditBase, ListBase, RecordsIterator } from '../controller';
 
-export default { title: 'ra-core/dataProvider/useUpdateMany' };
+export default { title: '@strato-admin/ra-core/dataProvider/useUpdateMany' };
 
 export const UndefinedValues = () => {
     const data = [

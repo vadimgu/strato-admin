@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form as RaForm, type FormProps as RaFormProps, useSaveContext, useInputSchema } from 'strato-core';
+import { Form as RaForm, type FormProps as RaFormProps, useSaveContext, useInputSchema } from '@strato-admin/core';
 import CloudscapeForm from '@cloudscape-design/components/form';
 import SpaceBetween from '@cloudscape-design/components/space-between';
 import { SaveButton } from '../button/SaveButton';

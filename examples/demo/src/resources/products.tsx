@@ -9,7 +9,7 @@ import {
   TextAreaInput,
   ResourceSchema,
   SliderInput,
-} from 'strato-admin';
+} from '@strato-admin/admin';
 import StarRatingField from '../components/StarRatingField';
 
 export const productRepresentation = (record: any) => `${record.name} (${record.reference})`;

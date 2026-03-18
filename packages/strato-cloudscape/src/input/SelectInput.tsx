@@ -5,7 +5,7 @@ import {
   useResourceContext,
   useChoicesContext,
   useGetRecordRepresentation,
-} from 'strato-core';
+} from '@strato-admin/core';
 import CloudscapeSelect, { SelectProps as CloudscapeSelectProps } from '@cloudscape-design/components/select';
 import { FormField } from './FormField';
 import { FormFieldContext, useFormFieldContext } from './FormFieldContext';

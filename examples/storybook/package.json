@@ -9,8 +9,8 @@
   "dependencies": {
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "strato-admin": "workspace:*",
-    "strato-faker-ecommerce": "workspace:*",
+    "@strato-admin/admin": "workspace:*",
+    "@strato-admin/faker-ecommerce": "workspace:*",
     "@cloudscape-design/components": "^3.0.1217",
     "@cloudscape-design/global-styles": "^1.0.0",
     "react-router-dom": "^6.22.3"

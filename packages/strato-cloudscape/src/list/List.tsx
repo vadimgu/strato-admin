@@ -1,5 +1,5 @@
 import React from 'react';
-import { ListBase, type RaRecord, ResourceSchemaProvider } from 'strato-core';
+import { ListBase, type RaRecord, ResourceSchemaProvider } from '@strato-admin/core';
 import Table from './Table';
 
 export interface ListProps<_RecordType extends RaRecord = any> {

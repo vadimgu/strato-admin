@@ -42,7 +42,7 @@ import { ListControllerResult } from './useListController';
  *
  * @example
  *
- * import { useListController, ListContext } from 'ra-core';
+ * import { useListController, ListContext } from '@strato-admin/ra-core';
  *
  * const List = props => {
  *     const controllerProps = useListController(props);

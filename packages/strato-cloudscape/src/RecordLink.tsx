@@ -1,6 +1,6 @@
 import React from 'react';
 import Link from '@cloudscape-design/components/link';
-import { useCreatePath, useResourceContext, useRecordContext } from 'strato-core';
+import { useCreatePath, useResourceContext, useRecordContext } from '@strato-admin/core';
 import { useNavigate } from 'react-router-dom';
 
 export type RecordLinkType = string | boolean | ((record: any, reference?: string) => string);

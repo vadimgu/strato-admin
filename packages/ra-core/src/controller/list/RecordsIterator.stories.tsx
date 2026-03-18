@@ -6,7 +6,7 @@ import { useRecordContext } from '../record';
 import { WithListContext } from './WithListContext';
 
 export default {
-    title: 'ra-core/controller/list/RecordsIterator',
+    title: '@strato-admin/ra-core/controller/list/RecordsIterator',
 };
 
 const data = [

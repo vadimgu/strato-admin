@@ -23,7 +23,7 @@ import { useCreatePath } from '../routing';
  *
  * @example <caption>Simple usage</caption>
  *
- * import { usePrevNextControllerProps } from 'ra-core';
+ * import { usePrevNextControllerProps } from '@strato-admin/ra-core';
  * const {
  *         hasPrev,
  *         hasNext,
@@ -37,7 +37,7 @@ import { useCreatePath } from '../routing';
  *
  * @example <caption>Custom PrevNextButton</caption>
  *
- * import { UsePrevNextControllerProps, useTranslate } from 'ra-core';
+ * import { UsePrevNextControllerProps, useTranslate } from '@strato-admin/ra-core';
  * import NavigateBefore from '@mui/icons-material/NavigateBefore';
  * import NavigateNext from '@mui/icons-material/NavigateNext';
  * import ErrorIcon from '@mui/icons-material/Error';

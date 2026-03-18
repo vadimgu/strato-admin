@@ -6,7 +6,7 @@ import { useStore } from './useStore';
 import { useStoreContext } from './useStoreContext';
 
 export default {
-    title: 'ra-core/store/localStorage',
+    title: '@strato-admin/ra-core/store/localStorage',
 };
 
 const StoreReader = ({ name }) => {

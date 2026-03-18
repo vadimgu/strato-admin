@@ -1,5 +1,5 @@
 import StatusIndicator from '@cloudscape-design/components/status-indicator';
-import { RaRecord, useFieldValue, useRecordContext, useTranslate } from 'strato-core';
+import { RaRecord, useFieldValue, useRecordContext, useTranslate } from '@strato-admin/core';
 import RecordLink from '../RecordLink';
 import { type FieldProps } from './types';
 

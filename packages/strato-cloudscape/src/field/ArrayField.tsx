@@ -1,4 +1,4 @@
-import { useRecordContext, useList, ListContextProvider, ResourceContextProvider, type RaRecord } from 'strato-core';
+import { useRecordContext, useList, ListContextProvider, ResourceContextProvider, type RaRecord } from '@strato-admin/core';
 import { type FieldProps } from './types';
 
 export interface ArrayFieldProps<RecordType extends RaRecord = RaRecord> extends FieldProps<RecordType> {

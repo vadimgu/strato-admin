@@ -1,5 +1,5 @@
 import Badge, { type BadgeProps } from '@cloudscape-design/components/badge';
-import { type RaRecord, useFieldValue, useRecordContext } from 'strato-core';
+import { type RaRecord, useFieldValue, useRecordContext } from '@strato-admin/core';
 import RecordLink from '../RecordLink';
 import { type FieldProps } from './types';
 

@@ -4,7 +4,7 @@ import { TestTranslationProvider } from './TestTranslationProvider';
 import { SourceContextProvider } from '../core';
 
 export default {
-    title: 'ra-core/i18n/useTranslateLabel',
+    title: '@strato-admin/ra-core/i18n/useTranslateLabel',
 };
 
 const TranslateLabel = ({

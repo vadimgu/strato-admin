@@ -21,7 +21,7 @@ import {
     Pagination,
 } from '../../test-ui';
 
-export default { title: 'ra-core/controller/list/useSavedQueries' };
+export default { title: '@strato-admin/ra-core/controller/list/useSavedQueries' };
 
 const SavedQueries = () => {
     const { resource, filterValues, displayedFilters, sort, perPage } =

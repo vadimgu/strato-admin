@@ -6,7 +6,7 @@ import { CoreAdminContext } from '../core';
 import { useCreate } from './useCreate';
 import { useGetOne } from './useGetOne';
 
-export default { title: 'ra-core/dataProvider/useCreate/optimistic' };
+export default { title: '@strato-admin/ra-core/dataProvider/useCreate/optimistic' };
 
 export const SuccessCase = ({ timeout = 1000 }) => {
     const posts = [{ id: 1, title: 'Hello', author: 'John Doe' }];

@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { useInput, useResourceContext, ValidationError } from 'strato-core';
+import { useInput, useResourceContext, ValidationError } from '@strato-admin/core';
 import CloudscapeFormField from '@cloudscape-design/components/form-field';
 import { FieldTitle } from './FieldTitle';
 import { FormFieldContext, useFormFieldContext } from './FormFieldContext';

@@ -3,7 +3,7 @@ import React from 'react';
 import { IsOffline } from './IsOffline';
 
 export default {
-    title: 'ra-core/core/IsOffline',
+    title: '@strato-admin/ra-core/core/IsOffline',
 };
 
 export const Basic = ({ isOnline = true }: { isOnline?: boolean }) => {

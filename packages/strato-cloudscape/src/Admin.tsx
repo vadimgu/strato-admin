@@ -8,9 +8,9 @@ import {
   useLocaleState,
   registerDefaultResourceComponents,
   registerFieldInputMapping,
-} from 'strato-core';
-import { icuI18nProvider } from 'strato-i18n';
-import englishMessages from 'strato-language-en';
+} from '@strato-admin/core';
+import { icuI18nProvider } from '@strato-admin/i18n';
+import englishMessages from '@strato-admin/language-en';
 import AppLayout from './layout/AppLayout';
 import { List } from './list';
 import { Create } from './create';

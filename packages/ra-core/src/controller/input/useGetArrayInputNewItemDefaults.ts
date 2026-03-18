@@ -36,10 +36,10 @@ export const useGetArrayInputNewItemDefaults = (
             if (
                 isValidElement(input) &&
                 input.type !== FormDataConsumer &&
-                input.props.source
+                (input.props as any).source
             ) {
-                defaultValue[input.props.source] =
-                    input.props.defaultValue ?? null;
+                defaultValue[(input.props as any).source] =
+                    (input.props as any).defaultValue ?? null;
             }
         });
         return defaultValue;

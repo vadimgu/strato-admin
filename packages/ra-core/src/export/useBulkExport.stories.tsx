@@ -10,7 +10,7 @@ import {
 } from '..';
 
 export default {
-    title: 'ra-core/export/useBulkExport',
+    title: '@strato-admin/ra-core/export/useBulkExport',
 };
 
 const data = {

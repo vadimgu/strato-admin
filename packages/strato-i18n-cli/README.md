@@ -1,4 +1,4 @@
-# strato-i18n-cli
+# @strato-admin/i18n-cli
 
 CLI tools for Strato Admin internationalization.
 
@@ -19,11 +19,11 @@ strato-extract --config=my-config.json "src/**/*.{ts,tsx}" "locales/*/messages.p
 
 ## Configuration
 
-You can configure the extraction process by creating a `strato-i18n.config.json` file in your project root, or by specifying a path using the `--config` flag.
+You can configure the extraction process by creating a `@strato-admin/i18n.config.json` file in your project root, or by specifying a path using the `--config` flag.
 
 The configuration allows you to extend the list of components and attributes that the extractor looks for.
 
-### Example `strato-i18n.config.json`
+### Example `@strato-admin/i18n.config.json`
 
 ```json
 {

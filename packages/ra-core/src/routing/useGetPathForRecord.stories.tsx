@@ -12,7 +12,7 @@ import {
 import { QueryClient } from '@tanstack/react-query';
 
 export default {
-    title: 'ra-core/routing/useGetPathForRecord',
+    title: '@strato-admin/ra-core/routing/useGetPathForRecord',
 };
 
 const EditLink = () => {

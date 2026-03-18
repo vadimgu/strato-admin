@@ -1,11 +1,11 @@
 
 import { render, fireEvent } from '@testing-library/react';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
-import { useInput, useResourceContext, useChoicesContext } from 'strato-core';
+import { useInput, useResourceContext, useChoicesContext } from '@strato-admin/core';
 import { AutocompleteInput } from './AutocompleteInput';
 
 // Mock ra-core
-vi.mock('strato-core', () => ({
+vi.mock('@strato-admin/core', () => ({
   useInput: vi.fn(),
   useResourceContext: vi.fn(),
   useChoicesContext: vi.fn().mockReturnValue({ allChoices: [], isPending: false }),

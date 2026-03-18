@@ -23,7 +23,7 @@ import { ListControllerResult } from './useListController';
  *
  * @example
  *
- * import { useListController, usePickSortContext, ListSortContext } from 'ra-core';
+ * import { useListController, usePickSortContext, ListSortContext } from '@strato-admin/ra-core';
  *
  * const List = props => {
  *     const controllerProps = useListController(props);

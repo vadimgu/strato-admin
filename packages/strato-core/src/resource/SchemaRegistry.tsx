@@ -1,5 +1,5 @@
 import React, { createContext, useContext, ReactNode, useState, useCallback, useMemo, ComponentType, Fragment } from 'react';
-import { required } from 'ra-core';
+import { required } from '@strato-admin/ra-core';
 import { FieldSchema } from './FieldSchema';
 import { InputSchema } from './InputSchema';
 

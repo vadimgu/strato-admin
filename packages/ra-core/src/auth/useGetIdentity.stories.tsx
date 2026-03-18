@@ -4,7 +4,7 @@ import { useGetIdentity } from './useGetIdentity';
 import { AuthContext } from './AuthContext';
 
 export default {
-    title: 'ra-core/auth/useGetIdentity',
+    title: '@strato-admin/ra-core/auth/useGetIdentity',
 };
 
 const authProvider = {

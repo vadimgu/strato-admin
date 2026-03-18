@@ -30,7 +30,7 @@ import { ListControllerResult } from './useListController';
  *
  * @example
  *
- * import { useListController, ListPaginationContext } from 'ra-core';
+ * import { useListController, ListPaginationContext } from '@strato-admin/ra-core';
  *
  * const List = props => {
  *     const controllerProps = useListController(props);

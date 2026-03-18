@@ -1,18 +1,11 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
-import { useResourceContext, useShowContext } from 'strato-core';
+import { useResourceContext, useShowContext } from '@strato-admin/core';
 import { ShowHeader } from './ShowHeader';
 
-// Mock ra-core
-vi.mock('strato-core', () => ({
-  useResourceContext: vi.fn(),
-  useTranslate: vi.fn(() => (key: string, options: any) => options?._ || key),
-  useResourceDefinitions: vi.fn(() => ({})),
-  useShowContext: vi.fn(),
-  useRecordContext: vi.fn((record) => record),
-  useCreatePath: vi.fn(() => (params: any) => `/${params.resource}/${params.id}/${params.type}`),
-}));
+// Mock strato-core
+vi.mock('@strato-admin/core', () => import('../__mocks__/strato-core'));
 
 // Mock react-router-dom
 vi.mock('react-router-dom', () => ({
@@ -48,7 +41,7 @@ describe('ShowHeader', () => {
 
   it('should render title from resource', () => {
     (useResourceContext as any).mockReturnValue('products');
-    (useShowContext as any).mockReturnValue({ record: { id: 1 } });
+    (useShowContext as any).mockReturnValue({ record: { id: 1 }, defaultTitle: 'Products' });
 
     const { getByTestId } = render(<ShowHeader />);
 
@@ -57,7 +50,7 @@ describe('ShowHeader', () => {
 
   it('should render provided title', () => {
     (useResourceContext as any).mockReturnValue('products');
-    (useShowContext as any).mockReturnValue({ record: { id: 1 } });
+    (useShowContext as any).mockReturnValue({ record: { id: 1 }, defaultTitle: 'Products' });
 
     const { getByTestId } = render(<ShowHeader title="My Product" />);
 
@@ -66,7 +59,7 @@ describe('ShowHeader', () => {
 
   it('should render EditButton by default as primary', () => {
     (useResourceContext as any).mockReturnValue('products');
-    (useShowContext as any).mockReturnValue({ record: { id: 1 } });
+    (useShowContext as any).mockReturnValue({ record: { id: 1 }, defaultTitle: 'Products' });
 
     const { getByText } = render(<ShowHeader />);
 
@@ -77,7 +70,7 @@ describe('ShowHeader', () => {
 
   it('should render custom actions if provided', () => {
     (useResourceContext as any).mockReturnValue('products');
-    (useShowContext as any).mockReturnValue({ record: { id: 1 } });
+    (useShowContext as any).mockReturnValue({ record: { id: 1 }, defaultTitle: 'Products' });
 
     const { getByTestId, queryByText } = render(<ShowHeader actions={<div data-testid="custom-action">Custom</div>} />);
 

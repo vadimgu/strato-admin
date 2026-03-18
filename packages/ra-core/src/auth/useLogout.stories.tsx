@@ -5,7 +5,7 @@ import { CoreAdminContext } from '../core/CoreAdminContext';
 import useLogout from './useLogout';
 
 export default {
-    title: 'ra-core/auth/useLogout',
+    title: '@strato-admin/ra-core/auth/useLogout',
 };
 
 export const Redirect = ({

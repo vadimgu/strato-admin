@@ -4,7 +4,7 @@ import { useNotificationContext } from './useNotificationContext';
 import { NotificationContextProvider } from './NotificationContextProvider';
 
 export default {
-    title: 'ra-core/useNotify',
+    title: '@strato-admin/ra-core/useNotify',
 };
 
 const Button = () => {

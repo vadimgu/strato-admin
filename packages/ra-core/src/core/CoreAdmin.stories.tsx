@@ -4,7 +4,7 @@ import { CoreAdmin } from './CoreAdmin';
 import { CustomRoutes } from './CustomRoutes';
 
 export default {
-    title: 'ra-core/core/CoreAdmin',
+    title: '@strato-admin/ra-core/core/CoreAdmin',
 };
 
 const BuggyComponent = () => {

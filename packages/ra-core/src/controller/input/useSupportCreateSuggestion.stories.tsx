@@ -9,7 +9,7 @@ import { SimpleForm, TextInput } from '../../test-ui';
 import { CoreAdminContext } from '../../core/CoreAdminContext';
 import { DataProvider } from '../../types';
 
-export default { title: 'ra-core/controller/input/useSupportCreateSuggestion' };
+export default { title: '@strato-admin/ra-core/controller/input/useSupportCreateSuggestion' };
 
 const CreateElement = () => {
     const { filter, onCancel, onCreate } = useCreateSuggestionContext();

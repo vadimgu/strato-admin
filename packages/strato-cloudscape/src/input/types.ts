@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { InputProps as InputPropsBase } from 'strato-core';
+import { InputProps as InputPropsBase } from '@strato-admin/core';
 import { FormFieldProps as CloudscapeFormFieldProps } from '@cloudscape-design/components/form-field';
 
 export interface StratoInputProps<T = any>

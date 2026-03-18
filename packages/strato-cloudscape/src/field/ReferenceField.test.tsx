@@ -2,10 +2,10 @@
 import { render, screen } from '@testing-library/react';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 import ReferenceField from './ReferenceField';
-import { useRecordContext, useGetRecordRepresentation } from 'strato-core';
+import { useRecordContext, useGetRecordRepresentation } from '@strato-admin/core';
 
 // Mock ra-core
-vi.mock('strato-core', () => ({
+vi.mock('@strato-admin/core', () => ({
   ReferenceFieldBase: vi.fn(({ children }: any) => <div data-testid="ra-reference-field-base">{children}</div>),
   useRecordContext: vi.fn(),
   useGetRecordRepresentation: vi.fn(),

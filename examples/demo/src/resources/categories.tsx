@@ -5,7 +5,7 @@ import {
   Show,
   KeyValuePairs,
   TextField,
-} from 'strato-admin';
+} from '@strato-admin/admin';
 
 export const categorySchema = (
   <FieldSchema>

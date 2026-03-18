@@ -1,3 +1,3 @@
 export * from './types';
-export * from './generate';
-export * from './dataProvider';
+export { generateEcommerceData } from './generate';
+export { dataProvider } from './dataProvider';

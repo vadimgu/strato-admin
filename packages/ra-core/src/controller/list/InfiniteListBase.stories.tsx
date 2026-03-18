@@ -20,7 +20,7 @@ import {
 import { onlineManager } from '@tanstack/react-query';
 
 export default {
-    title: 'ra-core/controller/list/InfiniteListBase',
+    title: '@strato-admin/ra-core/controller/list/InfiniteListBase',
 };
 
 const data = {

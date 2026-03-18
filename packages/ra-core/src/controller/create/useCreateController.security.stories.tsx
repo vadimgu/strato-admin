@@ -15,7 +15,7 @@ import {
 import { useAuthState } from '../../auth';
 
 export default {
-    title: 'ra-core/controller/useCreateController',
+    title: '@strato-admin/ra-core/controller/useCreateController',
 };
 
 const styles = {

@@ -12,7 +12,7 @@ export type { RouterLinkProps as LinkBaseProps } from './RouterProvider';
  * For most use cases, prefer the styled `Link` component from `ra-ui-materialui`.
  *
  * @example
- * import { LinkBase } from 'ra-core';
+ * import { LinkBase } from '@strato-admin/ra-core';
  *
  * const MyComponent = () => (
  *     <LinkBase to="/posts/1">Post 1</LinkBase>

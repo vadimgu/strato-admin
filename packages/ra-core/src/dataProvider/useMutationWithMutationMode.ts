@@ -90,22 +90,20 @@ export const useMutationWithMutationMode = <
     >(mutationFnEvent);
     // We need to store the call-time onError and onSettled in refs to be able to call them in the useMutation hook even
     // when the calling component is unmounted
-    const callTimeOnError =
-        useRef<
-            UseMutationWithMutationModeOptions<
-                ErrorType,
-                TData,
-                TVariables
-            >['onError']
-        >();
-    const callTimeOnSettled =
-        useRef<
-            UseMutationWithMutationModeOptions<
-                ErrorType,
-                TData,
-                TVariables
-            >['onSettled']
-        >();
+    const callTimeOnError = useRef<
+        UseMutationWithMutationModeOptions<
+            ErrorType,
+            TData,
+            TVariables
+        >['onError'] | undefined
+    >(undefined);
+    const callTimeOnSettled = useRef<
+        UseMutationWithMutationModeOptions<
+            ErrorType,
+            TData,
+            TVariables
+        >['onSettled'] | undefined
+    >(undefined);
 
     // We don't need to keep a ref on the onSuccess callback as we call it ourselves for optimistic and
     // undoable mutations. There is a limitation though: if one of the side effects applied by the onSuccess callback

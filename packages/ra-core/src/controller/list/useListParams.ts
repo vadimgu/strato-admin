@@ -93,7 +93,7 @@ export const useListParams = ({
         storeKey || `${resource}.listParams`,
         defaultParams
     );
-    const tempParams = useRef<ListParams>();
+    const tempParams = useRef<ListParams | undefined>(undefined);
     const isMounted = useIsMounted();
 
     const requestSignature = [

@@ -12,7 +12,7 @@ import { useNotificationContext, useNotify } from '../notification';
 import { useTakeUndoableMutation } from './undo';
 import { EditBase, ListBase, RecordsIterator } from '../controller';
 
-export default { title: 'ra-core/dataProvider/useDeleteMany' };
+export default { title: '@strato-admin/ra-core/dataProvider/useDeleteMany' };
 
 export const MutationMode = () => {
     let posts = [

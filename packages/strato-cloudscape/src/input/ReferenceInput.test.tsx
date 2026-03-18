@@ -4,7 +4,7 @@ import { vi, describe, it, expect } from 'vitest';
 import { ReferenceInput } from './ReferenceInput';
 
 // Mock ra-core
-vi.mock('strato-core', () => ({
+vi.mock('@strato-admin/core', () => ({
   ReferenceInputBase: ({ children }: any) => <div data-testid="reference-input-base">{children}</div>,
 }));
 

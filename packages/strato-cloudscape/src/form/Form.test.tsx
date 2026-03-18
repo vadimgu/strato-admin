@@ -4,11 +4,7 @@ import { vi, describe, it, expect, beforeEach } from 'vitest';
 import { Form } from './Form';
 
 // Mock ra-core
-vi.mock('strato-core', () => ({
-  Form: ({ children }: any) => <div data-testid="ra-form">{children}</div>,
-  useTranslate: vi.fn(() => (key: string, options: any) => options?._ || key),
-  useSaveContext: vi.fn(() => ({ save: vi.fn() })),
-}));
+vi.mock('@strato-admin/core', () => import('../__mocks__/strato-core'));
 
 // Mock Cloudscape components
 vi.mock('@cloudscape-design/components/form', () => ({

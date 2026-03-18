@@ -1,5 +1,5 @@
 
-import { useInput } from 'strato-core';
+import { useInput } from '@strato-admin/core';
 import CloudscapeInput, { InputProps as CloudscapeInputProps } from '@cloudscape-design/components/input';
 import { FormField } from './FormField';
 import { FormFieldContext, useFormFieldContext } from './FormFieldContext';

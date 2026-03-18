@@ -26,7 +26,7 @@ import { ListControllerResult } from './useListController';
  *
  * @example
  *
- * import { useListController, usePickFilterContext, ListFilterContext } from 'ra-core';
+ * import { useListController, usePickFilterContext, ListFilterContext } from '@strato-admin/ra-core';
  *
  * const List = props => {
  *     const controllerProps = useListController(props);

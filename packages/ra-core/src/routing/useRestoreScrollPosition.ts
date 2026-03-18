@@ -10,7 +10,7 @@ import { useLocation } from './useLocation';
  * @param debounceMs The debounce time in milliseconds
  *
  * @example
- * import { useRestoreScrollPosition } from 'ra-core';
+ * import { useRestoreScrollPosition } from '@strato-admin/ra-core';
  *
  * const MyCustomPage = () => {
  *   useRestoreScrollPosition('my-list');
@@ -49,7 +49,7 @@ export const useRestoreScrollPosition = (
  * @param debounceMs The debounce time in milliseconds
  *
  * @example
- * import { useTrackScrollPosition } from 'ra-core';
+ * import { useTrackScrollPosition } from '@strato-admin/ra-core';
  *
  * const MyCustomPage = () => {
  *   useTrackScrollPosition('my-list');

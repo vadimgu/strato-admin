@@ -18,7 +18,7 @@ import { TestMemoryRouter } from '../routing';
 import { useNotificationContext } from '../notification';
 import { useTakeUndoableMutation } from './undo';
 
-export default { title: 'ra-core/dataProvider/useDelete' };
+export default { title: '@strato-admin/ra-core/dataProvider/useDelete' };
 
 export const MutationMode = ({
     dataProvider,

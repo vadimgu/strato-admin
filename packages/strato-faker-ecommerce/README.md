@@ -1,4 +1,4 @@
-# strato-faker-ecommerce
+# @strato-admin/faker-ecommerce
 
 This package provides mock data for an E-commerce domain using `@faker-js/faker`.
 
@@ -16,7 +16,7 @@ This package provides mock data for an E-commerce domain using `@faker-js/faker`
 
 ```typescript
 import { Admin, Resource } from 'react-admin';
-import { dataProvider } from 'strato-faker-ecommerce';
+import { dataProvider } from '@strato-admin/faker-ecommerce';
 
 const App = () => (
     <Admin dataProvider={dataProvider}>
@@ -29,7 +29,7 @@ const App = () => (
 ### Raw Data Generation
 
 ```typescript
-import { generateEcommerceData } from 'strato-faker-ecommerce';
+import { generateEcommerceData } from '@strato-admin/faker-ecommerce';
 
 const data = generateEcommerceData();
 console.log(data.products.length); // 50

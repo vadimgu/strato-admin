@@ -13,7 +13,7 @@ import { ListBase } from '../list';
 import { Resource } from '../../core';
 import { ArrayInputBase } from './ArrayInputBase';
 
-export default { title: 'ra-core/controller/input/ArrayInputBase' };
+export default { title: '@strato-admin/ra-core/controller/input/ArrayInputBase' };
 
 export const Basic = () => (
     <TestMemoryRouter initialEntries={['/posts/1']}>

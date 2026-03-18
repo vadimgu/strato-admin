@@ -1,27 +1,19 @@
 
 import { render } from '@testing-library/react';
 import { vi, describe, it, expect } from 'vitest';
-import { useFieldValue, useRecordContext } from 'strato-core';
+import { useFieldValue, useRecordContext } from '@strato-admin/core';
 import BooleanField from './BooleanField';
 
 // Mock ra-core
-vi.mock('strato-core', () => ({
-  useRecordContext: vi.fn(),
-  useFieldValue: vi.fn(),
-  useTranslate: () => (key: string, options: any) => options?._ || key,
-}));
+vi.mock('@strato-admin/core', () => import('../__mocks__/strato-core'));
 
 // Mock Cloudscape components
-vi.mock('@cloudscape-design/components/box', () => ({
-  default: ({ children, display }: any) => (
-    <div data-testid="box" style={{ display }}>
+vi.mock('@cloudscape-design/components/status-indicator', () => ({
+  default: ({ children, type }: any) => (
+    <div data-testid="status-indicator" data-type={type}>
       {children}
     </div>
   ),
-}));
-
-vi.mock('@cloudscape-design/components/icon', () => ({
-  default: ({ name, variant }: any) => <span data-testid="icon" data-name={name} data-variant={variant} />,
 }));
 
 describe('BooleanField', () => {
@@ -32,9 +24,8 @@ describe('BooleanField', () => {
 
     const { getByTestId } = render(<BooleanField source="is_active" />);
 
-    const icon = getByTestId('icon');
-    expect(icon.getAttribute('data-name')).toBe('check');
-    expect(icon.getAttribute('data-variant')).toBe('success');
+    const indicator = getByTestId('status-indicator');
+    expect(indicator.getAttribute('data-type')).toBe('success');
   });
 
   it('should render close icon for false value', () => {
@@ -44,9 +35,8 @@ describe('BooleanField', () => {
 
     const { getByTestId } = render(<BooleanField source="is_active" />);
 
-    const icon = getByTestId('icon');
-    expect(icon.getAttribute('data-name')).toBe('close');
-    expect(icon.getAttribute('data-variant')).toBe('error');
+    const indicator = getByTestId('status-indicator');
+    expect(indicator.getAttribute('data-type')).toBe('not-started');
   });
 
   it('should render label when showLabel is true', () => {

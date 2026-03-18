@@ -10,7 +10,7 @@ import { AuthProvider, CoreLayoutProps } from '../types';
 import { Browser } from '../storybook/FakeBrowser';
 
 export default {
-    title: 'ra-core/core/CoreAdminRoutes',
+    title: '@strato-admin/ra-core/core/CoreAdminRoutes',
 };
 
 export const Basic = ({

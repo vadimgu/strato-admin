@@ -13,7 +13,7 @@ import { useIsOffline } from '../../core/useIsOffline';
 import { IsOffline } from '../..';
 
 export default {
-    title: 'ra-core/controller/field/ReferenceFieldBase',
+    title: '@strato-admin/ra-core/controller/field/ReferenceFieldBase',
     excludeStories: ['dataProviderWithAuthors'],
 };
 

@@ -5,7 +5,7 @@ import { AuthProvider } from '../types';
 import { CoreAdminContext } from '../core';
 
 export default {
-    title: 'ra-core/auth/useCanAccessCallback',
+    title: '@strato-admin/ra-core/auth/useCanAccessCallback',
 };
 
 const UseCanAccessCallbackComponent = () => {

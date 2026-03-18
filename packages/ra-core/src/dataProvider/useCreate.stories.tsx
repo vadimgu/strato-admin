@@ -19,7 +19,7 @@ import { TestMemoryRouter } from '../routing';
 import { testDataProvider } from './testDataProvider';
 import { useRefresh } from './useRefresh';
 
-export default { title: 'ra-core/dataProvider/useCreate' };
+export default { title: '@strato-admin/ra-core/dataProvider/useCreate' };
 
 export const MutationMode = ({ timeout = 1000 }) => {
     const posts = [{ id: 1, title: 'Hello', author: 'John Doe' }];

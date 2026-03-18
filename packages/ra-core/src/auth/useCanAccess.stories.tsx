@@ -7,7 +7,7 @@ import { TestMemoryRouter } from '../routing';
 import { Route, Routes } from 'react-router';
 
 export default {
-    title: 'ra-core/auth/useCanAccess',
+    title: '@strato-admin/ra-core/auth/useCanAccess',
 };
 
 const UseCanAccess = ({

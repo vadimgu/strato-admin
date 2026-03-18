@@ -1,9 +1,9 @@
 import { renderHook, act } from '@testing-library/react';
 import { vi, describe, it, expect } from 'vitest';
-import { useListContext } from 'strato-core';
+import { useListContext } from '@strato-admin/core';
 import { useCollection } from './useCollection';
 
-vi.mock('strato-core', () => ({
+vi.mock('@strato-admin/core', () => ({
   useListContext: vi.fn(),
 }));
 

@@ -5,7 +5,7 @@ import { vi, describe, it, expect, beforeEach } from 'vitest';
 import ReferenceManyField from './ReferenceManyField';
 
 // Mock ra-core (via strato-core)
-vi.mock('strato-core', () => ({
+vi.mock('@strato-admin/core', () => ({
   ReferenceManyFieldBase: vi.fn(({ children }: any) => <div data-testid="ra-reference-many-field-base">{children}</div>),
   ResourceSchemaProvider: vi.fn(({ children }: any) => <div data-testid="resource-schema-provider">{children}</div>),
   ResourceContextProvider: ({ children }: any) => <div data-testid="resource-context-provider">{children}</div>,

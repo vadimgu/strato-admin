@@ -1,5 +1,5 @@
 
-import { useBulkDeleteController, useTranslate, useListContext, useResourceDefinition } from 'strato-core';
+import { useBulkDeleteController, useTranslate, useListContext, useResourceDefinition } from '@strato-admin/core';
 import { Button } from './Button';
 
 export interface BulkDeleteButtonProps {

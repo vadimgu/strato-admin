@@ -1,9 +1,9 @@
 import { IntlMessageFormat } from 'intl-messageformat';
-import type { I18nProvider, TranslationMessages } from 'strato-core';
+import type { I18nProvider, TranslationMessages } from '@strato-admin/core';
 import { generateMessageId } from './hash';
 
 export const icuI18nProvider = (
-  getMessages: (locale: string) => TranslationMessages | Promise<TranslationMessages>,
+  getMessages: (locale: string) => any | Promise<any>,
   initialLocale: string = 'en',
   availableLocales: any[] = [{ locale: 'en', name: 'English' }],
 ): I18nProvider => {

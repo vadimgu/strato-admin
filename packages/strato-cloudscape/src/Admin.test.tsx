@@ -2,23 +2,7 @@ import React from 'react';
 import { render } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import { Admin } from './Admin';
-import { Resource } from 'strato-core';
-
-// Mock react-router-dom
-vi.mock('react-router-dom', () => ({
-  useNavigate: vi.fn(),
-  useLocation: vi.fn(),
-  useParams: vi.fn(),
-  useHref: vi.fn(),
-  useResolvedPath: vi.fn(),
-  useLinkClickHandler: vi.fn(),
-  BrowserRouter: ({ children }: any) => <div>{children}</div>,
-  MemoryRouter: ({ children }: any) => <div>{children}</div>,
-  useMatches: vi.fn(() => []),
-  useInRouterContext: vi.fn(() => true),
-  Routes: ({ children }: any) => <div>{children}</div>,
-  Route: () => null,
-}));
+import { Resource } from '@strato-admin/core';
 
 // Mock Cloudscape TopNavigation
 vi.mock('./layout/TopNavigation', () => ({

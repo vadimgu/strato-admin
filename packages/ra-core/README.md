@@ -1,4 +1,4 @@
-# ra-core
+# @strato-admin/ra-core
 
 Core components of [react-admin](https://marmelab.com/react-admin/), a frontend Framework for building admin applications on top of REST/GraphQL services, using ES6, React.
 

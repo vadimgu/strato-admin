@@ -19,7 +19,7 @@ import {
 import { useGetArrayInputNewItemDefaults } from './useGetArrayInputNewItemDefaults';
 import { useEvent } from '../../util';
 
-export default { title: 'ra-core/controller/input/SimpleFormIteratorBase' };
+export default { title: '@strato-admin/ra-core/controller/input/SimpleFormIteratorBase' };
 
 const SimpleFormIterator = ({
     children,

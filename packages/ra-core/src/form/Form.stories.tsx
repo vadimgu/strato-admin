@@ -28,7 +28,7 @@ import { TestMemoryRouter } from '../routing';
 import { useNotificationContext } from '../notification';
 
 export default {
-    title: 'ra-core/form/Form',
+    title: '@strato-admin/ra-core/form/Form',
 };
 
 const Input = props => {

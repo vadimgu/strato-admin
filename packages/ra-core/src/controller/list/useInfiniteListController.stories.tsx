@@ -12,7 +12,7 @@ import { TestMemoryRouter, LinkBase } from '../../routing';
 import { useAuthState } from '../..';
 
 export default {
-    title: 'ra-core/controller/list/useInfiniteListController',
+    title: '@strato-admin/ra-core/controller/list/useInfiniteListController',
     excludeStories: ['defaultDataProvider'],
 };
 

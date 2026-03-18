@@ -1,20 +1,11 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
-import { useShowContext, useResourceContext } from 'strato-core';
+import { useShowContext, useResourceContext } from '@strato-admin/core';
 import Show from './Show';
 
-// Mock ra-core
-vi.mock('strato-core', () => ({
-  ShowBase: ({ children }: any) => <div data-testid="show-base">{children}</div>,
-  useShowContext: vi.fn(),
-  useTranslate: vi.fn(() => (key: string, options: any) => options?._ || key),
-  useRecordContext: vi.fn((record) => record),
-  useResourceContext: vi.fn(),
-  useResourceDefinitions: vi.fn(() => ({})),
-  useFieldValue: vi.fn(({ source, record }) => record?.[source]),
-  useCreatePath: vi.fn(() => (params: any) => `/${params.resource}/${params.id}/${params.type}`),
-}));
+// Mock strato-core
+vi.mock('@strato-admin/core', () => import('../__mocks__/strato-core'));
 
 // Mock react-router-dom
 vi.mock('react-router-dom', () => ({
@@ -71,7 +62,7 @@ describe('Show', () => {
   it('should render content and title when record is loaded', () => {
     (useShowContext as any).mockReturnValue({
       isLoading: false,
-      record: { id: 1 },
+      record: { id: 1 }, defaultTitle: 'Products',
       resource: 'products',
     });
     (useResourceContext as any).mockReturnValue('products');
@@ -90,7 +81,7 @@ describe('Show', () => {
   it('should use provided title', () => {
     (useShowContext as any).mockReturnValue({
       isLoading: false,
-      record: { id: 1 },
+      record: { id: 1 }, defaultTitle: 'Products',
       resource: 'products',
     });
 

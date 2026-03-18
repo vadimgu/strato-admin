@@ -12,7 +12,7 @@ import { EditControllerProps, useEditController } from './useEditController';
 import { useAuthState } from '../..';
 
 export default {
-    title: 'ra-core/controller/useEditController',
+    title: '@strato-admin/ra-core/controller/useEditController',
 };
 
 const styles = {

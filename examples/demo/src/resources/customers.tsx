@@ -6,7 +6,7 @@ import {
   KeyValuePairs,
   TextField,
   NumberField,
-} from 'strato-admin';
+} from '@strato-admin/admin';
 
 export const customerSchema = (
   <FieldSchema>

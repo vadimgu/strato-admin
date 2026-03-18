@@ -4,7 +4,7 @@ import {
   useResourceContext,
   useChoicesContext,
   useGetRecordRepresentation,
-} from 'strato-core';
+} from '@strato-admin/core';
 import CloudscapeAutosuggest, {
   AutosuggestProps as CloudscapeAutosuggestProps,
 } from '@cloudscape-design/components/autosuggest';

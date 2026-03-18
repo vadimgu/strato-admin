@@ -5,7 +5,7 @@ import { StoreContextProvider } from './StoreContextProvider';
 import { useStore } from './useStore';
 
 export default {
-    title: 'ra-core/store/memory',
+    title: '@strato-admin/ra-core/store/memory',
 };
 
 const StoreReader = ({ name }) => {

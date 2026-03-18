@@ -1,4 +1,4 @@
-import { type RaRecord, useFieldValue, useRecordContext, useLocale } from 'strato-core';
+import { type RaRecord, useFieldValue, useRecordContext, useLocale } from '@strato-admin/core';
 import RecordLink from '../RecordLink';
 import { type FieldProps } from './types';
 

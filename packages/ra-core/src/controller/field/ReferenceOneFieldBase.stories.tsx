@@ -12,7 +12,7 @@ import {
 } from '../..';
 import { onlineManager } from '@tanstack/react-query';
 
-export default { title: 'ra-core/controller/field/ReferenceOneFieldBase' };
+export default { title: '@strato-admin/ra-core/controller/field/ReferenceOneFieldBase' };
 
 const defaultDataProvider = {
     getManyReference: () =>

@@ -1,2 +1,2 @@
 export * from './Form';
-export { ValidationError } from 'strato-core';
+export { ValidationError } from '@strato-admin/core';

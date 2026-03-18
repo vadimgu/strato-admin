@@ -7,7 +7,7 @@ import { TestMemoryRouter, RouterLocation } from '../routing';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
 export default {
-    title: 'ra-core/auth/CanAccess',
+    title: '@strato-admin/ra-core/auth/CanAccess',
 };
 
 const defaultAuthProvider: AuthProvider = {

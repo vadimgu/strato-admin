@@ -1,5 +1,5 @@
 import React, { ReactNode } from 'react';
-import { Resource, ResourceProps } from 'ra-core';
+import { Resource, ResourceProps } from '@strato-admin/ra-core';
 import { ResourceSchemaProvider } from './ResourceSchemaProvider';
 import { registerGlobalSchemas, useSchemaRegistry, getDefaultResourceComponents, parseUnifiedSchema } from './SchemaRegistry';
 

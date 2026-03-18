@@ -66,7 +66,7 @@ export const useReferenceParams = ({
     debounce = 500,
 }: ReferenceParamsOptions): [Parameters, Modifiers] => {
     const [params, setParams] = useState(defaultParams);
-    const tempParams = useRef<ReferenceParams>();
+    const tempParams = useRef<ReferenceParams | undefined>(undefined);
 
     const requestSignature = [
         resource,

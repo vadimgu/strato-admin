@@ -7,7 +7,7 @@ import { useRequireAccess, UseRequireAccessResult } from './useRequireAccess';
 import { TestMemoryRouter, RouterLocation } from '../routing';
 
 export default {
-    title: 'ra-core/auth/useRequireAccess',
+    title: '@strato-admin/ra-core/auth/useRequireAccess',
 };
 
 const UseRequireAccess = ({

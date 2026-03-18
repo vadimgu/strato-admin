@@ -1,16 +1,23 @@
 {
-  "name": "strato-cloudscape",
-  "version": "1.0.0",
-  "description": "UI component library and theme implementation using AWS Cloudscape Design System",
+  "name": "@strato-admin/cloudscape",
+  "version": "0.1.0",
+  "description": "Strato Admin Cloudscape implementation - UI component library and theme for React Admin",
   "main": "dist/index.js",
-  "module": "dist/index.js",
   "types": "dist/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.js",
-      "require": "./dist/index.js"
+      "default": "dist/index.js"
     }
+  },
+  "files": [
+    "dist",
+    "src",
+    "README.md",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "access": "public"
   },
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
@@ -18,19 +25,31 @@
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": [
+    "strato",
+    "admin",
+    "react-admin",
+    "cloudscape",
+    "aws",
+    "ui"
+  ],
+  "author": "Vadim Gubergrits <vadim.gubergrits@gmail.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vgrits/strato-admin.git",
+    "directory": "packages/strato-cloudscape"
+  },
   "dependencies": {
     "@cloudscape-design/collection-hooks": "^1.0.85",
     "@cloudscape-design/components": "^3.0.1217",
     "@cloudscape-design/global-styles": "^1.0.0",
     "inflection": "^3.0.2",
-    "strato-core": "workspace:*",
+    "@strato-admin/core": "workspace:*",
     "react-hook-form": "^7.71.2",
     "react-router-dom": "^6.22.3",
-    "strato-i18n": "workspace:*",
-    "strato-language-en": "workspace:*"
+    "@strato-admin/i18n": "workspace:*",
+    "@strato-admin/language-en": "workspace:*"
   },
   "devDependencies": {
     "@chromatic-com/storybook": "^5.0.1",

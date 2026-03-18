@@ -8,7 +8,7 @@ import {
   DateField,
   ReferenceField,
   StatusIndicatorField,
-} from 'strato-admin';
+} from '@strato-admin/admin';
 import StarRatingField from '../components/StarRatingField';
 
 export const reviewSchema = (

@@ -15,7 +15,7 @@ import { useListController } from './useListController';
 import { LinkBase } from '../../routing';
 
 export default {
-    title: 'ra-core/controller/list/useListController',
+    title: '@strato-admin/ra-core/controller/list/useListController',
     decorators: [FakeBrowserDecorator],
     parameters: {
         initialEntries: ['/top'],

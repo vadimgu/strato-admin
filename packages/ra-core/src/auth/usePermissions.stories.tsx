@@ -6,7 +6,7 @@ import { CoreAdminContext } from '../core';
 import { TestMemoryRouter } from '../routing';
 
 export default {
-    title: 'ra-core/auth/usePermissions',
+    title: '@strato-admin/ra-core/auth/usePermissions',
 };
 
 export const NoAuthProvider = () => (

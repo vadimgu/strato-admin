@@ -8,7 +8,7 @@ import { FakeBrowserDecorator } from '../storybook//FakeBrowser';
 import { LinkBase } from './LinkBase';
 
 export default {
-    title: 'ra-core/routing/useCreatePath',
+    title: '@strato-admin/ra-core/routing/useCreatePath',
     decorators: [FakeBrowserDecorator],
 };
 

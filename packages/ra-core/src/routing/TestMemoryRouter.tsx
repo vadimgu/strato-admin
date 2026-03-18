@@ -81,7 +81,6 @@ export const TestMemoryRouter = ({
         }
     );
     return (
-        // @ts-expect-error - React 19 type mismatch for RouterProvider
         <RouterProvider
             router={router}
             // @ts-expect-error react-router types are not up-to-date

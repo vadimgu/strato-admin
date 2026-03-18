@@ -1,51 +1,39 @@
 # Strato Admin
 
-WORK IN PROGRESS
+**WORK IN PROGRESS**
 
-A frontend framework for building admin interfaces, built on top of React-Admin
-and the Cloudscape Design System. It provides a set of reusable components and
-tools to help developers create efficient and user-friendly admin interfaces.
+Strato Admin is a React-based framework for building administrative interfaces.
+It integrates [React-Admin](https://marmelab.com/react-admin/) core logic with
+the [AWS Cloudscape Design System](https://cloudscape.design/) to provide a set
+of components optimized for data-dense, accessible, and consistent back-office
+applications.
 
 <p align="center">
   <img src="docs/images/quickstart_products_list.png" width="600" alt="Strato Admin Products List" />
 </p>
 
-High-speed development without compromising on versatility.
+## Overview
 
-## Why Strato Admin?
+Enterprise admin tools often face a trade-off: either use a fast-to-develop CRUD
+framework that can feel too generic forusers, or build a custom UI from scratch
+at a much higher development and maintenance cost.
 
-Strato Admin bridges the gap between the speed of "low-code" tools and the flexibility of custom development.
-
-### Schema-First Efficiency
-
-Most admin UIs are repetitive. You define a resource, its fields, and then manually build List, Create, and Edit views for each. Strato Admin's **Schema-First** approach flips this: you define your data model once, and the framework automatically generates standard, high-quality views. This reduces boilerplate by up to 80% while ensuring consistency across your entire application.
-
-### Enterprise-Grade Foundation with Cloudscape
-
-While many admin frameworks rely on general-purpose UI libraries, Strato Admin is built on the [AWS Cloudscape Design System](https://cloudscape.design/). Cloudscape is specifically engineered for complex, data-heavy web applications. It provides:
-
-- **Superior Accessibility**: Built-in WCAG compliance for every component.
-- **Complex Data Handling**: Best-in-class tables with column reordering, visibility preferences, and multi-field filtering.
-- **Visual Clarity**: A design language optimized for technical users and density without sacrificing usability.
-
-### The Best of React-Admin
-
-By building on top of `ra-core`, Strato Admin inherits a decade of battle-tested logic for data fetching, state management, and authentication. You get the stability of a mature ecosystem with a modern, high-performance UI.
+Strato Admin provides a schema-first workflow that generates standardized views
+out-of-the-box, while retaining the flexibility to drop down to view-based
+approaches or headless hooks for more complex, custom requirements.
 
 ## Installation
 
 ```bash
-npm install strato-admin
-# or
-pnpm install strato-admin
+pnpm add @strato-admin/admin
 ```
 
 ## Quick Start
 
 ```tsx
 import React from 'react';
-import { Admin, ResourceSchema, TextField, CurrencyField, ReferenceField, IdField } from 'strato-admin';
-import { dataProvider } from 'strato-faker-ecommerce';
+import { Admin, ResourceSchema, TextField, CurrencyField, ReferenceField, IdField } from '@strato-admin/admin';
+import { dataProvider } from '@strato-admin/faker-ecommerce';
 
 export const QuickStartApp = () => (
   <Admin dataProvider={dataProvider} title="Strato Admin Quickstart">
@@ -64,92 +52,92 @@ export const QuickStartApp = () => (
 );
 ```
 
-| List Page                                                                          | Details Page                                                                          |
-| :--------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------ |
-| <img src="docs/images/quickstart_products_list.png" width="600" alt="List Page" /> | <img src="docs/images/quickstart_products_show.png" width="600" alt="Details Page" /> |
+| List Page                                                                              | Details Page                                                                          |
+| :------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------ |
+| <img src="docs/images/quickstart_products_list.png" width="600" alt="List Page" />     | <img src="docs/images/quickstart_products_show.png" width="600" alt="Details Page" /> |
+| Create Page                                                                            | Edit Page                                                                             |
+| <img src="docs/images/quickstart_products_create.png" width="600" alt="Create Page" /> | <img src="docs/images/quickstart_products_edit.png" width="600" alt="Edit Page" />    |
 
-| Edit Page                                                                          | Create Page                                                                            |
-| :--------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------- |
-| <img src="docs/images/quickstart_products_edit.png" width="600" alt="Edit Page" /> | <img src="docs/images/quickstart_products_create.png" width="600" alt="Create Page" /> |
+### Schema-Driven UI Generation
 
-## Features
+The framework allows you to define a central data model (schema) for your resources. Standard List, Create, Edit, and Show views are automatically generated from this schema, ensuring consistency across the application and reducing the manual implementation of repetitive UI patterns.
 
-### Development Velocity
+### Built on Cloudscape Design System
 
-- **Schema-First Architecture (In development)**: Define your data model once and let components automatically render the UI.
-- **Declarative View-Based UI**: Standard React-Admin style components for granular control.
-- **Backend Agnostic**: Connect to any backend using the extensive ecosystem of React-Admin data providers.
+Unlike general-purpose UI libraries, Cloudscape is specifically designed for complex, technical applications. By using Cloudscape, Strato Admin inherits:
 
-### Enterprise-Grade Quality
+- **Built-in Accessibility**: All components are designed for high accessibility standards.
+- **Data-Dense Layouts**: UI patterns optimized for information density and technical workflows.
+- **Advanced Data Tables**: Support for multi-field filtering, column reordering, and user preferences out of the box.
 
-- **Accessibility-First Design**: Leverages AWS Cloudscape's WCAG-compliant components.
-- **Internationalization**: Using ICU MessageFormat for robust multilingual support.
-- **TypeScript Foundation**: Built with TypeScript for a predictable developer experience.
+### React-Admin Core Integration
 
-### Architectural Versatility
+Strato Admin currently integrates a **vendored** version of React-Admin core (`@strato-admin/ra-core`). This approach involves maintaining the dependency's source code directly within the monorepo, which provides several technical advantages:
 
-- **Headless Integration Hooks (In development)**: Low-level hooks for building bespoke interfaces while preserving state logic.
-- **Cloudscape Theme**: A modern UI for React-Admin powered by the Cloudscape Design System.
+- **Custom Patching**: Direct access to the core logic allows for immediate bug fixes and the application of patches specific to the framework's requirements.
+- **Deep Integration**: It enables tighter coupling between React-Admin's state management and the Cloudscape Design System's complex UI patterns.
+- **Dependency Stability**: The framework is insulated from upstream breaking changes, ensuring a predictable development and release cycle.
+
+See [Note on Vendoring](#note-on-vendoring) for more details on this architectural choice.
+
+## Key Features
+
+### Implementation Patterns
+
+- **Schema-First**: Define data models once to automatically render standardized views.
+- **Declarative View Composition**: Explicitly define views using Cloudscape-themed components for more granular control.
+- **Headless Hooks**: Low-level hooks for building custom interfaces while leveraging the framework's state and data logic.
+
+### Technical Foundation
+
+- **Backend Agnostic**: Compatible with any backend via React-Admin data providers (REST, GraphQL, etc.).
+- **Internationalization (i18n)**: Uses ICU MessageFormat for robust translation support, including pluralization and conditional selection (select).
 
 ## Monorepo Structure
 
-Strato Admin is organized as a monorepo with the following packages:
+- **`@strato-admin/admin`**: Main package aggregating core logic and UI components.
+- **`@strato-admin/cloudscape`**: Implementation of React-Admin components using AWS Cloudscape.
+- **`@strato-admin/core`**: Framework-agnostic logic, schema definitions, and headless hooks.
+- **`@strato-admin/ra-core`**: A vendored fork of React-Admin core, enabling direct modifications and tighter framework integration.
+- **`@strato-admin/i18n`**: ICU MessageFormat-based i18n provider.
+- **`@strato-admin/i18n-cli`**: CLI tool for translation extraction and compilation.
 
-### Core Packages
+## Development
 
-- **`strato-admin`**: The main entry point that combines core logic with the Cloudscape UI.
-- **`strato-cloudscape`**: UI component library and theme implementation using AWS Cloudscape Design System.
-- **`strato-core`**: Core framework logic, schema definitions, and headless hooks.
-- **`ra-core`**: A vendored version of React-Admin core.
+### Documentation
 
-### Internationalization
-
-- **`strato-i18n`**: ICU MessageFormat-based i18n provider for React-Admin.
-- **`strato-i18n-cli`**: Tooling for extracting and compiling translations.
-- **`strato-language-en` / `fr`**: Standard translation packages for English and French.
-
-### Utilities & Tools
-
-- **`strato-faker-ecommerce`**: Mock data generator for e-commerce domains, used for demos and testing.
-
-## Documentation
-
-The documentation is built with Docusaurus. To start it locally:
+The documentation is built with Docusaurus:
 
 ```bash
 pnpm run docs:dev
 ```
 
-## UI Components Library (Storybook)
+### Storybook
 
-We use Storybook to develop and showcase our UI components in isolation.
+UI components are developed and documented in isolation using Storybook:
 
 ```bash
 pnpm run storybook
 ```
 
-To update the static screenshots used in the documentation:
+### Testing
+
+To update documentation screenshots using Playwright:
 
 ```bash
-cd packages/strato-cloudscape && npx playwright test e2e/screenshots.spec.ts
+cd packages/@strato-admin/cloudscape && npx playwright test e2e/screenshots.spec.ts
 ```
 
 ## Architectural Approaches
 
-Strato Admin supports three primary development styles:
+Strato Admin supports three primary development styles depending on the required level of control:
 
-1.  **Schema-First**: Define a central data model and let components automatically render the UI. Best for maximum speed.
-2.  **View-Based (React-Admin style)**: Explicitly define views using declarative themed components. Best for standard CRUD with granular control.
-3.  **Headless Integration**: Use low-level hooks like `useCollection` with raw Cloudscape components. Best for highly custom layouts.
+1.  **Schema-First**: High-level resource definitions for rapid prototyping and standardized CRUD.
+2.  **Themed Components**: Explicit view definitions using declarative components.
+3.  **Headless Integration**: Direct use of framework hooks with custom UI components.
 
-See the [Architectural Approaches documentation](https://github.com/vlad-strato/strato-admin/blob/main/docs/docs/architecture.md) for more details.
+See the [Architectural documentation](docs/docs/architecture.md) for more details.
 
-## Examples
+## Note on Vendoring
 
-Check out the [demo example](./examples/demo) for a more comprehensive showcase of features including:
-
-- Complex data types (Dates, Booleans, Numbers)
-- Reference fields and relationships
-- Detail views (Show)
-- Selection and bulk actions
-- Column reordering and visibility preferences
+Vendoring is an interim architectural choice and not a core requirement of the project. The primary downside is the increased maintenance overhead and the risk of drifting from upstream React-Admin improvements. This decision is not final; as the integration points between React-Admin and Cloudscape stabilize, the project may transition back to using upstream packages to reduce long-term maintenance debt.

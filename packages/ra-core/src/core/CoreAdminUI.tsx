@@ -355,7 +355,6 @@ export const CoreAdminUI = (props: CoreAdminUIProps) => {
 
     return (
         <DefaultTitleContextProvider value={title}>
-            {/* @ts-expect-error - React 19 type mismatch for ErrorBoundary */}
             <ErrorBoundary
                 onError={handleError}
                 fallbackRender={({ error, resetErrorBoundary }) => (

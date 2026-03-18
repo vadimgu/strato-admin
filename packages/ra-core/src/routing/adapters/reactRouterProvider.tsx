@@ -34,9 +34,7 @@ const routerProviderFuture: Partial<
  * In react-router, blocking requires a data router.
  */
 const useCanBlock = (): boolean => {
-    // @ts-expect-error - React 19 type mismatch for useContext
     const dataRouterContext = useContext(UNSAFE_DataRouterContext);
-    // @ts-expect-error - React 19 type mismatch for useContext
     const dataRouterStateContext = useContext(UNSAFE_DataRouterStateContext);
     return !!(dataRouterContext && dataRouterStateContext);
 };
@@ -88,7 +86,6 @@ const InternalRouter = ({
         },
     });
     return (
-        // @ts-expect-error - React 19 type mismatch for RouterProvider
         <ReactRouterProvider router={router} future={routerProviderFuture} />
     );
 };
@@ -122,14 +119,10 @@ export const reactRouterProvider: RouterProvider = {
     useCanBlock,
 
     // Components
-    // @ts-expect-error - React 19 type mismatch for Link
     Link,
     Navigate,
-    // @ts-expect-error - React 19 type mismatch for Route
     Route,
-    // @ts-expect-error - React 19 type mismatch for Routes
     Routes,
-    // @ts-expect-error - React 19 type mismatch for Outlet
     Outlet,
 
     // Router creation

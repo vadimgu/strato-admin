@@ -4,7 +4,7 @@ import {
   type RaRecord,
   useRecordContext,
   useGetRecordRepresentation,
-} from 'strato-core';
+} from '@strato-admin/core';
 import RecordLink from '../RecordLink';
 import { type FieldProps } from './types';
 

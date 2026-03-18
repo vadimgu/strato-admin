@@ -5,7 +5,7 @@ import { TestMemoryRouter } from '../routing';
 import { useLogin, useLogout } from '../auth';
 
 export default {
-    title: 'ra-core/auth/useLogin',
+    title: '@strato-admin/ra-core/auth/useLogin',
 };
 
 const getAuthProviderWithLoginAndLogout = () => {

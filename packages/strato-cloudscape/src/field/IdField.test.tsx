@@ -4,11 +4,11 @@ import {
   useFieldValue,
   useRecordContext,
   useResourceDefinition,
-} from 'strato-core';
+} from '@strato-admin/core';
 import IdField from './IdField';
 
 // Mock strato-core
-vi.mock('strato-core', () => ({
+vi.mock('@strato-admin/core', () => ({
   useRecordContext: vi.fn(),
   useFieldValue: vi.fn(),
   useResourceDefinition: vi.fn(),

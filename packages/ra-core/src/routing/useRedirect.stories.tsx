@@ -11,7 +11,7 @@ import { FakeBrowserDecorator } from '../storybook//FakeBrowser';
 import { useRedirect as useRedirectRA } from './useRedirect';
 
 export default {
-    title: 'ra-core/routing',
+    title: '@strato-admin/ra-core/routing',
     decorators: [FakeBrowserDecorator],
 };
 

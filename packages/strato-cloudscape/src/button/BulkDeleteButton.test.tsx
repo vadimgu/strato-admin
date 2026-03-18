@@ -2,9 +2,9 @@
 import { render, screen, fireEvent, cleanup } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { BulkDeleteButton } from './BulkDeleteButton';
-import { useListContext, useBulkDeleteController, useTranslate, useResourceDefinition } from 'strato-core';
+import { useListContext, useBulkDeleteController, useTranslate, useResourceDefinition } from '@strato-admin/core';
 
-vi.mock('strato-core', () => ({
+vi.mock('@strato-admin/core', () => ({
   useListContext: vi.fn(),
   useBulkDeleteController: vi.fn(),
   useTranslate: vi.fn(),

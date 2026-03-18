@@ -8,7 +8,7 @@ import type { ListControllerResult } from './useListController';
 import { TestMemoryRouter } from '../..';
 
 export default {
-    title: 'ra-core/controller/list/useListController',
+    title: '@strato-admin/ra-core/controller/list/useListController',
     excludeStories: ['defaultDataProvider'],
 };
 

@@ -9,7 +9,7 @@ import {
   DateField,
   ReferenceField,
   StatusIndicatorField,
-} from 'strato-admin';
+} from '@strato-admin/admin';
 
 export const orderSchema = (
   <FieldSchema>

@@ -31,8 +31,8 @@ export function useSafeSetState<T>(
     return [state, safeSetState];
 }
 
-export function usePrevious(value) {
-    const ref = useRef();
+export function usePrevious<T>(value: T) {
+    const ref = useRef<T>(null!);
     useEffect(() => {
         ref.current = value;
     });
@@ -40,12 +40,16 @@ export function usePrevious(value) {
 }
 
 export function useDeepCompareEffect(callback, inputs) {
-    const cleanupRef = useRef();
+    const cleanupRef = useRef<(() => void) | undefined>(undefined);
     useEffect(() => {
         if (!isEqual(previousInputs, inputs)) {
             cleanupRef.current = callback();
         }
-        return cleanupRef.current;
+        return () => {
+            if (typeof cleanupRef.current === 'function') {
+                cleanupRef.current();
+            }
+        };
     });
     const previousInputs = usePrevious(inputs);
 }

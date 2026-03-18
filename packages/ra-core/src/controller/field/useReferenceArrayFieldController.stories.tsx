@@ -95,5 +95,5 @@ export const Basic = ({ children = defaultRenderProp }) => (
 );
 
 export default {
-    title: 'ra-core/controller/field/useReferenceArrayFieldController',
+    title: '@strato-admin/ra-core/controller/field/useReferenceArrayFieldController',
 };

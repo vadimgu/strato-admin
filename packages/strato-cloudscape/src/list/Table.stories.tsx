@@ -1,7 +1,7 @@
 import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 import { Table, Column, NumberColumn, DateColumn } from './Table';
-import { ResourceContext, CoreAdminContext, ListContextProvider } from 'strato-core';
+import { ResourceContext, CoreAdminContext, ListContextProvider } from '@strato-admin/core';
 import { ProductList } from './Table.examples';
 
 const meta: Meta<typeof Table> = {

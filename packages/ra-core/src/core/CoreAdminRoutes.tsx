@@ -93,8 +93,8 @@ export const CoreAdminRoutes = (props: CoreAdminRoutesProps) => {
                                 {customRoutesWithLayout}
                                 {Children.map(resources, resource => (
                                     <Route
-                                        key={resource.props.name}
-                                        path={`${resource.props.name}/*`}
+                                        key={(resource.props as any).name}
+                                        path={`${(resource.props as any).name}/*`}
                                         element={resource}
                                     />
                                 ))}

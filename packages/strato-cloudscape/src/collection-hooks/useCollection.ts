@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { useListContext, RaRecord } from 'strato-core';
+import { useListContext, RaRecord } from '@strato-admin/core';
 import { UseCollectionOptions, UseCollectionResult, TableColumnDisplay } from './interfaces';
 
 export function useCollection<T extends RaRecord>(options: UseCollectionOptions<T>): UseCollectionResult<T> {

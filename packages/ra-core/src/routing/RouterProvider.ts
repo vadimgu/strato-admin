@@ -108,7 +108,7 @@ export interface RouterWrapperProps {
  *
  * @example
  * // Using a custom router provider
- * import { tanStackRouterProvider } from 'ra-core';
+ * import { tanStackRouterProvider } from '@strato-admin/ra-core';
  *
  * <Admin dataProvider={dataProvider} routerProvider={tanStackRouterProvider}>
  *   <Resource name="posts" list={PostList} />

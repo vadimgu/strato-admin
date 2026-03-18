@@ -8,7 +8,7 @@ import { useRestoreScrollPosition } from './useRestoreScrollPosition';
  * @param debounceMs The debounce time in milliseconds
  *
  * @example
- * import { RestoreScrollPosition } from 'ra-core';
+ * import { RestoreScrollPosition } from '@strato-admin/ra-core';
  *
  * const MyCustomPage = () => {
  *   <RestoreScrollPosition key="my-list">

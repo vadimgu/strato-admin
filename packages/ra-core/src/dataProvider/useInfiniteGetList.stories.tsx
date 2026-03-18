@@ -13,7 +13,7 @@ import { useInfiniteGetList } from './useInfiniteGetList';
 import { CoreAdminContext } from '../core';
 import { countries } from '../storybook/data';
 
-export default { title: 'ra-core/dataProvider/useInfiniteGetList' };
+export default { title: '@strato-admin/ra-core/dataProvider/useInfiniteGetList' };
 
 export const Basic = props => {
     // eslint-disable-next-line prefer-const

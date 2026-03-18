@@ -1,4 +1,4 @@
-import { AuthProvider, UserIdentity } from 'strato-admin';
+import { AuthProvider, UserIdentity } from '@strato-admin/admin';
 
 const API_URL = 'https://dummyjson.com';
 const AUTH_TOKEN_KEY = 'dummyjson_access_token';

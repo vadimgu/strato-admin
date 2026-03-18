@@ -1,5 +1,6 @@
 {
   "name": "dummyjson-demo",
+  "private": true,
   "version": "1.0.0",
   "description": "",
   "scripts": {
@@ -16,7 +17,7 @@
     "@cloudscape-design/global-styles": "^1.0.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "strato-admin": "workspace:^"
+    "@strato-admin/admin": "workspace:^"
   },
   "devDependencies": {
     "@types/react": "^19.0.0",

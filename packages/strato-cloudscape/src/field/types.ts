@@ -1,5 +1,5 @@
 import { type ReactNode } from 'react';
-import { type BaseFieldProps, type RaRecord } from 'strato-core';
+import { type BaseFieldProps, type RaRecord } from '@strato-admin/core';
 import { type RecordLinkType } from '../RecordLink';
 
 /**

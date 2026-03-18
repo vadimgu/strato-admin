@@ -3,7 +3,7 @@ import * as React from 'react';
 import { useStore } from './useStore';
 
 export default {
-    title: 'ra-core/store/useStore',
+    title: '@strato-admin/ra-core/store/useStore',
 };
 
 const StoreReader = ({ name }) => {

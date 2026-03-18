@@ -7,7 +7,7 @@ import { RecordContextProvider } from './RecordContext';
 import { RecordRepresentation } from './RecordRepresentation';
 import { useRecordContext } from './useRecordContext';
 export default {
-    title: 'ra-core/controller/record/RecordRepresentation',
+    title: '@strato-admin/ra-core/controller/record/RecordRepresentation',
 };
 
 const Book = {

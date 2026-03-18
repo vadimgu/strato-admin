@@ -18,7 +18,7 @@ import {
 } from '../..';
 
 export default {
-    title: 'ra-core/controller/CreateBase',
+    title: '@strato-admin/ra-core/controller/CreateBase',
 };
 
 const defaultI18nProvider = polyglotI18nProvider(

@@ -3,7 +3,7 @@ import { render } from '@testing-library/react';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 import { AttributeEditor } from './AttributeEditor';
 import { useFormContext, useFieldArray } from 'react-hook-form';
-import { useInput, useResourceContext } from 'strato-core';
+import { useInput, useResourceContext } from '@strato-admin/core';
 import { useFormFieldContext } from './FormFieldContext';
 
 // Mock Cloudscape components
@@ -33,7 +33,7 @@ vi.mock('@cloudscape-design/components/box', () => ({
 }));
 
 // Mock ra-core hooks
-vi.mock('strato-core', () => ({
+vi.mock('@strato-admin/core', () => ({
   useInput: vi.fn(),
   useResourceContext: vi.fn(),
   RecordContextProvider: ({ children }: any) => <>{children}</>,

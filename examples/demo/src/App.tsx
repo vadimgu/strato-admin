@@ -1,13 +1,13 @@
-import { Admin, ResourceSchema } from 'strato-admin';
-import { icuI18nProvider } from 'strato-i18n';
-import englishMessages from 'strato-language-en';
-import frenchMessages from 'strato-language-fr';
+import { Admin, ResourceSchema } from '@strato-admin/admin';
+import { icuI18nProvider } from '@strato-admin/i18n';
+import englishMessages from '@strato-admin/language-en';
+import frenchMessages from '@strato-admin/language-fr';
 import { dataProvider } from './dataProvider';
 import { ProductResource } from './resources/products';
-import { CategoryList, CategoryShow, categorySchema } from './resources/categories';
+import { categorySchema } from './resources/categories';
 import { CustomerList, CustomerShow, customerSchema } from './resources/customers';
 import { OrderList, OrderShow, orderSchema } from './resources/orders';
-import { ReviewList, ReviewShow, reviewSchema } from './resources/reviews';
+import { reviewSchema } from './resources/reviews';
 
 import enAppMessages from '../locales/en/messages.compiled.json';
 import frAppMessages from '../locales/fr/messages.compiled.json';

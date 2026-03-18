@@ -1,4 +1,4 @@
-export * from 'strato-core';
+export * from '@strato-admin/core';
 
 export * from './collection-hooks';
 export * from './list';

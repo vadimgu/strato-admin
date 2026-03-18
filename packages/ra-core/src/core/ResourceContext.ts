@@ -7,7 +7,7 @@ import { createContext } from 'react';
  *
  * @example
  *
- * import { useResourceContext, useTranslate } from 'ra-core';
+ * import { useResourceContext, useTranslate } from '@strato-admin/ra-core';
  *
  * const MyCustomEditTitle = props => {
  *     const name = useResourceContext(props);

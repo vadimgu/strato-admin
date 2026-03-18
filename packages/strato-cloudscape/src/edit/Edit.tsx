@@ -1,5 +1,5 @@
 import React from 'react';
-import { EditBase, useEditContext, type RaRecord, ResourceSchemaProvider } from 'strato-core';
+import { EditBase, useEditContext, type RaRecord, ResourceSchemaProvider } from '@strato-admin/core';
 import Container from '@cloudscape-design/components/container';
 import { EditHeader } from './EditHeader';
 import Form from '../form/Form';

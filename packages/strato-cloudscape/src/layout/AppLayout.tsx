@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import CloudscapeAppLayout from '@cloudscape-design/components/app-layout';
 import SideNavigation from '@cloudscape-design/components/side-navigation';
-import { useResourceDefinitions, useDefaultTitle, useGetResourceLabel } from 'strato-core';
+import { useResourceDefinitions, useDefaultTitle, useGetResourceLabel } from '@strato-admin/core';
 import { useNavigate } from 'react-router-dom';
 import { TopNavigation } from './TopNavigation';
 import ThemeManager from '../theme/ThemeManager';

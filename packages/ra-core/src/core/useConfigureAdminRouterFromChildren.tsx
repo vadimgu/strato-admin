@@ -212,7 +212,7 @@ const useRegisterResources = (
             ) {
                 const definition = (
                     resource.type as unknown as ResourceWithRegisterFunction
-                ).registerResource(resource.props, permissions);
+                ).registerResource(resource.props as any, permissions);
                 register(definition);
             } else {
                 throw new Error(
@@ -229,7 +229,7 @@ const useRegisterResources = (
                 ) {
                     const definition = (
                         resource.type as unknown as ResourceWithRegisterFunction
-                    ).registerResource(resource.props, permissions);
+                    ).registerResource(resource.props as any, permissions);
                     unregister(definition);
                 } else {
                     throw new Error(
@@ -317,7 +317,7 @@ const getRoutesAndResourceFromNodes = (
         }
         if (element.type === Fragment) {
             const customRoutesFromFragment = getRoutesAndResourceFromNodes(
-                element.props.children
+                (element.props as any).children
             );
             customRoutesWithLayout.push(
                 ...customRoutesFromFragment.customRoutesWithLayout
