@@ -6,6 +6,7 @@ import {
   ResourceSchemaProvider,
   useResourceSchema,
   type ShowBaseProps,
+  useTranslate,
 } from '@strato-admin/core';
 import Container from '@cloudscape-design/components/container';
 import SpaceBetween from '@cloudscape-design/components/space-between';
@@ -38,17 +39,24 @@ const ShowUI = ({
 }) => {
   const { record, isLoading } = useShowContext();
   const { label, labelShow, descriptionShow } = useResourceSchema();
+  const translate = useTranslate();
 
   if (isLoading || !record) {
     return null;
   }
 
   const resolvedLabelShow = typeof labelShow === 'function' ? labelShow(record) : labelShow;
-  const finalTitle = title ?? resolvedLabelShow ?? (label ? `${label} Details` : 'Details');
+  const finalTitle =
+    (typeof title === 'string' ? translate(title, { _: title }) : title) ??
+    (typeof resolvedLabelShow === 'string' ? translate(resolvedLabelShow, { _: resolvedLabelShow }) : resolvedLabelShow) ??
+    (label ? translate('ra.page.show', { name: label, _: `${label} Details` }) : translate('ra.page.show', { _: 'Details' }));
 
-  const resolvedDescriptionShow =
-    typeof descriptionShow === 'function' ? descriptionShow(record) : descriptionShow;
-  const finalDescription = description ?? resolvedDescriptionShow;
+  const resolvedDescriptionShow = typeof descriptionShow === 'function' ? descriptionShow(record) : descriptionShow;
+  const finalDescription =
+    (typeof description === 'string' ? translate(description, { _: description }) : description) ??
+    (typeof resolvedDescriptionShow === 'string'
+      ? translate(resolvedDescriptionShow, { _: resolvedDescriptionShow })
+      : resolvedDescriptionShow);
 
   const finalChildren = children || <KeyValuePairs include={include} exclude={exclude} />;
 

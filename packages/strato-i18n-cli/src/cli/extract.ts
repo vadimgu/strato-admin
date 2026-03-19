@@ -57,6 +57,7 @@ const DEFAULT_TRANSLATABLE_PROPS = new Set([
   'descriptionCreate',
   'descriptionEdit',
   'descriptionShow',
+  'saveButtonLabel',
   'successMessage',
   'errorMessage',
 ]);

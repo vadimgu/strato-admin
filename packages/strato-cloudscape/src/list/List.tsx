@@ -5,6 +5,7 @@ import {
   ResourceSchemaProvider,
   useResourceSchema,
   type ListBaseProps,
+  useTranslate,
 } from '@strato-admin/core';
 import Table from './Table';
 
@@ -47,10 +48,17 @@ const ListUI = ({
   preferences?: boolean | React.ReactNode;
 }) => {
   const { label, labelList, descriptionList } = useResourceSchema();
+  const translate = useTranslate();
 
   // Resolve title: Prop > Schema labelList > Schema Label > Fallback
-  const finalTitle = title ?? labelList ?? label ?? 'List';
-  const finalDescription = description ?? descriptionList;
+  const finalTitle =
+    (typeof title === 'string' ? translate(title, { _: title }) : title) ??
+    (typeof labelList === 'string' ? translate(labelList, { _: labelList }) : labelList) ??
+    (label ? translate('ra.page.list', { name: label, _: label }) : translate('ra.page.list', { _: 'List' }));
+
+  const finalDescription =
+    (typeof description === 'string' ? translate(description, { _: description }) : description) ??
+    (typeof descriptionList === 'string' ? translate(descriptionList, { _: descriptionList }) : descriptionList);
 
   const finalChildren = children || (
     <Table

@@ -45,10 +45,23 @@ const CreateUI = ({
 }) => {
   const { label, labelCreate, descriptionCreate } = useResourceSchema();
   const translate = useTranslate();
-  const finalTitle = title ?? labelCreate ?? (label ? `Create ${label}` : 'Create');
-  const finalDescription = description ?? descriptionCreate;
 
-  const finalSaveButtonLabel = saveButtonLabel ?? translate('ra.action.create', { _: 'Create' });
+  const finalTitle =
+    (typeof title === 'string' ? translate(title, { _: title }) : title) ??
+    (typeof labelCreate === 'string' ? translate(labelCreate, { _: labelCreate }) : labelCreate) ??
+    (label
+      ? translate('ra.page.create', { name: label, _: `Create ${label}` })
+      : translate('ra.page.create', { _: 'Create' }));
+
+  const finalDescription =
+    (typeof description === 'string' ? translate(description, { _: description }) : description) ??
+    (typeof descriptionCreate === 'string'
+      ? translate(descriptionCreate, { _: descriptionCreate })
+      : descriptionCreate);
+
+  const finalSaveButtonLabel = saveButtonLabel
+    ? translate(saveButtonLabel, { _: saveButtonLabel })
+    : translate('ra.action.create', { _: 'Create' });
 
   const finalChildren = children || (
     <Form include={include} exclude={exclude} saveButtonLabel={finalSaveButtonLabel} />

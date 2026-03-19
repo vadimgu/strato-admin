@@ -49,13 +49,21 @@ const EditUI = ({
   }
 
   const resolvedLabelEdit = typeof labelEdit === 'function' ? labelEdit(record) : labelEdit;
-  const finalTitle = title ?? resolvedLabelEdit ?? (label ? `Edit ${label}` : 'Edit');
+  const finalTitle =
+    (typeof title === 'string' ? translate(title, { _: title }) : title) ??
+    (typeof resolvedLabelEdit === 'string' ? translate(resolvedLabelEdit, { _: resolvedLabelEdit }) : resolvedLabelEdit) ??
+    (label ? translate('ra.page.edit', { name: label, _: `Edit ${label}` }) : translate('ra.page.edit', { _: 'Edit' }));
 
-  const resolvedDescriptionEdit =
-    typeof descriptionEdit === 'function' ? descriptionEdit(record) : descriptionEdit;
-  const finalDescription = description ?? resolvedDescriptionEdit;
+  const resolvedDescriptionEdit = typeof descriptionEdit === 'function' ? descriptionEdit(record) : descriptionEdit;
+  const finalDescription =
+    (typeof description === 'string' ? translate(description, { _: description }) : description) ??
+    (typeof resolvedDescriptionEdit === 'string'
+      ? translate(resolvedDescriptionEdit, { _: resolvedDescriptionEdit })
+      : resolvedDescriptionEdit);
 
-  const finalSaveButtonLabel = saveButtonLabel ?? translate('ra.action.save', { _: 'Save' });
+  const finalSaveButtonLabel = saveButtonLabel
+    ? translate(saveButtonLabel, { _: saveButtonLabel })
+    : translate('ra.action.save', { _: 'Save' });
 
   const finalChildren = children || (
     <Form include={include} exclude={exclude} saveButtonLabel={finalSaveButtonLabel} />
