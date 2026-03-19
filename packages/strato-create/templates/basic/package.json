@@ -1,0 +1,26 @@
+{
+  "name": "my-strato-admin",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@cloudscape-design/collection-hooks": "^1.0.85",
+    "@cloudscape-design/components": "^3.0.1217",
+    "@cloudscape-design/global-styles": "^1.0.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "@strato-admin/admin": "^0.1.1"
+  },
+  "devDependencies": {
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@vitejs/plugin-react": "^4.3.4",
+    "typescript": "^5.9.3",
+    "vite": "^6.1.1"
+  }
+}

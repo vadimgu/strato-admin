@@ -24,6 +24,16 @@ approaches or headless hooks for more complex, custom requirements.
 
 ## Installation
 
+The easiest way to start a new project is using our scaffolding tool:
+
+```bash
+pnpm create @strato-admin
+```
+
+This will create a new project pre-configured with Vite, React 19, and the Cloudscape Design System.
+
+Alternatively, you can add it to an existing project:
+
 ```bash
 pnpm add @strato-admin/admin
 ```

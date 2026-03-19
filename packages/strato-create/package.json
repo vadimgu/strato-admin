@@ -1,0 +1,46 @@
+{
+  "name": "@strato-admin/create",
+  "version": "0.1.0",
+  "description": "Create a new Strato Admin project",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "create-strato-admin": "./dist/index.js"
+  },
+  "files": [
+    "dist",
+    "templates",
+    "README.md"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "prepublishOnly": "pnpm build"
+  },
+  "keywords": [
+    "strato",
+    "admin",
+    "create",
+    "generator"
+  ],
+  "author": "Vadim Gubergrits <vadim.gubergrits@gmail.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vadimgu/strato-admin.git",
+    "directory": "packages/strato-create"
+  },
+  "dependencies": {
+    "@clack/prompts": "^0.9.1",
+    "fs-extra": "^11.3.0",
+    "picocolors": "^1.1.1"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "^11.0.4",
+    "@types/node": "^25.5.0",
+    "typescript": "^5.9.3"
+  }
+}
