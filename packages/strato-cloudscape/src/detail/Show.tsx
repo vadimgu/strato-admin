@@ -1,17 +1,22 @@
 import React from 'react';
-import { ShowBase, useShowContext, type RaRecord, ResourceSchemaProvider, useResourceSchema } from '@strato-admin/core';
+import {
+  ShowBase,
+  useShowContext,
+  type RaRecord,
+  ResourceSchemaProvider,
+  useResourceSchema,
+  type ShowBaseProps,
+} from '@strato-admin/core';
 import Container from '@cloudscape-design/components/container';
 import SpaceBetween from '@cloudscape-design/components/space-between';
 import { ShowHeader } from './ShowHeader';
 import KeyValuePairs from './KeyValuePairs';
 
-export interface ShowProps<_RecordType extends RaRecord = RaRecord> {
+export interface ShowProps<RecordType extends RaRecord = RaRecord> extends ShowBaseProps<RecordType> {
   children?: React.ReactNode;
   title?: React.ReactNode;
+  description?: React.ReactNode;
   actions?: React.ReactNode;
-  resource?: string;
-  id?: any;
-  queryOptions?: any;
   include?: string[];
   exclude?: string[];
 }
@@ -20,27 +25,35 @@ const ShowUI = ({
   children,
   title,
   actions,
+  description,
   include,
   exclude,
 }: {
   children?: React.ReactNode;
   title?: React.ReactNode;
   actions?: React.ReactNode;
+  description?: React.ReactNode;
   include?: string[];
   exclude?: string[];
 }) => {
   const { record, isLoading } = useShowContext();
-  const { label } = useResourceSchema();
+  const { label, labelShow, descriptionShow } = useResourceSchema();
 
   if (isLoading || !record) {
     return null;
   }
 
-  const finalTitle = title ?? (label ? `${label} Details` : 'Details');
+  const resolvedLabelShow = typeof labelShow === 'function' ? labelShow(record) : labelShow;
+  const finalTitle = title ?? resolvedLabelShow ?? (label ? `${label} Details` : 'Details');
+
+  const resolvedDescriptionShow =
+    typeof descriptionShow === 'function' ? descriptionShow(record) : descriptionShow;
+  const finalDescription = description ?? resolvedDescriptionShow;
+
   const finalChildren = children || <KeyValuePairs include={include} exclude={exclude} />;
 
   return (
-    <Container header={<ShowHeader title={finalTitle} actions={actions} />}>
+    <Container header={<ShowHeader title={finalTitle} description={finalDescription} actions={actions} />}>
       <SpaceBetween direction="vertical" size="l">
         {finalChildren}
       </SpaceBetween>
@@ -67,6 +80,7 @@ export const Show = <RecordType extends RaRecord = RaRecord>({
   children,
   title,
   actions,
+  description,
   include,
   exclude,
   ...props
@@ -74,7 +88,13 @@ export const Show = <RecordType extends RaRecord = RaRecord>({
   return (
     <ShowBase {...props}>
       <ResourceSchemaProvider resource={props.resource}>
-        <ShowUI title={title} actions={actions} include={include} exclude={exclude}>
+        <ShowUI
+          title={title}
+          actions={actions}
+          description={description}
+          include={include}
+          exclude={exclude}
+        >
           {children}
         </ShowUI>
       </ResourceSchemaProvider>

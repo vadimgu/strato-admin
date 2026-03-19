@@ -16,9 +16,13 @@ export interface FormProps extends Omit<RaFormProps, 'children'> {
    */
   exclude?: string[];
   toolbar?: React.ReactNode;
+  /**
+   * Label for the save button.
+   */
+  saveButtonLabel?: string;
 }
 
-export const Form = ({ children, include, exclude, toolbar, ...props }: FormProps) => {
+export const Form = ({ children, include, exclude, toolbar, saveButtonLabel, ...props }: FormProps) => {
   const saveContext = useSaveContext();
   const { inputSchema: schemaChildren, formFields, excludeFormFields } = useResourceSchema();
 
@@ -57,7 +61,7 @@ export const Form = ({ children, include, exclude, toolbar, ...props }: FormProp
         actions={
           toolbar || (
             <SpaceBetween direction="horizontal" size="xs">
-              <SaveButton />
+              <SaveButton label={saveButtonLabel} />
             </SpaceBetween>
           )
         }

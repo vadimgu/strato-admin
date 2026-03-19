@@ -1,48 +1,71 @@
 import React from 'react';
-import { EditBase, useEditContext, type RaRecord, ResourceSchemaProvider, useResourceSchema } from '@strato-admin/core';
+import {
+  EditBase,
+  useEditContext,
+  type RaRecord,
+  ResourceSchemaProvider,
+  useResourceSchema,
+  type EditBaseProps,
+  useTranslate,
+} from '@strato-admin/core';
 import Container from '@cloudscape-design/components/container';
 import { EditHeader } from './EditHeader';
 import Form from '../form/Form';
 
-export interface EditProps<_RecordType extends RaRecord = RaRecord> {
+export interface EditProps<RecordType extends RaRecord = RaRecord, ErrorType = Error>
+  extends EditBaseProps<RecordType, ErrorType> {
   children?: React.ReactNode;
   title?: React.ReactNode;
+  description?: React.ReactNode;
   actions?: React.ReactNode;
-  resource?: string;
-  id?: any;
-  mutationMode?: 'pessimistic' | 'optimistic' | 'undoable';
-  mutationOptions?: any;
-  queryOptions?: any;
-  redirect?: any;
-  transform?: any;
   include?: string[];
   exclude?: string[];
+  saveButtonLabel?: string;
 }
 
 const EditUI = ({
   children,
   title,
   actions,
+  description,
   include,
   exclude,
+  saveButtonLabel,
 }: {
   children?: React.ReactNode;
   title?: React.ReactNode;
   actions?: React.ReactNode;
+  description?: React.ReactNode;
   include?: string[];
   exclude?: string[];
+  saveButtonLabel?: string;
 }) => {
   const { record, isLoading } = useEditContext();
-  const { label } = useResourceSchema();
+  const { label, labelEdit, descriptionEdit } = useResourceSchema();
+  const translate = useTranslate();
 
   if (isLoading || !record) {
     return null;
   }
 
-  const finalTitle = title ?? (label ? `Edit ${label}` : 'Edit');
-  const finalChildren = children || <Form include={include} exclude={exclude} />;
+  const resolvedLabelEdit = typeof labelEdit === 'function' ? labelEdit(record) : labelEdit;
+  const finalTitle = title ?? resolvedLabelEdit ?? (label ? `Edit ${label}` : 'Edit');
 
-  return <Container header={<EditHeader title={finalTitle} actions={actions} />}>{finalChildren}</Container>;
+  const resolvedDescriptionEdit =
+    typeof descriptionEdit === 'function' ? descriptionEdit(record) : descriptionEdit;
+  const finalDescription = description ?? resolvedDescriptionEdit;
+
+  const finalSaveButtonLabel = saveButtonLabel ?? translate('ra.action.save', { _: 'Save' });
+
+  const finalChildren = children || (
+    <Form include={include} exclude={exclude} saveButtonLabel={finalSaveButtonLabel} />
+  );
+
+  return (
+    <Container header={<EditHeader title={finalTitle} description={finalDescription} actions={actions} />}>
+      {finalChildren}
+    </Container>
+  );
 };
 
 /**
@@ -63,14 +86,24 @@ export const Edit = <RecordType extends RaRecord = any>({
   children,
   title,
   actions,
+  description,
   include,
   exclude,
+  redirect = 'show',
+  saveButtonLabel,
   ...props
 }: EditProps<RecordType>) => {
   return (
-    <EditBase {...props}>
+    <EditBase redirect={redirect} {...props}>
       <ResourceSchemaProvider resource={props.resource}>
-        <EditUI title={title} actions={actions} include={include} exclude={exclude}>
+        <EditUI
+          title={title}
+          actions={actions}
+          description={description}
+          include={include}
+          exclude={exclude}
+          saveButtonLabel={saveButtonLabel}
+        >
           {children}
         </EditUI>
       </ResourceSchemaProvider>

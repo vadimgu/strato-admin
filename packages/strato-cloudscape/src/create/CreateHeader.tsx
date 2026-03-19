@@ -5,6 +5,7 @@ import { useCreateContext, useTranslate } from '@strato-admin/core';
 
 export interface CreateHeaderProps extends Omit<HeaderProps, 'children'> {
   title?: React.ReactNode;
+  description?: React.ReactNode;
 }
 
 export const CreateHeader = ({ title, actions, ...props }: CreateHeaderProps) => {

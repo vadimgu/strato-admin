@@ -143,6 +143,10 @@ export interface TableProps<RecordType extends RaRecord = any> extends Partial<
    */
   title?: React.ReactNode;
   /**
+   * The description content of the table.
+   */
+  description?: React.ReactNode;
+  /**
    * Actions to display in the table header, typically a button group.
    */
   actions?: React.ReactNode;
@@ -211,6 +215,7 @@ const defaultPageSizeOptions = [
  */
 export const Table = <RecordType extends RaRecord = any>({
   title,
+  description,
   actions,
   children,
   include,
@@ -375,8 +380,8 @@ export const Table = <RecordType extends RaRecord = any>({
       return title;
     }
     const finalTitle = title !== undefined ? title : schemaLabel;
-    return <TableHeader title={finalTitle} actions={actions} />;
-  }, [title, actions, schemaLabel]);
+    return <TableHeader title={finalTitle} description={description} actions={actions} />;
+  }, [title, description, actions, schemaLabel]);
 
   return (
     <CloudscapeTable

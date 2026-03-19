@@ -1,12 +1,19 @@
 import React from 'react';
-import { ListBase, type RaRecord, ResourceSchemaProvider, useResourceSchema } from '@strato-admin/core';
+import {
+  ListBase,
+  type RaRecord,
+  ResourceSchemaProvider,
+  useResourceSchema,
+  type ListBaseProps,
+} from '@strato-admin/core';
 import Table from './Table';
 
-export interface ListProps<_RecordType extends RaRecord = any> {
+export interface ListProps<RecordType extends RaRecord = any> extends ListBaseProps<RecordType> {
   children?: React.ReactNode;
   include?: string[];
   exclude?: string[];
   title?: React.ReactNode;
+  description?: React.ReactNode;
   actions?: React.ReactNode;
   /**
    * Whether to enable text filtering in the implicit Table.
@@ -18,13 +25,13 @@ export interface ListProps<_RecordType extends RaRecord = any> {
    * @default true
    */
   preferences?: boolean | React.ReactNode;
-  [key: string]: any;
 }
 
 const ListUI = ({
   children,
   title,
   actions,
+  description,
   include,
   exclude,
   filtering,
@@ -33,21 +40,24 @@ const ListUI = ({
   children?: React.ReactNode;
   title?: React.ReactNode;
   actions?: React.ReactNode;
+  description?: React.ReactNode;
   include?: string[];
   exclude?: string[];
   filtering?: boolean;
   preferences?: boolean | React.ReactNode;
 }) => {
-  const { label } = useResourceSchema();
+  const { label, labelList, descriptionList } = useResourceSchema();
 
-  // Resolve title: Prop > Schema Label > Fallback
-  const finalTitle = title ?? label ?? 'List';
+  // Resolve title: Prop > Schema labelList > Schema Label > Fallback
+  const finalTitle = title ?? labelList ?? label ?? 'List';
+  const finalDescription = description ?? descriptionList;
 
   const finalChildren = children || (
     <Table
       include={include}
       exclude={exclude}
       title={finalTitle}
+      description={finalDescription}
       actions={actions}
       filtering={filtering}
       preferences={preferences}
@@ -77,6 +87,7 @@ export const List = <RecordType extends RaRecord = any>({
   exclude,
   title,
   actions,
+  description,
   filtering = true,
   preferences = true,
   ...props
@@ -87,6 +98,7 @@ export const List = <RecordType extends RaRecord = any>({
         <ListUI
           title={title}
           actions={actions}
+          description={description}
           include={include}
           exclude={exclude}
           filtering={filtering}

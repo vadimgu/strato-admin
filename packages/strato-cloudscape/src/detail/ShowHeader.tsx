@@ -6,6 +6,7 @@ import { EditButton } from '../button/EditButton';
 
 export interface ShowHeaderProps extends Omit<HeaderProps, 'children'> {
   title?: React.ReactNode;
+  description?: React.ReactNode;
 }
 
 export const ShowHeader = ({ title, actions, ...props }: ShowHeaderProps) => {

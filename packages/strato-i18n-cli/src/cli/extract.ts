@@ -44,11 +44,19 @@ const DEFAULT_STRATO_COMPONENTS = new Set([
 // List of translatable props
 const DEFAULT_TRANSLATABLE_PROPS = new Set([
   'label',
+  'labelList',
+  'labelCreate',
+  'labelEdit',
+  'labelShow',
   'title',
   'placeholder',
   'emptyText',
   'helperText',
   'description',
+  'descriptionList',
+  'descriptionCreate',
+  'descriptionEdit',
+  'descriptionShow',
   'successMessage',
   'errorMessage',
 ]);

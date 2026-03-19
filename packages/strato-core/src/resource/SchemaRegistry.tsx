@@ -15,6 +15,14 @@ import { InputSchema, useInputSchema } from './InputSchema';
 export interface ResourceSchemas {
   fieldSchema?: ReactNode;
   inputSchema?: ReactNode;
+  labelList?: string | ReactNode;
+  labelCreate?: string | ReactNode;
+  labelEdit?: string | ((record?: any) => ReactNode);
+  labelShow?: string | ((record?: any) => ReactNode);
+  descriptionList?: string | ReactNode;
+  descriptionCreate?: string | ReactNode;
+  descriptionEdit?: string | ((record?: any) => ReactNode);
+  descriptionShow?: string | ((record?: any) => ReactNode);
   listFields?: string[];
   excludeListFields?: string[];
   showFields?: string[];
@@ -74,6 +82,14 @@ export const registerGlobalSchemas = (resource: string, schemas: ResourceSchemas
   if (
     schemas.fieldSchema ||
     schemas.inputSchema ||
+    schemas.labelList ||
+    schemas.labelCreate ||
+    schemas.labelEdit ||
+    schemas.labelShow ||
+    schemas.descriptionList ||
+    schemas.descriptionCreate ||
+    schemas.descriptionEdit ||
+    schemas.descriptionShow ||
     schemas.listFields ||
     schemas.excludeListFields ||
     schemas.showFields ||
@@ -252,6 +268,14 @@ export const useResourceSchema = (resourceProp?: string) => {
     let excludeShowFields = (definition as any)?.options?.excludeShowFields;
     let formFields = (definition as any)?.options?.formFields;
     let excludeFormFields = (definition as any)?.options?.excludeFormFields;
+    let labelList = (definition as any)?.options?.labelList;
+    let labelCreate = (definition as any)?.options?.labelCreate;
+    let labelEdit = (definition as any)?.options?.labelEdit;
+    let labelShow = (definition as any)?.options?.labelShow;
+    let descriptionList = (definition as any)?.options?.descriptionList;
+    let descriptionCreate = (definition as any)?.options?.descriptionCreate;
+    let descriptionEdit = (definition as any)?.options?.descriptionEdit;
+    let descriptionShow = (definition as any)?.options?.descriptionShow;
 
     // Use registry if we are looking for a different resource,
     // or if the current context has empty schemas (fallback).
@@ -270,6 +294,14 @@ export const useResourceSchema = (resourceProp?: string) => {
         excludeShowFields = excludeShowFields || registrySchemas.excludeShowFields;
         formFields = formFields || registrySchemas.formFields;
         excludeFormFields = excludeFormFields || registrySchemas.excludeFormFields;
+        labelList = labelList || registrySchemas.labelList;
+        labelCreate = labelCreate || registrySchemas.labelCreate;
+        labelEdit = labelEdit || registrySchemas.labelEdit;
+        labelShow = labelShow || registrySchemas.labelShow;
+        descriptionList = descriptionList || registrySchemas.descriptionList;
+        descriptionCreate = descriptionCreate || registrySchemas.descriptionCreate;
+        descriptionEdit = descriptionEdit || registrySchemas.descriptionEdit;
+        descriptionShow = descriptionShow || registrySchemas.descriptionShow;
       }
     }
 
@@ -283,6 +315,14 @@ export const useResourceSchema = (resourceProp?: string) => {
       excludeShowFields,
       formFields,
       excludeFormFields,
+      labelList,
+      labelCreate,
+      labelEdit,
+      labelShow,
+      descriptionList,
+      descriptionCreate,
+      descriptionEdit,
+      descriptionShow,
       definition,
       label: resource ? getResourceLabel(resource, 2) : undefined, // TODO: stop hardcoding pluralization - translation issues in some languages.
       getField: (source: string) =>

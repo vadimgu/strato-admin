@@ -5,6 +5,7 @@ import { useEditContext, useTranslate } from '@strato-admin/core';
 
 export interface EditHeaderProps extends Omit<HeaderProps, 'children'> {
   title?: React.ReactNode;
+  description?: React.ReactNode;
 }
 
 export const EditHeader = ({ title, actions, ...props }: EditHeaderProps) => {
