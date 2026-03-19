@@ -4,54 +4,76 @@ import { ResourceSchemaProvider } from './ResourceSchemaProvider';
 import { registerGlobalSchemas, useSchemaRegistry, getDefaultResourceComponents, parseUnifiedSchema } from './SchemaRegistry';
 
 export interface ResourceSchemaProps extends ResourceProps {
-  fieldSchema?: ReactNode;
-  inputSchema?: ReactNode;
+  /**
+   * React elements that define the schema for fields and inputs (e.g., <TextField />, <TextInput />).
+   */
   children?: ReactNode;
+  /**
+   * The human-readable name of the resource. If not provided, the resource name will be used.
+   */
   label?: string;
+  /**
+   * Whether the resource can be created. If true, the create view is enabled.
+   * @default true
+   */
   canCreate?: boolean;
+  /**
+   * Whether the resource can be edited. If true, the edit view is enabled.
+   * @default true
+   */
   canEdit?: boolean;
+  /**
+   * Whether the resource can be deleted. If true, the delete action is enabled.
+   * @default true
+   */
   canDelete?: boolean;
+  /**
+   * Whether the resource details can be shown. If true, the show view is enabled.
+   * @default true
+   */
   canShowDetails?: boolean;
+  /**
+   * Whether the resource can be listed. If true, the list view is enabled.
+   * @default true
+   */
   canList?: boolean;
 
   /**
-   * List of field sources to include in the list view (Table/Cards).
+   * List of field to include in the list view (Table/Cards).
    */
   listFields?: string[];
   /**
-   * List of field sources to exclude from the list view (Table/Cards).
+   * List of fields to exclude from the list view (Table/Cards).
    */
   excludeListFields?: string[];
   /**
-   * List of field sources to include in the show view (KeyValuePairs).
+   * List of fields to include in the show view (KeyValuePairs).
    */
   showFields?: string[];
   /**
-   * List of field sources to exclude from the show view (KeyValuePairs).
+   * List of fields to exclude from the show view (KeyValuePairs).
    */
   excludeShowFields?: string[];
   /**
-   * List of field sources to include in the create/edit forms.
+   * List of fields to include in the create/edit forms.
    */
   formFields?: string[];
   /**
-   * List of field sources to exclude from the create/edit forms.
+   * List of fields to exclude from the create/edit forms.
    */
   excludeFormFields?: string[];
 }
 
 /**
  * A wrapper around React-Admin's <Resource> that allows defining 
- * the field and input schemas via children or props.
+ * the field and input schemas via children.
  * 
  * @example
- * <ResourceSchema name="posts" list={PostList}>
+ * <ResourceSchema name="posts">
  *   <TextField source="title" />
  * </ResourceSchema>
  */
 export const ResourceSchema = ({
-  fieldSchema: explicitFieldSchema,
-  inputSchema: explicitInputSchema,
   children,
   label,
   options,
@@ -71,8 +93,7 @@ export const ResourceSchema = ({
   const { defaultComponents } = useSchemaRegistry();
 
   const parsedSchemas = children ? parseUnifiedSchema(children) : {};
-  const fieldSchema = explicitFieldSchema || parsedSchemas.fieldSchema;
-  const inputSchema = explicitInputSchema || parsedSchemas.inputSchema;
+  const { fieldSchema, inputSchema } = parsedSchemas;
 
   const mergedOptions = {
     ...options,
@@ -114,8 +135,6 @@ ResourceSchema.raName = 'Resource';
 ResourceSchema.registerResource = (props: ResourceSchemaProps) => {
   const {
     name,
-    fieldSchema: explicitFieldSchema,
-    inputSchema: explicitInputSchema,
     children,
     label,
     options,
@@ -137,8 +156,7 @@ ResourceSchema.registerResource = (props: ResourceSchemaProps) => {
   } = props;
 
   const parsedSchemas = children ? parseUnifiedSchema(children) : {};
-  const fieldSchema = explicitFieldSchema || parsedSchemas.fieldSchema;
-  const inputSchema = explicitInputSchema || parsedSchemas.inputSchema;
+  const { fieldSchema, inputSchema } = parsedSchemas;
 
   if (name && (fieldSchema || inputSchema)) {
     registerGlobalSchemas(name, {
@@ -152,6 +170,7 @@ ResourceSchema.registerResource = (props: ResourceSchemaProps) => {
       excludeFormFields,
     });
   }
+
 
   const defaultComponents = getDefaultResourceComponents();
   const mergedOptions = {

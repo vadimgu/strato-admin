@@ -1,4 +1,3 @@
-import React from 'react';
 import { useInput } from '@strato-admin/core';
 import CloudscapeSlider, { SliderProps as CloudscapeSliderProps } from '@cloudscape-design/components/slider';
 import { FormField } from './FormField';

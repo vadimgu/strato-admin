@@ -1,10 +1,9 @@
-import React, { ReactNode } from 'react';
+import { ReactNode } from 'react';
 import { ReferenceManyFieldBase, type RaRecord, ResourceSchemaProvider } from '@strato-admin/core';
 import { type FieldProps } from './types';
 
 export interface ReferenceManyFieldProps<
   RecordType extends RaRecord = RaRecord,
-  ReferenceRecordType extends RaRecord = RaRecord,
 > extends FieldProps<RecordType> {
   children?: ReactNode;
   reference: string;
@@ -55,9 +54,8 @@ export interface ReferenceManyFieldProps<
  */
 export const ReferenceManyField = <
   RecordType extends RaRecord = RaRecord,
-  ReferenceRecordType extends RaRecord = RaRecord,
 >(
-  props: ReferenceManyFieldProps<RecordType, ReferenceRecordType>
+  props: ReferenceManyFieldProps<RecordType>
 ) => {
   const { children, reference, fieldSchema, ...rest } = props;
 

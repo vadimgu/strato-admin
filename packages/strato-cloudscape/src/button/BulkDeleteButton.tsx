@@ -1,12 +1,10 @@
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import {
   useBulkDeleteController,
   useTranslate,
   useListContext,
   useResourceDefinition,
-  useResourceContext,
-  useGetResourceLabel,
 } from '@strato-admin/core';
 import Modal from '@cloudscape-design/components/modal';
 import Box from '@cloudscape-design/components/box';
@@ -30,8 +28,6 @@ export const BulkDeleteButton = ({
 }: BulkDeleteButtonProps) => {
   const translate = useTranslate();
   const { selectedIds } = useListContext();
-  const resource = useResourceContext();
-  const getResourceLabel = useGetResourceLabel();
   const { options } = useResourceDefinition();
   const { handleDelete, isPending, isLoading } = useBulkDeleteController({
     mutationMode,

@@ -1,4 +1,5 @@
 {
+  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "target": "ESNext",
     "lib": [
@@ -15,7 +16,17 @@
     "strict": true,
     "types": [
       "node"
-    ]
+    ],
+    "baseUrl": ".",
+    "paths": {
+      "@strato-admin/admin": ["../strato-admin/src"],
+      "@strato-admin/cloudscape": ["../strato-cloudscape/src"],
+      "@strato-admin/core": ["../strato-core/src"],
+      "@strato-admin/faker-ecommerce": ["./src"],
+      "@strato-admin/i18n": ["../strato-i18n/src"],
+      "@strato-admin/language-en": ["../strato-language-en/src"],
+      "@strato-admin/language-fr": ["../strato-language-fr/src"]
+    }
   },
   "include": [
     "src"

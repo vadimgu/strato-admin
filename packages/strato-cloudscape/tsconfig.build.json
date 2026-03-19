@@ -2,7 +2,8 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "dist",
-    "declaration": true
+    "declaration": true,
+    "paths": {}
   },
   "exclude": ["**/*.test.ts", "**/*.test.tsx", "**/__tests__", "**/__mocks__", "**/stories", "**/*.stories.tsx"]
 }

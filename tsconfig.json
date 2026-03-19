@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@strato-admin/admin": ["packages/strato-admin/src"],
+      "@strato-admin/cloudscape": ["packages/strato-cloudscape/src"],
+      "@strato-admin/core": ["packages/strato-core/src"],
+      "@strato-admin/faker-ecommerce": ["packages/strato-faker-ecommerce/src"],
+      "@strato-admin/i18n-cli": ["packages/strato-i18n-cli/src"],
+      "@strato-admin/i18n": ["packages/strato-i18n/src"],
+      "@strato-admin/language-en": ["packages/strato-language-en/src"],
+      "@strato-admin/language-fr": ["packages/strato-language-fr/src"]
+    },
+    "moduleResolution": "Bundler",
+    "module": "ESNext",
+    "target": "ESNext",
+    "jsx": "react-jsx",
+    "allowJs": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "strict": true
+  },
+  "exclude": ["node_modules", "**/dist", "**/build"]
+}

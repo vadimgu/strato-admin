@@ -18,6 +18,7 @@ export const ProductResource = (
   <ResourceSchema
     name="products"
     label="Products"
+    excludeListFields={['description']}
     show={ProductShow}
     recordRepresentation={productRepresentation}
   >

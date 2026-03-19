@@ -1,5 +1,5 @@
 import { IntlMessageFormat } from 'intl-messageformat';
-import type { I18nProvider, TranslationMessages } from '@strato-admin/core';
+import type { I18nProvider } from '@strato-admin/core';
 import { generateMessageId } from './hash';
 
 export const icuI18nProvider = (
