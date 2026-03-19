@@ -6,6 +6,12 @@ import { InputSchema, useInputSchema } from './InputSchema';
 export interface ResourceSchemas {
   fieldSchema?: ReactNode;
   inputSchema?: ReactNode;
+  listFields?: string[];
+  excludeListFields?: string[];
+  showFields?: string[];
+  excludeShowFields?: string[];
+  formFields?: string[];
+  excludeFormFields?: string[];
 }
 
 export interface DefaultResourceComponents {
@@ -56,9 +62,19 @@ export const registerGlobalSchemas = (resource: string, schemas: ResourceSchemas
   const existing = globalSchemaRegistry[resource];
 
   // Only update if we actually have new schema content to avoid redundant re-renders
-  if (schemas.fieldSchema || schemas.inputSchema) {
+  if (
+    schemas.fieldSchema || 
+    schemas.inputSchema || 
+    schemas.listFields || 
+    schemas.excludeListFields || 
+    schemas.showFields || 
+    schemas.excludeShowFields || 
+    schemas.formFields || 
+    schemas.excludeFormFields
+  ) {
     globalSchemaRegistry[resource] = {
       ...existing,
+      ...schemas,
       fieldSchema: schemas.fieldSchema || existing?.fieldSchema,
       inputSchema: schemas.inputSchema || existing?.inputSchema,
     };
@@ -209,6 +225,12 @@ export const useResourceSchema = (resourceProp?: string) => {
 
     let fieldSchema = fieldSchemaFromContext;
     let inputSchema = inputSchemaFromContext;
+    let listFields = (definition as any)?.options?.listFields;
+    let excludeListFields = (definition as any)?.options?.excludeListFields;
+    let showFields = (definition as any)?.options?.showFields;
+    let excludeShowFields = (definition as any)?.options?.excludeShowFields;
+    let formFields = (definition as any)?.options?.formFields;
+    let excludeFormFields = (definition as any)?.options?.excludeFormFields;
 
     // Use registry if we are looking for a different resource,
     // or if the current context has empty schemas (fallback).
@@ -221,6 +243,12 @@ export const useResourceSchema = (resourceProp?: string) => {
         if (isDifferentResource || inputSchema.length === 0) {
           inputSchema = registrySchemas.inputSchema ? React.Children.toArray(registrySchemas.inputSchema) : [];
         }
+        listFields = listFields || registrySchemas.listFields;
+        excludeListFields = excludeListFields || registrySchemas.excludeListFields;
+        showFields = showFields || registrySchemas.showFields;
+        excludeShowFields = excludeShowFields || registrySchemas.excludeShowFields;
+        formFields = formFields || registrySchemas.formFields;
+        excludeFormFields = excludeFormFields || registrySchemas.excludeFormFields;
       }
     }
 
@@ -228,6 +256,12 @@ export const useResourceSchema = (resourceProp?: string) => {
       resource,
       fieldSchema,
       inputSchema,
+      listFields,
+      excludeListFields,
+      showFields,
+      excludeShowFields,
+      formFields,
+      excludeFormFields,
       definition,
       label: resource ? getResourceLabel(resource, 2) : undefined, // TODO: stop hardcoding pluralization - translation issues in some languages. 
       getField: (source: string) => fieldSchema.find(

@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import { ReactNode } from 'react';
 import { Resource, ResourceProps } from '@strato-admin/ra-core';
 import { ResourceSchemaProvider } from './ResourceSchemaProvider';
 import { registerGlobalSchemas, useSchemaRegistry, getDefaultResourceComponents, parseUnifiedSchema } from './SchemaRegistry';
@@ -13,6 +13,31 @@ export interface ResourceSchemaProps extends ResourceProps {
   canDelete?: boolean;
   canShowDetails?: boolean;
   canList?: boolean;
+
+  /**
+   * List of field sources to include in the list view (Table/Cards).
+   */
+  listFields?: string[];
+  /**
+   * List of field sources to exclude from the list view (Table/Cards).
+   */
+  excludeListFields?: string[];
+  /**
+   * List of field sources to include in the show view (KeyValuePairs).
+   */
+  showFields?: string[];
+  /**
+   * List of field sources to exclude from the show view (KeyValuePairs).
+   */
+  excludeShowFields?: string[];
+  /**
+   * List of field sources to include in the create/edit forms.
+   */
+  formFields?: string[];
+  /**
+   * List of field sources to exclude from the create/edit forms.
+   */
+  excludeFormFields?: string[];
 }
 
 /**
@@ -35,22 +60,34 @@ export const ResourceSchema = ({
   canDelete = true,
   canShowDetails = true,
   canList = true,
+  listFields,
+  excludeListFields,
+  showFields,
+  excludeShowFields,
+  formFields,
+  excludeFormFields,
   ...props
 }: ResourceSchemaProps) => {
   const { defaultComponents } = useSchemaRegistry();
-  
+
   const parsedSchemas = children ? parseUnifiedSchema(children) : {};
   const fieldSchema = explicitFieldSchema || parsedSchemas.fieldSchema;
   const inputSchema = explicitInputSchema || parsedSchemas.inputSchema;
 
-  const mergedOptions = { 
-    ...options, 
+  const mergedOptions = {
+    ...options,
     ...(label ? { label } : {}),
     canCreate,
     canEdit,
     canDelete,
     canShowDetails,
     canList,
+    listFields,
+    excludeListFields,
+    showFields,
+    excludeShowFields,
+    formFields,
+    excludeFormFields,
   };
 
   const finalProps = {
@@ -75,41 +112,62 @@ ResourceSchema.raName = 'Resource';
  * We use it to register schemas globally before any component renders.
  */
 ResourceSchema.registerResource = (props: ResourceSchemaProps) => {
-  const { 
-    name, 
-    fieldSchema: explicitFieldSchema, 
+  const {
+    name,
+    fieldSchema: explicitFieldSchema,
     inputSchema: explicitInputSchema,
     children,
-    label, 
-    options, 
+    label,
+    options,
     canCreate = true,
     canEdit = true,
     canDelete = true,
     canShowDetails = true,
     canList = true,
+    listFields,
+    excludeListFields,
+    showFields,
+    excludeShowFields,
+    formFields,
+    excludeFormFields,
     list,
     create,
     edit,
     show,
   } = props;
-  
+
   const parsedSchemas = children ? parseUnifiedSchema(children) : {};
   const fieldSchema = explicitFieldSchema || parsedSchemas.fieldSchema;
   const inputSchema = explicitInputSchema || parsedSchemas.inputSchema;
 
   if (name && (fieldSchema || inputSchema)) {
-    registerGlobalSchemas(name, { fieldSchema, inputSchema });
+    registerGlobalSchemas(name, {
+      fieldSchema,
+      inputSchema,
+      listFields,
+      excludeListFields,
+      showFields,
+      excludeShowFields,
+      formFields,
+      excludeFormFields,
+    });
   }
 
   const defaultComponents = getDefaultResourceComponents();
-  const mergedOptions = { 
-    ...options, 
+  const mergedOptions = {
+    ...options,
     ...(label ? { label } : {}),
     canCreate,
     canEdit,
     canDelete,
     canShowDetails,
     canList,
+    listFields,
+    excludeListFields,
+    showFields,
+    excludeShowFields,
+    formFields,
+    excludeFormFields,
   };
 
   const finalProps = {

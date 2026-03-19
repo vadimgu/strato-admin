@@ -7,31 +7,44 @@ import { FormField } from '../input/FormField';
 
 export interface FormProps extends Omit<RaFormProps, 'children'> {
   children?: React.ReactNode;
+  /**
+   * List of field sources to include in the form.
+   */
   include?: string[];
+  /**
+   * List of field sources to exclude from the form.
+   */
   exclude?: string[];
   toolbar?: React.ReactNode;
 }
 
 export const Form = ({ children, include, exclude, toolbar, ...props }: FormProps) => {
   const saveContext = useSaveContext();
-  const { inputSchema: schemaChildren } = useResourceSchema();
+  const { 
+    inputSchema: schemaChildren,
+    formFields,
+    excludeFormFields,
+  } = useResourceSchema();
 
   const finalChildren = React.useMemo(() => {
     const baseChildren = children || schemaChildren;
     let result = React.Children.toArray(baseChildren);
 
-    if (include) {
+    const finalInclude = include || formFields;
+    const finalExclude = exclude || excludeFormFields;
+
+    if (finalInclude) {
       result = result.filter(
-        (child) => React.isValidElement(child) && include.includes((child.props as any).source)
+        (child) => React.isValidElement(child) && finalInclude.includes((child.props as any).source)
       );
-    } else if (exclude) {
+    } else if (finalExclude) {
       result = result.filter(
-        (child) => React.isValidElement(child) && !exclude.includes((child.props as any).source)
+        (child) => React.isValidElement(child) && !finalExclude.includes((child.props as any).source)
       );
     }
 
     return result;
-  }, [children, schemaChildren, include, exclude]);
+  }, [children, schemaChildren, include, exclude, formFields, excludeFormFields]);
 
   const handleSubmit = async (values: any, event: any) => {
     if (props.onSubmit) {

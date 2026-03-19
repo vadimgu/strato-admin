@@ -13,7 +13,13 @@ import TextField from '../field/TextField';
 
 export interface KeyValuePairsProps extends Partial<Omit<CloudscapeKeyValuePairsProps, 'items'>> {
   children?: React.ReactNode;
+  /**
+   * List of field sources to include in the key-value pairs list.
+   */
   include?: string[];
+  /**
+   * List of field sources to exclude from the key-value pairs list.
+   */
   exclude?: string[];
   columns?: number;
   minColumnWidth?: number;
@@ -65,24 +71,32 @@ export const KeyValuePairs = <RecordType extends RaRecord = RaRecord>({
   ...props
 }: KeyValuePairsProps) => {
   const record = useRecordContext<RecordType>();
-  const { resource, fieldSchema: schemaChildren } = useResourceSchema();
+  const { 
+    resource, 
+    fieldSchema: schemaChildren,
+    showFields,
+    excludeShowFields,
+  } = useResourceSchema();
 
   const finalChildren = React.useMemo(() => {
     const baseChildren = children || schemaChildren;
     let result = React.Children.toArray(baseChildren);
 
-    if (include) {
+    const finalInclude = include || showFields;
+    const finalExclude = exclude || excludeShowFields;
+
+    if (finalInclude) {
       result = result.filter(
-        (child) => React.isValidElement(child) && include.includes((child.props as any).source)
+        (child) => React.isValidElement(child) && finalInclude.includes((child.props as any).source)
       );
-    } else if (exclude) {
+    } else if (finalExclude) {
       result = result.filter(
-        (child) => React.isValidElement(child) && !exclude.includes((child.props as any).source)
+        (child) => React.isValidElement(child) && !finalExclude.includes((child.props as any).source)
       );
     }
 
     return result;
-  }, [children, schemaChildren, include, exclude]);
+  }, [children, schemaChildren, include, exclude, showFields, excludeShowFields]);
 
   const items =
     React.Children.map(finalChildren, (child) => {

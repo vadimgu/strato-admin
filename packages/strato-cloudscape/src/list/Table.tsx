@@ -220,7 +220,14 @@ export const Table = <RecordType extends RaRecord = any>({
 }: TableProps<RecordType>) => {
   const translate = useTranslate();
   const translateLabel = useTranslateLabel();
-  const { resource, fieldSchema: schemaChildren, definition, label: schemaLabel } = useResourceSchema();
+  const { 
+    resource, 
+    fieldSchema: schemaChildren, 
+    definition, 
+    label: schemaLabel,
+    listFields,
+    excludeListFields,
+  } = useResourceSchema();
 
   const finalSelectionType = selectionType ?? (definition?.options?.canDelete ? 'multi' : undefined);
 
@@ -228,18 +235,21 @@ export const Table = <RecordType extends RaRecord = any>({
     const baseChildren = children || schemaChildren;
     let result = React.Children.toArray(baseChildren);
 
-    if (include) {
+    const finalInclude = include || listFields;
+    const finalExclude = exclude || excludeListFields;
+
+    if (finalInclude) {
       result = result.filter(
-        (child) => React.isValidElement(child) && include.includes((child.props as any).source)
+        (child) => React.isValidElement(child) && finalInclude.includes((child.props as any).source)
       );
-    } else if (exclude) {
+    } else if (finalExclude) {
       result = result.filter(
-        (child) => React.isValidElement(child) && !exclude.includes((child.props as any).source)
+        (child) => React.isValidElement(child) && !finalExclude.includes((child.props as any).source)
       );
     }
 
     return result;
-  }, [children, schemaChildren, include, exclude]);
+  }, [children, schemaChildren, include, exclude, listFields, excludeListFields]);
 
   // 1. Extract columns and options before calling useCollection
   const extractedColumns = React.useMemo(() => {
