@@ -14,9 +14,9 @@ import type { RouterMatch } from './RouterProvider';
  * };
  */
 export const useMatchPath = (): ((
-    pattern: string | { path: string; end?: boolean },
-    pathname: string
+  pattern: string | { path: string; end?: boolean },
+  pathname: string,
 ) => RouterMatch | null) => {
-    const provider = useRouterProvider();
-    return provider.matchPath;
+  const provider = useRouterProvider();
+  return provider.matchPath;
 };

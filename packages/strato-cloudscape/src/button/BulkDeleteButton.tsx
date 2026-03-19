@@ -1,11 +1,5 @@
-
 import { useState } from 'react';
-import {
-  useBulkDeleteController,
-  useTranslate,
-  useListContext,
-  useResourceDefinition,
-} from '@strato-admin/core';
+import { useBulkDeleteController, useTranslate, useListContext, useResourceDefinition } from '@strato-admin/core';
 import Modal from '@cloudscape-design/components/modal';
 import Box from '@cloudscape-design/components/box';
 import SpaceBetween from '@cloudscape-design/components/space-between';
@@ -82,12 +76,7 @@ export const BulkDeleteButton = ({
               <Button variant="link" onClick={handleClose}>
                 {translate('ra.action.cancel', { _: 'Cancel' })}
               </Button>
-              <Button
-                variant="primary"
-                onClick={handleConfirm}
-                loading={isBusy}
-                data-testid="confirm-bulk-delete"
-              >
+              <Button variant="primary" onClick={handleConfirm} loading={isBusy} data-testid="confirm-bulk-delete">
                 {translate('ra.action.confirm', { _: 'Confirm' })}
               </Button>
             </SpaceBetween>

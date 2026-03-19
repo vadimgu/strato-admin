@@ -12,81 +12,66 @@ import { useEvent } from '../util';
  *
  * @returns An object containing { isPending, data, error, refetch }.
  */
-export const useHandleAuthCallback = (
-    options?: UseHandleAuthCallbackOptions
-) => {
-    const authProvider = useAuthProvider();
-    const redirect = useRedirect();
-    const location = useLocation();
-    const locationState = location.state as any;
-    const nextPathName = locationState && locationState.nextPathname;
-    const nextSearch = locationState && locationState.nextSearch;
-    const defaultRedirectUrl = nextPathName ? nextPathName + nextSearch : '/';
-    const { onSuccess, onError, onSettled, ...queryOptions } = options ?? {};
-    let handleCallbackPromise: Promise<void> | null;
+export const useHandleAuthCallback = (options?: UseHandleAuthCallbackOptions) => {
+  const authProvider = useAuthProvider();
+  const redirect = useRedirect();
+  const location = useLocation();
+  const locationState = location.state as any;
+  const nextPathName = locationState && locationState.nextPathname;
+  const nextSearch = locationState && locationState.nextSearch;
+  const defaultRedirectUrl = nextPathName ? nextPathName + nextSearch : '/';
+  const { onSuccess, onError, onSettled, ...queryOptions } = options ?? {};
+  let handleCallbackPromise: Promise<void> | null;
 
-    const queryResult = useQuery({
-        queryKey: ['auth', 'handleCallback'],
-        queryFn: ({ signal }) => {
-            if (!handleCallbackPromise) {
-                handleCallbackPromise =
-                    authProvider &&
-                    typeof authProvider.handleCallback === 'function'
-                        ? authProvider
-                              .handleCallback({ signal })
-                              .then(result => result ?? null)
-                        : Promise.resolve();
-            }
-            return handleCallbackPromise;
-        },
-        retry: false,
-        ...queryOptions,
-    });
+  const queryResult = useQuery({
+    queryKey: ['auth', 'handleCallback'],
+    queryFn: ({ signal }) => {
+      if (!handleCallbackPromise) {
+        handleCallbackPromise =
+          authProvider && typeof authProvider.handleCallback === 'function'
+            ? authProvider.handleCallback({ signal }).then((result) => result ?? null)
+            : Promise.resolve();
+      }
+      return handleCallbackPromise;
+    },
+    retry: false,
+    ...queryOptions,
+  });
 
-    const onSuccessEvent = useEvent(
-        onSuccess ??
-            ((data: any) => {
-                // AuthProviders relying on a third party services redirect back to the app can't
-                // use the location state to store the path on which the user was before the login.
-                // So we support a fallback on the localStorage.
-                const previousLocation = localStorage.getItem(
-                    PreviousLocationStorageKey
-                );
-                const redirectTo =
-                    (data as AuthRedirectResult)?.redirectTo ??
-                    previousLocation;
-                if (redirectTo === false) {
-                    return;
-                }
+  const onSuccessEvent = useEvent(
+    onSuccess ??
+      ((data: any) => {
+        // AuthProviders relying on a third party services redirect back to the app can't
+        // use the location state to store the path on which the user was before the login.
+        // So we support a fallback on the localStorage.
+        const previousLocation = localStorage.getItem(PreviousLocationStorageKey);
+        const redirectTo = (data as AuthRedirectResult)?.redirectTo ?? previousLocation;
+        if (redirectTo === false) {
+          return;
+        }
 
-                redirect(redirectTo ?? defaultRedirectUrl);
-            })
-    );
-    const onErrorEvent = useEvent(onError ?? noop);
-    const onSettledEvent = useEvent(onSettled ?? noop);
+        redirect(redirectTo ?? defaultRedirectUrl);
+      }),
+  );
+  const onErrorEvent = useEvent(onError ?? noop);
+  const onSettledEvent = useEvent(onSettled ?? noop);
 
-    useEffect(() => {
-        if (queryResult.error == null || queryResult.isFetching) return;
-        onErrorEvent(queryResult.error);
-    }, [onErrorEvent, queryResult.error, queryResult.isFetching]);
+  useEffect(() => {
+    if (queryResult.error == null || queryResult.isFetching) return;
+    onErrorEvent(queryResult.error);
+  }, [onErrorEvent, queryResult.error, queryResult.isFetching]);
 
-    useEffect(() => {
-        if (queryResult.data === undefined || queryResult.isFetching) return;
-        onSuccessEvent(queryResult.data);
-    }, [onSuccessEvent, queryResult.data, queryResult.isFetching]);
+  useEffect(() => {
+    if (queryResult.data === undefined || queryResult.isFetching) return;
+    onSuccessEvent(queryResult.data);
+  }, [onSuccessEvent, queryResult.data, queryResult.isFetching]);
 
-    useEffect(() => {
-        if (queryResult.status === 'pending' || queryResult.isFetching) return;
-        onSettledEvent(queryResult.data, queryResult.error);
-    }, [
-        onSettledEvent,
-        queryResult.data,
-        queryResult.error,
-        queryResult.status,
-        queryResult.isFetching,
-    ]);
+  useEffect(() => {
+    if (queryResult.status === 'pending' || queryResult.isFetching) return;
+    onSettledEvent(queryResult.data, queryResult.error);
+  }, [onSettledEvent, queryResult.data, queryResult.error, queryResult.status, queryResult.isFetching]);
 
-    return queryResult;
+  return queryResult;
 };
 
 /**
@@ -95,16 +80,10 @@ export const useHandleAuthCallback = (
  */
 export const PreviousLocationStorageKey = '@react-admin/nextPathname';
 
-export type UseHandleAuthCallbackOptions = Omit<
-    UseQueryOptions<AuthRedirectResult | void>,
-    'queryKey' | 'queryFn'
-> & {
-    onSuccess?: (data: AuthRedirectResult | void) => void;
-    onError?: (err: Error) => void;
-    onSettled?: (
-        data?: AuthRedirectResult | void,
-        error?: Error | null
-    ) => void;
+export type UseHandleAuthCallbackOptions = Omit<UseQueryOptions<AuthRedirectResult | void>, 'queryKey' | 'queryFn'> & {
+  onSuccess?: (data: AuthRedirectResult | void) => void;
+  onError?: (err: Error) => void;
+  onSettled?: (data?: AuthRedirectResult | void, error?: Error | null) => void;
 };
 
 const noop = () => {};

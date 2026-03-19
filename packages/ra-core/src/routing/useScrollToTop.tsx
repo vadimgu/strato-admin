@@ -23,14 +23,14 @@ import { useLocation } from './useLocation';
  * );
  */
 export const useScrollToTop = () => {
-    const location = useLocation();
-    useEffect(() => {
-        if (
-            (location.state as any)?._scrollToTop &&
-            typeof window != 'undefined' &&
-            typeof window.scrollTo === 'function'
-        ) {
-            window.scrollTo(0, 0);
-        }
-    }, [location]);
+  const location = useLocation();
+  useEffect(() => {
+    if (
+      (location.state as any)?._scrollToTop &&
+      typeof window != 'undefined' &&
+      typeof window.scrollTo === 'function'
+    ) {
+      window.scrollTo(0, 0);
+    }
+  }, [location]);
 };

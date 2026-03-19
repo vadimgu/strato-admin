@@ -1,32 +1,24 @@
 import * as React from 'react';
 import {
-    createMemoryRouter,
-    RouterProvider,
-    useLocation,
-    Location,
-    useNavigate,
-    NavigateFunction,
+  createMemoryRouter,
+  RouterProvider,
+  useLocation,
+  Location,
+  useNavigate,
+  NavigateFunction,
 } from 'react-router-dom';
 import type { InitialEntry } from '@remix-run/router';
 
-const UseLocation = ({
-    locationCallback,
-}: {
-    locationCallback: (l: Location) => void;
-}) => {
-    const location = useLocation();
-    locationCallback(location);
-    return null;
+const UseLocation = ({ locationCallback }: { locationCallback: (l: Location) => void }) => {
+  const location = useLocation();
+  locationCallback(location);
+  return null;
 };
 
-const UseNavigate = ({
-    navigateCallback,
-}: {
-    navigateCallback: (n: NavigateFunction) => void;
-}) => {
-    const navigate = useNavigate();
-    navigateCallback(navigate);
-    return null;
+const UseNavigate = ({ navigateCallback }: { navigateCallback: (n: NavigateFunction) => void }) => {
+  const navigate = useNavigate();
+  navigateCallback(navigate);
+  return null;
 };
 
 /**
@@ -40,51 +32,47 @@ const UseNavigate = ({
  * - a `navigateCallback` prop to be able to navigate in the test
  */
 export const TestMemoryRouter = ({
-    children,
-    locationCallback,
-    navigateCallback,
-    ...rest
+  children,
+  locationCallback,
+  navigateCallback,
+  ...rest
 }: {
-    children: React.ReactNode;
-    locationCallback?: (l: Location) => void;
-    navigateCallback?: (n: NavigateFunction) => void;
-    basename?: string;
-    initialEntries?: InitialEntry[];
-    initialIndex?: number;
+  children: React.ReactNode;
+  locationCallback?: (l: Location) => void;
+  navigateCallback?: (n: NavigateFunction) => void;
+  basename?: string;
+  initialEntries?: InitialEntry[];
+  initialIndex?: number;
 }) => {
-    const router = createMemoryRouter(
-        [
-            {
-                path: '*',
-                element: (
-                    <>
-                        {children}
-                        {locationCallback && (
-                            <UseLocation locationCallback={locationCallback} />
-                        )}
-                        {navigateCallback && (
-                            <UseNavigate navigateCallback={navigateCallback} />
-                        )}
-                    </>
-                ),
-            },
-        ],
-        {
-            future: {
-                v7_fetcherPersist: false,
-                v7_normalizeFormMethod: false,
-                v7_partialHydration: false,
-                v7_relativeSplatPath: false,
-                v7_skipActionErrorRevalidation: false,
-            },
-            ...rest,
-        }
-    );
-    return (
-        <RouterProvider
-            router={router}
-            // @ts-expect-error react-router types are not up-to-date
-            future={{ v7_startTransition: false, v7_relativeSplatPath: false }}
-        />
-    );
+  const router = createMemoryRouter(
+    [
+      {
+        path: '*',
+        element: (
+          <>
+            {children}
+            {locationCallback && <UseLocation locationCallback={locationCallback} />}
+            {navigateCallback && <UseNavigate navigateCallback={navigateCallback} />}
+          </>
+        ),
+      },
+    ],
+    {
+      future: {
+        v7_fetcherPersist: false,
+        v7_normalizeFormMethod: false,
+        v7_partialHydration: false,
+        v7_relativeSplatPath: false,
+        v7_skipActionErrorRevalidation: false,
+      },
+      ...rest,
+    },
+  );
+  return (
+    <RouterProvider
+      router={router}
+      // @ts-expect-error react-router types are not up-to-date
+      future={{ v7_startTransition: false, v7_relativeSplatPath: false }}
+    />
+  );
 };

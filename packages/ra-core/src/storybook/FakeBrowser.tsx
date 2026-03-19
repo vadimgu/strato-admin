@@ -17,85 +17,77 @@ import { TestMemoryRouter, useLocation, useNavigate } from '../routing';
  * };
  */
 export const FakeBrowserDecorator = (Story, context) => {
-    return (
-        <TestMemoryRouter initialEntries={context.parameters.initialEntries}>
-            <Browser>
-                <Story />
-            </Browser>
-        </TestMemoryRouter>
-    );
+  return (
+    <TestMemoryRouter initialEntries={context.parameters.initialEntries}>
+      <Browser>
+        <Story />
+      </Browser>
+    </TestMemoryRouter>
+  );
 };
 
 export const Browser = ({ children }: { children: ReactNode }) => {
-    return (
-        <>
-            <style
-                dangerouslySetInnerHTML={{
-                    __html: styles,
-                }}
-            />
-            <div className="browser">
-                <BrowserBar />
-                <div className="browser-container">{children}</div>
-            </div>
-        </>
-    );
+  return (
+    <>
+      <style
+        dangerouslySetInnerHTML={{
+          __html: styles,
+        }}
+      />
+      <div className="browser">
+        <BrowserBar />
+        <div className="browser-container">{children}</div>
+      </div>
+    </>
+  );
 };
 
 const BrowserBar = () => {
-    const location = useLocation();
-    const navigate = useNavigate();
+  const location = useLocation();
+  const navigate = useNavigate();
 
-    const fullLocation = `${location.pathname}${location.search}${location.hash}`;
+  const fullLocation = `${location.pathname}${location.search}${location.hash}`;
 
-    const handleSubmit = event => {
-        event.preventDefault();
-        const newLocation = event.target.elements.location.value.replace(
-            'http://localhost:3000',
-            ''
-        );
-        navigate(newLocation);
-    };
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    const newLocation = event.target.elements.location.value.replace('http://localhost:3000', '');
+    navigate(newLocation);
+  };
 
-    return (
-        <div className="browser-bar">
-            <div className="button">
-                <button
-                    aria-label="Back"
-                    onClick={() => {
-                        navigate(-1);
-                    }}
-                >
-                    <BackwardIcon />
-                </button>
-            </div>
-            <div className="button">
-                <button
-                    aria-label="Forward"
-                    onClick={() => {
-                        navigate(1);
-                    }}
-                >
-                    <ForwardIcon />
-                </button>
-            </div>
-            <div className="button">
-                <button aria-label="Refresh">
-                    <span aria-hidden>
-                        <RefreshIcon />
-                    </span>
-                </button>
-            </div>
-            <form onSubmit={handleSubmit}>
-                <input
-                    name="location"
-                    type="text"
-                    key={fullLocation}
-                    defaultValue={`http://localhost:3000${fullLocation}`}
-                />
-            </form>
-        </div>
-    );
+  return (
+    <div className="browser-bar">
+      <div className="button">
+        <button
+          aria-label="Back"
+          onClick={() => {
+            navigate(-1);
+          }}
+        >
+          <BackwardIcon />
+        </button>
+      </div>
+      <div className="button">
+        <button
+          aria-label="Forward"
+          onClick={() => {
+            navigate(1);
+          }}
+        >
+          <ForwardIcon />
+        </button>
+      </div>
+      <div className="button">
+        <button aria-label="Refresh">
+          <span aria-hidden>
+            <RefreshIcon />
+          </span>
+        </button>
+      </div>
+      <form onSubmit={handleSubmit}>
+        <input name="location" type="text" key={fullLocation} defaultValue={`http://localhost:3000${fullLocation}`} />
+      </form>
+    </div>
+  );
 };
 
 const styles = `
@@ -162,49 +154,24 @@ const styles = `
 `;
 
 const BackwardIcon = () => (
-    <svg
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-    >
-        <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M15 19l-7-7 7-7"
-        />
-    </svg>
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+  </svg>
 );
 
 const ForwardIcon = () => (
-    <svg
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-    >
-        <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M9 5l7 7-7 7"
-        />
-    </svg>
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+  </svg>
 );
 
 const RefreshIcon = () => (
-    <svg
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-    >
-        <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-        />
-    </svg>
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth={2}
+      d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+    />
+  </svg>
 );

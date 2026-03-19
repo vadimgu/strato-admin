@@ -16,6 +16,6 @@ export type { RouterNavigateProps as NavigateProps } from './RouterProvider';
  * );
  */
 export const Navigate = (props: RouterNavigateProps) => {
-    const provider = useRouterProvider();
-    return <provider.Navigate {...props} />;
+  const provider = useRouterProvider();
+  return <provider.Navigate {...props} />;
 };

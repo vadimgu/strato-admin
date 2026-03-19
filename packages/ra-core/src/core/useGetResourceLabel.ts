@@ -23,27 +23,25 @@ import { humanize, inflect } from 'inflection';
  * }
  */
 export const useGetResourceLabel = (): GetResourceLabel => {
-    const translate = useTranslate();
-    const definitions = useResourceDefinitions();
+  const translate = useTranslate();
+  const definitions = useResourceDefinitions();
 
-    return (resource: string, count = 2): string => {
-        const resourceDefinition = definitions[resource];
+  return (resource: string, count = 2): string => {
+    const resourceDefinition = definitions[resource];
 
-        const label = translate(`resources.${resource}.name`, {
-            smart_count: count,
-            _:
-                resourceDefinition &&
-                resourceDefinition.options &&
-                resourceDefinition.options.label
-                    ? translate(resourceDefinition.options.label, {
-                          smart_count: count,
-                          _: resourceDefinition.options.label,
-                      })
-                    : humanize(inflect(resource, count)),
-        });
+    const label = translate(`resources.${resource}.name`, {
+      smart_count: count,
+      _:
+        resourceDefinition && resourceDefinition.options && resourceDefinition.options.label
+          ? translate(resourceDefinition.options.label, {
+              smart_count: count,
+              _: resourceDefinition.options.label,
+            })
+          : humanize(inflect(resource, count)),
+    });
 
-        return label;
-    };
+    return label;
+  };
 };
 
 export type GetResourceLabel = (resource: string, count?: number) => string;

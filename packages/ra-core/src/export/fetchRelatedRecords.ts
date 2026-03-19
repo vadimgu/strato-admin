@@ -14,13 +14,11 @@ import { getRelatedIds } from './getRelatedIds';
  *     );
  */
 export const fetchRelatedRecords =
-    (dataProvider: DataProvider): FetchRelatedRecords =>
-    (data, field, resource) =>
-        dataProvider
-            .getMany(resource, { ids: getRelatedIds(data, field) })
-            .then(({ data }) =>
-                data.reduce((acc, post) => {
-                    acc[post.id] = post;
-                    return acc;
-                }, {})
-            );
+  (dataProvider: DataProvider): FetchRelatedRecords =>
+  (data, field, resource) =>
+    dataProvider.getMany(resource, { ids: getRelatedIds(data, field) }).then(({ data }) =>
+      data.reduce((acc, post) => {
+        acc[post.id] = post;
+        return acc;
+      }, {}),
+    );

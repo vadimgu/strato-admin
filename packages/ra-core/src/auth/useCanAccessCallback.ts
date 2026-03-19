@@ -1,8 +1,4 @@
-import {
-    UseMutateAsyncFunction,
-    useMutation,
-    UseMutationOptions,
-} from '@tanstack/react-query';
+import { UseMutateAsyncFunction, useMutation, UseMutationOptions } from '@tanstack/react-query';
 import useAuthProvider from './useAuthProvider';
 import { HintedString } from '../types';
 
@@ -35,57 +31,37 @@ import { HintedString } from '../types';
  *         );
  *     };
  */
-export const useCanAccessCallback = <
-    RecordType extends Record<string, any> = Record<string, any>,
-    ErrorType = Error,
->(
-    options: Omit<
-        UseMutationOptions<
-            UseCanAccessCallbackResult,
-            ErrorType,
-            UseCanAccessCallbackOptions<RecordType>
-        >,
-        'mutationFn'
-    > = {}
+export const useCanAccessCallback = <RecordType extends Record<string, any> = Record<string, any>, ErrorType = Error>(
+  options: Omit<
+    UseMutationOptions<UseCanAccessCallbackResult, ErrorType, UseCanAccessCallbackOptions<RecordType>>,
+    'mutationFn'
+  > = {},
 ) => {
-    const authProvider = useAuthProvider();
+  const authProvider = useAuthProvider();
 
-    const { mutateAsync } = useMutation<
-        UseCanAccessCallbackResult,
-        ErrorType,
-        UseCanAccessCallbackOptions
-    >({
-        mutationFn: async (
-            params: UseCanAccessCallbackOptions
-        ): Promise<UseCanAccessCallbackResult> => {
-            if (!authProvider || !authProvider.canAccess) {
-                return true;
-            }
-            return authProvider.canAccess(params);
-        },
-        retry: false,
-        ...options,
-    });
+  const { mutateAsync } = useMutation<UseCanAccessCallbackResult, ErrorType, UseCanAccessCallbackOptions>({
+    mutationFn: async (params: UseCanAccessCallbackOptions): Promise<UseCanAccessCallbackResult> => {
+      if (!authProvider || !authProvider.canAccess) {
+        return true;
+      }
+      return authProvider.canAccess(params);
+    },
+    retry: false,
+    ...options,
+  });
 
-    return mutateAsync;
+  return mutateAsync;
 };
 
 export type UseCanAccessCallback<
-    RecordType extends Record<string, any> = Record<string, any>,
-    ErrorType = Error,
-> = UseMutateAsyncFunction<
-    UseCanAccessCallbackResult,
-    ErrorType,
-    UseCanAccessCallbackOptions<RecordType>,
-    unknown
->;
+  RecordType extends Record<string, any> = Record<string, any>,
+  ErrorType = Error,
+> = UseMutateAsyncFunction<UseCanAccessCallbackResult, ErrorType, UseCanAccessCallbackOptions<RecordType>, unknown>;
 
-export type UseCanAccessCallbackOptions<
-    RecordType extends Record<string, any> = Record<string, any>,
-> = {
-    resource: string;
-    action: HintedString<'list' | 'create' | 'edit' | 'show' | 'delete'>;
-    record?: RecordType;
+export type UseCanAccessCallbackOptions<RecordType extends Record<string, any> = Record<string, any>> = {
+  resource: string;
+  action: HintedString<'list' | 'create' | 'edit' | 'show' | 'delete'>;
+  record?: RecordType;
 };
 
 export type UseCanAccessCallbackResult = boolean;

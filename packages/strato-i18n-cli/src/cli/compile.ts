@@ -12,13 +12,15 @@ function main() {
 
   if (fs.existsSync(pattern) && fs.statSync(pattern).isDirectory()) {
     // Original behavior: if a directory is passed, find .json and .po files inside it
-    files = fs.readdirSync(pattern)
-      .filter(file => (file.endsWith('.json') || file.endsWith('.po')) && !file.endsWith('.compiled.json'))
-      .map(file => path.join(pattern, file));
+    files = fs
+      .readdirSync(pattern)
+      .filter((file) => (file.endsWith('.json') || file.endsWith('.po')) && !file.endsWith('.compiled.json'))
+      .map((file) => path.join(pattern, file));
   } else {
     // New behavior: support glob patterns
-    files = globSync(pattern, { absolute: true })
-      .filter(file => (file.endsWith('.json') || file.endsWith('.po')) && !file.endsWith('.compiled.json'));
+    files = globSync(pattern, { absolute: true }).filter(
+      (file) => (file.endsWith('.json') || file.endsWith('.po')) && !file.endsWith('.compiled.json'),
+    );
   }
 
   if (files.length === 0) {
@@ -28,27 +30,27 @@ function main() {
 
   let processedCount = 0;
 
-  files.forEach(filePath => {
+  files.forEach((filePath) => {
     const compiledFilePath = filePath.replace(/\.(json|po)$/, '.compiled.json');
     const fileName = path.basename(filePath);
 
-    let translations: Record<string, { defaultMessage: string, translation: string }> = {};
+    let translations: Record<string, { defaultMessage: string; translation: string }> = {};
 
     try {
       if (filePath.endsWith('.po')) {
         const parsed = gettextParser.po.parse(fs.readFileSync(filePath));
-        
+
         Object.entries(parsed.translations).forEach(([context, entries]) => {
           Object.entries(entries).forEach(([msgid, data]: [string, any]) => {
             if (msgid === '') return; // skip header
-            
+
             // Find the hash: check context (v2), then comment (v3), then msgid (v1)
             const commentHash = data.comments?.extracted?.match(/id: (\w+)/)?.[1];
             const hash = context || commentHash || msgid;
 
             translations[hash] = {
               defaultMessage: data.msgid || data.comments?.extracted || '',
-              translation: data.msgstr[0] || ''
+              translation: data.msgstr[0] || '',
             };
           });
         });
@@ -72,7 +74,9 @@ function main() {
     });
 
     fs.writeFileSync(compiledFilePath, JSON.stringify(compiledMapping, null, 2));
-    console.log(`Compiled ${fileName} -> ${path.basename(compiledFilePath)} (${Object.keys(compiledMapping).length} messages)`);
+    console.log(
+      `Compiled ${fileName} -> ${path.basename(compiledFilePath)} (${Object.keys(compiledMapping).length} messages)`,
+    );
     processedCount++;
   });
 

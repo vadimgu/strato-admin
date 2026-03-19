@@ -26,123 +26,107 @@ import type { RouterLocation } from '../routing/RouterProvider';
  * }
  */
 const useLogout = (): Logout => {
-    const authProvider = useAuthProvider();
-    const queryClient = useQueryClient();
-    const resetStore = useResetStore();
-    const navigate = useNavigate();
-    const location = useLocation();
-    const locationRef = useRef<RouterLocation>(location);
-    const basename = useBasename();
-    const loginUrl = removeDoubleSlashes(
-        `${basename}/${defaultAuthParams.loginUrl}`
-    );
+  const authProvider = useAuthProvider();
+  const queryClient = useQueryClient();
+  const resetStore = useResetStore();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const locationRef = useRef<RouterLocation>(location);
+  const basename = useBasename();
+  const loginUrl = removeDoubleSlashes(`${basename}/${defaultAuthParams.loginUrl}`);
 
-    /*
-     * We need the current location to pass in the router state
-     * so that the login hook knows where to redirect to as next route after login.
-     *
-     * But if we used the location from useLocation as a dependency of the logout
-     * function, it would be rebuilt each time the user changes location.
-     * Consequently, that would force a rerender of all components using this hook
-     * upon navigation (CoreAdminRouter for example).
-     *
-     * To avoid that, we store the location in a ref.
-     */
-    useEffect(() => {
-        locationRef.current = location;
-    }, [location]);
+  /*
+   * We need the current location to pass in the router state
+   * so that the login hook knows where to redirect to as next route after login.
+   *
+   * But if we used the location from useLocation as a dependency of the logout
+   * function, it would be rebuilt each time the user changes location.
+   * Consequently, that would force a rerender of all components using this hook
+   * upon navigation (CoreAdminRouter for example).
+   *
+   * To avoid that, we store the location in a ref.
+   */
+  useEffect(() => {
+    locationRef.current = location;
+  }, [location]);
 
-    const logout: Logout = useCallback(
-        (
-            params = {},
-            redirectFromCaller,
-            redirectToCurrentLocationAfterLogin = true
-        ) => {
-            if (authProvider) {
-                return authProvider.logout(params).then(redirectFromLogout => {
-                    if (
-                        redirectFromLogout === false ||
-                        redirectFromCaller === false
-                    ) {
-                        resetStore();
-                        queryClient.clear();
-                        // do not redirect
-                        return;
-                    }
+  const logout: Logout = useCallback(
+    (params = {}, redirectFromCaller, redirectToCurrentLocationAfterLogin = true) => {
+      if (authProvider) {
+        return authProvider.logout(params).then((redirectFromLogout) => {
+          if (redirectFromLogout === false || redirectFromCaller === false) {
+            resetStore();
+            queryClient.clear();
+            // do not redirect
+            return;
+          }
 
-                    const finalRedirectTo =
-                        redirectFromCaller || redirectFromLogout || loginUrl;
+          const finalRedirectTo = redirectFromCaller || redirectFromLogout || loginUrl;
 
-                    if (finalRedirectTo?.startsWith('http')) {
-                        // absolute link (e.g. https://my.oidc.server/login)
-                        resetStore();
-                        queryClient.clear();
-                        window.location.href = finalRedirectTo;
-                        return finalRedirectTo;
-                    }
+          if (finalRedirectTo?.startsWith('http')) {
+            // absolute link (e.g. https://my.oidc.server/login)
+            resetStore();
+            queryClient.clear();
+            window.location.href = finalRedirectTo;
+            return finalRedirectTo;
+          }
 
-                    // redirectTo is an internal location that may contain a query string, e.g. '/login?foo=bar'
-                    // we must split it to pass a structured location to navigate()
-                    const redirectToParts = finalRedirectTo.split('?');
-                    const newLocation: Partial<RouterLocation> = {
-                        pathname: redirectToParts[0],
-                    };
-                    let newLocationOptions = {};
+          // redirectTo is an internal location that may contain a query string, e.g. '/login?foo=bar'
+          // we must split it to pass a structured location to navigate()
+          const redirectToParts = finalRedirectTo.split('?');
+          const newLocation: Partial<RouterLocation> = {
+            pathname: redirectToParts[0],
+          };
+          let newLocationOptions = {};
 
-                    if (
-                        redirectToCurrentLocationAfterLogin &&
-                        locationRef.current &&
-                        locationRef.current.pathname
-                    ) {
-                        newLocationOptions = {
-                            state: {
-                                nextPathname: locationRef.current.pathname,
-                                nextSearch: locationRef.current.search,
-                            },
-                        };
-                    }
-                    if (redirectToParts[1]) {
-                        newLocation.search = redirectToParts[1];
-                    }
+          if (redirectToCurrentLocationAfterLogin && locationRef.current && locationRef.current.pathname) {
+            newLocationOptions = {
+              state: {
+                nextPathname: locationRef.current.pathname,
+                nextSearch: locationRef.current.search,
+              },
+            };
+          }
+          if (redirectToParts[1]) {
+            newLocation.search = redirectToParts[1];
+          }
 
-                    // We need to navigate and reset the store after a litte delay to avoid a race condition
-                    // between the store reset and the navigation.
-                    //
-                    // This would only happen when the `authProvider.getPermissions` method returns
-                    // a resolved promise with no delay: If the store was reset before the navigation,
-                    // the `usePermissions` query would reset, causing the `CoreAdminRoutes` component to
-                    // rerender the `LogoutOnMount` component leading to an infinite loop.
-                    setTimeout(() => {
-                        navigate(newLocation, newLocationOptions);
+          // We need to navigate and reset the store after a litte delay to avoid a race condition
+          // between the store reset and the navigation.
+          //
+          // This would only happen when the `authProvider.getPermissions` method returns
+          // a resolved promise with no delay: If the store was reset before the navigation,
+          // the `usePermissions` query would reset, causing the `CoreAdminRoutes` component to
+          // rerender the `LogoutOnMount` component leading to an infinite loop.
+          setTimeout(() => {
+            navigate(newLocation, newLocationOptions);
 
-                        resetStore();
-                        queryClient.clear();
-                    }, 0);
+            resetStore();
+            queryClient.clear();
+          }, 0);
 
-                    return redirectFromLogout;
-                });
-            } else {
-                navigate(
-                    {
-                        pathname: loginUrl,
-                    },
-                    {
-                        state: {
-                            nextPathname:
-                                locationRef.current &&
-                                locationRef.current.pathname,
-                        },
-                    }
-                );
-                resetStore();
-                queryClient.clear();
-                return Promise.resolve();
-            }
-        },
-        [authProvider, resetStore, loginUrl, queryClient, navigate]
-    );
+          return redirectFromLogout;
+        });
+      } else {
+        navigate(
+          {
+            pathname: loginUrl,
+          },
+          {
+            state: {
+              nextPathname: locationRef.current && locationRef.current.pathname,
+            },
+          },
+        );
+        resetStore();
+        queryClient.clear();
+        return Promise.resolve();
+      }
+    },
+    [authProvider, resetStore, loginUrl, queryClient, navigate],
+  );
 
-    return logout;
+  return logout;
 };
 
 /**
@@ -156,9 +140,9 @@ const useLogout = (): Logout => {
  * @return {Promise} The authProvider response
  */
 type Logout = (
-    params?: any,
-    redirectTo?: string | false,
-    redirectToCurrentLocationAfterLogin?: boolean
+  params?: any,
+  redirectTo?: string | false,
+  redirectToCurrentLocationAfterLogin?: boolean,
 ) => Promise<any>;
 
 export default useLogout;

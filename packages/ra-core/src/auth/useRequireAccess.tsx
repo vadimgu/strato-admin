@@ -1,10 +1,6 @@
 import { useEffect } from 'react';
 import { RaRecord } from '../types';
-import {
-    useCanAccess,
-    UseCanAccessOptions,
-    UseCanAccessResult,
-} from './useCanAccess';
+import { useCanAccess, UseCanAccessOptions, UseCanAccessResult } from './useCanAccess';
 import { useBasename, useNavigate } from '../routing';
 
 /**
@@ -43,38 +39,38 @@ import { useBasename, useNavigate } from '../routing';
  *     };
  */
 export const useRequireAccess = <
-    RecordType extends RaRecord | Omit<RaRecord, 'id'> = RaRecord,
-    ErrorType extends Error = Error,
+  RecordType extends RaRecord | Omit<RaRecord, 'id'> = RaRecord,
+  ErrorType extends Error = Error,
 >(
-    params: UseRequireAccessOptions<RecordType, ErrorType>
+  params: UseRequireAccessOptions<RecordType, ErrorType>,
 ) => {
-    const { canAccess, data, error, ...rest } = useCanAccess(params);
-    const navigate = useNavigate();
-    const basename = useBasename();
+  const { canAccess, data, error, ...rest } = useCanAccess(params);
+  const navigate = useNavigate();
+  const basename = useBasename();
 
-    useEffect(() => {
-        if (rest.isPending) return;
+  useEffect(() => {
+    if (rest.isPending) return;
 
-        if (canAccess === false) {
-            navigate(`${basename}/access-denied`);
-        }
-    }, [basename, canAccess, navigate, rest.isPending]);
+    if (canAccess === false) {
+      navigate(`${basename}/access-denied`);
+    }
+  }, [basename, canAccess, navigate, rest.isPending]);
 
-    useEffect(() => {
-        if (error) {
-            navigate(`${basename}/authentication-error`);
-        }
-    }, [basename, navigate, error]);
+  useEffect(() => {
+    if (error) {
+      navigate(`${basename}/authentication-error`);
+    }
+  }, [basename, navigate, error]);
 
-    return rest;
+  return rest;
 };
 
 export type UseRequireAccessOptions<
-    RecordType extends RaRecord | Omit<RaRecord, 'id'> = RaRecord,
-    ErrorType extends Error = Error,
+  RecordType extends RaRecord | Omit<RaRecord, 'id'> = RaRecord,
+  ErrorType extends Error = Error,
 > = UseCanAccessOptions<RecordType, ErrorType>;
 
 export type UseRequireAccessResult<ErrorType extends Error = Error> = Omit<
-    UseCanAccessResult<ErrorType>,
-    'canAccess' | 'data'
+  UseCanAccessResult<ErrorType>,
+  'canAccess' | 'data'
 >;

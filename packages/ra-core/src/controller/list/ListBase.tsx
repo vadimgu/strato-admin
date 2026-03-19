@@ -1,10 +1,6 @@
 import * as React from 'react';
 import { ReactNode } from 'react';
-import {
-    useListController,
-    ListControllerProps,
-    ListControllerResult,
-} from './useListController';
+import { useListController, ListControllerProps, ListControllerResult } from './useListController';
 import { OptionalResourceContextProvider } from '../../core';
 import { RaRecord } from '../../types';
 import { ListContextProvider } from './ListContextProvider';
@@ -45,114 +41,107 @@ import { useIsAuthPending } from '../../auth';
  * );
  */
 export const ListBase = <RecordType extends RaRecord = any>({
-    children,
-    emptyWhileLoading,
-    authLoading,
-    loading,
-    offline,
-    error,
-    empty,
-    render,
-    ...props
+  children,
+  emptyWhileLoading,
+  authLoading,
+  loading,
+  offline,
+  error,
+  empty,
+  render,
+  ...props
 }: ListBaseProps<RecordType>) => {
-    const controllerProps = useListController<RecordType>(props);
-    const isAuthPending = useIsAuthPending({
-        resource: controllerProps.resource,
-        action: 'list',
-    });
+  const controllerProps = useListController<RecordType>(props);
+  const isAuthPending = useIsAuthPending({
+    resource: controllerProps.resource,
+    action: 'list',
+  });
 
-    if (!render && !children) {
-        throw new Error(
-            "<ListBase> requires either a 'render' prop or 'children' prop"
-        );
-    }
+  if (!render && !children) {
+    throw new Error("<ListBase> requires either a 'render' prop or 'children' prop");
+  }
 
-    const {
-        isPaused,
-        isPending,
-        isPlaceholderData,
-        error: errorState,
-        data,
-        total,
-        hasPreviousPage,
-        hasNextPage,
-        filterValues,
-    } = controllerProps;
+  const {
+    isPaused,
+    isPending,
+    isPlaceholderData,
+    error: errorState,
+    data,
+    total,
+    hasPreviousPage,
+    hasNextPage,
+    filterValues,
+  } = controllerProps;
 
-    const showAuthLoading =
-        isAuthPending &&
-        !props.disableAuthentication &&
-        authLoading !== false &&
-        authLoading !== undefined;
+  const showAuthLoading =
+    isAuthPending && !props.disableAuthentication && authLoading !== false && authLoading !== undefined;
 
-    const showLoading =
-        !isPaused &&
-        ((!props.disableAuthentication && isAuthPending) || isPending) &&
-        loading !== false &&
-        loading !== undefined;
+  const showLoading =
+    !isPaused &&
+    ((!props.disableAuthentication && isAuthPending) || isPending) &&
+    loading !== false &&
+    loading !== undefined;
 
-    const showOffline =
-        isPaused &&
-        // If isPending and isPaused are true, we are offline and couldn't even load the initial data
-        // If isPaused and isPlaceholderData are true, we are offline and couldn't even load data with different parameters on the same useQuery observer
-        (isPending || isPlaceholderData) &&
-        offline !== false &&
-        offline !== undefined;
+  const showOffline =
+    isPaused &&
+    // If isPending and isPaused are true, we are offline and couldn't even load the initial data
+    // If isPaused and isPlaceholderData are true, we are offline and couldn't even load data with different parameters on the same useQuery observer
+    (isPending || isPlaceholderData) &&
+    offline !== false &&
+    offline !== undefined;
 
-    const showError = errorState && error !== false && error !== undefined;
+  const showError = errorState && error !== false && error !== undefined;
 
-    const showEmptyWhileLoading =
-        isPending && !showOffline && emptyWhileLoading === true;
+  const showEmptyWhileLoading = isPending && !showOffline && emptyWhileLoading === true;
 
-    const showEmpty =
-        !errorState &&
-        // the list is not loading data for the first time
-        !isPending &&
-        // the API returned no data (using either normal or partial pagination)
-        (total === 0 ||
-            (total == null &&
-                hasPreviousPage === false &&
-                hasNextPage === false &&
-                // @ts-ignore FIXME total may be undefined when using partial pagination but the ListControllerResult type is wrong about it
-                data.length === 0)) &&
-        // the user didn't set any filters
-        !Object.keys(filterValues).length &&
-        // there is an empty page component
-        empty !== undefined &&
-        empty !== false;
+  const showEmpty =
+    !errorState &&
+    // the list is not loading data for the first time
+    !isPending &&
+    // the API returned no data (using either normal or partial pagination)
+    (total === 0 ||
+      (total == null &&
+        hasPreviousPage === false &&
+        hasNextPage === false &&
+        // @ts-ignore FIXME total may be undefined when using partial pagination but the ListControllerResult type is wrong about it
+        data.length === 0)) &&
+    // the user didn't set any filters
+    !Object.keys(filterValues).length &&
+    // there is an empty page component
+    empty !== undefined &&
+    empty !== false;
 
-    return (
-        // We pass props.resource here as we don't need to create a new ResourceContext if the props is not provided
-        <OptionalResourceContextProvider value={props.resource}>
-            <ListContextProvider value={controllerProps}>
-                {showAuthLoading
-                    ? authLoading
-                    : showLoading
-                      ? loading
-                      : showOffline
-                        ? offline
-                        : showError
-                          ? error
-                          : showEmptyWhileLoading
-                            ? null
-                            : showEmpty
-                              ? empty
-                              : render
-                                ? render(controllerProps)
-                                : children}
-            </ListContextProvider>
-        </OptionalResourceContextProvider>
-    );
+  return (
+    // We pass props.resource here as we don't need to create a new ResourceContext if the props is not provided
+    <OptionalResourceContextProvider value={props.resource}>
+      <ListContextProvider value={controllerProps}>
+        {showAuthLoading
+          ? authLoading
+          : showLoading
+            ? loading
+            : showOffline
+              ? offline
+              : showError
+                ? error
+                : showEmptyWhileLoading
+                  ? null
+                  : showEmpty
+                    ? empty
+                    : render
+                      ? render(controllerProps)
+                      : children}
+      </ListContextProvider>
+    </OptionalResourceContextProvider>
+  );
 };
 
-export interface ListBaseProps<RecordType extends RaRecord = any>
-    extends ListControllerProps<RecordType> {
-    emptyWhileLoading?: boolean;
-    authLoading?: ReactNode;
-    loading?: ReactNode;
-    offline?: ReactNode;
-    error?: ReactNode;
-    empty?: ReactNode;
-    children?: ReactNode;
-    render?: (props: ListControllerResult<RecordType, Error>) => ReactNode;
+export interface ListBaseProps<RecordType extends RaRecord = any> extends ListControllerProps<RecordType> {
+  emptyWhileLoading?: boolean;
+  authLoading?: ReactNode;
+  loading?: ReactNode;
+  offline?: ReactNode;
+  error?: ReactNode;
+  empty?: ReactNode;
+  children?: ReactNode;
+  render?: (props: ListControllerResult<RecordType, Error>) => ReactNode;
 }

@@ -43,112 +43,105 @@ import { useRecordContext } from '../controller';
  * };
  */
 export const useCanAccessResources = <
-    RecordType extends Record<string, any> = Record<string, any>,
-    ErrorType extends Error = Error,
+  RecordType extends Record<string, any> = Record<string, any>,
+  ErrorType extends Error = Error,
 >(
-    params: UseCanAccessResourcesOptions<RecordType>
+  params: UseCanAccessResourcesOptions<RecordType>,
 ): UseCanAccessResourcesResult<ErrorType> => {
-    const authProvider = useAuthProvider();
-    const record = useRecordContext<RecordType>(params);
+  const authProvider = useAuthProvider();
+  const record = useRecordContext<RecordType>(params);
 
-    const { action, resources, ...options } = params;
+  const { action, resources, ...options } = params;
 
-    const queryResult = useQuery({
-        queryKey: ['auth', 'canAccess', resources, action, record],
-        queryFn: async ({ signal }) => {
-            const queries = await Promise.all(
-                resources.map(async resource => {
-                    if (!authProvider || !authProvider.canAccess) {
-                        return { canAccess: true, resource };
-                    }
-                    const canAccess = await authProvider.canAccess({
-                        resource,
-                        action,
-                        record,
-                        signal: authProvider.supportAbortSignal
-                            ? signal
-                            : undefined,
-                    });
+  const queryResult = useQuery({
+    queryKey: ['auth', 'canAccess', resources, action, record],
+    queryFn: async ({ signal }) => {
+      const queries = await Promise.all(
+        resources.map(async (resource) => {
+          if (!authProvider || !authProvider.canAccess) {
+            return { canAccess: true, resource };
+          }
+          const canAccess = await authProvider.canAccess({
+            resource,
+            action,
+            record,
+            signal: authProvider.supportAbortSignal ? signal : undefined,
+          });
 
-                    return { canAccess, resource };
-                })
-            );
+          return { canAccess, resource };
+        }),
+      );
 
-            const result = queries.reduce(
-                (acc, { resource, canAccess }) => {
-                    acc[resource] = canAccess;
-                    return acc;
-                },
-                {} as Record<string, boolean>
-            );
-
-            return result;
+      const result = queries.reduce(
+        (acc, { resource, canAccess }) => {
+          acc[resource] = canAccess;
+          return acc;
         },
-        ...options,
-    });
+        {} as Record<string, boolean>,
+      );
 
-    const result = useMemo(() => {
-        return {
-            canAccess: queryResult.data,
-            ...queryResult,
-        } as UseCanAccessResourcesResult<ErrorType>;
-    }, [queryResult]);
+      return result;
+    },
+    ...options,
+  });
 
-    const resultWithoutAuthProvider = useMemo(() => {
-        return {
-            canAccess: resources.reduce(
-                (acc, resource) => {
-                    acc[resource] = true;
-                    return acc;
-                },
-                {} as Record<string, boolean>
-            ),
-            isPending: false,
-            isError: false,
-            error: null,
-        } as UseCanAccessResourcesResult<ErrorType>;
-    }, [resources]);
+  const result = useMemo(() => {
+    return {
+      canAccess: queryResult.data,
+      ...queryResult,
+    } as UseCanAccessResourcesResult<ErrorType>;
+  }, [queryResult]);
 
-    return !authProvider || !authProvider.canAccess
-        ? resultWithoutAuthProvider
-        : result;
+  const resultWithoutAuthProvider = useMemo(() => {
+    return {
+      canAccess: resources.reduce(
+        (acc, resource) => {
+          acc[resource] = true;
+          return acc;
+        },
+        {} as Record<string, boolean>,
+      ),
+      isPending: false,
+      isError: false,
+      error: null,
+    } as UseCanAccessResourcesResult<ErrorType>;
+  }, [resources]);
+
+  return !authProvider || !authProvider.canAccess ? resultWithoutAuthProvider : result;
 };
 
 export interface UseCanAccessResourcesOptions<
-    RecordType extends Record<string, any> = Record<string, any>,
-    ErrorType extends Error = Error,
-> extends Omit<
-        UseQueryOptions<Record<string, boolean>, ErrorType>,
-        'queryKey' | 'queryFn'
-    > {
-    resources: string[];
-    action: HintedString<'list' | 'create' | 'edit' | 'show' | 'delete'>;
-    record?: RecordType;
+  RecordType extends Record<string, any> = Record<string, any>,
+  ErrorType extends Error = Error,
+> extends Omit<UseQueryOptions<Record<string, boolean>, ErrorType>, 'queryKey' | 'queryFn'> {
+  resources: string[];
+  action: HintedString<'list' | 'create' | 'edit' | 'show' | 'delete'>;
+  record?: RecordType;
 }
 
 export type UseCanAccessResourcesResult<ErrorType = Error> =
-    | UseCanAccessResourcesLoadingResult
-    | UseCanAccessResourcesLoadingErrorResult<ErrorType>
-    | UseCanAccessResourcesRefetchErrorResult<ErrorType>
-    | UseCanAccessResourcesSuccessResult;
+  | UseCanAccessResourcesLoadingResult
+  | UseCanAccessResourcesLoadingErrorResult<ErrorType>
+  | UseCanAccessResourcesRefetchErrorResult<ErrorType>
+  | UseCanAccessResourcesSuccessResult;
 
 export interface UseCanAccessResourcesLoadingResult {
-    canAccess: undefined;
-    error: null;
-    isPending: true;
+  canAccess: undefined;
+  error: null;
+  isPending: true;
 }
 export interface UseCanAccessResourcesLoadingErrorResult<ErrorType = Error> {
-    canAccess: undefined;
-    error: ErrorType;
-    isPending: false;
+  canAccess: undefined;
+  error: ErrorType;
+  isPending: false;
 }
 export interface UseCanAccessResourcesRefetchErrorResult<ErrorType = Error> {
-    canAccess: Record<string, boolean>;
-    error: ErrorType;
-    isPending: false;
+  canAccess: Record<string, boolean>;
+  error: ErrorType;
+  isPending: false;
 }
 export interface UseCanAccessResourcesSuccessResult {
-    canAccess: Record<string, boolean>;
-    error: null;
-    isPending: false;
+  canAccess: Record<string, boolean>;
+  error: null;
+  isPending: false;
 }

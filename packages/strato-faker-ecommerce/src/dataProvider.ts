@@ -5,7 +5,7 @@ import { generateEcommerceData } from './generate';
 const data = generateEcommerceData();
 
 export const dataProvider: DataProvider = fakeRestDataProvider(
-    data,
-    true, // logging
-    500 // simulate network delay
+  data,
+  true, // logging
+  500, // simulate network delay
 );

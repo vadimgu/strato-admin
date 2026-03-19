@@ -34,11 +34,7 @@ const CreateUI = ({
   const finalTitle = title ?? (label ? `Create ${label}` : 'Create');
   const finalChildren = children || <Form include={include} exclude={exclude} />;
 
-  return (
-    <Container header={<CreateHeader title={finalTitle} actions={actions} />}>
-      {finalChildren}
-    </Container>
-  );
+  return <Container header={<CreateHeader title={finalTitle} actions={actions} />}>{finalChildren}</Container>;
 };
 
 /**
@@ -50,7 +46,7 @@ const CreateUI = ({
  *     <TextInput source="name" />
  *   </Form>
  * </Create>
- * 
+ *
  * @example
  * // Using InputSchema from context
  * <Create include={['name', 'price']} />
@@ -66,12 +62,7 @@ export const Create = <RecordType extends RaRecord = RaRecord>({
   return (
     <CreateBase {...props}>
       <ResourceSchemaProvider resource={props.resource}>
-        <CreateUI 
-          title={title} 
-          actions={actions} 
-          include={include} 
-          exclude={exclude}
-        >
+        <CreateUI title={title} actions={actions} include={include} exclude={exclude}>
           {children}
         </CreateUI>
       </ResourceSchemaProvider>

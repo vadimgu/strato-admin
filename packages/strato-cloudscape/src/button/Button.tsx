@@ -1,4 +1,3 @@
-
 import CloudscapeButton, { ButtonProps as CloudscapeButtonProps } from '@cloudscape-design/components/button';
 
 export interface ButtonProps extends CloudscapeButtonProps {

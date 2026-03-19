@@ -6,12 +6,7 @@ import { useCheckMinimumRequiredProps } from './checkMinimumRequiredProps';
 
 export type { PaginationHookResult, SortProps };
 
-export {
-    useCheckMinimumRequiredProps,
-    useFilterState,
-    usePaginationState,
-    useSortState,
-};
+export { useCheckMinimumRequiredProps, useFilterState, usePaginationState, useSortState };
 
 export * from './button';
 export * from './create';

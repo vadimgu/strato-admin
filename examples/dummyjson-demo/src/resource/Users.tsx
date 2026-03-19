@@ -1,9 +1,4 @@
-import {
-  ResourceSchema,
-  TextField,
-  NumberField,
-  SelectInput,
-} from '@strato-admin/admin';
+import { ResourceSchema, TextField, NumberField, SelectInput } from '@strato-admin/admin';
 
 const required = (value: any) => (value ? undefined : 'Required');
 
@@ -13,35 +8,14 @@ export const usersResource = (
     recordRepresentation={(record) => `${record.firstName} ${record.lastName}`}
     label="Users"
   >
-    <TextField 
-      source="firstName" 
-      label="First Name" 
-      link="show" 
-      sortable 
-      input={{ constraints: [required] }} 
-    />
-    <TextField 
-      source="lastName" 
-      label="Last Name" 
-      sortable 
-      input={{ constraints: [required] }} 
-    />
-    <TextField 
-      source="username" 
-      label="Username" 
-      sortable 
-      input={{ constraints: [required] }} 
-    />
-    <TextField 
-      source="email" 
-      label="Email" 
-      sortable 
-      input={{ constraints: [required] }} 
-    />
-    <TextField 
-      source="role" 
-      label="Role" 
-      sortable 
+    <TextField source="firstName" label="First Name" link="show" sortable input={{ constraints: [required] }} />
+    <TextField source="lastName" label="Last Name" sortable input={{ constraints: [required] }} />
+    <TextField source="username" label="Username" sortable input={{ constraints: [required] }} />
+    <TextField source="email" label="Email" sortable input={{ constraints: [required] }} />
+    <TextField
+      source="role"
+      label="Role"
+      sortable
       input={
         <SelectInput
           source="role"
@@ -53,14 +27,10 @@ export const usersResource = (
         />
       }
     />
-    <NumberField 
-      source="age" 
-      label="Age" 
-      sortable 
-    />
-    <TextField 
-      source="gender" 
-      label="Gender" 
+    <NumberField source="age" label="Age" sortable />
+    <TextField
+      source="gender"
+      label="Gender"
       input={
         <SelectInput
           source="gender"

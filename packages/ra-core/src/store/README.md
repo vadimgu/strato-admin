@@ -54,5 +54,5 @@ React-admin v1, v2 and v3 used Redux to store the global state. This had major s
 These libraries require additional knowledge (e.g. atoms, setter functions, etc.) and a bit of tweaking to support localStorage. Although they are a better fit than Redux for react-admin's needs, they are still overkill and heavier than what we really need.
 
 - Jotai: The closest to what we need, but they do a lot of efforts to avoid string keys with atoms, just to add them back when addressing localStorage. Besides, they address a lot of needs we don't have (derived atoms, async read, async actions), and that translates to 3.2kb of code.
-- Zustand: Super small, but relies on selector functions and a centralized store - too much ceremony for a key/value store. 
+- Zustand: Super small, but relies on selector functions and a centralized store - too much ceremony for a key/value store.
 - Recoil: Requires a root component, requires selectors and atoms, and supports things we don't need (async requests). Super heavy (22kB)

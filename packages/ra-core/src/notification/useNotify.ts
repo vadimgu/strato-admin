@@ -19,20 +19,16 @@ import { NotificationType, NotificationOptions } from './types';
  * notify('Post renamed', { type: 'info', undoable: true })
  */
 export const useNotify = () => {
-    const addNotification = useAddNotificationContext();
-    return useCallback(
-        (
-            message: string | ReactNode,
-            options: NotificationOptions & { type?: NotificationType } = {}
-        ) => {
-            const { type: messageType = 'info', ...notificationOptions } =
-                options;
-            addNotification({
-                message,
-                type: messageType,
-                notificationOptions,
-            });
-        },
-        [addNotification]
-    );
+  const addNotification = useAddNotificationContext();
+  return useCallback(
+    (message: string | ReactNode, options: NotificationOptions & { type?: NotificationType } = {}) => {
+      const { type: messageType = 'info', ...notificationOptions } = options;
+      addNotification({
+        message,
+        type: messageType,
+        notificationOptions,
+      });
+    },
+    [addNotification],
+  );
 };

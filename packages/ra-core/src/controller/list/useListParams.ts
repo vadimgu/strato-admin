@@ -5,25 +5,25 @@ import lodashDebounce from 'lodash/debounce.js';
 import { useStore } from '../../store';
 import { useNavigate, useLocation } from '../../routing';
 import queryReducer, {
-    SET_FILTER,
-    HIDE_FILTER,
-    SHOW_FILTER,
-    SET_PAGE,
-    SET_PER_PAGE,
-    SET_SORT,
-    SORT_ASC,
+  SET_FILTER,
+  HIDE_FILTER,
+  SHOW_FILTER,
+  SET_PAGE,
+  SET_PER_PAGE,
+  SET_SORT,
+  SORT_ASC,
 } from './queryReducer';
 import { SortPayload, FilterPayload } from '../../types';
 import removeEmpty from '../../util/removeEmpty';
 import { useIsMounted } from '../../util/hooks';
 
 export interface ListParams {
-    sort: string;
-    order: 'ASC' | 'DESC';
-    page: number;
-    perPage: number;
-    filter: any;
-    displayedFilters: any;
+  sort: string;
+  order: 'ASC' | 'DESC';
+  page: number;
+  perPage: number;
+  filter: any;
+  displayedFilters: any;
 }
 
 /**
@@ -76,218 +76,205 @@ export interface ListParams {
  * } = listParamsActions;
  */
 export const useListParams = ({
-    debounce = 500,
-    disableSyncWithLocation = false,
-    filterDefaultValues,
-    perPage = 10,
-    resource,
-    sort = defaultSort,
-    storeKey = disableSyncWithLocation ? false : `${resource}.listParams`,
+  debounce = 500,
+  disableSyncWithLocation = false,
+  filterDefaultValues,
+  perPage = 10,
+  resource,
+  sort = defaultSort,
+  storeKey = disableSyncWithLocation ? false : `${resource}.listParams`,
 }: ListParamsOptions): [Parameters, Modifiers] => {
-    const location = useLocation();
-    const navigate = useNavigate();
-    const [localParams, setLocalParams] = useState(defaultParams);
-    // As we can't conditionally call a hook, if the storeKey is false,
-    // we'll ignore the params variable later on and won't call setParams either.
-    const [params, setParams] = useStore(
-        storeKey || `${resource}.listParams`,
-        defaultParams
-    );
-    const tempParams = useRef<ListParams | undefined>(undefined);
-    const isMounted = useIsMounted();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const [localParams, setLocalParams] = useState(defaultParams);
+  // As we can't conditionally call a hook, if the storeKey is false,
+  // we'll ignore the params variable later on and won't call setParams either.
+  const [params, setParams] = useStore(storeKey || `${resource}.listParams`, defaultParams);
+  const tempParams = useRef<ListParams | undefined>(undefined);
+  const isMounted = useIsMounted();
 
-    const requestSignature = [
-        location.search,
-        resource,
-        storeKey,
-        JSON.stringify(!storeKey ? localParams : params),
-        JSON.stringify(filterDefaultValues),
-        JSON.stringify(sort),
+  const requestSignature = [
+    location.search,
+    resource,
+    storeKey,
+    JSON.stringify(!storeKey ? localParams : params),
+    JSON.stringify(filterDefaultValues),
+    JSON.stringify(sort),
+    perPage,
+    disableSyncWithLocation,
+  ];
+
+  const queryFromLocation = disableSyncWithLocation ? {} : parseQueryFromLocation(location);
+
+  const query = useMemo(
+    () =>
+      getQuery({
+        queryFromLocation,
+        params: !storeKey ? localParams : params,
+        filterDefaultValues,
+        sort,
         perPage,
-        disableSyncWithLocation,
-    ];
+      }),
+    requestSignature, // eslint-disable-line react-hooks/exhaustive-deps
+  );
 
-    const queryFromLocation = disableSyncWithLocation
-        ? {}
-        : parseQueryFromLocation(location);
+  // if the location includes params (for example from a link like
+  // the categories products on the demo), we need to persist them in the
+  // store as well so that we don't lose them after a redirection back
+  // to the list
+  useEffect(() => {
+    if (Object.keys(queryFromLocation).length > 0) {
+      setParams(query);
+    }
+  }, [location.search]); // eslint-disable-line
 
-    const query = useMemo(
-        () =>
-            getQuery({
-                queryFromLocation,
-                params: !storeKey ? localParams : params,
-                filterDefaultValues,
-                sort,
-                perPage,
-            }),
-        requestSignature // eslint-disable-line react-hooks/exhaustive-deps
-    );
+  const changeParams = useCallback(
+    (action) => {
+      // do not change params if the component is already unmounted
+      // this is necessary because changeParams can be debounced, and therefore
+      // executed after the component is unmounted
+      if (!isMounted.current) return;
 
-    // if the location includes params (for example from a link like
-    // the categories products on the demo), we need to persist them in the
-    // store as well so that we don't lose them after a redirection back
-    // to the list
-    useEffect(() => {
-        if (Object.keys(queryFromLocation).length > 0) {
-            setParams(query);
-        }
-    }, [location.search]); // eslint-disable-line
+      if (!tempParams.current) {
+        // no other changeParams action dispatched this tick
+        tempParams.current = queryReducer(query, action);
+        // schedule side effects for next tick
+        setTimeout(() => {
+          if (!tempParams.current) {
+            // the side effects were already processed by another changeParams
+            return;
+          }
+          if (disableSyncWithLocation && !storeKey) {
+            setLocalParams(tempParams.current);
+          } else if (disableSyncWithLocation && !!storeKey) {
+            setParams(tempParams.current);
+          } else {
+            // the useEffect above will apply the changes to the params in the store
+            navigate(
+              {
+                search: `?${stringify({
+                  ...tempParams.current,
+                  filter: JSON.stringify(tempParams.current.filter),
+                  displayedFilters: JSON.stringify(tempParams.current.displayedFilters),
+                })}`,
+              },
+              {
+                state: {
+                  _scrollToTop: action.type === SET_PAGE,
+                },
+              },
+            );
+          }
+          tempParams.current = undefined;
+        }, 0);
+      } else {
+        // side effects already scheduled, just change the params
+        tempParams.current = queryReducer(tempParams.current, action);
+      }
+    },
+    [...requestSignature, navigate], // eslint-disable-line react-hooks/exhaustive-deps
+  );
 
-    const changeParams = useCallback(
-        action => {
-            // do not change params if the component is already unmounted
-            // this is necessary because changeParams can be debounced, and therefore
-            // executed after the component is unmounted
-            if (!isMounted.current) return;
+  const setSort = useCallback(
+    (sort: SortPayload) =>
+      changeParams({
+        type: SET_SORT,
+        payload: sort,
+      }),
+    [changeParams],
+  );
 
-            if (!tempParams.current) {
-                // no other changeParams action dispatched this tick
-                tempParams.current = queryReducer(query, action);
-                // schedule side effects for next tick
-                setTimeout(() => {
-                    if (!tempParams.current) {
-                        // the side effects were already processed by another changeParams
-                        return;
-                    }
-                    if (disableSyncWithLocation && !storeKey) {
-                        setLocalParams(tempParams.current);
-                    } else if (disableSyncWithLocation && !!storeKey) {
-                        setParams(tempParams.current);
-                    } else {
-                        // the useEffect above will apply the changes to the params in the store
-                        navigate(
-                            {
-                                search: `?${stringify({
-                                    ...tempParams.current,
-                                    filter: JSON.stringify(
-                                        tempParams.current.filter
-                                    ),
-                                    displayedFilters: JSON.stringify(
-                                        tempParams.current.displayedFilters
-                                    ),
-                                })}`,
-                            },
-                            {
-                                state: {
-                                    _scrollToTop: action.type === SET_PAGE,
-                                },
-                            }
-                        );
-                    }
-                    tempParams.current = undefined;
-                }, 0);
-            } else {
-                // side effects already scheduled, just change the params
-                tempParams.current = queryReducer(tempParams.current, action);
-            }
-        },
-        [...requestSignature, navigate] // eslint-disable-line react-hooks/exhaustive-deps
-    );
+  const setPage = useCallback((newPage: number) => changeParams({ type: SET_PAGE, payload: newPage }), [changeParams]);
 
-    const setSort = useCallback(
-        (sort: SortPayload) =>
-            changeParams({
-                type: SET_SORT,
-                payload: sort,
-            }),
-        [changeParams]
-    );
+  const setPerPage = useCallback(
+    (newPerPage: number) => changeParams({ type: SET_PER_PAGE, payload: newPerPage }),
+    [changeParams],
+  );
 
-    const setPage = useCallback(
-        (newPage: number) => changeParams({ type: SET_PAGE, payload: newPage }),
-        [changeParams]
-    );
+  const filterValues = query.filter || emptyObject;
+  const displayedFilterValues = query.displayedFilters || emptyObject;
 
-    const setPerPage = useCallback(
-        (newPerPage: number) =>
-            changeParams({ type: SET_PER_PAGE, payload: newPerPage }),
-        [changeParams]
-    );
+  const debouncedSetFilters = lodashDebounce((filter, displayedFilters) => {
+    changeParams({
+      type: SET_FILTER,
+      payload: {
+        filter: removeEmpty(filter),
+        displayedFilters,
+      },
+    });
+  }, debounce);
 
-    const filterValues = query.filter || emptyObject;
-    const displayedFilterValues = query.displayedFilters || emptyObject;
-
-    const debouncedSetFilters = lodashDebounce((filter, displayedFilters) => {
-        changeParams({
+  const setFilters = useCallback(
+    (filter, displayedFilters = undefined, debounce = false) =>
+      debounce
+        ? debouncedSetFilters(filter, displayedFilters)
+        : changeParams({
             type: SET_FILTER,
             payload: {
-                filter: removeEmpty(filter),
-                displayedFilters,
+              filter: removeEmpty(filter),
+              displayedFilters,
             },
-        });
-    }, debounce);
+          }),
+    [changeParams], // eslint-disable-line react-hooks/exhaustive-deps
+  );
 
-    const setFilters = useCallback(
-        (filter, displayedFilters = undefined, debounce = false) =>
-            debounce
-                ? debouncedSetFilters(filter, displayedFilters)
-                : changeParams({
-                      type: SET_FILTER,
-                      payload: {
-                          filter: removeEmpty(filter),
-                          displayedFilters,
-                      },
-                  }),
-        [changeParams] // eslint-disable-line react-hooks/exhaustive-deps
-    );
+  const hideFilter = useCallback(
+    (filterName: string) => {
+      changeParams({
+        type: HIDE_FILTER,
+        payload: filterName,
+      });
+    },
+    [changeParams],
+  );
 
-    const hideFilter = useCallback(
-        (filterName: string) => {
-            changeParams({
-                type: HIDE_FILTER,
-                payload: filterName,
-            });
+  const showFilter = useCallback(
+    (filterName: string, defaultValue: any) => {
+      changeParams({
+        type: SHOW_FILTER,
+        payload: {
+          filterName,
+          defaultValue,
         },
-        [changeParams]
-    );
+      });
+    },
+    [changeParams],
+  );
 
-    const showFilter = useCallback(
-        (filterName: string, defaultValue: any) => {
-            changeParams({
-                type: SHOW_FILTER,
-                payload: {
-                    filterName,
-                    defaultValue,
-                },
-            });
-        },
-        [changeParams]
-    );
-
-    return [
-        {
-            filterValues,
-            requestSignature,
-            ...query,
-            displayedFilters: displayedFilterValues,
-        },
-        {
-            changeParams,
-            setPage,
-            setPerPage,
-            setSort,
-            setFilters,
-            hideFilter,
-            showFilter,
-        },
-    ];
+  return [
+    {
+      filterValues,
+      requestSignature,
+      ...query,
+      displayedFilters: displayedFilterValues,
+    },
+    {
+      changeParams,
+      setPage,
+      setPerPage,
+      setSort,
+      setFilters,
+      hideFilter,
+      showFilter,
+    },
+  ];
 };
 
 const parseObject = (query, field) => {
-    if (query[field] && typeof query[field] === 'string') {
-        try {
-            query[field] = JSON.parse(query[field]);
-        } catch (err) {
-            delete query[field];
-        }
+  if (query[field] && typeof query[field] === 'string') {
+    try {
+      query[field] = JSON.parse(query[field]);
+    } catch (err) {
+      delete query[field];
     }
+  }
 };
 
 export const parseQueryFromLocation = ({ search }): Partial<ListParams> => {
-    const query = parse(search);
-    parseObject(query, 'filter');
-    parseObject(query, 'displayedFilters');
-    return query;
+  const query = parse(search);
+  parseObject(query, 'filter');
+  parseObject(query, 'displayedFilters');
+  return query;
 };
 
 /**
@@ -304,15 +291,15 @@ export const parseQueryFromLocation = ({ search }): Partial<ListParams> => {
  * @param {Object} params
  */
 export const hasCustomParams = (params: ListParams) => {
-    return (
-        params &&
-        params.filter &&
-        (Object.keys(params.filter).length > 0 ||
-            params.order != null ||
-            params.page !== 1 ||
-            params.perPage != null ||
-            params.sort != null)
-    );
+  return (
+    params &&
+    params.filter &&
+    (Object.keys(params.filter).length > 0 ||
+      params.order != null ||
+      params.page !== 1 ||
+      params.perPage != null ||
+      params.sort != null)
+  );
 };
 
 /**
@@ -321,93 +308,77 @@ export const hasCustomParams = (params: ListParams) => {
  *   - the params stored in the state (from previous navigation)
  *   - the props passed to the List component (including the filter defaultValues)
  */
-export const getQuery = ({
-    queryFromLocation,
-    params,
-    filterDefaultValues,
-    sort,
-    perPage,
-}) => {
-    const query: Partial<ListParams> =
-        Object.keys(queryFromLocation).length > 0
-            ? queryFromLocation
-            : hasCustomParams(params)
-              ? { ...params }
-              : { filter: filterDefaultValues || {} };
+export const getQuery = ({ queryFromLocation, params, filterDefaultValues, sort, perPage }) => {
+  const query: Partial<ListParams> =
+    Object.keys(queryFromLocation).length > 0
+      ? queryFromLocation
+      : hasCustomParams(params)
+        ? { ...params }
+        : { filter: filterDefaultValues || {} };
 
-    if (!query.sort) {
-        query.sort = sort.field;
-        query.order = sort.order;
-    }
-    if (query.perPage == null) {
-        query.perPage = perPage;
-    }
-    if (query.page == null) {
-        query.page = 1;
-    }
+  if (!query.sort) {
+    query.sort = sort.field;
+    query.order = sort.order;
+  }
+  if (query.perPage == null) {
+    query.perPage = perPage;
+  }
+  if (query.page == null) {
+    query.page = 1;
+  }
 
-    return {
-        ...query,
-        page: getNumberOrDefault(query.page, 1),
-        perPage: getNumberOrDefault(query.perPage, 10),
-    } as ListParams;
+  return {
+    ...query,
+    page: getNumberOrDefault(query.page, 1),
+    perPage: getNumberOrDefault(query.perPage, 10),
+  } as ListParams;
 };
 
-export const getNumberOrDefault = (
-    possibleNumber: string | number | undefined,
-    defaultValue: number
-) => {
-    if (typeof possibleNumber === 'undefined') {
-        return defaultValue;
-    }
-    const parsedNumber =
-        typeof possibleNumber === 'string'
-            ? parseInt(possibleNumber, 10)
-            : possibleNumber;
+export const getNumberOrDefault = (possibleNumber: string | number | undefined, defaultValue: number) => {
+  if (typeof possibleNumber === 'undefined') {
+    return defaultValue;
+  }
+  const parsedNumber = typeof possibleNumber === 'string' ? parseInt(possibleNumber, 10) : possibleNumber;
 
-    return isNaN(parsedNumber) ? defaultValue : parsedNumber;
+  return isNaN(parsedNumber) ? defaultValue : parsedNumber;
 };
 
 export interface ListParamsOptions {
-    debounce?: number;
-    // Whether to disable the synchronization of the list parameters with
-    // the current location (URL search parameters)
-    disableSyncWithLocation?: boolean;
-    // default value for a filter when displayed but not yet set
-    filterDefaultValues?: FilterPayload;
-    perPage?: number;
-    resource: string;
-    sort?: SortPayload;
-    storeKey?: string | false;
+  debounce?: number;
+  // Whether to disable the synchronization of the list parameters with
+  // the current location (URL search parameters)
+  disableSyncWithLocation?: boolean;
+  // default value for a filter when displayed but not yet set
+  filterDefaultValues?: FilterPayload;
+  perPage?: number;
+  resource: string;
+  sort?: SortPayload;
+  storeKey?: string | false;
 }
 
 interface Parameters extends ListParams {
-    filterValues: object;
-    displayedFilters: {
-        [key: string]: boolean;
-    };
-    requestSignature: any[];
+  filterValues: object;
+  displayedFilters: {
+    [key: string]: boolean;
+  };
+  requestSignature: any[];
 }
 
 interface Modifiers {
-    changeParams: (action: any) => void;
-    setPage: (page: number) => void;
-    setPerPage: (pageSize: number) => void;
-    setSort: (sort: SortPayload) => void;
-    setFilters: (
-        filters: any,
-        displayedFilters?: any,
-        debounce?: boolean
-    ) => void;
-    hideFilter: (filterName: string) => void;
-    showFilter: (filterName: string, defaultValue: any) => void;
+  changeParams: (action: any) => void;
+  setPage: (page: number) => void;
+  setPerPage: (pageSize: number) => void;
+  setSort: (sort: SortPayload) => void;
+  setFilters: (filters: any, displayedFilters?: any, debounce?: boolean) => void;
+  hideFilter: (filterName: string) => void;
+  showFilter: (filterName: string, defaultValue: any) => void;
 }
 
 const emptyObject = {};
 
 const defaultSort = {
-    field: 'id',
-    order: SORT_ASC,
+  field: 'id',
+  order: SORT_ASC,
 } as const;
 
 const defaultParams = {};

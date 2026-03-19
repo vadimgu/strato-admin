@@ -1,4 +1,3 @@
-
 import { useInput } from '@strato-admin/core';
 import CloudscapeTextarea, { TextareaProps as CloudscapeTextareaProps } from '@cloudscape-design/components/textarea';
 import { FormField } from './FormField';
@@ -6,11 +5,10 @@ import { FormFieldContext, useFormFieldContext } from './FormFieldContext';
 import { InputProps } from './types';
 
 export interface TextAreaInputProps
-    extends Omit<CloudscapeTextareaProps, 'onChange' | 'value' | 'onBlur'>,
-        InputProps {}
+  extends Omit<CloudscapeTextareaProps, 'onChange' | 'value' | 'onBlur'>, InputProps {}
 
 export const TextAreaInput = (props: TextAreaInputProps) => {
-    const { label, source, defaultValue, validate, ...rest } = props;
+  const { label, source, defaultValue, validate, ...rest } = props;
   const context = useFormFieldContext();
   const inputState =
     context ??

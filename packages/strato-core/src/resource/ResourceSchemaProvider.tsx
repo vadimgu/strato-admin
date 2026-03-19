@@ -58,23 +58,21 @@ export const ResourceSchemaProvider = ({
     return schema;
   };
 
-  const fieldChildren = useMemo(() => 
-    finalFieldSchema ? Children.toArray(getChildren(finalFieldSchema)) : undefined
-  , [finalFieldSchema]);
+  const fieldChildren = useMemo(
+    () => (finalFieldSchema ? Children.toArray(getChildren(finalFieldSchema)) : undefined),
+    [finalFieldSchema],
+  );
 
-  const inputChildren = useMemo(() => 
-    finalInputSchema ? Children.toArray(getChildren(finalInputSchema)) : undefined
-  , [finalInputSchema]);
+  const inputChildren = useMemo(
+    () => (finalInputSchema ? Children.toArray(getChildren(finalInputSchema)) : undefined),
+    [finalInputSchema],
+  );
 
   let content = children;
 
   // 3. Wrap in new ResourceContext if the resource changed.
   if (resource && resource !== parentResource) {
-    content = (
-      <ResourceContext.Provider value={resource}>
-        {content}
-      </ResourceContext.Provider>
-    );
+    content = <ResourceContext.Provider value={resource}>{content}</ResourceContext.Provider>;
   }
 
   // 4. Wrap in Schema Providers.
@@ -87,26 +85,16 @@ export const ResourceSchemaProvider = ({
     // Actually, providing [] is safer to block leakage, but Table needs to handle it.
     content = (
       <FieldSchemaContext.Provider value={fieldChildren || []}>
-        <InputSchemaContext.Provider value={inputChildren || []}>
-          {content}
-        </InputSchemaContext.Provider>
+        <InputSchemaContext.Provider value={inputChildren || []}>{content}</InputSchemaContext.Provider>
       </FieldSchemaContext.Provider>
     );
   } else {
     // Resource is the same (or not provided), only wrap if we have NEW schema content
     if (fieldChildren) {
-      content = (
-        <FieldSchemaContext.Provider value={fieldChildren}>
-          {content}
-        </FieldSchemaContext.Provider>
-      );
+      content = <FieldSchemaContext.Provider value={fieldChildren}>{content}</FieldSchemaContext.Provider>;
     }
     if (inputChildren) {
-      content = (
-        <InputSchemaContext.Provider value={inputChildren}>
-          {content}
-        </InputSchemaContext.Provider>
-      );
+      content = <InputSchemaContext.Provider value={inputChildren}>{content}</InputSchemaContext.Provider>;
     }
   }
 

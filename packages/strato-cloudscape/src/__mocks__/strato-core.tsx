@@ -2,7 +2,7 @@ import React from 'react';
 import { vi } from 'vitest';
 
 export const useTranslate = vi.fn(() => (key: string, options: any) => options?._ || key);
-export const useTranslateLabel = vi.fn(() => (label: any) => typeof label === 'string' ? label : label?.source || '');
+export const useTranslateLabel = vi.fn(() => (label: any) => (typeof label === 'string' ? label : label?.source || ''));
 export const useGetResourceLabel = vi.fn(() => (resource: string) => {
   if (resource === 'products') return 'Products';
   if (resource === 'categories') return 'Categories';

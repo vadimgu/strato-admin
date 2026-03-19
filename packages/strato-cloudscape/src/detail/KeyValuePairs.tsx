@@ -41,7 +41,7 @@ export const KeyValueField = ({ children, source, field: FieldComponent }: KeyVa
     return (
       <>
         {React.Children.map(children, (child) =>
-          React.isValidElement(child) ? React.cloneElement(child, { source } as any) : child
+          React.isValidElement(child) ? React.cloneElement(child, { source } as any) : child,
         )}
       </>
     );
@@ -71,12 +71,7 @@ export const KeyValuePairs = <RecordType extends RaRecord = RaRecord>({
   ...props
 }: KeyValuePairsProps) => {
   const record = useRecordContext<RecordType>();
-  const { 
-    resource, 
-    fieldSchema: schemaChildren,
-    showFields,
-    excludeShowFields,
-  } = useResourceSchema();
+  const { resource, fieldSchema: schemaChildren, showFields, excludeShowFields } = useResourceSchema();
 
   const finalChildren = React.useMemo(() => {
     const baseChildren = children || schemaChildren;
@@ -87,11 +82,11 @@ export const KeyValuePairs = <RecordType extends RaRecord = RaRecord>({
 
     if (finalInclude) {
       result = result.filter(
-        (child) => React.isValidElement(child) && finalInclude.includes((child.props as any).source)
+        (child) => React.isValidElement(child) && finalInclude.includes((child.props as any).source),
       );
     } else if (finalExclude) {
       result = result.filter(
-        (child) => React.isValidElement(child) && !finalExclude.includes((child.props as any).source)
+        (child) => React.isValidElement(child) && !finalExclude.includes((child.props as any).source),
       );
     }
 

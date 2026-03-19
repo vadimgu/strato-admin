@@ -9,12 +9,7 @@ vi.mock('@strato-admin/core', () => import('../__mocks__/strato-core'));
 // Mock Cloudscape components
 vi.mock('@cloudscape-design/components/status-indicator', () => ({
   default: ({ children, type, colorOverride, iconAriaLabel }: any) => (
-    <div
-      data-testid="status-indicator"
-      data-type={type}
-      data-color={colorOverride}
-      data-aria={iconAriaLabel}
-    >
+    <div data-testid="status-indicator" data-type={type} data-color={colorOverride} data-aria={iconAriaLabel}>
       {children}
     </div>
   ),
@@ -67,10 +62,7 @@ describe('StatusIndicatorField', () => {
     (useFieldValue as any).mockReturnValue('error');
 
     const { getByTestId } = render(
-      <StatusIndicatorField
-        source="status"
-        type={(val) => (val === 'error' ? 'error' : 'info')}
-      />,
+      <StatusIndicatorField source="status" type={(val) => (val === 'error' ? 'error' : 'info')} />,
     );
 
     const indicator = getByTestId('status-indicator');
@@ -90,9 +82,7 @@ describe('StatusIndicatorField', () => {
     (useRecordContext as any).mockReturnValue({});
     (useFieldValue as any).mockReturnValue(undefined);
 
-    const { getByText } = render(
-      <StatusIndicatorField source="status" emptyText="No Status" />,
-    );
+    const { getByText } = render(<StatusIndicatorField source="status" emptyText="No Status" />);
 
     expect(getByText('No Status')).toBeDefined();
   });
@@ -102,9 +92,7 @@ describe('StatusIndicatorField', () => {
     (useRecordContext as any).mockReturnValue(record);
     (useFieldValue as any).mockReturnValue('custom');
 
-    const { getByTestId } = render(
-      <StatusIndicatorField source="status" type="success" colorOverride="blue" />,
-    );
+    const { getByTestId } = render(<StatusIndicatorField source="status" type="success" colorOverride="blue" />);
 
     const indicator = getByTestId('status-indicator');
     expect(indicator.getAttribute('data-color')).toBe('blue');
@@ -115,9 +103,7 @@ describe('StatusIndicatorField', () => {
     (useRecordContext as any).mockReturnValue(record);
     (useFieldValue as any).mockReturnValue('active');
 
-    const { getByTestId } = render(
-      <StatusIndicatorField source="status" iconAriaLabel="Active status" />,
-    );
+    const { getByTestId } = render(<StatusIndicatorField source="status" iconAriaLabel="Active status" />);
 
     const indicator = getByTestId('status-indicator');
     expect(indicator.getAttribute('data-aria')).toBe('Active status');

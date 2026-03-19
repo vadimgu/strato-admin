@@ -1,10 +1,5 @@
 import { type ReactNode } from 'react';
-import {
-  ReferenceFieldBase,
-  type RaRecord,
-  useRecordContext,
-  useGetRecordRepresentation,
-} from '@strato-admin/core';
+import { ReferenceFieldBase, type RaRecord, useRecordContext, useGetRecordRepresentation } from '@strato-admin/core';
 import RecordLink from '../RecordLink';
 import { type FieldProps } from './types';
 

@@ -11,30 +11,27 @@ import { useQueryClient, QueryObserver } from '@tanstack/react-query';
  *
  * @returns {boolean} true if the data is loaded, false otherwise
  */
-export const useIsDataLoaded = (
-    queryKey: any,
-    options: { enabled?: boolean } = {}
-) => {
-    const { enabled = true } = options;
-    const queryClient = useQueryClient();
-    const [isDataLoaded, setDataLoaded] = useState<boolean>(() => {
-        if (!enabled) {
-            return false;
-        }
-        return queryClient.getQueryData(queryKey) !== undefined;
-    });
+export const useIsDataLoaded = (queryKey: any, options: { enabled?: boolean } = {}) => {
+  const { enabled = true } = options;
+  const queryClient = useQueryClient();
+  const [isDataLoaded, setDataLoaded] = useState<boolean>(() => {
+    if (!enabled) {
+      return false;
+    }
+    return queryClient.getQueryData(queryKey) !== undefined;
+  });
 
-    useEffect(() => {
-        if (!enabled) return;
-        if (queryClient.getQueryData(queryKey) === undefined) {
-            const observer = new QueryObserver(queryClient, { queryKey });
-            const unsubscribe = observer.subscribe(result => {
-                setDataLoaded(!result.isPending);
-                unsubscribe();
-            });
-            return unsubscribe;
-        }
-    }, [enabled, queryKey, queryClient]);
+  useEffect(() => {
+    if (!enabled) return;
+    if (queryClient.getQueryData(queryKey) === undefined) {
+      const observer = new QueryObserver(queryClient, { queryKey });
+      const unsubscribe = observer.subscribe((result) => {
+        setDataLoaded(!result.isPending);
+        unsubscribe();
+      });
+      return unsubscribe;
+    }
+  }, [enabled, queryKey, queryClient]);
 
-    return isDataLoaded;
+  return isDataLoaded;
 };

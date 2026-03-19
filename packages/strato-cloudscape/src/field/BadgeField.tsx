@@ -3,8 +3,7 @@ import { type RaRecord, useFieldValue, useRecordContext } from '@strato-admin/co
 import RecordLink from '../RecordLink';
 import { type FieldProps } from './types';
 
-export interface BadgeFieldProps<RecordType extends RaRecord = RaRecord>
-  extends FieldProps<RecordType> {
+export interface BadgeFieldProps<RecordType extends RaRecord = RaRecord> extends FieldProps<RecordType> {
   /**
    * The color of the badge.
    * @default "grey"

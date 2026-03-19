@@ -19,8 +19,7 @@ export const AppLayout = ({ children, header, title }: AppLayoutProps) => {
   const defaultTitle = useDefaultTitle();
   const [navigationOpen, setNavigationOpen] = useState(true);
 
-  const appTitle =
-    title ?? (typeof defaultTitle === 'string' ? defaultTitle : '');
+  const appTitle = title ?? (typeof defaultTitle === 'string' ? defaultTitle : '');
 
   const items = Object.values(resources).map((resource) => ({
     type: 'link' as const,

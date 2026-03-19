@@ -52,18 +52,8 @@ const CartShow = () => (
 );
 
 export const cartsResource = (
-  <ResourceSchema
-    name="carts"
-    recordRepresentation={(record) => `Cart #${record.id}`}
-    label="Carts"
-    show={CartShow}
-  >
-    <TextField
-      source="id"
-      label="ID"
-      link="show"
-      sortable
-    />
+  <ResourceSchema name="carts" recordRepresentation={(record) => `Cart #${record.id}`} label="Carts" show={CartShow}>
+    <TextField source="id" label="ID" link="show" sortable />
     <ReferenceField
       source="userId"
       reference="users"
@@ -72,27 +62,14 @@ export const cartsResource = (
       sortable
       input={{ constraints: [required] }}
     />
-    <NumberField
-      source="total"
-      label="Total"
-      options={{ style: 'currency', currency: 'USD' }}
-      sortable
-    />
+    <NumberField source="total" label="Total" options={{ style: 'currency', currency: 'USD' }} sortable />
     <NumberField
       source="discountedTotal"
       label="Discounted Total"
       options={{ style: 'currency', currency: 'USD' }}
       sortable
     />
-    <NumberField
-      source="totalProducts"
-      label="Total Products"
-      sortable
-    />
-    <NumberField
-      source="totalQuantity"
-      label="Total Quantity"
-      sortable
-    />
+    <NumberField source="totalProducts" label="Total Products" sortable />
+    <NumberField source="totalQuantity" label="Total Quantity" sortable />
   </ResourceSchema>
 );

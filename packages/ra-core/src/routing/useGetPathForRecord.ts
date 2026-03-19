@@ -41,130 +41,127 @@ import { useCreatePath } from './useCreatePath';
  * };
  */
 export const useGetPathForRecord = <RecordType extends RaRecord = RaRecord>(
-    options: UseGetPathForRecordOptions<RecordType> = {}
+  options: UseGetPathForRecordOptions<RecordType> = {},
 ): string | false | undefined => {
-    const { link } = options || {};
-    const record = useRecordContext(options);
-    const resource = useResourceContext(options);
-    if (!resource) {
-        throw new Error(
-            'Cannot generate a link for a record without a resource. You must use useGetPathForRecord within a ResourceContextProvider, or pass a resource prop.'
-        );
-    }
-    const resourceDefinition = useResourceDefinition(options);
-    const createPath = useCreatePath();
-    const [path, setPath] = useState<string | false>(
-        link && typeof link !== 'function' && record != null
-            ? createPath({
-                  resource,
-                  id: record.id,
-                  type: link,
-              })
-            : false
+  const { link } = options || {};
+  const record = useRecordContext(options);
+  const resource = useResourceContext(options);
+  if (!resource) {
+    throw new Error(
+      'Cannot generate a link for a record without a resource. You must use useGetPathForRecord within a ResourceContextProvider, or pass a resource prop.',
     );
+  }
+  const resourceDefinition = useResourceDefinition(options);
+  const createPath = useCreatePath();
+  const [path, setPath] = useState<string | false>(
+    link && typeof link !== 'function' && record != null
+      ? createPath({
+          resource,
+          id: record.id,
+          type: link,
+        })
+      : false,
+  );
 
-    // in preparation for the default value, does the user have access to the show and edit pages?
-    // (we can't run hooks conditionally, so we need to run them even though the link is specified)
-    const { canAccess: canAccessShow } = useCanAccess({
-        action: 'show',
-        resource,
-        record,
-        enabled: link == null && resourceDefinition.hasShow,
-    });
-    const { canAccess: canAccessEdit } = useCanAccess({
-        action: 'edit',
-        resource,
-        record,
-        enabled: link == null && resourceDefinition.hasEdit,
-    });
+  // in preparation for the default value, does the user have access to the show and edit pages?
+  // (we can't run hooks conditionally, so we need to run them even though the link is specified)
+  const { canAccess: canAccessShow } = useCanAccess({
+    action: 'show',
+    resource,
+    record,
+    enabled: link == null && resourceDefinition.hasShow,
+  });
+  const { canAccess: canAccessEdit } = useCanAccess({
+    action: 'edit',
+    resource,
+    record,
+    enabled: link == null && resourceDefinition.hasEdit,
+  });
 
-    useEffect(() => {
-        if (!record) return;
+  useEffect(() => {
+    if (!record) return;
 
-        if (link === false) {
-            setPath(false);
-            return;
-        }
+    if (link === false) {
+      setPath(false);
+      return;
+    }
 
-        // Handle the inferred link type case
-        if (link == null) {
-            // We must check whether the resource has an edit view because if there is no
-            // authProvider, canAccessShow will always be true
-            if (resourceDefinition.hasShow && canAccessShow) {
-                setPath(
-                    createPath({
-                        resource,
-                        id: record.id,
-                        type: 'show',
-                    })
-                );
-                return;
-            }
-            // We must check whether the resource has an edit view because if there is no
-            // authProvider, canAccessEdit will always be true
-            if (resourceDefinition.hasEdit && canAccessEdit) {
-                setPath(
-                    createPath({
-                        resource,
-                        id: record.id,
-                        type: 'edit',
-                    })
-                );
-                return;
-            }
-        }
+    // Handle the inferred link type case
+    if (link == null) {
+      // We must check whether the resource has an edit view because if there is no
+      // authProvider, canAccessShow will always be true
+      if (resourceDefinition.hasShow && canAccessShow) {
+        setPath(
+          createPath({
+            resource,
+            id: record.id,
+            type: 'show',
+          }),
+        );
+        return;
+      }
+      // We must check whether the resource has an edit view because if there is no
+      // authProvider, canAccessEdit will always be true
+      if (resourceDefinition.hasEdit && canAccessEdit) {
+        setPath(
+          createPath({
+            resource,
+            id: record.id,
+            type: 'edit',
+          }),
+        );
+        return;
+      }
+    }
 
-        // Handle the link function case
-        if (typeof link === 'function') {
-            const linkResult = link(record, resource);
-            if (linkResult instanceof Promise) {
-                linkResult.then(resolvedPath => setPath(resolvedPath));
-                return;
-            }
-            setPath(
-                linkResult
-                    ? createPath({
-                          resource,
-                          id: record.id,
-                          type: linkResult,
-                      })
-                    : false
-            );
-            return;
-        }
+    // Handle the link function case
+    if (typeof link === 'function') {
+      const linkResult = link(record, resource);
+      if (linkResult instanceof Promise) {
+        linkResult.then((resolvedPath) => setPath(resolvedPath));
+        return;
+      }
+      setPath(
+        linkResult
+          ? createPath({
+              resource,
+              id: record.id,
+              type: linkResult,
+            })
+          : false,
+      );
+      return;
+    }
 
-        // handle string case
-        if (link) {
-            setPath(
-                createPath({
-                    resource,
-                    id: record.id,
-                    type: link,
-                })
-            );
-        }
-    }, [
-        createPath,
-        canAccessShow,
-        canAccessEdit,
-        link,
-        record,
-        resource,
-        resourceDefinition.hasEdit,
-        resourceDefinition.hasShow,
-    ]);
+    // handle string case
+    if (link) {
+      setPath(
+        createPath({
+          resource,
+          id: record.id,
+          type: link,
+        }),
+      );
+    }
+  }, [
+    createPath,
+    canAccessShow,
+    canAccessEdit,
+    link,
+    record,
+    resource,
+    resourceDefinition.hasEdit,
+    resourceDefinition.hasShow,
+  ]);
 
-    return path;
+  return path;
 };
 
-export interface UseGetPathForRecordOptions<
-    RecordType extends RaRecord = RaRecord,
-> {
-    resource?: string;
-    record?: RecordType;
-    link?: LinkToType<RecordType>;
+export interface UseGetPathForRecordOptions<RecordType extends RaRecord = RaRecord> {
+  resource?: string;
+  record?: RecordType;
+  link?: LinkToType<RecordType>;
 }
 
-export type UseGetRouteForRecordOptions<
-    RecordType extends RaRecord = RaRecord,
-> = UseGetPathForRecordOptions<RecordType>;
+export type UseGetRouteForRecordOptions<RecordType extends RaRecord = RaRecord> =
+  UseGetPathForRecordOptions<RecordType>;

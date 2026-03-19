@@ -4,7 +4,13 @@ import Pagination from '@cloudscape-design/components/pagination';
 import Box from '@cloudscape-design/components/box';
 import TextFilter from '@cloudscape-design/components/text-filter';
 import CollectionPreferences from '@cloudscape-design/components/collection-preferences';
-import { RecordContextProvider, RaRecord, useResourceSchema, useTranslateLabel, useTranslate } from '@strato-admin/core';
+import {
+  RecordContextProvider,
+  RaRecord,
+  useResourceSchema,
+  useTranslateLabel,
+  useTranslate,
+} from '@strato-admin/core';
 import { useCollection } from '../collection-hooks';
 import TextField from '../field/TextField';
 import NumberField from '../field/NumberField';
@@ -33,7 +39,7 @@ export const Column = ({ children, source, link, field: FieldComponent }: Column
     return (
       <>
         {React.Children.map(children, (child) =>
-          React.isValidElement(child) ? React.cloneElement(child, { source } as any) : child
+          React.isValidElement(child) ? React.cloneElement(child, { source } as any) : child,
         )}
       </>
     );
@@ -53,7 +59,7 @@ export const NumberColumn = ({ children, source, link, field: FieldComponent }: 
     return (
       <>
         {React.Children.map(children, (child) =>
-          React.isValidElement(child) ? React.cloneElement(child, { source } as any) : child
+          React.isValidElement(child) ? React.cloneElement(child, { source } as any) : child,
         )}
       </>
     );
@@ -74,7 +80,7 @@ export const DateColumn = ({ children, source, link, field: FieldComponent }: Da
     return (
       <>
         {React.Children.map(children, (child) =>
-          React.isValidElement(child) ? React.cloneElement(child, { source } as any) : child
+          React.isValidElement(child) ? React.cloneElement(child, { source } as any) : child,
         )}
       </>
     );
@@ -94,7 +100,7 @@ export const BooleanColumn = ({ children, source, field: FieldComponent }: Boole
     return (
       <>
         {React.Children.map(children, (child) =>
-          React.isValidElement(child) ? React.cloneElement(child, { source } as any) : child
+          React.isValidElement(child) ? React.cloneElement(child, { source } as any) : child,
         )}
       </>
     );
@@ -220,10 +226,10 @@ export const Table = <RecordType extends RaRecord = any>({
 }: TableProps<RecordType>) => {
   const translate = useTranslate();
   const translateLabel = useTranslateLabel();
-  const { 
-    resource, 
-    fieldSchema: schemaChildren, 
-    definition, 
+  const {
+    resource,
+    fieldSchema: schemaChildren,
+    definition,
     label: schemaLabel,
     listFields,
     excludeListFields,
@@ -240,11 +246,11 @@ export const Table = <RecordType extends RaRecord = any>({
 
     if (finalInclude) {
       result = result.filter(
-        (child) => React.isValidElement(child) && finalInclude.includes((child.props as any).source)
+        (child) => React.isValidElement(child) && finalInclude.includes((child.props as any).source),
       );
     } else if (finalExclude) {
       result = result.filter(
-        (child) => React.isValidElement(child) && !finalExclude.includes((child.props as any).source)
+        (child) => React.isValidElement(child) && !finalExclude.includes((child.props as any).source),
       );
     }
 
@@ -340,10 +346,8 @@ export const Table = <RecordType extends RaRecord = any>({
     sorting: {},
     preferences: {
       pageSizeOptions,
-      visibleContentOptions:
-        !reorderable && extractedColumns.options.length > 0 ? extractedColumns.options : undefined,
-      contentDisplayOptions:
-        reorderable && extractedColumns.options.length > 0 ? extractedColumns.options : undefined,
+      visibleContentOptions: !reorderable && extractedColumns.options.length > 0 ? extractedColumns.options : undefined,
+      contentDisplayOptions: reorderable && extractedColumns.options.length > 0 ? extractedColumns.options : undefined,
       visibleContent: defaultVisibleContent,
       contentDisplay: defaultContentDisplay,
     },
@@ -385,13 +389,7 @@ export const Table = <RecordType extends RaRecord = any>({
       columnDisplay={reorderable ? preferencesProps.preferences.contentDisplay : undefined}
       items={items || []}
       header={tableHeader}
-      filter={
-        filtering && (
-          <TextFilter
-            {...filterProps}
-          />
-        )
-      }
+      filter={filtering && <TextFilter {...filterProps} />}
       pagination={<Pagination {...paginationProps} />}
       preferences={
         preferences === true || pageSizeOptions ? (
@@ -400,29 +398,29 @@ export const Table = <RecordType extends RaRecord = any>({
             pageSizePreference={
               pageSizeOptions
                 ? {
-                  options: pageSizeOptions,
-                }
+                    options: pageSizeOptions,
+                  }
                 : undefined
             }
             visibleContentPreference={
               !reorderable && extractedColumns.options.length > 0
                 ? {
-                  title: translate('ra.action.select_columns', { _: 'Select visible columns' }),
-                  options: [
-                    {
-                      label: translate('ra.action.select_columns', { _: 'Select visible columns' }),
-                      options: extractedColumns.options,
-                    },
-                  ],
-                }
+                    title: translate('ra.action.select_columns', { _: 'Select visible columns' }),
+                    options: [
+                      {
+                        label: translate('ra.action.select_columns', { _: 'Select visible columns' }),
+                        options: extractedColumns.options,
+                      },
+                    ],
+                  }
                 : undefined
             }
             contentDisplayPreference={
               reorderable && extractedColumns.options.length > 0
                 ? {
-                  title: translate('ra.action.select_columns', { _: 'Select visible columns' }),
-                  options: extractedColumns.options,
-                }
+                    title: translate('ra.action.select_columns', { _: 'Select visible columns' }),
+                    options: extractedColumns.options,
+                  }
                 : undefined
             }
           />

@@ -1,10 +1,5 @@
 import { useEffect, useMemo, useRef } from 'react';
-import {
-    QueryClient,
-    useQueryClient,
-    useQuery,
-    UseQueryOptions,
-} from '@tanstack/react-query';
+import { QueryClient, useQueryClient, useQuery, UseQueryOptions } from '@tanstack/react-query';
 import union from 'lodash/union.js';
 
 import { UseGetManyHookValue } from './useGetMany';
@@ -65,137 +60,100 @@ import { useEvent } from '../util';
  *      );
  * };
  */
-export const useGetManyAggregate = <
-    RecordType extends RaRecord = any,
-    ErrorType = Error,
->(
-    resource: string,
-    params: Partial<GetManyParams<RecordType>>,
-    options: UseGetManyAggregateOptions<RecordType, ErrorType> = {}
+export const useGetManyAggregate = <RecordType extends RaRecord = any, ErrorType = Error>(
+  resource: string,
+  params: Partial<GetManyParams<RecordType>>,
+  options: UseGetManyAggregateOptions<RecordType, ErrorType> = {},
 ): UseGetManyHookValue<RecordType, ErrorType> => {
-    const dataProvider = useDataProvider();
-    const queryClient = useQueryClient();
-    const {
-        onError = noop,
-        onSuccess = noop,
-        onSettled = noop,
-        enabled,
-        ...queryOptions
-    } = options;
-    const onSuccessEvent = useEvent(onSuccess);
-    const onErrorEvent = useEvent(onError);
-    const onSettledEvent = useEvent(onSettled);
+  const dataProvider = useDataProvider();
+  const queryClient = useQueryClient();
+  const { onError = noop, onSuccess = noop, onSettled = noop, enabled, ...queryOptions } = options;
+  const onSuccessEvent = useEvent(onSuccess);
+  const onErrorEvent = useEvent(onError);
+  const onSettledEvent = useEvent(onSettled);
 
-    const { ids, meta } = params;
-    const placeholderData = useMemo(() => {
-        const records = (Array.isArray(ids) ? ids : [ids]).map(id =>
-            queryClient.getQueryData<RecordType>([
-                resource,
-                'getOne',
-                { id: String(id), meta },
-            ])
-        );
-        if (records.some(record => record === undefined)) {
-            return undefined;
-        } else {
-            return records as RecordType[];
+  const { ids, meta } = params;
+  const placeholderData = useMemo(() => {
+    const records = (Array.isArray(ids) ? ids : [ids]).map((id) =>
+      queryClient.getQueryData<RecordType>([resource, 'getOne', { id: String(id), meta }]),
+    );
+    if (records.some((record) => record === undefined)) {
+      return undefined;
+    } else {
+      return records as RecordType[];
+    }
+  }, [ids, queryClient, resource, meta]);
+
+  const result = useQuery<RecordType[], ErrorType, RecordType[]>({
+    queryKey: [
+      resource,
+      'getMany',
+      {
+        ids: (Array.isArray(ids) ? ids : [ids]).map((id) => String(id)),
+        meta,
+      },
+    ],
+    queryFn: (queryParams) =>
+      new Promise((resolve, reject) => {
+        if (!ids || ids.length === 0) {
+          // no need to call the dataProvider
+          return resolve([]);
         }
-    }, [ids, queryClient, resource, meta]);
 
-    const result = useQuery<RecordType[], ErrorType, RecordType[]>({
-        queryKey: [
-            resource,
-            'getMany',
-            {
-                ids: (Array.isArray(ids) ? ids : [ids]).map(id => String(id)),
-                meta,
-            },
-        ],
-        queryFn: queryParams =>
-            new Promise((resolve, reject) => {
-                if (!ids || ids.length === 0) {
-                    // no need to call the dataProvider
-                    return resolve([]);
-                }
+        // debounced / batched fetch
+        return callGetManyQueries({
+          resource,
+          ids,
+          meta,
+          resolve,
+          reject,
+          dataProvider,
+          queryClient,
+          signal: dataProvider.supportAbortSignal === true ? queryParams.signal : undefined,
+        });
+      }),
+    placeholderData,
+    enabled: enabled ?? ids != null,
+    retry: false,
+    ...queryOptions,
+  });
 
-                // debounced / batched fetch
-                return callGetManyQueries({
-                    resource,
-                    ids,
-                    meta,
-                    resolve,
-                    reject,
-                    dataProvider,
-                    queryClient,
-                    signal:
-                        dataProvider.supportAbortSignal === true
-                            ? queryParams.signal
-                            : undefined,
-                });
-            }),
-        placeholderData,
-        enabled: enabled ?? ids != null,
-        retry: false,
-        ...queryOptions,
+  const metaValue = useRef(meta);
+  const resourceValue = useRef(resource);
+
+  useEffect(() => {
+    metaValue.current = meta;
+  }, [meta]);
+
+  useEffect(() => {
+    resourceValue.current = resource;
+  }, [resource]);
+
+  useEffect(() => {
+    if (result.data === undefined || result.error != null || result.isFetching) return;
+
+    // optimistically populate the getOne cache
+    (result.data ?? []).forEach((record) => {
+      queryClient.setQueryData(
+        [resourceValue.current, 'getOne', { id: String(record.id), meta: metaValue.current }],
+        (oldRecord) => oldRecord ?? record,
+      );
     });
 
-    const metaValue = useRef(meta);
-    const resourceValue = useRef(resource);
+    onSuccessEvent(result.data);
+  }, [queryClient, onSuccessEvent, result.data, result.error, result.isFetching]);
 
-    useEffect(() => {
-        metaValue.current = meta;
-    }, [meta]);
+  useEffect(() => {
+    if (result.error == null || result.isFetching) return;
+    onErrorEvent(result.error);
+  }, [onErrorEvent, result.error, result.isFetching]);
 
-    useEffect(() => {
-        resourceValue.current = resource;
-    }, [resource]);
+  useEffect(() => {
+    if (result.status === 'pending' || result.isFetching) return;
+    onSettledEvent(result.data, result.error);
+  }, [onSettledEvent, result.data, result.error, result.status, result.isFetching]);
 
-    useEffect(() => {
-        if (
-            result.data === undefined ||
-            result.error != null ||
-            result.isFetching
-        )
-            return;
-
-        // optimistically populate the getOne cache
-        (result.data ?? []).forEach(record => {
-            queryClient.setQueryData(
-                [
-                    resourceValue.current,
-                    'getOne',
-                    { id: String(record.id), meta: metaValue.current },
-                ],
-                oldRecord => oldRecord ?? record
-            );
-        });
-
-        onSuccessEvent(result.data);
-    }, [
-        queryClient,
-        onSuccessEvent,
-        result.data,
-        result.error,
-        result.isFetching,
-    ]);
-
-    useEffect(() => {
-        if (result.error == null || result.isFetching) return;
-        onErrorEvent(result.error);
-    }, [onErrorEvent, result.error, result.isFetching]);
-
-    useEffect(() => {
-        if (result.status === 'pending' || result.isFetching) return;
-        onSettledEvent(result.data, result.error);
-    }, [
-        onSettledEvent,
-        result.data,
-        result.error,
-        result.status,
-        result.isFetching,
-    ]);
-
-    return result;
+  return result;
 };
 
 /**
@@ -210,29 +168,29 @@ export const useGetManyAggregate = <
  * // add will be called once with arguments [2, 8]
  * // and sum will be equal to 10
  */
-const batch = fn => {
-    let capturedArgs: any[] = [];
-    let timeout: ReturnType<typeof setTimeout> | null = null;
-    return (arg: any) => {
-        capturedArgs.push(arg);
-        if (timeout) clearTimeout(timeout);
-        timeout = setTimeout(() => {
-            timeout = null;
-            fn([...capturedArgs]);
-            capturedArgs = [];
-        }, 0);
-    };
+const batch = (fn) => {
+  let capturedArgs: any[] = [];
+  let timeout: ReturnType<typeof setTimeout> | null = null;
+  return (arg: any) => {
+    capturedArgs.push(arg);
+    if (timeout) clearTimeout(timeout);
+    timeout = setTimeout(() => {
+      timeout = null;
+      fn([...capturedArgs]);
+      capturedArgs = [];
+    }, 0);
+  };
 };
 
 interface GetManyCallArgs {
-    resource: string;
-    ids: Identifier[];
-    meta?: any;
-    resolve: (data: any[]) => void;
-    reject: (error?: any) => void;
-    dataProvider: DataProvider;
-    queryClient: QueryClient;
-    signal?: AbortSignal;
+  resource: string;
+  ids: Identifier[];
+  meta?: any;
+  resolve: (data: any[]) => void;
+  reject: (error?: any) => void;
+  dataProvider: DataProvider;
+  queryClient: QueryClient;
+  signal?: AbortSignal;
 }
 
 /**
@@ -242,151 +200,128 @@ interface GetManyCallArgs {
  * whatever the number of calls to useGetManyAggregate().
  */
 const callGetManyQueries = batch((calls: GetManyCallArgs[]) => {
-    const dataProvider = calls[0].dataProvider;
-    const queryClient = calls[0].queryClient;
+  const dataProvider = calls[0].dataProvider;
+  const queryClient = calls[0].queryClient;
 
-    /**
-     * Aggregate calls by resource and meta
-     *
-     * callsByResourceAndMeta will look like:
-     * {
-     *     'posts|{"test":true}': [{ resource, ids, resolve, reject, dataProvider, queryClient }, ...],
-     *     'posts|{"test":false}': [{ resource, ids, resolve, reject, dataProvider, queryClient }, ...],
-     *     tags: [{ resource, ids, resolve, reject, dataProvider, queryClient }, ...],
-     * }
-     */
-    const callsByResourceAndMeta = calls.reduce(
-        (acc, callArgs) => {
-            const key = `${callArgs.resource}|${JSON.stringify(callArgs.meta)}`;
-            if (!acc[key]) {
-                acc[key] = [];
-            }
-            acc[key].push(callArgs);
-            return acc;
-        },
-        {} as { [resource: string]: GetManyCallArgs[] }
+  /**
+   * Aggregate calls by resource and meta
+   *
+   * callsByResourceAndMeta will look like:
+   * {
+   *     'posts|{"test":true}': [{ resource, ids, resolve, reject, dataProvider, queryClient }, ...],
+   *     'posts|{"test":false}': [{ resource, ids, resolve, reject, dataProvider, queryClient }, ...],
+   *     tags: [{ resource, ids, resolve, reject, dataProvider, queryClient }, ...],
+   * }
+   */
+  const callsByResourceAndMeta = calls.reduce(
+    (acc, callArgs) => {
+      const key = `${callArgs.resource}|${JSON.stringify(callArgs.meta)}`;
+      if (!acc[key]) {
+        acc[key] = [];
+      }
+      acc[key].push(callArgs);
+      return acc;
+    },
+    {} as { [resource: string]: GetManyCallArgs[] },
+  );
+
+  /**
+   * For each resource/meta association, aggregate ids and call dataProvider.getMany() once
+   */
+  Object.keys(callsByResourceAndMeta).forEach((resource) => {
+    const callsForResource = callsByResourceAndMeta[resource];
+
+    const uniqueResource = callsForResource.reduce(
+      (acc, { resource }) => resource || acc,
+      '' as string, // Should never happen as we always have a resource in callArgs but makes TS happy
     );
+    /**
+     * Extract ids from queries, aggregate and deduplicate them
+     *
+     * @example from [[1, 2], [2, null, 3], [4, null]] to [1, 2, 3, 4]
+     */
+    const aggregatedIds = callsForResource
+      .reduce((acc, { ids }) => union(acc, ids), []) // concat + unique
+      .filter((v) => v != null && v !== ''); // remove null values
+
+    const uniqueMeta = callsForResource.reduce((acc, { meta }) => meta || acc, undefined);
+
+    if (aggregatedIds.length === 0) {
+      // no need to call the data provider if all the ids are null
+      callsForResource.forEach(({ resolve }) => {
+        resolve([]);
+      });
+      return;
+    }
+
+    const callThatHasAllAggregatedIds = callsForResource.find(
+      ({ ids, signal }) => JSON.stringify(ids) === JSON.stringify(aggregatedIds) && !signal?.aborted,
+    );
+    if (callThatHasAllAggregatedIds) {
+      // There is only one call (no aggregation), or one of the calls has the same ids as the sum of all calls.
+      // Either way, we can't trigger a new fetchQuery with the same signature, as it's already pending.
+      // Therefore, we reply with the dataProvider
+      const { dataProvider, resource, ids, meta, signal } = callThatHasAllAggregatedIds;
+
+      dataProvider
+        .getMany<any>(resource, { ids, meta, signal })
+        .then(({ data }) => data)
+        .then(
+          (data) => {
+            // We must then resolve all the pending calls with the data they requested
+            callsForResource.forEach(({ ids, resolve }) => {
+              resolve(data.filter((record) => ids.map((id) => String(id)).includes(String(record.id))));
+            });
+          },
+          (error) => {
+            // All pending calls must also receive the error
+            callsForResource.forEach(({ reject }) => {
+              reject(error);
+            });
+          },
+        );
+      return;
+    }
 
     /**
-     * For each resource/meta association, aggregate ids and call dataProvider.getMany() once
+     * Call dataProvider.getMany() with the aggregatedIds,
+     * and resolve each of the promises using the results
      */
-    Object.keys(callsByResourceAndMeta).forEach(resource => {
-        const callsForResource = callsByResourceAndMeta[resource];
-
-        const uniqueResource = callsForResource.reduce(
-            (acc, { resource }) => resource || acc,
-            '' as string // Should never happen as we always have a resource in callArgs but makes TS happy
-        );
-        /**
-         * Extract ids from queries, aggregate and deduplicate them
-         *
-         * @example from [[1, 2], [2, null, 3], [4, null]] to [1, 2, 3, 4]
-         */
-        const aggregatedIds = callsForResource
-            .reduce((acc, { ids }) => union(acc, ids), []) // concat + unique
-            .filter(v => v != null && v !== ''); // remove null values
-
-        const uniqueMeta = callsForResource.reduce(
-            (acc, { meta }) => meta || acc,
-            undefined
-        );
-
-        if (aggregatedIds.length === 0) {
-            // no need to call the data provider if all the ids are null
-            callsForResource.forEach(({ resolve }) => {
-                resolve([]);
-            });
-            return;
-        }
-
-        const callThatHasAllAggregatedIds = callsForResource.find(
-            ({ ids, signal }) =>
-                JSON.stringify(ids) === JSON.stringify(aggregatedIds) &&
-                !signal?.aborted
-        );
-        if (callThatHasAllAggregatedIds) {
-            // There is only one call (no aggregation), or one of the calls has the same ids as the sum of all calls.
-            // Either way, we can't trigger a new fetchQuery with the same signature, as it's already pending.
-            // Therefore, we reply with the dataProvider
-            const { dataProvider, resource, ids, meta, signal } =
-                callThatHasAllAggregatedIds;
-
-            dataProvider
-                .getMany<any>(resource, { ids, meta, signal })
-                .then(({ data }) => data)
-                .then(
-                    data => {
-                        // We must then resolve all the pending calls with the data they requested
-                        callsForResource.forEach(({ ids, resolve }) => {
-                            resolve(
-                                data.filter(record =>
-                                    ids
-                                        .map(id => String(id))
-                                        .includes(String(record.id))
-                                )
-                            );
-                        });
-                    },
-                    error => {
-                        // All pending calls must also receive the error
-                        callsForResource.forEach(({ reject }) => {
-                            reject(error);
-                        });
-                    }
-                );
-            return;
-        }
-
-        /**
-         * Call dataProvider.getMany() with the aggregatedIds,
-         * and resolve each of the promises using the results
-         */
-        queryClient
-            .fetchQuery<any[], Error, any[]>({
-                queryKey: [
-                    uniqueResource,
-                    'getMany',
-                    {
-                        ids: aggregatedIds.map(id => String(id)),
-                        meta: uniqueMeta,
-                    },
-                ],
-                queryFn: queryParams =>
-                    dataProvider
-                        .getMany<any>(uniqueResource, {
-                            ids: aggregatedIds,
-                            meta: uniqueMeta,
-                            signal:
-                                dataProvider.supportAbortSignal === true
-                                    ? queryParams.signal
-                                    : undefined,
-                        })
-                        .then(({ data }) => data),
+    queryClient
+      .fetchQuery<any[], Error, any[]>({
+        queryKey: [
+          uniqueResource,
+          'getMany',
+          {
+            ids: aggregatedIds.map((id) => String(id)),
+            meta: uniqueMeta,
+          },
+        ],
+        queryFn: (queryParams) =>
+          dataProvider
+            .getMany<any>(uniqueResource, {
+              ids: aggregatedIds,
+              meta: uniqueMeta,
+              signal: dataProvider.supportAbortSignal === true ? queryParams.signal : undefined,
             })
-            .then(data => {
-                callsForResource.forEach(({ ids, resolve }) => {
-                    resolve(
-                        data.filter(record =>
-                            ids
-                                .map(id => String(id))
-                                .includes(String(record.id))
-                        )
-                    );
-                });
-            })
-            .catch(error =>
-                callsForResource.forEach(({ reject }) => reject(error))
-            );
-    });
+            .then(({ data }) => data),
+      })
+      .then((data) => {
+        callsForResource.forEach(({ ids, resolve }) => {
+          resolve(data.filter((record) => ids.map((id) => String(id)).includes(String(record.id))));
+        });
+      })
+      .catch((error) => callsForResource.forEach(({ reject }) => reject(error)));
+  });
 });
 
 const noop = () => undefined;
 
-export type UseGetManyAggregateOptions<
-    RecordType extends RaRecord = any,
-    ErrorType = Error,
-> = Omit<UseQueryOptions<RecordType[], ErrorType>, 'queryKey' | 'queryFn'> & {
-    onSuccess?: (data: RecordType[]) => void;
-    onError?: (error: ErrorType) => void;
-    onSettled?: (data?: RecordType[], error?: ErrorType | null) => void;
+export type UseGetManyAggregateOptions<RecordType extends RaRecord = any, ErrorType = Error> = Omit<
+  UseQueryOptions<RecordType[], ErrorType>,
+  'queryKey' | 'queryFn'
+> & {
+  onSuccess?: (data: RecordType[]) => void;
+  onError?: (error: ErrorType) => void;
+  onSettled?: (data?: RecordType[], error?: ErrorType | null) => void;
 };

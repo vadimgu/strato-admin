@@ -30,25 +30,15 @@ import { SaveContextProvider, usePickSaveContext } from '../saveContext';
  * @see CreateContext
  * @see RecordContext
  */
-export const CreateContextProvider = ({
-    children,
-    value,
-}: {
-    children: ReactNode;
-    value: CreateControllerResult;
-}) => (
-    <CreateContext.Provider value={value}>
-        <SaveContextProvider
-            value={{
-                ...usePickSaveContext(value),
-                mutationMode: 'pessimistic',
-            }}
-        >
-            <RecordContextProvider<Partial<RaRecord>>
-                value={value && value.record}
-            >
-                {children}
-            </RecordContextProvider>
-        </SaveContextProvider>
-    </CreateContext.Provider>
+export const CreateContextProvider = ({ children, value }: { children: ReactNode; value: CreateControllerResult }) => (
+  <CreateContext.Provider value={value}>
+    <SaveContextProvider
+      value={{
+        ...usePickSaveContext(value),
+        mutationMode: 'pessimistic',
+      }}
+    >
+      <RecordContextProvider<Partial<RaRecord>> value={value && value.record}>{children}</RecordContextProvider>
+    </SaveContextProvider>
+  </CreateContext.Provider>
 );

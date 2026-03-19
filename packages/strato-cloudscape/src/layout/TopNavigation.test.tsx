@@ -1,4 +1,3 @@
-
 import { render } from '@testing-library/react';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 import { useAuthProvider } from '@strato-admin/core';

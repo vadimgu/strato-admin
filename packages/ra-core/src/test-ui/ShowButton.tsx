@@ -5,18 +5,18 @@ import { useRecordContext } from '../controller/record/useRecordContext';
 import { useResourceContext } from '../core/useResourceContext';
 
 export const ShowButton = (props: { record?: RaRecord; resource?: string }) => {
-    const record = useRecordContext(props);
-    const resource = useResourceContext(props);
+  const record = useRecordContext(props);
+  const resource = useResourceContext(props);
 
-    if (!record) return null;
-    return (
-        <LinkBase
-            to={`/${resource}/${record.id}/show`}
-            onClick={e => {
-                e.stopPropagation();
-            }}
-        >
-            Show
-        </LinkBase>
-    );
+  if (!record) return null;
+  return (
+    <LinkBase
+      to={`/${resource}/${record.id}/show`}
+      onClick={(e) => {
+        e.stopPropagation();
+      }}
+    >
+      Show
+    </LinkBase>
+  );
 };

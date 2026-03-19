@@ -34,21 +34,19 @@ import useAuthProvider from './useAuthProvider';
  * }
  */
 const useGetPermissions = (): GetPermissions => {
-    const authProvider = useAuthProvider();
-    const getPermissions = useCallback(
-        (params: any = {}) => {
-            // react-query requires the query to return something
-            if (authProvider && authProvider.getPermissions) {
-                return authProvider
-                    .getPermissions(params)
-                    .then(result => result ?? null);
-            }
-            return Promise.resolve([]);
-        },
-        [authProvider]
-    );
+  const authProvider = useAuthProvider();
+  const getPermissions = useCallback(
+    (params: any = {}) => {
+      // react-query requires the query to return something
+      if (authProvider && authProvider.getPermissions) {
+        return authProvider.getPermissions(params).then((result) => result ?? null);
+      }
+      return Promise.resolve([]);
+    },
+    [authProvider],
+  );
 
-    return getPermissions;
+  return getPermissions;
 };
 
 /**

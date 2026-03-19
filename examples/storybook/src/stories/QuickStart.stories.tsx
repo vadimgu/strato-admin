@@ -15,5 +15,9 @@ export default meta;
 type Story = StoryObj<typeof QuickStartApp>;
 
 export const Default: Story = {
-  render: () => <MemoryRouter><QuickStartApp /></MemoryRouter>,
+  render: () => (
+    <MemoryRouter>
+      <QuickStartApp />
+    </MemoryRouter>
+  ),
 };

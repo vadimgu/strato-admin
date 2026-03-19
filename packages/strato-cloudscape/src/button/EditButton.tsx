@@ -1,4 +1,3 @@
-
 import { useResourceContext, useRecordContext, useTranslate, useCreatePath, RaRecord } from '@strato-admin/core';
 import { useNavigate } from 'react-router-dom';
 import { Button, ButtonProps } from './Button';

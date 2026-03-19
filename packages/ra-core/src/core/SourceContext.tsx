@@ -1,14 +1,14 @@
 import { createContext, useContext } from 'react';
 
 export type SourceContextValue = {
-    /*
-     * Returns the source for a field or input, modified according to the context.
-     */
-    getSource: (source: string) => string;
-    /*
-     * Returns the label for a field or input, modified according to the context. Returns a translation key.
-     */
-    getLabel: (source: string) => string;
+  /*
+   * Returns the source for a field or input, modified according to the context.
+   */
+  getSource: (source: string) => string;
+  /*
+   * Returns the label for a field or input, modified according to the context. Returns a translation key.
+   */
+  getLabel: (source: string) => string;
 };
 
 /**
@@ -30,23 +30,21 @@ export type SourceContextValue = {
  *   );
  * };
  */
-export const SourceContext = createContext<SourceContextValue | undefined>(
-    undefined
-);
+export const SourceContext = createContext<SourceContextValue | undefined>(undefined);
 SourceContext.displayName = 'SourceContext';
 
 const defaultContextValue = {
-    getSource: (source: string) => source,
-    getLabel: (source: string) => source,
+  getSource: (source: string) => source,
+  getLabel: (source: string) => source,
 };
 export const SourceContextProvider = SourceContext.Provider;
 
 export const useSourceContext = () => {
-    const context = useContext(SourceContext);
-    if (!context) {
-        return defaultContextValue;
-    }
-    return context;
+  const context = useContext(SourceContext);
+  if (!context) {
+    return defaultContextValue;
+  }
+  return context;
 };
 
 export const useOptionalSourceContext = () => useContext(SourceContext);

@@ -1,3 +1,3 @@
 export interface MatchingReferencesError {
-    error: string;
+  error: string;
 }

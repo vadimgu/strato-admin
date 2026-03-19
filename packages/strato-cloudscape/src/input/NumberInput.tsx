@@ -1,4 +1,3 @@
-
 import { useInput } from '@strato-admin/core';
 import CloudscapeInput, { InputProps as CloudscapeInputProps } from '@cloudscape-design/components/input';
 import { FormField } from './FormField';
@@ -6,13 +5,12 @@ import { FormFieldContext, useFormFieldContext } from './FormFieldContext';
 import { InputProps } from './types';
 
 export interface NumberInputProps
-    extends Omit<CloudscapeInputProps, 'onChange' | 'value' | 'onBlur' | 'type'>,
-        InputProps {
-    type?: CloudscapeInputProps['type'];
+  extends Omit<CloudscapeInputProps, 'onChange' | 'value' | 'onBlur' | 'type'>, InputProps {
+  type?: CloudscapeInputProps['type'];
 }
 
 export const NumberInput = (props: NumberInputProps) => {
-    const { label, source, defaultValue, validate, type = 'number', ...rest } = props;
+  const { label, source, defaultValue, validate, type = 'number', ...rest } = props;
   const context = useFormFieldContext();
   const inputState =
     context ??

@@ -30,57 +30,45 @@ import { removeDoubleSlashes } from '../routing/useCreatePath';
  * }
  */
 const useLogin = (): Login => {
-    const authProvider = useAuthProvider();
-    const queryClient = useQueryClient();
-    const location = useLocation();
-    const locationState = location.state as any;
-    const navigate = useNavigate();
-    const basename = useBasename();
-    const { resetNotifications } = useNotificationContext();
-    const nextPathName = locationState && locationState.nextPathname;
-    const nextSearch = locationState && locationState.nextSearch;
-    const afterLoginUrl = removeDoubleSlashes(
-        `${basename}/${defaultAuthParams.afterLoginUrl}`
-    );
+  const authProvider = useAuthProvider();
+  const queryClient = useQueryClient();
+  const location = useLocation();
+  const locationState = location.state as any;
+  const navigate = useNavigate();
+  const basename = useBasename();
+  const { resetNotifications } = useNotificationContext();
+  const nextPathName = locationState && locationState.nextPathname;
+  const nextSearch = locationState && locationState.nextSearch;
+  const afterLoginUrl = removeDoubleSlashes(`${basename}/${defaultAuthParams.afterLoginUrl}`);
 
-    const login = useCallback(
-        (params: any = {}, pathName) => {
-            if (authProvider) {
-                return authProvider.login(params).then(ret => {
-                    resetNotifications();
-                    queryClient.invalidateQueries({
-                        queryKey: ['auth', 'getPermissions'],
-                    });
-                    if (ret && ret.hasOwnProperty('redirectTo')) {
-                        if (ret) {
-                            navigate(ret.redirectTo);
-                        }
-                    } else {
-                        const redirectUrl = pathName
-                            ? pathName
-                            : nextPathName + nextSearch || afterLoginUrl;
-                        navigate(redirectUrl);
-                    }
-                    return ret;
-                });
-            } else {
-                resetNotifications();
-                navigate(afterLoginUrl);
-                return Promise.resolve();
+  const login = useCallback(
+    (params: any = {}, pathName) => {
+      if (authProvider) {
+        return authProvider.login(params).then((ret) => {
+          resetNotifications();
+          queryClient.invalidateQueries({
+            queryKey: ['auth', 'getPermissions'],
+          });
+          if (ret && ret.hasOwnProperty('redirectTo')) {
+            if (ret) {
+              navigate(ret.redirectTo);
             }
-        },
-        [
-            authProvider,
-            queryClient,
-            navigate,
-            nextPathName,
-            nextSearch,
-            resetNotifications,
-            afterLoginUrl,
-        ]
-    );
+          } else {
+            const redirectUrl = pathName ? pathName : nextPathName + nextSearch || afterLoginUrl;
+            navigate(redirectUrl);
+          }
+          return ret;
+        });
+      } else {
+        resetNotifications();
+        navigate(afterLoginUrl);
+        return Promise.resolve();
+      }
+    },
+    [authProvider, queryClient, navigate, nextPathName, nextSearch, resetNotifications, afterLoginUrl],
+  );
 
-    return login;
+  return login;
 };
 
 /**

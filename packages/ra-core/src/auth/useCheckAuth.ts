@@ -43,48 +43,33 @@ import { removeDoubleSlashes } from '../routing/useCreatePath';
  * } // tip: use useAuthState() hook instead
  */
 export const useCheckAuth = (): CheckAuth => {
-    const authProvider = useAuthProvider();
-    const notify = useNotify();
-    const logout = useLogout();
-    const basename = useBasename();
-    const loginUrl = removeDoubleSlashes(
-        `${basename}/${defaultAuthParams.loginUrl}`
-    );
+  const authProvider = useAuthProvider();
+  const notify = useNotify();
+  const logout = useLogout();
+  const basename = useBasename();
+  const loginUrl = removeDoubleSlashes(`${basename}/${defaultAuthParams.loginUrl}`);
 
-    const checkAuth = useCallback<CheckAuth>(
-        async (
-            params: any = {},
-            logoutOnFailure = true,
-            redirectTo = loginUrl
-        ) => {
-            // The authProvider is optional in react-admin
-            if (!authProvider) {
-                return checkAuthWithoutAuthProvider();
-            }
-            try {
-                return await authProvider.checkAuth(params);
-            } catch (error: any) {
-                if (logoutOnFailure) {
-                    logout(
-                        {},
-                        error && error.redirectTo != null
-                            ? error.redirectTo
-                            : redirectTo
-                    );
-                    const shouldSkipNotify = error && error.message === false;
-                    !shouldSkipNotify &&
-                        notify(
-                            getErrorMessage(error, 'ra.auth.auth_check_error'),
-                            { type: 'error' }
-                        );
-                }
-                throw error;
-            }
-        },
-        [authProvider, logout, notify, loginUrl]
-    );
+  const checkAuth = useCallback<CheckAuth>(
+    async (params: any = {}, logoutOnFailure = true, redirectTo = loginUrl) => {
+      // The authProvider is optional in react-admin
+      if (!authProvider) {
+        return checkAuthWithoutAuthProvider();
+      }
+      try {
+        return await authProvider.checkAuth(params);
+      } catch (error: any) {
+        if (logoutOnFailure) {
+          logout({}, error && error.redirectTo != null ? error.redirectTo : redirectTo);
+          const shouldSkipNotify = error && error.message === false;
+          !shouldSkipNotify && notify(getErrorMessage(error, 'ra.auth.auth_check_error'), { type: 'error' });
+        }
+        throw error;
+      }
+    },
+    [authProvider, logout, notify, loginUrl],
+  );
 
-    return checkAuth;
+  return checkAuth;
 };
 
 const checkAuthWithoutAuthProvider = async () => undefined;
@@ -99,15 +84,7 @@ const checkAuthWithoutAuthProvider = async () => undefined;
  *
  * @return {Promise} Resolved to the authProvider response if the user passes the check, or rejected with an error otherwise
  */
-export type CheckAuth = (
-    params?: any,
-    logoutOnFailure?: boolean,
-    redirectTo?: string
-) => Promise<any>;
+export type CheckAuth = (params?: any, logoutOnFailure?: boolean, redirectTo?: string) => Promise<any>;
 
 const getErrorMessage = (error, defaultMessage) =>
-    typeof error === 'string'
-        ? error
-        : typeof error === 'undefined' || !error.message
-          ? defaultMessage
-          : error.message;
+  typeof error === 'string' ? error : typeof error === 'undefined' || !error.message ? defaultMessage : error.message;

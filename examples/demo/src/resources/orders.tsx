@@ -17,12 +17,7 @@ export const orderSchema = (
     <TextField source="reference" label="Reference" sortable />
     <DateField source="date" label="Date" sortable />
     <ReferenceField source="customer_id" reference="customers" label="Customer" link="show" />
-    <NumberField
-      source="total"
-      label="Total"
-      sortable
-      options={{ style: 'currency', currency: 'USD' }}
-    />
+    <NumberField source="total" label="Total" sortable options={{ style: 'currency', currency: 'USD' }} />
     <StatusIndicatorField source="status" label="Status" sortable>
       <StatusIndicatorField.Label value="ordered" type="info" label="Ordered" />
       <StatusIndicatorField.Label value="delivered" type="success" label="Delivered" />
@@ -35,13 +30,7 @@ export const orderSchema = (
 export function OrderList() {
   return (
     <List perPage={10}>
-      <Table
-        header="Orders"
-        selectionType="multi"
-        filtering
-        filteringPlaceholder="Search orders..."
-        preferences
-      />
+      <Table header="Orders" selectionType="multi" filtering filteringPlaceholder="Search orders..." preferences />
     </List>
   );
 }

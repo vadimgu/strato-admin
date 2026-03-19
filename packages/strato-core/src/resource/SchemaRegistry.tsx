@@ -1,4 +1,13 @@
-import React, { createContext, useContext, ReactNode, useState, useCallback, useMemo, ComponentType, Fragment } from 'react';
+import React, {
+  createContext,
+  useContext,
+  ReactNode,
+  useState,
+  useCallback,
+  useMemo,
+  ComponentType,
+  Fragment,
+} from 'react';
 import { required, useResourceContext, useResourceDefinition, useGetResourceLabel } from '@strato-admin/ra-core';
 import { FieldSchema, useFieldSchema } from './FieldSchema';
 import { InputSchema, useInputSchema } from './InputSchema';
@@ -29,7 +38,7 @@ export interface SchemaRegistryContextValue {
 
 const SchemaRegistryContext = createContext<SchemaRegistryContextValue | undefined>(undefined);
 
-// Use a global store for schemas to ensure they are available even before 
+// Use a global store for schemas to ensure they are available even before
 // components have finished their first render/useEffect cycle.
 const globalSchemaRegistry: Record<string, ResourceSchemas> = {};
 let globalDefaultComponents: DefaultResourceComponents = {};
@@ -63,13 +72,13 @@ export const registerGlobalSchemas = (resource: string, schemas: ResourceSchemas
 
   // Only update if we actually have new schema content to avoid redundant re-renders
   if (
-    schemas.fieldSchema || 
-    schemas.inputSchema || 
-    schemas.listFields || 
-    schemas.excludeListFields || 
-    schemas.showFields || 
-    schemas.excludeShowFields || 
-    schemas.formFields || 
+    schemas.fieldSchema ||
+    schemas.inputSchema ||
+    schemas.listFields ||
+    schemas.excludeListFields ||
+    schemas.showFields ||
+    schemas.excludeShowFields ||
+    schemas.formFields ||
     schemas.excludeFormFields
   ) {
     globalSchemaRegistry[resource] = {
@@ -134,7 +143,9 @@ export const parseUnifiedSchema = (children: React.ReactNode): ResourceSchemas =
       if (React.isValidElement(input)) {
         // Escape hatch: explicit input component provided
         const validate = mergeValidation(isRequired, (input.props as any).validate);
-        inputSchema.push(React.cloneElement(input, { ...rest, source, isRequired, validate, description, constraintText }));
+        inputSchema.push(
+          React.cloneElement(input, { ...rest, source, isRequired, validate, description, constraintText }),
+        );
         return;
       }
 
@@ -143,7 +154,18 @@ export const parseUnifiedSchema = (children: React.ReactNode): ResourceSchemas =
       if (InputComponent) {
         const inputProps = input || {};
         const validate = mergeValidation(isRequired, inputProps.validate);
-        inputSchema.push(<InputComponent key={source} {...rest} {...inputProps} source={source} isRequired={isRequired} validate={validate} description={description} constraintText={constraintText} />);
+        inputSchema.push(
+          <InputComponent
+            key={source}
+            {...rest}
+            {...inputProps}
+            source={source}
+            isRequired={isRequired}
+            validate={validate}
+            description={description}
+            constraintText={constraintText}
+          />,
+        );
       }
     });
   };
@@ -152,7 +174,7 @@ export const parseUnifiedSchema = (children: React.ReactNode): ResourceSchemas =
 
   return {
     fieldSchema: fieldSchema.length > 0 ? fieldSchema : undefined,
-    inputSchema: inputSchema.length > 0 ? inputSchema : undefined
+    inputSchema: inputSchema.length > 0 ? inputSchema : undefined,
   };
 };
 
@@ -180,17 +202,16 @@ export const SchemaRegistryProvider = ({ children }: { children: ReactNode }) =>
 
   const getSchemas = useCallback((resource: string) => globalSchemaRegistry[resource], []);
 
-  const value = useMemo(() => ({
-    registerSchemas,
-    getSchemas,
-    defaultComponents: globalDefaultComponents
-  }), [registerSchemas, getSchemas]);
-
-  return (
-    <SchemaRegistryContext.Provider value={value}>
-      {children}
-    </SchemaRegistryContext.Provider>
+  const value = useMemo(
+    () => ({
+      registerSchemas,
+      getSchemas,
+      defaultComponents: globalDefaultComponents,
+    }),
+    [registerSchemas, getSchemas],
   );
+
+  return <SchemaRegistryContext.Provider value={value}>{children}</SchemaRegistryContext.Provider>;
 };
 
 export const useSchemaRegistry = () => {
@@ -263,13 +284,20 @@ export const useResourceSchema = (resourceProp?: string) => {
       formFields,
       excludeFormFields,
       definition,
-      label: resource ? getResourceLabel(resource, 2) : undefined, // TODO: stop hardcoding pluralization - translation issues in some languages. 
-      getField: (source: string) => fieldSchema.find(
-        (child) => React.isValidElement(child) && (child.props as any).source === source
-      ),
-      getInput: (source: string) => inputSchema.find(
-        (child) => React.isValidElement(child) && (child.props as any).source === source
-      ),
+      label: resource ? getResourceLabel(resource, 2) : undefined, // TODO: stop hardcoding pluralization - translation issues in some languages.
+      getField: (source: string) =>
+        fieldSchema.find((child) => React.isValidElement(child) && (child.props as any).source === source),
+      getInput: (source: string) =>
+        inputSchema.find((child) => React.isValidElement(child) && (child.props as any).source === source),
     };
-  }, [resource, resourceProp, resourceContext, fieldSchemaFromContext, inputSchemaFromContext, getSchemas, definition, getResourceLabel]);
+  }, [
+    resource,
+    resourceProp,
+    resourceContext,
+    fieldSchemaFromContext,
+    inputSchemaFromContext,
+    getSchemas,
+    definition,
+    getResourceLabel,
+  ]);
 };

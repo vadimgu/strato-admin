@@ -5,9 +5,9 @@ import isEqual from 'lodash/isEqual.js';
 import { FilterPayload } from '../types';
 
 interface UseFilterStateOptions {
-    filterToQuery?: (v: string) => FilterPayload;
-    permanentFilter?: FilterPayload;
-    debounceTime?: number;
+  filterToQuery?: (v: string) => FilterPayload;
+  permanentFilter?: FilterPayload;
+  debounceTime?: number;
 }
 
 /**
@@ -16,8 +16,8 @@ interface UseFilterStateOptions {
  * @property {setFilter} setFilter: Update the filter with the given string
  */
 interface UseFilterStateProps {
-    filter: FilterPayload;
-    setFilter: (v: string) => void;
+  filter: FilterPayload;
+  setFilter: (v: string) => void;
 }
 
 const defaultFilter = {};
@@ -53,48 +53,48 @@ const defaultFilterToQuery = (v: string) => ({ q: v });
  * @returns {UseFilterStateOptions} The filter props
  */
 export default ({
-    filterToQuery = defaultFilterToQuery,
-    permanentFilter = {},
-    debounceTime = 500,
+  filterToQuery = defaultFilterToQuery,
+  permanentFilter = {},
+  debounceTime = 500,
 }: UseFilterStateOptions): UseFilterStateProps => {
-    const permanentFilterProp = useRef(permanentFilter);
-    const latestValue = useRef<string | undefined>(undefined);
-    const [filter, setFilterValue] = useState<FilterPayload>({
+  const permanentFilterProp = useRef(permanentFilter);
+  const latestValue = useRef<string | undefined>(undefined);
+  const [filter, setFilterValue] = useState<FilterPayload>({
+    ...permanentFilter,
+    ...filterToQuery(''),
+  });
+  // Developers often pass an object literal as permanent filter
+  // e.g. <ReferenceInput source="book_id" reference="books" filter={{ is_published: true }}>
+  // The effect should execute again when the parent component updates the filter value,
+  // but not when the object literal describes the same values. Therefore,
+  // we use JSON.stringify(permanentFilter) in the `useEffect` and `useCallback`
+  // dependencies instead of permanentFilter.
+  const permanentFilterSignature = JSON.stringify(permanentFilter);
+
+  useEffect(() => {
+    if (!isEqual(permanentFilterProp.current, permanentFilter)) {
+      permanentFilterProp.current = permanentFilter;
+      setFilterValue({
         ...permanentFilter,
-        ...filterToQuery(''),
-    });
-    // Developers often pass an object literal as permanent filter
-    // e.g. <ReferenceInput source="book_id" reference="books" filter={{ is_published: true }}>
-    // The effect should execute again when the parent component updates the filter value,
-    // but not when the object literal describes the same values. Therefore,
-    // we use JSON.stringify(permanentFilter) in the `useEffect` and `useCallback`
-    // dependencies instead of permanentFilter.
-    const permanentFilterSignature = JSON.stringify(permanentFilter);
+        ...filterToQuery(latestValue.current || ''),
+      });
+    }
+  }, [permanentFilterSignature, permanentFilterProp, filterToQuery]); // eslint-disable-line react-hooks/exhaustive-deps
 
-    useEffect(() => {
-        if (!isEqual(permanentFilterProp.current, permanentFilter)) {
-            permanentFilterProp.current = permanentFilter;
-            setFilterValue({
-                ...permanentFilter,
-                ...filterToQuery(latestValue.current || ''),
-            });
-        }
-    }, [permanentFilterSignature, permanentFilterProp, filterToQuery]); // eslint-disable-line react-hooks/exhaustive-deps
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const setFilter = useCallback(
+    debounce((value: string) => {
+      setFilterValue({
+        ...permanentFilter,
+        ...filterToQuery(value),
+      });
+      latestValue.current = value;
+    }, debounceTime),
+    [permanentFilterSignature],
+  );
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    const setFilter = useCallback(
-        debounce((value: string) => {
-            setFilterValue({
-                ...permanentFilter,
-                ...filterToQuery(value),
-            });
-            latestValue.current = value;
-        }, debounceTime),
-        [permanentFilterSignature]
-    );
-
-    return {
-        filter: filter ?? defaultFilter,
-        setFilter,
-    };
+  return {
+    filter: filter ?? defaultFilter,
+    setFilter,
+  };
 };

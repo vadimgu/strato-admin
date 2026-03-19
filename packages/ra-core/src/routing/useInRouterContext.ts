@@ -11,6 +11,6 @@ import { useRouterProvider } from './RouterProviderContext';
  * }
  */
 export const useInRouterContext = (): boolean => {
-    const provider = useRouterProvider();
-    return provider.useInRouterContext();
+  const provider = useRouterProvider();
+  return provider.useInRouterContext();
 };

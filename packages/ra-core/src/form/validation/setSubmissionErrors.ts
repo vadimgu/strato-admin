@@ -19,21 +19,18 @@ import { FieldValues, UseFormSetError } from 'react-hook-form';
  *     );
  * };
  */
-export const setSubmissionErrors = (
-    errors: FieldValues,
-    setError: UseFormSetError<FieldValues>
-) => {
-    const setErrorFromObject = (errors: FieldValues, rootPath: string) => {
-        Object.entries(errors).forEach(([name, error]) => {
-            if (typeof error === 'object') {
-                setErrorFromObject(error, `${rootPath}${name}.`);
-                return;
-            }
-            setError(`${rootPath}${name}`, {
-                type: 'server',
-                message: error.toString(),
-            });
-        });
-    };
-    setErrorFromObject(errors, '');
+export const setSubmissionErrors = (errors: FieldValues, setError: UseFormSetError<FieldValues>) => {
+  const setErrorFromObject = (errors: FieldValues, rootPath: string) => {
+    Object.entries(errors).forEach(([name, error]) => {
+      if (typeof error === 'object') {
+        setErrorFromObject(error, `${rootPath}${name}.`);
+        return;
+      }
+      setError(`${rootPath}${name}`, {
+        type: 'server',
+        message: error.toString(),
+      });
+    });
+  };
+  setErrorFromObject(errors, '');
 };

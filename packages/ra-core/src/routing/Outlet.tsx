@@ -21,6 +21,6 @@ export type { RouterOutletProps as OutletProps } from './RouterProvider';
  * );
  */
 export const Outlet = (props: RouterOutletProps) => {
-    const provider = useRouterProvider();
-    return <provider.Outlet {...props} />;
+  const provider = useRouterProvider();
+  return <provider.Outlet {...props} />;
 };

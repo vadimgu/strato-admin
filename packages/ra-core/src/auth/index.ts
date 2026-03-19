@@ -26,19 +26,19 @@ export * from './addRefreshAuthToAuthProvider';
 export * from './addRefreshAuthToDataProvider';
 
 export {
-    useAuthProvider,
-    convertLegacyAuthProvider,
-    // low-level hooks for calling a particular verb on the authProvider
-    useLogin,
-    useLogout,
-    useGetPermissions,
-    // hooks with state management
-    usePermissions,
-    useAuthState,
-    // hook with immediate effect
-    useLogoutIfAccessDenied,
-    // components
-    WithPermissions,
+  useAuthProvider,
+  convertLegacyAuthProvider,
+  // low-level hooks for calling a particular verb on the authProvider
+  useLogin,
+  useLogout,
+  useGetPermissions,
+  // hooks with state management
+  usePermissions,
+  useAuthState,
+  // hook with immediate effect
+  useLogoutIfAccessDenied,
+  // components
+  WithPermissions,
 };
 
 export type { WithPermissionsProps };

@@ -58,7 +58,7 @@ const ShowUI = ({
  *     <NumberField source="price" />
  *   </KeyValuePairs>
  * </Show>
- * 
+ *
  * @example
  * // Using FieldSchema from context
  * <Show include={['name', 'price']} />
@@ -74,12 +74,7 @@ export const Show = <RecordType extends RaRecord = RaRecord>({
   return (
     <ShowBase {...props}>
       <ResourceSchemaProvider resource={props.resource}>
-        <ShowUI
-          title={title}
-          actions={actions}
-          include={include}
-          exclude={exclude}
-        >
+        <ShowUI title={title} actions={actions} include={include} exclude={exclude}>
           {children}
         </ShowUI>
       </ResourceSchemaProvider>

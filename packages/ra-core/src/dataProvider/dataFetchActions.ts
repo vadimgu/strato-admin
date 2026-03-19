@@ -9,44 +9,37 @@ export const DELETE = 'DELETE';
 export const DELETE_MANY = 'DELETE_MANY';
 
 export const fetchActionsWithRecordResponse = ['getOne', 'create', 'update'];
-export const fetchActionsWithArrayOfIdentifiedRecordsResponse = [
-    'getList',
-    'getMany',
-    'getManyReference',
-];
+export const fetchActionsWithArrayOfIdentifiedRecordsResponse = ['getList', 'getMany', 'getManyReference'];
 export const fetchActionsWithArrayOfRecordsResponse = [
-    ...fetchActionsWithArrayOfIdentifiedRecordsResponse,
-    'updateMany',
-    'deleteMany',
+  ...fetchActionsWithArrayOfIdentifiedRecordsResponse,
+  'updateMany',
+  'deleteMany',
 ];
 export const fetchActionsWithTotalResponse = ['getList', 'getManyReference'];
 
-export const reactAdminFetchActions = [
-    ...fetchActionsWithRecordResponse,
-    ...fetchActionsWithArrayOfRecordsResponse,
-];
+export const reactAdminFetchActions = [...fetchActionsWithRecordResponse, ...fetchActionsWithArrayOfRecordsResponse];
 
 export const sanitizeFetchType = (fetchType: string) => {
-    switch (fetchType) {
-        case GET_LIST:
-            return 'getList';
-        case GET_ONE:
-            return 'getOne';
-        case GET_MANY:
-            return 'getMany';
-        case GET_MANY_REFERENCE:
-            return 'getManyReference';
-        case CREATE:
-            return 'create';
-        case UPDATE:
-            return 'update';
-        case UPDATE_MANY:
-            return 'updateMany';
-        case DELETE:
-            return 'delete';
-        case DELETE_MANY:
-            return 'deleteMany';
-        default:
-            return fetchType;
-    }
+  switch (fetchType) {
+    case GET_LIST:
+      return 'getList';
+    case GET_ONE:
+      return 'getOne';
+    case GET_MANY:
+      return 'getMany';
+    case GET_MANY_REFERENCE:
+      return 'getManyReference';
+    case CREATE:
+      return 'create';
+    case UPDATE:
+      return 'update';
+    case UPDATE_MANY:
+      return 'updateMany';
+    case DELETE:
+      return 'delete';
+    case DELETE_MANY:
+      return 'deleteMany';
+    default:
+      return fetchType;
+  }
 };

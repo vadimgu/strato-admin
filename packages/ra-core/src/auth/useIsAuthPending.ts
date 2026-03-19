@@ -11,33 +11,26 @@ import useAuthProvider from './useAuthProvider';
  * @returns {boolean} true if the authProvider is currently checking the authentication status or the user's access rights, false otherwise.
  */
 export const useIsAuthPending = (params: UseIsAuthPendingParams) => {
-    const { action, ...props } = params;
-    const queryClient = useQueryClient();
-    const authProvider = useAuthProvider();
-    const resource = useResourceContext(props);
+  const { action, ...props } = params;
+  const queryClient = useQueryClient();
+  const authProvider = useAuthProvider();
+  const resource = useResourceContext(props);
 
-    if (!authProvider) {
-        return false;
-    }
-
-    const authQueryState = queryClient.getQueryState(['auth', 'checkAuth', {}]);
-    const canAccessQueryState = queryClient.getQueryState([
-        'auth',
-        'canAccess',
-        { action, resource },
-    ]);
-
-    if (
-        authQueryState?.status === 'pending' ||
-        (authProvider.canAccess && canAccessQueryState?.status === 'pending')
-    ) {
-        return true;
-    }
-
+  if (!authProvider) {
     return false;
+  }
+
+  const authQueryState = queryClient.getQueryState(['auth', 'checkAuth', {}]);
+  const canAccessQueryState = queryClient.getQueryState(['auth', 'canAccess', { action, resource }]);
+
+  if (authQueryState?.status === 'pending' || (authProvider.canAccess && canAccessQueryState?.status === 'pending')) {
+    return true;
+  }
+
+  return false;
 };
 
 export type UseIsAuthPendingParams = {
-    resource?: string;
-    action: HintedString<'list' | 'create' | 'edit' | 'show' | 'delete'>;
+  resource?: string;
+  action: HintedString<'list' | 'create' | 'edit' | 'show' | 'delete'>;
 };

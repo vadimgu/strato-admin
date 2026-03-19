@@ -30,19 +30,15 @@ import { EditControllerResult } from './useEditController';
  * @see RecordContext
  */
 export const EditContextProvider = ({
-    children,
-    value,
+  children,
+  value,
 }: {
-    children: ReactNode;
-    value: EditControllerResult<any, any>;
+  children: ReactNode;
+  value: EditControllerResult<any, any>;
 }) => (
-    <EditContext.Provider value={value}>
-        <SaveContextProvider value={usePickSaveContext(value)}>
-            <RecordContextProvider<Partial<RaRecord>>
-                value={value && value.record}
-            >
-                {children}
-            </RecordContextProvider>
-        </SaveContextProvider>
-    </EditContext.Provider>
+  <EditContext.Provider value={value}>
+    <SaveContextProvider value={usePickSaveContext(value)}>
+      <RecordContextProvider<Partial<RaRecord>> value={value && value.record}>{children}</RecordContextProvider>
+    </SaveContextProvider>
+  </EditContext.Provider>
 );

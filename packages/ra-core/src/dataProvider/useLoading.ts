@@ -14,46 +14,40 @@ import { notifyManager, useQueryClient } from '@tanstack/react-query';
  * @see useIsMutating
  */
 export const useLoading = (): boolean => {
-    const client = useQueryClient();
-    const mountedRef = React.useRef(false);
-    const isFetchingRef = React.useRef(client.isFetching() > 0);
-    const isMutatingRef = React.useRef(client.isMutating() > 0);
+  const client = useQueryClient();
+  const mountedRef = React.useRef(false);
+  const isFetchingRef = React.useRef(client.isFetching() > 0);
+  const isMutatingRef = React.useRef(client.isMutating() > 0);
 
-    const [isLoading, setIsLoading] = React.useState<boolean>(
-        isFetchingRef.current || isMutatingRef.current
+  const [isLoading, setIsLoading] = React.useState<boolean>(isFetchingRef.current || isMutatingRef.current);
+
+  React.useEffect(() => {
+    mountedRef.current = true;
+
+    const unsubscribeQueryCache = client.getQueryCache().subscribe(
+      notifyManager.batchCalls(() => {
+        if (mountedRef.current) {
+          isFetchingRef.current = client.isFetching() > 0;
+          setIsLoading(isFetchingRef.current || isMutatingRef.current);
+        }
+      }),
     );
 
-    React.useEffect(() => {
-        mountedRef.current = true;
+    const unsubscribeMutationCache = client.getMutationCache().subscribe(
+      notifyManager.batchCalls(() => {
+        if (mountedRef.current) {
+          isMutatingRef.current = client.isMutating() > 0;
+          setIsLoading(isFetchingRef.current || isMutatingRef.current);
+        }
+      }),
+    );
 
-        const unsubscribeQueryCache = client.getQueryCache().subscribe(
-            notifyManager.batchCalls(() => {
-                if (mountedRef.current) {
-                    isFetchingRef.current = client.isFetching() > 0;
-                    setIsLoading(
-                        isFetchingRef.current || isMutatingRef.current
-                    );
-                }
-            })
-        );
+    return () => {
+      mountedRef.current = false;
+      unsubscribeQueryCache();
+      unsubscribeMutationCache();
+    };
+  }, [client]);
 
-        const unsubscribeMutationCache = client.getMutationCache().subscribe(
-            notifyManager.batchCalls(() => {
-                if (mountedRef.current) {
-                    isMutatingRef.current = client.isMutating() > 0;
-                    setIsLoading(
-                        isFetchingRef.current || isMutatingRef.current
-                    );
-                }
-            })
-        );
-
-        return () => {
-            mountedRef.current = false;
-            unsubscribeQueryCache();
-            unsubscribeMutationCache();
-        };
-    }, [client]);
-
-    return isLoading;
+  return isLoading;
 };

@@ -1,12 +1,4 @@
-import {
-  Table,
-  List,
-  FieldSchema,
-  Show,
-  KeyValuePairs,
-  TextField,
-  NumberField,
-} from '@strato-admin/admin';
+import { Table, List, FieldSchema, Show, KeyValuePairs, TextField, NumberField } from '@strato-admin/admin';
 
 export const customerSchema = (
   <FieldSchema>
@@ -16,12 +8,7 @@ export const customerSchema = (
     <TextField source="email" label="Email" />
     <TextField source="city" label="City" sortable />
     <NumberField source="nb_commands" label="Orders" sortable />
-    <NumberField
-      source="total_spent"
-      label="Total Spent"
-      sortable
-      options={{ style: 'currency', currency: 'USD' }}
-    />
+    <NumberField source="total_spent" label="Total Spent" sortable options={{ style: 'currency', currency: 'USD' }} />
   </FieldSchema>
 );
 

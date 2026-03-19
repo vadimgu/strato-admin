@@ -1,10 +1,10 @@
 import {
-    InfiniteData,
-    QueryKey,
-    useInfiniteQuery,
-    UseInfiniteQueryOptions,
-    UseInfiniteQueryResult,
-    useQueryClient,
+  InfiniteData,
+  QueryKey,
+  useInfiniteQuery,
+  UseInfiniteQueryOptions,
+  UseInfiniteQueryResult,
+  useQueryClient,
 } from '@tanstack/react-query';
 
 import { RaRecord, GetListParams, GetInfiniteListResult } from '../types';
@@ -66,213 +66,143 @@ const MAX_DATA_LENGTH_TO_CACHE = 100;
  * };
  */
 
-export const useInfiniteGetList = <
-    RecordType extends RaRecord = any,
-    ErrorType = Error,
->(
-    resource: string,
-    params: Partial<GetListParams> = {},
-    options: UseInfiniteGetListOptions<RecordType, ErrorType> = {}
+export const useInfiniteGetList = <RecordType extends RaRecord = any, ErrorType = Error>(
+  resource: string,
+  params: Partial<GetListParams> = {},
+  options: UseInfiniteGetListOptions<RecordType, ErrorType> = {},
 ): UseInfiniteGetListHookValue<RecordType, ErrorType> => {
-    const {
-        pagination = { page: 1, perPage: 25 },
-        sort = { field: 'id', order: 'DESC' },
-        filter = {},
-        meta,
-    } = params;
-    const dataProvider = useDataProvider();
-    const queryClient = useQueryClient();
-    const {
-        onSuccess = noop,
-        onError = noop,
-        onSettled = noop,
-        ...queryOptions
-    } = options;
-    const onSuccessEvent = useEvent(onSuccess);
-    const onErrorEvent = useEvent(onError);
-    const onSettledEvent = useEvent(onSettled);
+  const { pagination = { page: 1, perPage: 25 }, sort = { field: 'id', order: 'DESC' }, filter = {}, meta } = params;
+  const dataProvider = useDataProvider();
+  const queryClient = useQueryClient();
+  const { onSuccess = noop, onError = noop, onSettled = noop, ...queryOptions } = options;
+  const onSuccessEvent = useEvent(onSuccess);
+  const onErrorEvent = useEvent(onError);
+  const onSettledEvent = useEvent(onSettled);
 
-    const result = useInfiniteQuery<
-        GetInfiniteListResult<RecordType>,
-        ErrorType,
-        InfiniteData<GetInfiniteListResult<RecordType>>,
-        QueryKey,
-        number
-    >({
-        queryKey: [
-            resource,
-            'getInfiniteList',
-            { pagination, sort, filter, meta },
-        ],
-        queryFn: queryParams => {
-            const { pageParam = pagination.page } = queryParams;
-            return dataProvider
-                .getList<RecordType>(resource, {
-                    pagination: {
-                        page: pageParam,
-                        perPage: pagination.perPage,
-                    },
-                    sort,
-                    filter,
-                    meta,
-                    signal:
-                        dataProvider.supportAbortSignal === true
-                            ? queryParams.signal
-                            : undefined,
-                })
-                .then(({ data, pageInfo, total, meta }) => ({
-                    data,
-                    total,
-                    pageParam,
-                    pageInfo,
-                    meta,
-                }));
-        },
-        initialPageParam: pagination.page,
-        ...queryOptions,
-        getNextPageParam: lastLoadedPage => {
-            if (lastLoadedPage.pageInfo) {
-                return lastLoadedPage.pageInfo.hasNextPage
-                    ? lastLoadedPage.pageParam + 1
-                    : undefined;
-            }
-            const totalPages = Math.ceil(
-                (lastLoadedPage.total || 0) / pagination.perPage
-            );
+  const result = useInfiniteQuery<
+    GetInfiniteListResult<RecordType>,
+    ErrorType,
+    InfiniteData<GetInfiniteListResult<RecordType>>,
+    QueryKey,
+    number
+  >({
+    queryKey: [resource, 'getInfiniteList', { pagination, sort, filter, meta }],
+    queryFn: (queryParams) => {
+      const { pageParam = pagination.page } = queryParams;
+      return dataProvider
+        .getList<RecordType>(resource, {
+          pagination: {
+            page: pageParam,
+            perPage: pagination.perPage,
+          },
+          sort,
+          filter,
+          meta,
+          signal: dataProvider.supportAbortSignal === true ? queryParams.signal : undefined,
+        })
+        .then(({ data, pageInfo, total, meta }) => ({
+          data,
+          total,
+          pageParam,
+          pageInfo,
+          meta,
+        }));
+    },
+    initialPageParam: pagination.page,
+    ...queryOptions,
+    getNextPageParam: (lastLoadedPage) => {
+      if (lastLoadedPage.pageInfo) {
+        return lastLoadedPage.pageInfo.hasNextPage ? lastLoadedPage.pageParam + 1 : undefined;
+      }
+      const totalPages = Math.ceil((lastLoadedPage.total || 0) / pagination.perPage);
 
-            return lastLoadedPage.pageParam < totalPages
-                ? Number(lastLoadedPage.pageParam) + 1
-                : undefined;
-        },
-        getPreviousPageParam: lastLoadedPage => {
-            if (lastLoadedPage.pageInfo) {
-                return lastLoadedPage.pageInfo.hasPreviousPage
-                    ? lastLoadedPage.pageParam - 1
-                    : undefined;
-            }
+      return lastLoadedPage.pageParam < totalPages ? Number(lastLoadedPage.pageParam) + 1 : undefined;
+    },
+    getPreviousPageParam: (lastLoadedPage) => {
+      if (lastLoadedPage.pageInfo) {
+        return lastLoadedPage.pageInfo.hasPreviousPage ? lastLoadedPage.pageParam - 1 : undefined;
+      }
 
-            return lastLoadedPage.pageParam === 1
-                ? undefined
-                : lastLoadedPage.pageParam - 1;
-        },
-    });
+      return lastLoadedPage.pageParam === 1 ? undefined : lastLoadedPage.pageParam - 1;
+    },
+  });
 
-    const metaValue = useRef(meta);
-    const resourceValue = useRef(resource);
+  const metaValue = useRef(meta);
+  const resourceValue = useRef(resource);
 
-    useEffect(() => {
-        metaValue.current = meta;
-    }, [meta]);
+  useEffect(() => {
+    metaValue.current = meta;
+  }, [meta]);
 
-    useEffect(() => {
-        resourceValue.current = resource;
-    }, [resource]);
+  useEffect(() => {
+    resourceValue.current = resource;
+  }, [resource]);
 
-    useEffect(() => {
-        if (
-            result.data === undefined ||
-            result.error != null ||
-            result.isFetching
-        )
-            return;
-        // optimistically populate the getOne cache
-        const allPagesDataLength = result.data.pages.reduce(
-            (acc, page) => acc + page.data.length,
-            0
-        );
-        if (allPagesDataLength <= MAX_DATA_LENGTH_TO_CACHE) {
-            result.data.pages.forEach(page => {
-                page.data.forEach(record => {
-                    queryClient.setQueryData(
-                        [
-                            resourceValue.current,
-                            'getOne',
-                            { id: String(record.id), meta: metaValue.current },
-                        ],
-                        oldRecord => oldRecord ?? record
-                    );
-                });
-            });
+  useEffect(() => {
+    if (result.data === undefined || result.error != null || result.isFetching) return;
+    // optimistically populate the getOne cache
+    const allPagesDataLength = result.data.pages.reduce((acc, page) => acc + page.data.length, 0);
+    if (allPagesDataLength <= MAX_DATA_LENGTH_TO_CACHE) {
+      result.data.pages.forEach((page) => {
+        page.data.forEach((record) => {
+          queryClient.setQueryData(
+            [resourceValue.current, 'getOne', { id: String(record.id), meta: metaValue.current }],
+            (oldRecord) => oldRecord ?? record,
+          );
+        });
+      });
+    }
+
+    onSuccessEvent(result.data);
+  }, [onSuccessEvent, queryClient, result.data, result.error, result.isFetching]);
+
+  useEffect(() => {
+    if (result.error == null || result.isFetching) return;
+    onErrorEvent(result.error);
+  }, [onErrorEvent, result.error, result.isFetching]);
+
+  useEffect(() => {
+    if (result.status === 'pending' || result.isFetching) return;
+    onSettledEvent(result.data, result.error);
+  }, [onSettledEvent, result.data, result.error, result.status, result.isFetching]);
+
+  return (
+    result.data
+      ? {
+          ...result,
+          data: result.data,
+          total: result.data?.pages[0]?.total ?? undefined,
+          meta: result.data?.pages[0]?.meta,
         }
-
-        onSuccessEvent(result.data);
-    }, [
-        onSuccessEvent,
-        queryClient,
-        result.data,
-        result.error,
-        result.isFetching,
-    ]);
-
-    useEffect(() => {
-        if (result.error == null || result.isFetching) return;
-        onErrorEvent(result.error);
-    }, [onErrorEvent, result.error, result.isFetching]);
-
-    useEffect(() => {
-        if (result.status === 'pending' || result.isFetching) return;
-        onSettledEvent(result.data, result.error);
-    }, [
-        onSettledEvent,
-        result.data,
-        result.error,
-        result.status,
-        result.isFetching,
-    ]);
-
-    return (
-        result.data
-            ? {
-                  ...result,
-                  data: result.data,
-                  total: result.data?.pages[0]?.total ?? undefined,
-                  meta: result.data?.pages[0]?.meta,
-              }
-            : result
-    ) as UseInfiniteQueryResult<
-        InfiniteData<GetInfiniteListResult<RecordType>>,
-        ErrorType
-    > & {
-        total?: number;
-        meta?: any;
-    };
+      : result
+  ) as UseInfiniteQueryResult<InfiniteData<GetInfiniteListResult<RecordType>>, ErrorType> & {
+    total?: number;
+    meta?: any;
+  };
 };
 
 const noop = () => undefined;
 
-export type UseInfiniteGetListOptions<
-    RecordType extends RaRecord = any,
-    ErrorType = Error,
-> = Omit<
-    UseInfiniteQueryOptions<
-        GetInfiniteListResult<RecordType>,
-        ErrorType,
-        InfiniteData<GetInfiniteListResult<RecordType>>,
-        QueryKey,
-        number
-    >,
-    | 'queryKey'
-    | 'queryFn'
-    | 'getNextPageParam'
-    | 'getPreviousPageParam'
-    | 'initialPageParam'
+export type UseInfiniteGetListOptions<RecordType extends RaRecord = any, ErrorType = Error> = Omit<
+  UseInfiniteQueryOptions<
+    GetInfiniteListResult<RecordType>,
+    ErrorType,
+    InfiniteData<GetInfiniteListResult<RecordType>>,
+    QueryKey,
+    number
+  >,
+  'queryKey' | 'queryFn' | 'getNextPageParam' | 'getPreviousPageParam' | 'initialPageParam'
 > & {
-    onSuccess?: (data: InfiniteData<GetInfiniteListResult<RecordType>>) => void;
-    onError?: (error: ErrorType) => void;
-    onSettled?: (
-        data?: InfiniteData<GetInfiniteListResult<RecordType>>,
-        error?: ErrorType | null
-    ) => void;
+  onSuccess?: (data: InfiniteData<GetInfiniteListResult<RecordType>>) => void;
+  onError?: (error: ErrorType) => void;
+  onSettled?: (data?: InfiniteData<GetInfiniteListResult<RecordType>>, error?: ErrorType | null) => void;
 };
 
-export type UseInfiniteGetListHookValue<
-    RecordType extends RaRecord = any,
-    ErrorType = Error,
-> = UseInfiniteQueryResult<
-    InfiniteData<GetInfiniteListResult<RecordType>>,
-    ErrorType
+export type UseInfiniteGetListHookValue<RecordType extends RaRecord = any, ErrorType = Error> = UseInfiniteQueryResult<
+  InfiniteData<GetInfiniteListResult<RecordType>>,
+  ErrorType
 > & {
-    total?: number;
-    pageParam?: number;
-    meta?: any;
+  total?: number;
+  pageParam?: number;
+  meta?: any;
 };

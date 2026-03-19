@@ -47,19 +47,14 @@ import { RaRecord } from '../../types';
  * @see useListController for how it is filled
  */
 export const useListContextWithProps = <RecordType extends RaRecord = any>(
-    props?: any
+  props?: any,
 ): Partial<ListControllerResult<RecordType>> => {
-    const context = useContext(ListContext);
-    // Props take precedence over the context
-    return useMemo(
-        () =>
-            defaults(
-                {},
-                props != null ? extractListContextProps<RecordType>(props) : {},
-                context
-            ),
-        [context, props]
-    );
+  const context = useContext(ListContext);
+  // Props take precedence over the context
+  return useMemo(
+    () => defaults({}, props != null ? extractListContextProps<RecordType>(props) : {}, context),
+    [context, props],
+  );
 };
 
 /**
@@ -70,57 +65,57 @@ export const useListContextWithProps = <RecordType extends RaRecord = any>(
  * @returns {ListControllerResult} List controller props
  */
 const extractListContextProps = <RecordType extends RaRecord = any>({
-    sort,
-    data,
-    defaultTitle,
-    displayedFilters,
-    exporter,
-    filterValues,
-    hasCreate,
-    hideFilter,
-    isFetching,
-    isLoading,
-    isPending,
-    onSelect,
-    onSelectAll,
-    onToggleItem,
-    onUnselectItems,
-    page,
-    perPage,
-    refetch,
-    resource,
-    selectedIds,
-    setFilters,
-    setPage,
-    setPerPage,
-    setSort,
-    showFilter,
-    total,
+  sort,
+  data,
+  defaultTitle,
+  displayedFilters,
+  exporter,
+  filterValues,
+  hasCreate,
+  hideFilter,
+  isFetching,
+  isLoading,
+  isPending,
+  onSelect,
+  onSelectAll,
+  onToggleItem,
+  onUnselectItems,
+  page,
+  perPage,
+  refetch,
+  resource,
+  selectedIds,
+  setFilters,
+  setPage,
+  setPerPage,
+  setSort,
+  showFilter,
+  total,
 }: Partial<ListControllerResult<RecordType>> & Record<string, any>) => ({
-    sort,
-    data,
-    defaultTitle,
-    displayedFilters,
-    exporter,
-    filterValues,
-    hasCreate,
-    hideFilter,
-    isFetching,
-    isLoading,
-    isPending,
-    onSelect,
-    onSelectAll,
-    onToggleItem,
-    onUnselectItems,
-    page,
-    perPage,
-    refetch,
-    resource,
-    selectedIds,
-    setFilters,
-    setPage,
-    setPerPage,
-    setSort,
-    showFilter,
-    total,
+  sort,
+  data,
+  defaultTitle,
+  displayedFilters,
+  exporter,
+  filterValues,
+  hasCreate,
+  hideFilter,
+  isFetching,
+  isLoading,
+  isPending,
+  onSelect,
+  onSelectAll,
+  onToggleItem,
+  onUnselectItems,
+  page,
+  perPage,
+  refetch,
+  resource,
+  selectedIds,
+  setFilters,
+  setPage,
+  setPerPage,
+  setSort,
+  showFilter,
+  total,
 });

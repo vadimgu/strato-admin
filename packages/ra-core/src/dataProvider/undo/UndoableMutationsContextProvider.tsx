@@ -16,34 +16,32 @@ import type { UndoableMutation } from './types';
  * notification is displayed, but when it is dismissed.
  */
 export const UndoableMutationsContextProvider = ({ children }) => {
-    const [mutations, setMutations] = useState<UndoableMutation[]>([]);
+  const [mutations, setMutations] = useState<UndoableMutation[]>([]);
 
-    /**
-     * Add a new mutation (pushes a new mutation to the queue).
-     *
-     * Used by optimistic data provider hooks, e.g., useDelete
-     */
-    const addMutation = useCallback((mutation: UndoableMutation) => {
-        setMutations(mutations => [...mutations, mutation]);
-    }, []);
+  /**
+   * Add a new mutation (pushes a new mutation to the queue).
+   *
+   * Used by optimistic data provider hooks, e.g., useDelete
+   */
+  const addMutation = useCallback((mutation: UndoableMutation) => {
+    setMutations((mutations) => [...mutations, mutation]);
+  }, []);
 
-    /**
-     * Get the next mutation to execute (shifts the first mutation from the queue) and returns it.
-     *
-     * Used by the Notification component to process or undo the mutation
-     */
-    const takeMutation = useCallback(() => {
-        if (mutations.length === 0) return;
-        const [mutation, ...rest] = mutations;
-        setMutations(rest);
-        return mutation;
-    }, [mutations]);
+  /**
+   * Get the next mutation to execute (shifts the first mutation from the queue) and returns it.
+   *
+   * Used by the Notification component to process or undo the mutation
+   */
+  const takeMutation = useCallback(() => {
+    if (mutations.length === 0) return;
+    const [mutation, ...rest] = mutations;
+    setMutations(rest);
+    return mutation;
+  }, [mutations]);
 
-    return (
-        <TakeUndoableMutationContext.Provider value={takeMutation}>
-            <AddUndoableMutationContext.Provider value={addMutation}>
-                {children}
-            </AddUndoableMutationContext.Provider>
-        </TakeUndoableMutationContext.Provider>
-    );
+  return (
+    <TakeUndoableMutationContext.Provider value={takeMutation}>
+      <AddUndoableMutationContext.Provider value={addMutation}>{children}</AddUndoableMutationContext.Provider>
+    </TakeUndoableMutationContext.Provider>
+  );
 };

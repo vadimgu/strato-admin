@@ -7,71 +7,63 @@ import { ResourceContextProvider } from './ResourceContextProvider';
 import { RestoreScrollPosition, useRouterProvider } from '../routing';
 
 export const Resource = (props: ResourceProps) => {
-    const { create, edit, list, name, show } = props;
-    const { Route, Routes } = useRouterProvider();
+  const { create, edit, list, name, show } = props;
+  const { Route, Routes } = useRouterProvider();
 
-    return (
-        <ResourceContextProvider value={name}>
-            <Routes>
-                {create && (
-                    <Route path="create/*" element={getElement(create)} />
-                )}
-                {show && <Route path=":id/show/*" element={getElement(show)} />}
-                {edit && <Route path=":id/*" element={getElement(edit)} />}
-                {list && (
-                    <Route
-                        path="/*"
-                        element={
-                            <RestoreScrollPosition
-                                storeKey={`${name}.list.scrollPosition`}
-                            >
-                                {getElement(list)}
-                            </RestoreScrollPosition>
-                        }
-                    />
-                )}
-                {props.children}
-            </Routes>
-        </ResourceContextProvider>
-    );
+  return (
+    <ResourceContextProvider value={name}>
+      <Routes>
+        {create && <Route path="create/*" element={getElement(create)} />}
+        {show && <Route path=":id/show/*" element={getElement(show)} />}
+        {edit && <Route path=":id/*" element={getElement(edit)} />}
+        {list && (
+          <Route
+            path="/*"
+            element={
+              <RestoreScrollPosition storeKey={`${name}.list.scrollPosition`}>{getElement(list)}</RestoreScrollPosition>
+            }
+          />
+        )}
+        {props.children}
+      </Routes>
+    </ResourceContextProvider>
+  );
 };
 
-const getElement = (
-    ElementOrComponent: ComponentType<any> | React.ReactNode
-) => {
-    if (isValidElement(ElementOrComponent)) {
-        return ElementOrComponent;
-    }
+const getElement = (ElementOrComponent: ComponentType<any> | React.ReactNode) => {
+  if (isValidElement(ElementOrComponent)) {
+    return ElementOrComponent;
+  }
 
-    if (isValidElementType(ElementOrComponent)) {
-        const Element = ElementOrComponent as ComponentType<any>;
-        return <Element />;
-    }
+  if (isValidElementType(ElementOrComponent)) {
+    const Element = ElementOrComponent as ComponentType<any>;
+    return <Element />;
+  }
 
-    return null;
+  return null;
 };
 
 Resource.raName = 'Resource';
 
 Resource.registerResource = ({
-    create,
-    edit,
-    icon,
-    list,
-    name,
-    options,
-    show,
-    recordRepresentation,
-    hasCreate,
-    hasEdit,
-    hasShow,
+  create,
+  edit,
+  icon,
+  list,
+  name,
+  options,
+  show,
+  recordRepresentation,
+  hasCreate,
+  hasEdit,
+  hasShow,
 }: ResourceProps) => ({
-    name,
-    options,
-    hasList: !!list,
-    hasCreate: !!create || !!hasCreate,
-    hasEdit: !!edit || !!hasEdit,
-    hasShow: !!show || !!hasShow,
-    icon,
-    recordRepresentation,
+  name,
+  options,
+  hasList: !!list,
+  hasCreate: !!create || !!hasCreate,
+  hasEdit: !!edit || !!hasEdit,
+  hasShow: !!show || !!hasShow,
+  icon,
+  recordRepresentation,
 });

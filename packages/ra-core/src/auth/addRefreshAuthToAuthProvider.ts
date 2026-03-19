@@ -20,34 +20,27 @@ import { AuthProvider } from '../types';
  *
  * const authProvider = addRefreshAuthToAuthProvider(authProvider, refreshAuth);
  */
-export const addRefreshAuthToAuthProvider = <
-    AuthProviderType extends AuthProvider = AuthProvider,
->(
-    provider: AuthProviderType,
-    refreshAuth: () => Promise<void>
+export const addRefreshAuthToAuthProvider = <AuthProviderType extends AuthProvider = AuthProvider>(
+  provider: AuthProviderType,
+  refreshAuth: () => Promise<void>,
 ): AuthProviderType => {
-    const proxy = new Proxy(provider, {
-        get(_, name) {
-            const shouldIntercept =
-                AuthProviderInterceptedMethods.includes(name.toString()) &&
-                provider[name.toString()] != null;
+  const proxy = new Proxy(provider, {
+    get(_, name) {
+      const shouldIntercept =
+        AuthProviderInterceptedMethods.includes(name.toString()) && provider[name.toString()] != null;
 
-            if (shouldIntercept) {
-                return async (...args: any[]) => {
-                    await refreshAuth();
-                    return provider[name.toString()](...args);
-                };
-            }
+      if (shouldIntercept) {
+        return async (...args: any[]) => {
+          await refreshAuth();
+          return provider[name.toString()](...args);
+        };
+      }
 
-            return provider[name.toString()];
-        },
-    });
+      return provider[name.toString()];
+    },
+  });
 
-    return proxy;
+  return proxy;
 };
 
-const AuthProviderInterceptedMethods = [
-    'checkAuth',
-    'getIdentity',
-    'getPermissions',
-];
+const AuthProviderInterceptedMethods = ['checkAuth', 'getIdentity', 'getPermissions'];

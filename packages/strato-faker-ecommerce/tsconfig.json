@@ -2,11 +2,7 @@
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "target": "ESNext",
-    "lib": [
-      "DOM",
-      "DOM.Iterable",
-      "ESNext"
-    ],
+    "lib": ["DOM", "DOM.Iterable", "ESNext"],
     "module": "ESNext",
     "moduleResolution": "Bundler",
     "resolveJsonModule": true,
@@ -14,9 +10,7 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
-    "types": [
-      "node"
-    ],
+    "types": ["node"],
     "baseUrl": ".",
     "paths": {
       "@strato-admin/admin": ["../strato-admin/src"],
@@ -28,7 +22,5 @@
       "@strato-admin/language-fr": ["../strato-language-fr/src"]
     }
   },
-  "include": [
-    "src"
-  ]
+  "include": ["src"]
 }

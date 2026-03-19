@@ -1,18 +1,10 @@
 import { useAuthenticated, useRequireAccess } from '../../auth';
 import { RaRecord } from '../../types';
-import {
-    useGetOne,
-    UseGetOneHookValue,
-    UseGetOneOptions,
-} from '../../dataProvider';
+import { useGetOne, UseGetOneHookValue, UseGetOneOptions } from '../../dataProvider';
 import { useTranslate } from '../../i18n';
 import { RedirectionSideEffect, useRedirect, useParams } from '../../routing';
 import { useNotify } from '../../notification';
-import {
-    useResourceContext,
-    useGetResourceLabel,
-    useGetRecordRepresentation,
-} from '../../core';
+import { useResourceContext, useGetResourceLabel, useGetRecordRepresentation } from '../../core';
 
 /**
  * Prepare data for the Show view.
@@ -46,176 +38,157 @@ import {
  *     return <ShowView {...controllerProps} />;
  * };
  */
-export const useShowController = <
-    RecordType extends RaRecord = any,
-    ErrorType = Error,
->(
-    props: ShowControllerProps<RecordType, ErrorType> = {}
+export const useShowController = <RecordType extends RaRecord = any, ErrorType = Error>(
+  props: ShowControllerProps<RecordType, ErrorType> = {},
 ): ShowControllerResult<RecordType, ErrorType> => {
-    const {
-        disableAuthentication = false,
-        id: propsId,
-        queryOptions = {},
-        redirectOnError = DefaultRedirectOnError,
-    } = props;
-    const resource = useResourceContext(props);
-    if (!resource) {
-        throw new Error(
-            `useShowController requires a non-empty resource prop or context`
-        );
-    }
+  const {
+    disableAuthentication = false,
+    id: propsId,
+    queryOptions = {},
+    redirectOnError = DefaultRedirectOnError,
+  } = props;
+  const resource = useResourceContext(props);
+  if (!resource) {
+    throw new Error(`useShowController requires a non-empty resource prop or context`);
+  }
 
-    const { isPending: isPendingAuthenticated } = useAuthenticated({
-        enabled: !disableAuthentication,
-    });
+  const { isPending: isPendingAuthenticated } = useAuthenticated({
+    enabled: !disableAuthentication,
+  });
 
-    const { isPending: isPendingCanAccess } = useRequireAccess<RecordType>({
-        action: 'show',
-        resource,
-        enabled: !disableAuthentication && !isPendingAuthenticated,
-    });
+  const { isPending: isPendingCanAccess } = useRequireAccess<RecordType>({
+    action: 'show',
+    resource,
+    enabled: !disableAuthentication && !isPendingAuthenticated,
+  });
 
-    const getRecordRepresentation = useGetRecordRepresentation(resource);
-    const translate = useTranslate();
-    const notify = useNotify();
-    const redirect = useRedirect();
-    const { id: routeId } = useParams<{ id?: string }>();
-    if (!routeId && !propsId) {
-        throw new Error(
-            'useShowController requires an id prop or a route with an /:id? parameter.'
-        );
-    }
-    const id = propsId != null ? propsId : routeId;
-    const { meta, ...otherQueryOptions } = queryOptions;
+  const getRecordRepresentation = useGetRecordRepresentation(resource);
+  const translate = useTranslate();
+  const notify = useNotify();
+  const redirect = useRedirect();
+  const { id: routeId } = useParams<{ id?: string }>();
+  if (!routeId && !propsId) {
+    throw new Error('useShowController requires an id prop or a route with an /:id? parameter.');
+  }
+  const id = propsId != null ? propsId : routeId;
+  const { meta, ...otherQueryOptions } = queryOptions;
 
-    const {
-        data: record,
-        error,
-        isLoading,
-        isFetching,
-        isPaused,
-        isPending,
-        isPlaceholderData,
-        refetch,
-    } = useGetOne<RecordType, ErrorType>(
-        resource,
-        { id, meta },
-        {
-            enabled:
-                (!isPendingAuthenticated && !isPendingCanAccess) ||
-                disableAuthentication,
-            onError: () => {
-                notify('ra.notification.item_doesnt_exist', {
-                    type: 'error',
-                });
-                redirect(redirectOnError, resource, id);
-            },
-            retry: false,
-            ...otherQueryOptions,
-        }
+  const {
+    data: record,
+    error,
+    isLoading,
+    isFetching,
+    isPaused,
+    isPending,
+    isPlaceholderData,
+    refetch,
+  } = useGetOne<RecordType, ErrorType>(
+    resource,
+    { id, meta },
+    {
+      enabled: (!isPendingAuthenticated && !isPendingCanAccess) || disableAuthentication,
+      onError: () => {
+        notify('ra.notification.item_doesnt_exist', {
+          type: 'error',
+        });
+        redirect(redirectOnError, resource, id);
+      },
+      retry: false,
+      ...otherQueryOptions,
+    },
+  );
+
+  // eslint-disable-next-line eqeqeq
+  if (record && record.id && record.id != id) {
+    throw new Error(
+      `useShowController: Fetched record's id attribute (${record.id}) must match the requested 'id' (${id})`,
     );
+  }
 
-    // eslint-disable-next-line eqeqeq
-    if (record && record.id && record.id != id) {
-        throw new Error(
-            `useShowController: Fetched record's id attribute (${record.id}) must match the requested 'id' (${id})`
-        );
-    }
+  const getResourceLabel = useGetResourceLabel();
+  const recordRepresentation = getRecordRepresentation(record);
+  const defaultTitle = translate(`resources.${resource}.page.show`, {
+    id,
+    record,
+    recordRepresentation: typeof recordRepresentation === 'string' ? recordRepresentation : '',
+    _: translate('ra.page.show', {
+      name: getResourceLabel(resource, 1),
+      id,
+      record,
+      recordRepresentation: typeof recordRepresentation === 'string' ? recordRepresentation : '',
+    }),
+  });
 
-    const getResourceLabel = useGetResourceLabel();
-    const recordRepresentation = getRecordRepresentation(record);
-    const defaultTitle = translate(`resources.${resource}.page.show`, {
-        id,
-        record,
-        recordRepresentation:
-            typeof recordRepresentation === 'string'
-                ? recordRepresentation
-                : '',
-        _: translate('ra.page.show', {
-            name: getResourceLabel(resource, 1),
-            id,
-            record,
-            recordRepresentation:
-                typeof recordRepresentation === 'string'
-                    ? recordRepresentation
-                    : '',
-        }),
-    });
-
-    return {
-        defaultTitle,
-        error,
-        isLoading,
-        isFetching,
-        isPaused,
-        isPending,
-        isPlaceholderData,
-        record,
-        redirectOnError,
-        refetch,
-        resource,
-    } as ShowControllerResult<RecordType, ErrorType>;
+  return {
+    defaultTitle,
+    error,
+    isLoading,
+    isFetching,
+    isPaused,
+    isPending,
+    isPlaceholderData,
+    record,
+    redirectOnError,
+    refetch,
+    resource,
+  } as ShowControllerResult<RecordType, ErrorType>;
 };
 
 const DefaultRedirectOnError = 'list';
 
-export interface ShowControllerProps<
-    RecordType extends RaRecord = any,
-    ErrorType = Error,
-> {
-    disableAuthentication?: boolean;
-    id?: RecordType['id'];
-    queryOptions?: UseGetOneOptions<RecordType, ErrorType>;
-    resource?: string;
-    redirectOnError?: RedirectionSideEffect;
+export interface ShowControllerProps<RecordType extends RaRecord = any, ErrorType = Error> {
+  disableAuthentication?: boolean;
+  id?: RecordType['id'];
+  queryOptions?: UseGetOneOptions<RecordType, ErrorType>;
+  resource?: string;
+  redirectOnError?: RedirectionSideEffect;
 }
 
 export interface ShowControllerBaseResult<RecordType extends RaRecord = any> {
-    defaultTitle?: string;
-    isFetching: boolean;
-    isLoading: boolean;
-    isPaused?: boolean;
-    isPlaceholderData?: boolean;
-    redirectOnError?: RedirectionSideEffect;
-    resource: string;
-    record?: RecordType;
-    refetch: UseGetOneHookValue<RecordType>['refetch'];
+  defaultTitle?: string;
+  isFetching: boolean;
+  isLoading: boolean;
+  isPaused?: boolean;
+  isPlaceholderData?: boolean;
+  redirectOnError?: RedirectionSideEffect;
+  resource: string;
+  record?: RecordType;
+  refetch: UseGetOneHookValue<RecordType>['refetch'];
 }
 
-export interface ShowControllerLoadingResult<RecordType extends RaRecord = any>
-    extends ShowControllerBaseResult<RecordType> {
-    record: undefined;
-    error: null;
-    isPending: true;
+export interface ShowControllerLoadingResult<
+  RecordType extends RaRecord = any,
+> extends ShowControllerBaseResult<RecordType> {
+  record: undefined;
+  error: null;
+  isPending: true;
 }
 export interface ShowControllerLoadingErrorResult<
-    RecordType extends RaRecord = any,
-    TError = Error,
+  RecordType extends RaRecord = any,
+  TError = Error,
 > extends ShowControllerBaseResult<RecordType> {
-    record: undefined;
-    error: TError;
-    isPending: false;
+  record: undefined;
+  error: TError;
+  isPending: false;
 }
 export interface ShowControllerRefetchErrorResult<
-    RecordType extends RaRecord = any,
-    TError = Error,
+  RecordType extends RaRecord = any,
+  TError = Error,
 > extends ShowControllerBaseResult<RecordType> {
-    record: RecordType;
-    error: TError;
-    isPending: false;
+  record: RecordType;
+  error: TError;
+  isPending: false;
 }
-export interface ShowControllerSuccessResult<RecordType extends RaRecord = any>
-    extends ShowControllerBaseResult<RecordType> {
-    record: RecordType;
-    error: null;
-    isPending: false;
+export interface ShowControllerSuccessResult<
+  RecordType extends RaRecord = any,
+> extends ShowControllerBaseResult<RecordType> {
+  record: RecordType;
+  error: null;
+  isPending: false;
 }
 
-export type ShowControllerResult<
-    RecordType extends RaRecord = any,
-    ErrorType = Error,
-> =
-    | ShowControllerLoadingResult<RecordType>
-    | ShowControllerLoadingErrorResult<RecordType, ErrorType>
-    | ShowControllerRefetchErrorResult<RecordType, ErrorType>
-    | ShowControllerSuccessResult<RecordType>;
+export type ShowControllerResult<RecordType extends RaRecord = any, ErrorType = Error> =
+  | ShowControllerLoadingResult<RecordType>
+  | ShowControllerLoadingErrorResult<RecordType, ErrorType>
+  | ShowControllerRefetchErrorResult<RecordType, ErrorType>
+  | ShowControllerSuccessResult<RecordType>;

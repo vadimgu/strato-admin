@@ -9,12 +9,10 @@ import { UserMenuContext, UserMenuContextValue } from './UserMenuContext';
  * @param {UserMenuContextValue} props.value The user menu context
  */
 export const UserMenuContextProvider = ({ children, value }) => (
-    <UserMenuContext.Provider value={value}>
-        {children}
-    </UserMenuContext.Provider>
+  <UserMenuContext.Provider value={value}>{children}</UserMenuContext.Provider>
 );
 
 export type UserMenuContextProviderProps = {
-    children: ReactNode;
-    value: UserMenuContextValue;
+  children: ReactNode;
+  value: UserMenuContextValue;
 };

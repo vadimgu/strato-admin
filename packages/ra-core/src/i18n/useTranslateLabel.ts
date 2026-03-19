@@ -5,40 +5,30 @@ import { getFieldLabelTranslationArgs } from '../util';
 import { useResourceContext, useOptionalSourceContext } from '../core';
 
 export const useTranslateLabel = () => {
-    const translate = useTranslate();
-    const resourceFromContext = useResourceContext();
-    const sourceContext = useOptionalSourceContext();
+  const translate = useTranslate();
+  const resourceFromContext = useResourceContext();
+  const sourceContext = useOptionalSourceContext();
 
-    return useCallback(
-        ({
-            source,
-            label,
-            resource,
-        }: {
-            source?: string;
-            label?: ReactNode;
-            resource?: string;
-        }) => {
-            if (label === false || label === '') {
-                return null;
-            }
+  return useCallback(
+    ({ source, label, resource }: { source?: string; label?: ReactNode; resource?: string }) => {
+      if (label === false || label === '') {
+        return null;
+      }
 
-            if (label && typeof label !== 'string') {
-                return label;
-            }
+      if (label && typeof label !== 'string') {
+        return label;
+      }
 
-            return translate(
-                ...getFieldLabelTranslationArgs({
-                    label: label as string,
-                    defaultLabel: source
-                        ? sourceContext?.getLabel(source)
-                        : undefined,
-                    resource,
-                    resourceFromContext,
-                    source,
-                })
-            );
-        },
-        [resourceFromContext, translate, sourceContext]
-    );
+      return translate(
+        ...getFieldLabelTranslationArgs({
+          label: label as string,
+          defaultLabel: source ? sourceContext?.getLabel(source) : undefined,
+          resource,
+          resourceFromContext,
+          source,
+        }),
+      );
+    },
+    [resourceFromContext, translate, sourceContext],
+  );
 };

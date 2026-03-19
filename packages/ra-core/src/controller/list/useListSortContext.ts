@@ -13,11 +13,9 @@ import { ListSortContext, ListSortContextValue } from './ListSortContext';
  * @see useListController for how it is filled
  */
 export const useListSortContext = (): ListSortContextValue => {
-    const context = useContext(ListSortContext);
-    if (!context) {
-        throw new Error(
-            'useListSortContext must be used inside a ListSortContextProvider'
-        );
-    }
-    return context;
+  const context = useContext(ListSortContext);
+  if (!context) {
+    throw new Error('useListSortContext must be used inside a ListSortContextProvider');
+  }
+  return context;
 };

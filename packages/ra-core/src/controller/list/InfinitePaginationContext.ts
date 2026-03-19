@@ -23,24 +23,23 @@ import { InfiniteListControllerResult } from './useInfiniteListController';
  *     );
  * };
  */
-export const InfinitePaginationContext =
-    createContext<InfinitePaginationContextValue>({
-        hasNextPage: false,
-        fetchNextPage: () => Promise.reject('not implemented'),
-        isFetchingNextPage: false,
-        hasPreviousPage: false,
-        fetchPreviousPage: () => Promise.reject('not implemented'),
-        isFetchingPreviousPage: false,
-    });
+export const InfinitePaginationContext = createContext<InfinitePaginationContextValue>({
+  hasNextPage: false,
+  fetchNextPage: () => Promise.reject('not implemented'),
+  isFetchingNextPage: false,
+  hasPreviousPage: false,
+  fetchPreviousPage: () => Promise.reject('not implemented'),
+  isFetchingPreviousPage: false,
+});
 
 InfinitePaginationContext.displayName = 'InfinitePaginationContext';
 
 export type InfinitePaginationContextValue = Pick<
-    InfiniteListControllerResult,
-    | 'fetchNextPage'
-    | 'fetchPreviousPage'
-    | 'isFetchingNextPage'
-    | 'hasNextPage'
-    | 'hasPreviousPage'
-    | 'isFetchingPreviousPage'
+  InfiniteListControllerResult,
+  | 'fetchNextPage'
+  | 'fetchPreviousPage'
+  | 'isFetchingNextPage'
+  | 'hasNextPage'
+  | 'hasPreviousPage'
+  | 'isFetchingPreviousPage'
 >;

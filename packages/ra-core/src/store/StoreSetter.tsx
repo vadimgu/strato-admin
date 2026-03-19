@@ -33,17 +33,17 @@ import { useStoreContext } from './useStoreContext';
  * @param {children} props.children Children are rendered as is, on mount
  */
 export const StoreSetter = ({ value, name, children }: StoreSetterProps) => {
-    const { setItem } = useStoreContext();
+  const { setItem } = useStoreContext();
 
-    useEffect(() => {
-        setItem(name, value);
-    }, [name, setItem, value]);
+  useEffect(() => {
+    setItem(name, value);
+  }, [name, setItem, value]);
 
-    return <>{children}</>;
+  return <>{children}</>;
 };
 
 export interface StoreSetterProps {
-    name: string;
-    value: any;
-    children: ReactNode;
+  name: string;
+  value: any;
+  children: ReactNode;
 }

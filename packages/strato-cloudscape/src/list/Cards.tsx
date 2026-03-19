@@ -11,12 +11,7 @@ export interface ListCardsProps<T extends RaRecord = any> extends Omit<CardsProp
   exclude?: string[];
 }
 
-export const ListCards = <T extends RaRecord = any>({ 
-  renderItem, 
-  include,
-  exclude,
-  ...props 
-}: ListCardsProps<T>) => {
+export const ListCards = <T extends RaRecord = any>({ renderItem, include, exclude, ...props }: ListCardsProps<T>) => {
   const { items, paginationProps, collectionProps } = useCollection<T>({
     filtering: {},
     pagination: {},
@@ -37,7 +32,9 @@ export const ListCards = <T extends RaRecord = any>({
     sections: [
       {
         id: 'main',
-        content: (item: T) => <RecordContextProvider value={item}>{finalRenderItem(item) as any}</RecordContextProvider>,
+        content: (item: T) => (
+          <RecordContextProvider value={item}>{finalRenderItem(item) as any}</RecordContextProvider>
+        ),
       },
     ],
   };

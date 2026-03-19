@@ -1,10 +1,6 @@
 import { render, cleanup } from '@testing-library/react';
 import { vi, describe, it, expect, afterEach } from 'vitest';
-import {
-  useFieldValue,
-  useRecordContext,
-  useResourceDefinition,
-} from '@strato-admin/core';
+import { useFieldValue, useRecordContext, useResourceDefinition } from '@strato-admin/core';
 import IdField from './IdField';
 
 // Mock strato-core
@@ -32,9 +28,7 @@ describe('IdField', () => {
   it('should render the ID and link to show by default if hasShow is true', () => {
     const record = { id: '123' };
     (useRecordContext as any).mockReturnValue(record);
-    (useFieldValue as any).mockImplementation(
-      ({ source }: any) => (record as any)[source]
-    );
+    (useFieldValue as any).mockImplementation(({ source }: any) => (record as any)[source]);
     (useResourceDefinition as any).mockReturnValue({ hasShow: true });
 
     const { getByTestId, getByText } = render(<IdField />);
@@ -47,9 +41,7 @@ describe('IdField', () => {
   it('should not link by default if hasShow is false', () => {
     const record = { id: '123' };
     (useRecordContext as any).mockReturnValue(record);
-    (useFieldValue as any).mockImplementation(
-      ({ source }: any) => (record as any)[source]
-    );
+    (useFieldValue as any).mockImplementation(({ source }: any) => (record as any)[source]);
     (useResourceDefinition as any).mockReturnValue({ hasShow: false });
 
     const { getByTestId, getByText } = render(<IdField />);
@@ -62,9 +54,7 @@ describe('IdField', () => {
   it('should use custom source if provided', () => {
     const record = { identifier: 'abc' };
     (useRecordContext as any).mockReturnValue(record);
-    (useFieldValue as any).mockImplementation(
-      ({ source }: any) => (record as any)[source]
-    );
+    (useFieldValue as any).mockImplementation(({ source }: any) => (record as any)[source]);
     (useResourceDefinition as any).mockReturnValue({ hasShow: true });
 
     const { getByText } = render(<IdField source="identifier" />);
@@ -75,9 +65,7 @@ describe('IdField', () => {
   it('should allow overriding link', () => {
     const record = { id: '123' };
     (useRecordContext as any).mockReturnValue(record);
-    (useFieldValue as any).mockImplementation(
-      ({ source }: any) => (record as any)[source]
-    );
+    (useFieldValue as any).mockImplementation(({ source }: any) => (record as any)[source]);
     (useResourceDefinition as any).mockReturnValue({ hasShow: true });
 
     const { getByTestId } = render(<IdField link="edit" />);

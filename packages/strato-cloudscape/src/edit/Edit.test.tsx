@@ -57,7 +57,8 @@ describe('Edit', () => {
   it('should render content and title when record is loaded', () => {
     (useEditContext as any).mockReturnValue({
       isLoading: false,
-      record: { id: 1 }, defaultTitle: 'Products',
+      record: { id: 1 },
+      defaultTitle: 'Products',
       resource: 'products',
     });
     (useResourceContext as any).mockReturnValue('products');
@@ -76,7 +77,8 @@ describe('Edit', () => {
   it('should use provided title', () => {
     (useEditContext as any).mockReturnValue({
       isLoading: false,
-      record: { id: 1 }, defaultTitle: 'Products',
+      record: { id: 1 },
+      defaultTitle: 'Products',
       resource: 'products',
     });
 

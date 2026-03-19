@@ -15,13 +15,13 @@ import { Identifier, RaRecord } from '../types';
  * const recordId = useGetRecordId();
  */
 export function useGetRecordId(recordId?: Identifier): Identifier {
-    const contextRecord = useRecordContext<RaRecord>();
-    const { id: routeId } = useParams<{ id?: string }>();
-    const actualRecordId = recordId ?? contextRecord?.id ?? routeId;
-    if (actualRecordId == null)
-        throw new Error(
-            `useGetRecordId could not find the current record id. You need to use it inside a RecordContextProvider, or inside a supported route, or provide the record id to the hook yourself.`
-        );
+  const contextRecord = useRecordContext<RaRecord>();
+  const { id: routeId } = useParams<{ id?: string }>();
+  const actualRecordId = recordId ?? contextRecord?.id ?? routeId;
+  if (actualRecordId == null)
+    throw new Error(
+      `useGetRecordId could not find the current record id. You need to use it inside a RecordContextProvider, or inside a supported route, or provide the record id to the hook yourself.`,
+    );
 
-    return actualRecordId;
+  return actualRecordId;
 }

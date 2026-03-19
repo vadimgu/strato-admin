@@ -8,12 +8,12 @@ import { ReactNode } from 'react';
  * @returns Nothing. This is a configuration component.
  */
 export const CustomRoutes = (_props: CustomRoutesProps) => {
-    return null;
+  return null;
 };
 
 CustomRoutes.raName = 'CustomRoutes';
 
 export type CustomRoutesProps = {
-    children: ReactNode;
-    noLayout?: boolean;
+  children: ReactNode;
+  noLayout?: boolean;
 };

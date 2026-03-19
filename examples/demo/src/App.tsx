@@ -12,8 +12,6 @@ import { reviewSchema } from './resources/reviews';
 import enAppMessages from '../locales/en/messages.compiled.json';
 import frAppMessages from '../locales/fr/messages.compiled.json';
 
-
-
 // 3. Provide the locale and messages to I18nProvider when rendering:
 
 const messages = {
@@ -21,14 +19,10 @@ const messages = {
   fr: { ...frenchMessages, ...frAppMessages },
 };
 
-const i18nProvider = icuI18nProvider(
-  (locale) => messages[locale as keyof typeof messages],
-  'en',
-  [
-    { locale: 'en', name: 'English' },
-    { locale: 'fr', name: 'Français' },
-  ],
-);
+const i18nProvider = icuI18nProvider((locale) => messages[locale as keyof typeof messages], 'en', [
+  { locale: 'en', name: 'English' },
+  { locale: 'fr', name: 'Français' },
+]);
 
 export default function App() {
   return (
@@ -64,13 +58,16 @@ export default function App() {
       >
         {orderSchema}
       </ResourceSchema>
-      <ResourceSchema name="reviews" label="Reviews" canDelete={false} canCreate={false}
-      // list={ReviewList}
-      // show={ReviewShow}
+      <ResourceSchema
+        name="reviews"
+        label="Reviews"
+        canDelete={false}
+        canCreate={false}
+        // list={ReviewList}
+        // show={ReviewShow}
       >
         {reviewSchema}
       </ResourceSchema>
     </Admin>
   );
 }
-

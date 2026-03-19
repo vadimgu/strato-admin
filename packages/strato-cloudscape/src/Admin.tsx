@@ -37,7 +37,7 @@ registerFieldInputMapping(
     [NumberField, NumberInput],
     [CurrencyField, NumberInput],
     [ReferenceField, ReferenceInput],
-  ])
+  ]),
 );
 
 export interface AdminProps extends CoreAdminProps {

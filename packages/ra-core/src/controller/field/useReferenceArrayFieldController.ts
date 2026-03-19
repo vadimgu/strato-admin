@@ -9,23 +9,20 @@ import { useTranslate } from '../../i18n';
 import { useGetResourceLabel } from '../../core';
 
 export interface UseReferenceArrayFieldControllerParams<
-    RecordType extends RaRecord = RaRecord,
-    ReferenceRecordType extends RaRecord = RaRecord,
-    ErrorType = Error,
+  RecordType extends RaRecord = RaRecord,
+  ReferenceRecordType extends RaRecord = RaRecord,
+  ErrorType = Error,
 > {
-    filter?: any;
-    exporter?: Exporter<ReferenceRecordType> | false;
-    page?: number;
-    perPage?: number;
-    record?: RecordType;
-    reference: string;
-    resource?: string;
-    sort?: SortPayload;
-    source: string;
-    queryOptions?: Omit<
-        UseQueryOptions<ReferenceRecordType[], ErrorType>,
-        'queryFn' | 'queryKey'
-    >;
+  filter?: any;
+  exporter?: Exporter<ReferenceRecordType> | false;
+  page?: number;
+  perPage?: number;
+  record?: RecordType;
+  reference: string;
+  resource?: string;
+  sort?: SortPayload;
+  source: string;
+  queryOptions?: Omit<UseQueryOptions<ReferenceRecordType[], ErrorType>, 'queryFn' | 'queryKey'>;
 }
 
 const emptyArray = [];
@@ -55,94 +52,73 @@ const defaultFilter = {};
  * @returns {ListControllerResult} The reference props
  */
 export const useReferenceArrayFieldController = <
-    RecordType extends RaRecord = RaRecord,
-    ReferenceRecordType extends RaRecord = RaRecord,
-    ErrorType = Error,
+  RecordType extends RaRecord = RaRecord,
+  ReferenceRecordType extends RaRecord = RaRecord,
+  ErrorType = Error,
 >(
-    props: UseReferenceArrayFieldControllerParams<
-        RecordType,
-        ReferenceRecordType,
-        ErrorType
-    >
+  props: UseReferenceArrayFieldControllerParams<RecordType, ReferenceRecordType, ErrorType>,
 ): ListControllerResult<ReferenceRecordType, ErrorType> => {
-    const {
-        filter = defaultFilter,
-        exporter = defaultExporter,
-        page = 1,
-        perPage = 1000,
-        record,
-        reference,
-        sort,
-        source,
-        queryOptions = {},
-    } = props;
-    const notify = useNotify();
-    const translate = useTranslate();
-    const value = get(record, source);
-    const { meta, ...otherQueryOptions } = queryOptions;
-    const ids = Array.isArray(value) ? value : emptyArray;
+  const {
+    filter = defaultFilter,
+    exporter = defaultExporter,
+    page = 1,
+    perPage = 1000,
+    record,
+    reference,
+    sort,
+    source,
+    queryOptions = {},
+  } = props;
+  const notify = useNotify();
+  const translate = useTranslate();
+  const value = get(record, source);
+  const { meta, ...otherQueryOptions } = queryOptions;
+  const ids = Array.isArray(value) ? value : emptyArray;
 
-    const {
-        data,
-        error,
-        isLoading,
-        isFetching,
-        isPaused,
-        isPending,
-        isPlaceholderData,
-        refetch,
-    } = useGetManyAggregate<ReferenceRecordType, ErrorType>(
-        reference,
-        { ids, meta },
-        {
-            onError: error =>
-                notify(
-                    typeof error === 'string'
-                        ? error
-                        : (error as Error)?.message ||
-                              'ra.notification.http_error',
-                    {
-                        type: 'error',
-                        messageArgs: {
-                            _:
-                                typeof error === 'string'
-                                    ? error
-                                    : (error as Error)?.message
-                                      ? (error as Error).message
-                                      : undefined,
-                        },
-                    }
-                ),
-            ...otherQueryOptions,
-        }
-    );
-
-    const listProps = useList<ReferenceRecordType, ErrorType>({
-        data,
-        error,
-        exporter,
-        filter,
-        isFetching,
-        isLoading,
-        isPaused,
-        isPending,
-        isPlaceholderData,
-        page,
-        perPage,
-        sort,
-    });
-
-    const getResourceLabel = useGetResourceLabel();
-    const defaultTitle = translate(`resources.${reference}.page.list`, {
-        _: translate('ra.page.list', {
-            name: getResourceLabel(reference, 2),
+  const { data, error, isLoading, isFetching, isPaused, isPending, isPlaceholderData, refetch } = useGetManyAggregate<
+    ReferenceRecordType,
+    ErrorType
+  >(
+    reference,
+    { ids, meta },
+    {
+      onError: (error) =>
+        notify(typeof error === 'string' ? error : (error as Error)?.message || 'ra.notification.http_error', {
+          type: 'error',
+          messageArgs: {
+            _: typeof error === 'string' ? error : (error as Error)?.message ? (error as Error).message : undefined,
+          },
         }),
-    });
+      ...otherQueryOptions,
+    },
+  );
 
-    return {
-        ...listProps,
-        defaultTitle,
-        refetch,
-        resource: reference,
-    };
+  const listProps = useList<ReferenceRecordType, ErrorType>({
+    data,
+    error,
+    exporter,
+    filter,
+    isFetching,
+    isLoading,
+    isPaused,
+    isPending,
+    isPlaceholderData,
+    page,
+    perPage,
+    sort,
+  });
+
+  const getResourceLabel = useGetResourceLabel();
+  const defaultTitle = translate(`resources.${reference}.page.list`, {
+    _: translate('ra.page.list', {
+      name: getResourceLabel(reference, 2),
+    }),
+  });
+
+  return {
+    ...listProps,
+    defaultTitle,
+    refetch,
+    resource: reference,
+  };
 };

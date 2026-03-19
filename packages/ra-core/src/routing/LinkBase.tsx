@@ -18,12 +18,10 @@ export type { RouterLinkProps as LinkBaseProps } from './RouterProvider';
  *     <LinkBase to="/posts/1">Post 1</LinkBase>
  * );
  */
-export const LinkBase = forwardRef<HTMLAnchorElement, RouterLinkProps>(
-    (props, ref) => {
-        const provider = useRouterProvider();
-        // @ts-expect-error - React 19 type mismatch for provider.Link
-        return <provider.Link ref={ref} {...props} />;
-    }
-);
+export const LinkBase = forwardRef<HTMLAnchorElement, RouterLinkProps>((props, ref) => {
+  const provider = useRouterProvider();
+  // @ts-expect-error - React 19 type mismatch for provider.Link
+  return <provider.Link ref={ref} {...props} />;
+});
 
 LinkBase.displayName = 'LinkBase';

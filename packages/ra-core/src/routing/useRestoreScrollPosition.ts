@@ -23,24 +23,18 @@ import { useLocation } from './useLocation';
  *   );
  * };
  */
-export const useRestoreScrollPosition = (
-    storeKey: string,
-    debounceMs = 250
-) => {
-    const [position, setPosition] = useTrackScrollPosition(
-        storeKey,
-        debounceMs
-    );
-    const location = useLocation();
+export const useRestoreScrollPosition = (storeKey: string, debounceMs = 250) => {
+  const [position, setPosition] = useTrackScrollPosition(storeKey, debounceMs);
+  const location = useLocation();
 
-    useEffect(() => {
-        if (position != null && location.state?._scrollToTop !== true) {
-            setPosition(undefined);
-            window.scrollTo(0, position);
-        }
-        // We only want to run this effect on mount
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+  useEffect(() => {
+    if (position != null && location.state?._scrollToTop !== true) {
+      setPosition(undefined);
+      window.scrollTo(0, position);
+    }
+    // We only want to run this effect on mount
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 };
 
 /**
@@ -63,25 +57,25 @@ export const useRestoreScrollPosition = (
  * };
  */
 export const useTrackScrollPosition = (
-    storeKey: string,
-    debounceMs: number = 250
+  storeKey: string,
+  debounceMs: number = 250,
 ): [number | undefined, (value: number | undefined) => void] => {
-    const [position, setPosition] = useStore<number | undefined>(storeKey);
+  const [position, setPosition] = useStore<number | undefined>(storeKey);
 
-    useEffect(() => {
-        if (typeof window === 'undefined') {
-            return;
-        }
-        const handleScroll = debounce(() => {
-            setPosition(window.scrollY);
-        }, debounceMs);
+  useEffect(() => {
+    if (typeof window === 'undefined') {
+      return;
+    }
+    const handleScroll = debounce(() => {
+      setPosition(window.scrollY);
+    }, debounceMs);
 
-        window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll);
 
-        return () => {
-            window.removeEventListener('scroll', handleScroll);
-        };
-    }, [debounceMs, setPosition]);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, [debounceMs, setPosition]);
 
-    return [position, setPosition];
+  return [position, setPosition];
 };

@@ -5,8 +5,7 @@ import { type RecordLinkType } from '../RecordLink';
 /**
  * Common props for all field components in strato-cloudscape.
  */
-export interface FieldProps<RecordType extends RaRecord = RaRecord>
-  extends Omit<BaseFieldProps<RecordType>, 'source'> {
+export interface FieldProps<RecordType extends RaRecord = RaRecord> extends Omit<BaseFieldProps<RecordType>, 'source'> {
   /**
    * The property name in the record that should be displayed.
    */
@@ -40,8 +39,8 @@ export interface FieldProps<RecordType extends RaRecord = RaRecord>
    */
   input?: Record<string, any> | React.ReactElement | false;
   /**
-   * Whether the field is required. 
-   * This is used to automatically add validation to the inferred input 
+   * Whether the field is required.
+   * This is used to automatically add validation to the inferred input
    * and potentially show warnings in display views.
    */
   isRequired?: boolean;

@@ -20,11 +20,7 @@ export interface FormProps extends Omit<RaFormProps, 'children'> {
 
 export const Form = ({ children, include, exclude, toolbar, ...props }: FormProps) => {
   const saveContext = useSaveContext();
-  const { 
-    inputSchema: schemaChildren,
-    formFields,
-    excludeFormFields,
-  } = useResourceSchema();
+  const { inputSchema: schemaChildren, formFields, excludeFormFields } = useResourceSchema();
 
   const finalChildren = React.useMemo(() => {
     const baseChildren = children || schemaChildren;
@@ -35,11 +31,11 @@ export const Form = ({ children, include, exclude, toolbar, ...props }: FormProp
 
     if (finalInclude) {
       result = result.filter(
-        (child) => React.isValidElement(child) && finalInclude.includes((child.props as any).source)
+        (child) => React.isValidElement(child) && finalInclude.includes((child.props as any).source),
       );
     } else if (finalExclude) {
       result = result.filter(
-        (child) => React.isValidElement(child) && !finalExclude.includes((child.props as any).source)
+        (child) => React.isValidElement(child) && !finalExclude.includes((child.props as any).source),
       );
     }
 

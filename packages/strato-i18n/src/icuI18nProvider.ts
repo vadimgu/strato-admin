@@ -41,7 +41,7 @@ export const icuI18nProvider = (
 
       // 1. Generate the hash ID for the English key
       const msgid = generateMessageId(finalKey);
-      
+
       // 2. Lookup by hash first, then fall back to literal key (for ra.* keys)
       const message = (messages as any)[msgid] || (messages as any)[finalKey];
 

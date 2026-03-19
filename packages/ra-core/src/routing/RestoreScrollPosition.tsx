@@ -20,14 +20,14 @@ import { useRestoreScrollPosition } from './useRestoreScrollPosition';
  * };
  */
 export const RestoreScrollPosition = ({
-    children,
-    storeKey,
-    debounce = 250,
+  children,
+  storeKey,
+  debounce = 250,
 }: {
-    storeKey: string;
-    debounce?: number;
-    children: ReactNode;
+  storeKey: string;
+  debounce?: number;
+  children: ReactNode;
 }) => {
-    useRestoreScrollPosition(storeKey, debounce);
-    return children;
+  useRestoreScrollPosition(storeKey, debounce);
+  return children;
 };

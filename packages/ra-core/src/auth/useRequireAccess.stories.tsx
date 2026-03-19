@@ -7,111 +7,94 @@ import { useRequireAccess, UseRequireAccessResult } from './useRequireAccess';
 import { TestMemoryRouter, RouterLocation } from '../routing';
 
 export default {
-    title: '@strato-admin/ra-core/auth/useRequireAccess',
+  title: '@strato-admin/ra-core/auth/useRequireAccess',
 };
 
 const UseRequireAccess = ({
-    children,
+  children,
+  action,
+  resource,
+  record,
+}: {
+  children: any;
+  action: string;
+  resource: string;
+  record?: any;
+}) => {
+  const res = useRequireAccess({
     action,
     resource,
     record,
-}: {
-    children: any;
-    action: string;
-    resource: string;
-    record?: any;
-}) => {
-    const res = useRequireAccess({
-        action,
-        resource,
-        record,
-        retry: false,
-    });
+    retry: false,
+  });
 
-    return children(res);
+  return children(res);
 };
 
 const StateInspector = ({ state }: { state: UseRequireAccessResult }) => (
-    <div>
-        <span>{state.isPending ? 'Loading' : 'Protected Content'}</span>
-        <span>{state.error ? 'Error' : null}</span>
-    </div>
+  <div>
+    <span>{state.isPending ? 'Loading' : 'Protected Content'}</span>
+    <span>{state.error ? 'Error' : null}</span>
+  </div>
 );
 
 const defaultAuthProvider: AuthProvider = {
-    login: () => Promise.reject('bad method'),
-    logout: () => Promise.reject('bad method'),
-    checkAuth: () => Promise.reject('bad method'),
-    checkError: () => Promise.reject('bad method'),
-    getPermissions: () => Promise.reject('bad method'),
-    canAccess: ({ action }) =>
-        new Promise(resolve => setTimeout(resolve, 500, action === 'read')),
+  login: () => Promise.reject('bad method'),
+  logout: () => Promise.reject('bad method'),
+  checkAuth: () => Promise.reject('bad method'),
+  checkError: () => Promise.reject('bad method'),
+  getPermissions: () => Promise.reject('bad method'),
+  canAccess: ({ action }) => new Promise((resolve) => setTimeout(resolve, 500, action === 'read')),
 };
 
 export const Basic = ({
-    authProvider = defaultAuthProvider,
-    basename,
-    locationCallback,
-    queryClient,
+  authProvider = defaultAuthProvider,
+  basename,
+  locationCallback,
+  queryClient,
 }: {
-    authProvider?: AuthProvider | null;
-    basename?: string;
-    locationCallback?: (l: RouterLocation) => void;
-    queryClient?: QueryClient;
+  authProvider?: AuthProvider | null;
+  basename?: string;
+  locationCallback?: (l: RouterLocation) => void;
+  queryClient?: QueryClient;
 }) => (
-    <TestMemoryRouter locationCallback={locationCallback}>
-        <CoreAdminContext
-            authProvider={authProvider != null ? authProvider : undefined}
-            queryClient={queryClient}
-            basename={basename}
-        >
-            <Routes>
-                <Route
-                    path="/"
-                    element={
-                        <UseRequireAccess action="read" resource="test">
-                            {state => <StateInspector state={state} />}
-                        </UseRequireAccess>
-                    }
-                />
-                <Route
-                    path="/access-denied"
-                    element={<div>Access denied</div>}
-                />
-                <Route
-                    path="/authentication-error"
-                    element={<div>Authentication Error</div>}
-                />
-            </Routes>
-        </CoreAdminContext>
-    </TestMemoryRouter>
+  <TestMemoryRouter locationCallback={locationCallback}>
+    <CoreAdminContext
+      authProvider={authProvider != null ? authProvider : undefined}
+      queryClient={queryClient}
+      basename={basename}
+    >
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <UseRequireAccess action="read" resource="test">
+              {(state) => <StateInspector state={state} />}
+            </UseRequireAccess>
+          }
+        />
+        <Route path="/access-denied" element={<div>Access denied</div>} />
+        <Route path="/authentication-error" element={<div>Authentication Error</div>} />
+      </Routes>
+    </CoreAdminContext>
+  </TestMemoryRouter>
 );
 
-export const NoAuthProvider = ({
-    queryClient,
-}: {
-    queryClient?: QueryClient;
-}) => (
-    <TestMemoryRouter>
-        <CoreAdminContext authProvider={undefined} queryClient={queryClient}>
-            <Routes>
-                <Route
-                    path="/"
-                    element={
-                        <UseRequireAccess action="read" resource="test">
-                            {state => <StateInspector state={state} />}
-                        </UseRequireAccess>
-                    }
-                />
-                <Route
-                    path="/access-denied"
-                    element={<div>Access denied</div>}
-                />
-                <Route
-                    path="/authentication-error"
-                    element={<div>Authentication Error</div>}
-                />
-            </Routes>
-        </CoreAdminContext>
-    </TestMemoryRouter>
+export const NoAuthProvider = ({ queryClient }: { queryClient?: QueryClient }) => (
+  <TestMemoryRouter>
+    <CoreAdminContext authProvider={undefined} queryClient={queryClient}>
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <UseRequireAccess action="read" resource="test">
+              {(state) => <StateInspector state={state} />}
+            </UseRequireAccess>
+          }
+        />
+        <Route path="/access-denied" element={<div>Access denied</div>} />
+        <Route path="/authentication-error" element={<div>Authentication Error</div>} />
+      </Routes>
+    </CoreAdminContext>
+  </TestMemoryRouter>
 );

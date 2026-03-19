@@ -66,11 +66,11 @@ describe('TableHeader', () => {
 
   it('should render title and counter', () => {
     (useResourceContext as any).mockReturnValue('products');
-    (useListContext as any).mockReturnValue({ 
-      total: 10, 
-      isPending: false, 
-      selectedIds: [], 
-      defaultTitle: 'Products' 
+    (useListContext as any).mockReturnValue({
+      total: 10,
+      isPending: false,
+      selectedIds: [],
+      defaultTitle: 'Products',
     });
     (useResourceDefinitions as any).mockReturnValue({ products: { hasCreate: false } });
 

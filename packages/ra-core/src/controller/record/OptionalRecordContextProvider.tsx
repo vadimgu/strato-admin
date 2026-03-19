@@ -17,17 +17,10 @@ import { RecordContextProvider } from './RecordContext';
  *     </OptionalRecordContextProvider>
  * );
  */
-export const OptionalRecordContextProvider = <
-    RecordType extends RaRecord | Omit<RaRecord, 'id'> = RaRecord,
->({
-    value,
-    children,
+export const OptionalRecordContextProvider = <RecordType extends RaRecord | Omit<RaRecord, 'id'> = RaRecord>({
+  value,
+  children,
 }: {
-    children: React.ReactNode;
-    value?: RecordType;
-}) =>
-    value ? (
-        <RecordContextProvider value={value}>{children}</RecordContextProvider>
-    ) : (
-        children
-    );
+  children: React.ReactNode;
+  value?: RecordType;
+}) => (value ? <RecordContextProvider value={value}>{children}</RecordContextProvider> : children);

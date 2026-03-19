@@ -12,14 +12,14 @@ The abstraction uses a Provider pattern similar to `dataProvider` and `authProvi
 // Default: react-router (no configuration needed)
 <Admin dataProvider={dataProvider}>
   <Resource name="posts" list={PostList} />
-</Admin>
+</Admin>;
 
 // Alternative: TanStack Router
 import { tanStackRouterProvider } from 'react-admin';
 
 <Admin dataProvider={dataProvider} routerProvider={tanStackRouterProvider}>
   <Resource name="posts" list={PostList} />
-</Admin>
+</Admin>;
 ```
 
 ### Key Components
@@ -54,32 +54,32 @@ The `RouterProvider` interface defines all routing primitives react-admin needs:
 
 ### Hooks
 
-| Hook | Description | react-router equivalent |
-|------|-------------|------------------------|
-| `useLocation()` | Returns current location object | `useLocation()` |
-| `useNavigate()` | Returns navigation function | `useNavigate()` |
-| `useParams()` | Returns URL parameters | `useParams()` |
-| `useBlocker()` | Blocks navigation (unsaved changes) | `useBlocker()` |
-| `useMatch()` | Matches current location to pattern | `useMatch()` |
-| `useInRouterContext()` | Checks if inside router | `useInRouterContext()` |
-| `useCanBlock()` | Checks if blocking is supported | N/A (data router check) |
+| Hook                   | Description                         | react-router equivalent |
+| ---------------------- | ----------------------------------- | ----------------------- |
+| `useLocation()`        | Returns current location object     | `useLocation()`         |
+| `useNavigate()`        | Returns navigation function         | `useNavigate()`         |
+| `useParams()`          | Returns URL parameters              | `useParams()`           |
+| `useBlocker()`         | Blocks navigation (unsaved changes) | `useBlocker()`          |
+| `useMatch()`           | Matches current location to pattern | `useMatch()`            |
+| `useInRouterContext()` | Checks if inside router             | `useInRouterContext()`  |
+| `useCanBlock()`        | Checks if blocking is supported     | N/A (data router check) |
 
 ### Components
 
-| Component | Description | react-router equivalent |
-|-----------|-------------|------------------------|
-| `Link` | Navigation link | `<Link>` |
-| `Navigate` | Declarative redirect | `<Navigate>` |
-| `Route` | Route definition | `<Route>` |
-| `Routes` | Routes container | `<Routes>` |
-| `Outlet` | Nested route outlet | `<Outlet>` |
+| Component  | Description          | react-router equivalent |
+| ---------- | -------------------- | ----------------------- |
+| `Link`     | Navigation link      | `<Link>`                |
+| `Navigate` | Declarative redirect | `<Navigate>`            |
+| `Route`    | Route definition     | `<Route>`               |
+| `Routes`   | Routes container     | `<Routes>`              |
+| `Outlet`   | Nested route outlet  | `<Outlet>`              |
 
 ### Utilities
 
-| Utility | Description |
-|---------|-------------|
-| `matchPath()` | Match a pattern against a pathname |
-| `RouterWrapper` | Creates router if not in context |
+| Utility         | Description                        |
+| --------------- | ---------------------------------- |
+| `matchPath()`   | Match a pattern against a pathname |
+| `RouterWrapper` | Creates router if not in context   |
 
 ## Implementing a New Router Adapter
 
@@ -89,25 +89,41 @@ To add support for a new routing library, implement the `RouterProvider` interfa
 import type { RouterProvider } from './RouterProvider';
 
 export const myRouterProvider: RouterProvider = {
-    // Hooks
-    useLocation: () => { /* ... */ },
-    useNavigate: () => { /* ... */ },
-    useParams: () => { /* ... */ },
-    useBlocker: (shouldBlock) => { /* ... */ },
-    useMatch: (pattern) => { /* ... */ },
-    useInRouterContext: () => { /* ... */ },
-    useCanBlock: () => { /* ... */ },
+  // Hooks
+  useLocation: () => {
+    /* ... */
+  },
+  useNavigate: () => {
+    /* ... */
+  },
+  useParams: () => {
+    /* ... */
+  },
+  useBlocker: (shouldBlock) => {
+    /* ... */
+  },
+  useMatch: (pattern) => {
+    /* ... */
+  },
+  useInRouterContext: () => {
+    /* ... */
+  },
+  useCanBlock: () => {
+    /* ... */
+  },
 
-    // Components
-    Link: MyLink,
-    Navigate: MyNavigate,
-    Route: MyRoute,
-    Routes: MyRoutes,
-    Outlet: MyOutlet,
+  // Components
+  Link: MyLink,
+  Navigate: MyNavigate,
+  Route: MyRoute,
+  Routes: MyRoutes,
+  Outlet: MyOutlet,
 
-    // Utilities
-    matchPath: (pattern, pathname) => { /* ... */ },
-    RouterWrapper: MyRouterWrapper,
+  // Utilities
+  matchPath: (pattern, pathname) => {
+    /* ... */
+  },
+  RouterWrapper: MyRouterWrapper,
 };
 ```
 
@@ -124,9 +140,7 @@ export const myRouterProvider: RouterProvider = {
 ```typescript
 // Good: duck-typing
 const isRouteElement = (child) => {
-    return child.props.path !== undefined ||
-           child.props.index !== undefined ||
-           child.props.element !== undefined;
+  return child.props.path !== undefined || child.props.index !== undefined || child.props.element !== undefined;
 };
 
 // Bad: strict type checking (breaks with react-router's Route)
@@ -143,10 +157,10 @@ The abstraction maintains full backward compatibility with react-admin's existin
 
 ## Key Files Reference
 
-| File | Purpose |
-|------|---------|
-| `RouterProvider.ts` | The interface contract all adapters must implement |
-| `RouterProviderContext.tsx` | Context and `useRouterProvider` hook |
-| `adapters/reactRouterProvider.tsx` | Default implementation using react-router |
-| `adapters/tanStackRouterProvider.tsx` | Alternative implementation using TanStack Router |
-| `AdminRouter.tsx` | High-level component that sets up routing for Admin |
+| File                                  | Purpose                                             |
+| ------------------------------------- | --------------------------------------------------- |
+| `RouterProvider.ts`                   | The interface contract all adapters must implement  |
+| `RouterProviderContext.tsx`           | Context and `useRouterProvider` hook                |
+| `adapters/reactRouterProvider.tsx`    | Default implementation using react-router           |
+| `adapters/tanStackRouterProvider.tsx` | Alternative implementation using TanStack Router    |
+| `AdminRouter.tsx`                     | High-level component that sets up routing for Admin |

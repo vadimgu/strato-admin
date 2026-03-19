@@ -19,16 +19,9 @@ import { ResourceContextProvider } from './ResourceContextProvider';
  * );
  */
 export const OptionalResourceContextProvider = ({
-    value,
-    children,
+  value,
+  children,
 }: {
-    value?: ResourceContextValue;
-    children: ReactNode;
-}) =>
-    value ? (
-        <ResourceContextProvider value={value}>
-            {children}
-        </ResourceContextProvider>
-    ) : (
-        children
-    );
+  value?: ResourceContextValue;
+  children: ReactNode;
+}) => (value ? <ResourceContextProvider value={value}>{children}</ResourceContextProvider> : children);

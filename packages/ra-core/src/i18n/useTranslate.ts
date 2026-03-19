@@ -23,14 +23,13 @@ import { useI18nProvider } from './useI18nProvider';
  * }
  */
 export const useTranslate = (): TranslateFunction => {
-    const i18nProvider = useI18nProvider();
-    const translate = useCallback(
-        (key: string, options?: any) =>
-            i18nProvider.translate(key, options) as string,
-        // update the hook each time the locale changes
-        [i18nProvider]
-    );
-    return i18nProvider ? translate : identity;
+  const i18nProvider = useI18nProvider();
+  const translate = useCallback(
+    (key: string, options?: any) => i18nProvider.translate(key, options) as string,
+    // update the hook each time the locale changes
+    [i18nProvider],
+  );
+  return i18nProvider ? translate : identity;
 };
 
-const identity = key => key;
+const identity = (key) => key;

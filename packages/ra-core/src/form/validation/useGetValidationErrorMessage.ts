@@ -1,7 +1,4 @@
-import {
-    ValidationErrorMessage,
-    ValidationErrorMessageWithArgs,
-} from './validate';
+import { ValidationErrorMessage, ValidationErrorMessageWithArgs } from './validate';
 import { useTranslate } from '../../i18n';
 
 /**
@@ -29,13 +26,13 @@ import { useTranslate } from '../../i18n';
  * @see ValidationErrorMessageWithArgs
  */
 export const useGetValidationErrorMessage = () => {
-    const translate = useTranslate();
+  const translate = useTranslate();
 
-    return (error: ValidationErrorMessage) => {
-        if ((error as ValidationErrorMessageWithArgs).message != null) {
-            const { message, args } = error as ValidationErrorMessageWithArgs;
-            return translate(message, { _: message, ...args });
-        }
-        return translate(error as string, { _: error });
-    };
+  return (error: ValidationErrorMessage) => {
+    if ((error as ValidationErrorMessageWithArgs).message != null) {
+      const { message, args } = error as ValidationErrorMessageWithArgs;
+      return translate(message, { _: message, ...args });
+    }
+    return translate(error as string, { _: error });
+  };
 };

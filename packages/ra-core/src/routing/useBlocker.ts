@@ -13,9 +13,7 @@ import type { RouterBlocker, RouterBlockerFunction } from './RouterProvider';
  *   blocker.proceed(); // or blocker.reset();
  * }
  */
-export const useBlocker = (
-    shouldBlock: RouterBlockerFunction | boolean
-): RouterBlocker => {
-    const provider = useRouterProvider();
-    return provider.useBlocker(shouldBlock);
+export const useBlocker = (shouldBlock: RouterBlockerFunction | boolean): RouterBlocker => {
+  const provider = useRouterProvider();
+  return provider.useBlocker(shouldBlock);
 };

@@ -7,21 +7,17 @@ import { useResourceDefinitions } from './useResourceDefinitions';
  * It calls the `authProvider.canAccess` if available to check the permissions.
  */
 export const useFirstResourceWithListAccess = () => {
-    const { isPending: isPendingAuthenticated } = useAuthenticated();
-    const resources = useResourceDefinitions();
-    const resourcesNames = Object.keys(resources).filter(
-        resource => resources[resource].hasList
-    );
+  const { isPending: isPendingAuthenticated } = useAuthenticated();
+  const resources = useResourceDefinitions();
+  const resourcesNames = Object.keys(resources).filter((resource) => resources[resource].hasList);
 
-    const { canAccess, isPending } = useCanAccessResources({
-        action: 'list',
-        resources: resourcesNames,
-        enabled: !isPendingAuthenticated,
-    });
+  const { canAccess, isPending } = useCanAccessResources({
+    action: 'list',
+    resources: resourcesNames,
+    enabled: !isPendingAuthenticated,
+  });
 
-    const firstResourceWithListAccess = resourcesNames.find(
-        resource => canAccess && canAccess[resource] === true
-    );
+  const firstResourceWithListAccess = resourcesNames.find((resource) => canAccess && canAccess[resource] === true);
 
-    return { resource: firstResourceWithListAccess, isPending };
+  return { resource: firstResourceWithListAccess, isPending };
 };

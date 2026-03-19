@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { ReferenceInputBase, type ReferenceInputBaseProps } from '@strato-admin/core';
 import { useFormFieldContext } from './FormFieldContext';

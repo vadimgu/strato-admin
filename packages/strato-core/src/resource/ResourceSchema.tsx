@@ -1,7 +1,12 @@
 import { ReactNode } from 'react';
 import { Resource, ResourceProps } from '@strato-admin/ra-core';
 import { ResourceSchemaProvider } from './ResourceSchemaProvider';
-import { registerGlobalSchemas, useSchemaRegistry, getDefaultResourceComponents, parseUnifiedSchema } from './SchemaRegistry';
+import {
+  registerGlobalSchemas,
+  useSchemaRegistry,
+  getDefaultResourceComponents,
+  parseUnifiedSchema,
+} from './SchemaRegistry';
 
 export interface ResourceSchemaProps extends ResourceProps {
   /**
@@ -65,9 +70,9 @@ export interface ResourceSchemaProps extends ResourceProps {
 }
 
 /**
- * A wrapper around React-Admin's <Resource> that allows defining 
+ * A wrapper around React-Admin's <Resource> that allows defining
  * the field and input schemas via children.
- * 
+ *
  * @example
  * <ResourceSchema name="posts">
  *   <TextField source="title" />
@@ -113,10 +118,10 @@ export const ResourceSchema = ({
 
   const finalProps = {
     ...props,
-    list: canList ? (props.list || defaultComponents.list) : undefined,
-    create: canCreate ? (props.create || defaultComponents.create) : undefined,
-    edit: canEdit ? (props.edit || defaultComponents.edit) : undefined,
-    show: canShowDetails ? (props.show || defaultComponents.show) : undefined,
+    list: canList ? props.list || defaultComponents.list : undefined,
+    create: canCreate ? props.create || defaultComponents.create : undefined,
+    edit: canEdit ? props.edit || defaultComponents.edit : undefined,
+    show: canShowDetails ? props.show || defaultComponents.show : undefined,
   };
 
   return (
@@ -171,7 +176,6 @@ ResourceSchema.registerResource = (props: ResourceSchemaProps) => {
     });
   }
 
-
   const defaultComponents = getDefaultResourceComponents();
   const mergedOptions = {
     ...options,
@@ -191,10 +195,10 @@ ResourceSchema.registerResource = (props: ResourceSchemaProps) => {
 
   const finalProps = {
     ...props,
-    list: canList ? (list || defaultComponents.list) : undefined,
-    create: canCreate ? (create || defaultComponents.create) : undefined,
-    edit: canEdit ? (edit || defaultComponents.edit) : undefined,
-    show: canShowDetails ? (show || defaultComponents.show) : undefined,
+    list: canList ? list || defaultComponents.list : undefined,
+    create: canCreate ? create || defaultComponents.create : undefined,
+    edit: canEdit ? edit || defaultComponents.edit : undefined,
+    show: canShowDetails ? show || defaultComponents.show : undefined,
     options: mergedOptions,
   };
 

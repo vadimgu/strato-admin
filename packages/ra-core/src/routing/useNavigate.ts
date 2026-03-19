@@ -12,6 +12,6 @@ import type { RouterNavigateFunction } from './RouterProvider';
  * navigate(-1); // go back
  */
 export const useNavigate = (): RouterNavigateFunction => {
-    const provider = useRouterProvider();
-    return provider.useNavigate();
+  const provider = useRouterProvider();
+  return provider.useNavigate();
 };

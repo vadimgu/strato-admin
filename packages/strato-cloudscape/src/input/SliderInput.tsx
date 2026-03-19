@@ -5,44 +5,43 @@ import { FormFieldContext, useFormFieldContext } from './FormFieldContext';
 import { InputProps } from './types';
 
 export interface SliderInputProps
-    extends Omit<CloudscapeSliderProps, 'onChange' | 'value' | 'i18nStrings'>,
-        InputProps {}
+  extends Omit<CloudscapeSliderProps, 'onChange' | 'value' | 'i18nStrings'>, InputProps {}
 
 export const SliderInput = (props: SliderInputProps) => {
-    const { label, source, defaultValue, validate, ...rest } = props;
-    const context = useFormFieldContext();
-    const inputState =
-        context ??
-        useInput({
-            source,
-            defaultValue,
-            validate,
-            ...rest,
-        });
+  const { label, source, defaultValue, validate, ...rest } = props;
+  const context = useFormFieldContext();
+  const inputState =
+    context ??
+    useInput({
+      source,
+      defaultValue,
+      validate,
+      ...rest,
+    });
 
-    const { id, field } = inputState;
+  const { id, field } = inputState;
 
-    // Cloudscape Slider requires a number value
-    const value = typeof field.value === 'number' ? field.value : props.min ?? 0;
+  // Cloudscape Slider requires a number value
+  const value = typeof field.value === 'number' ? field.value : (props.min ?? 0);
 
-    const inner = (
-        <CloudscapeSlider
-            {...(rest as any)}
-            id={id}
-            value={value}
-            onChange={(event) => field.onChange(event.detail.value)}
-        />
-    );
+  const inner = (
+    <CloudscapeSlider
+      {...(rest as any)}
+      id={id}
+      value={value}
+      onChange={(event) => field.onChange(event.detail.value)}
+    />
+  );
 
-    if (context) {
-        return inner;
-    }
+  if (context) {
+    return inner;
+  }
 
-    return (
-        <FormFieldContext.Provider value={inputState}>
-            <FormField {...props}>{inner}</FormField>
-        </FormFieldContext.Provider>
-    );
+  return (
+    <FormFieldContext.Provider value={inputState}>
+      <FormField {...props}>{inner}</FormField>
+    </FormFieldContext.Provider>
+  );
 };
 
 export default SliderInput;

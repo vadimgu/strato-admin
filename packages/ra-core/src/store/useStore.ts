@@ -45,51 +45,44 @@ import { useStoreContext } from './useStoreContext';
  *     );
  * };
  */
-function useStore<T>(
-    key: string,
-    defaultValue: T
-): [T, (value: T | ((value: T) => void), defaultValue?: T) => void];
+function useStore<T>(key: string, defaultValue: T): [T, (value: T | ((value: T) => void), defaultValue?: T) => void];
 function useStore<T = undefined>(
-    key: string,
-    defaultValue?: T | undefined
+  key: string,
+  defaultValue?: T | undefined,
 ): [T | undefined, (value: T | ((value: T) => void), defaultValue?: T) => void];
 function useStore<T>(key, defaultValue) {
-    const { getItem, setItem, subscribe } = useStoreContext();
-    const [value, setValue] = useState<T>(() => getItem(key, defaultValue));
+  const { getItem, setItem, subscribe } = useStoreContext();
+  const [value, setValue] = useState<T>(() => getItem(key, defaultValue));
 
-    // subscribe to changes on this key, and change the state when they happen
-    useEffect(() => {
-        const storedValue = getItem(key, defaultValue);
-        if (!isEqual(value, storedValue)) {
-            setValue(storedValue);
-        }
-        const unsubscribe = subscribe(key, newValue => {
-            setValue(typeof newValue === 'undefined' ? defaultValue : newValue);
-        });
-        return () => unsubscribe();
-    }, [key, subscribe, defaultValue, getItem, value]);
-
-    const set = useEvent((valueParam: T, runtimeDefaultValue: T) => {
-        const newValue =
-            typeof valueParam === 'function' ? valueParam(value) : valueParam;
-        // we only set the value in the Store;
-        // the value in the local state will be updated
-        // by the useEffect during the next render
-        setItem(
-            key,
-            typeof newValue === 'undefined'
-                ? typeof runtimeDefaultValue === 'undefined'
-                    ? defaultValue
-                    : runtimeDefaultValue
-                : newValue
-        );
+  // subscribe to changes on this key, and change the state when they happen
+  useEffect(() => {
+    const storedValue = getItem(key, defaultValue);
+    if (!isEqual(value, storedValue)) {
+      setValue(storedValue);
+    }
+    const unsubscribe = subscribe(key, (newValue) => {
+      setValue(typeof newValue === 'undefined' ? defaultValue : newValue);
     });
-    return [value, set];
+    return () => unsubscribe();
+  }, [key, subscribe, defaultValue, getItem, value]);
+
+  const set = useEvent((valueParam: T, runtimeDefaultValue: T) => {
+    const newValue = typeof valueParam === 'function' ? valueParam(value) : valueParam;
+    // we only set the value in the Store;
+    // the value in the local state will be updated
+    // by the useEffect during the next render
+    setItem(
+      key,
+      typeof newValue === 'undefined'
+        ? typeof runtimeDefaultValue === 'undefined'
+          ? defaultValue
+          : runtimeDefaultValue
+        : newValue,
+    );
+  });
+  return [value, set];
 }
 
-export type useStoreResult<T = any> = [
-    T,
-    (value: T | ((value: T) => void), defaultValue?: T) => void,
-];
+export type useStoreResult<T = any> = [T, (value: T | ((value: T) => void), defaultValue?: T) => void];
 
 export { useStore };

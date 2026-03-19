@@ -1,29 +1,22 @@
-
 import React from 'react';
-import {
-  useInput,
-  useResourceContext,
-  useChoicesContext,
-  useGetRecordRepresentation,
-} from '@strato-admin/core';
+import { useInput, useResourceContext, useChoicesContext, useGetRecordRepresentation } from '@strato-admin/core';
 import CloudscapeSelect, { SelectProps as CloudscapeSelectProps } from '@cloudscape-design/components/select';
 import { FormField } from './FormField';
 import { FormFieldContext, useFormFieldContext } from './FormFieldContext';
 import { InputProps } from './types';
 
 export interface SelectInputProps
-    extends Omit<CloudscapeSelectProps, 'onChange' | 'selectedOption' | 'options' | 'onBlur'>,
-        InputProps {
-    choices?: Array<{ id: string | number; [key: string]: any }>;
-    /**
-     * The text to display for the empty option when isRequired is false.
-     * @default "-"
-     */
-    emptyText?: string;
+  extends Omit<CloudscapeSelectProps, 'onChange' | 'selectedOption' | 'options' | 'onBlur'>, InputProps {
+  choices?: Array<{ id: string | number; [key: string]: any }>;
+  /**
+   * The text to display for the empty option when isRequired is false.
+   * @default "-"
+   */
+  emptyText?: string;
 }
 
 export const SelectInput = (props: SelectInputProps) => {
-    const { label, source, defaultValue, validate, choices: choicesProp, emptyText = '-', ...rest } = props;
+  const { label, source, defaultValue, validate, choices: choicesProp, emptyText = '-', ...rest } = props;
   const resource = useResourceContext();
   const { allChoices, isPending } = useChoicesContext(props);
   const getRecordRepresentation = useGetRecordRepresentation(resource);

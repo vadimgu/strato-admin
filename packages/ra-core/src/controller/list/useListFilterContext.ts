@@ -12,11 +12,9 @@ import { ListFilterContext, ListFilterContextValue } from './ListFilterContext';
  * @see useListController for how it is filled
  */
 export const useListFilterContext = (): ListFilterContextValue => {
-    const context = useContext(ListFilterContext);
-    if (!context) {
-        throw new Error(
-            'useListFilterContext must be used inside a ListFilterContextProvider'
-        );
-    }
-    return context;
+  const context = useContext(ListFilterContext);
+  if (!context) {
+    throw new Error('useListFilterContext must be used inside a ListFilterContextProvider');
+  }
+  return context;
 };

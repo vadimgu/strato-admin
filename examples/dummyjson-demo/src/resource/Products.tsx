@@ -38,53 +38,20 @@ const ProductShow = () => (
 );
 
 export const productsResource = (
-  <ResourceSchema
-    name="products"
-    recordRepresentation={(record) => record.title}
-    label="Products"
-    show={ProductShow}
-  >
-    <TextField 
-      source="title" 
-      label="Title" 
-      link="show" 
-      sortable 
-      input={{ constraints: [required] }} 
+  <ResourceSchema name="products" recordRepresentation={(record) => record.title} label="Products" show={ProductShow}>
+    <TextField source="title" label="Title" link="show" sortable input={{ constraints: [required] }} />
+    <TextField source="brand" label="Brand" sortable />
+    <ReferenceField source="category" reference="products/categories" label="Category" link="show" sortable />
+    <NumberField
+      source="price"
+      label="Price"
+      options={{ style: 'currency', currency: 'USD' }}
+      sortable
+      input={{ constraints: [required] }}
     />
-    <TextField 
-      source="brand" 
-      label="Brand" 
-      sortable 
-    />
-    <ReferenceField 
-      source="category" 
-      reference="products/categories" 
-      label="Category" 
-      link="show" 
-      sortable 
-    />
-    <NumberField 
-      source="price" 
-      label="Price" 
-      options={{ style: 'currency', currency: 'USD' }} 
-      sortable 
-      input={{ constraints: [required] }} 
-    />
-    <NumberField 
-      source="rating" 
-      label="Rating" 
-      sortable 
-    />
-    <NumberField 
-      source="stock" 
-      label="Stock" 
-      sortable 
-    />
-    <TextField 
-      source="description" 
-      label="Description" 
-      input={{ multiline: true }} 
-    />
+    <NumberField source="rating" label="Rating" sortable />
+    <NumberField source="stock" label="Stock" sortable />
+    <TextField source="description" label="Description" input={{ multiline: true }} />
   </ResourceSchema>
 );
 

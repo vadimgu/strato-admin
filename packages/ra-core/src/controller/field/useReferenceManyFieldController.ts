@@ -7,18 +7,8 @@ import lodashDebounce from 'lodash/debounce.js';
 import { removeEmpty, useEvent } from '../../util';
 import { useDataProvider, useGetManyReference } from '../../dataProvider';
 import { useNotify } from '../../notification';
-import {
-    Exporter,
-    FilterPayload,
-    Identifier,
-    RaRecord,
-    SortPayload,
-} from '../../types';
-import type {
-    GetDataOptions,
-    HandleSelectAllParams,
-    ListControllerResult,
-} from '../list';
+import { Exporter, FilterPayload, Identifier, RaRecord, SortPayload } from '../../types';
+import type { GetDataOptions, HandleSelectAllParams, ListControllerResult } from '../list';
 import { DEFAULT_MAX_RESULTS } from '../list/useListController';
 import usePaginationState from '../usePaginationState';
 import { useRecordSelection } from '../list/useRecordSelection';
@@ -56,340 +46,307 @@ import { useTranslate } from '../../i18n';
  * @returns {ListControllerResult} The reference many props
  */
 export const useReferenceManyFieldController = <
-    RecordType extends RaRecord = RaRecord,
-    ReferenceRecordType extends RaRecord = RaRecord,
-    ErrorType = Error,
+  RecordType extends RaRecord = RaRecord,
+  ReferenceRecordType extends RaRecord = RaRecord,
+  ErrorType = Error,
 >(
-    props: UseReferenceManyFieldControllerParams<
-        RecordType,
-        ReferenceRecordType,
-        ErrorType
-    >
+  props: UseReferenceManyFieldControllerParams<RecordType, ReferenceRecordType, ErrorType>,
 ): ListControllerResult<ReferenceRecordType, ErrorType> => {
-    const {
-        debounce = 500,
-        reference,
-        target,
-        filter = defaultFilter,
-        exporter = defaultExporter,
-        source = 'id',
-        page: initialPage,
-        perPage: initialPerPage,
-        sort: initialSort = { field: 'id', order: 'DESC' },
-        queryOptions = {} as UseQueryOptions<
-            { data: ReferenceRecordType[]; total: number },
-            ErrorType
-        >,
-    } = props;
-    const notify = useNotify();
-    const translate = useTranslate();
-    const record = useRecordContext(props);
-    const resource = useResourceContext(props);
-    const dataProvider = useDataProvider();
-    const queryClient = useQueryClient();
-    const { meta, ...otherQueryOptions } = queryOptions;
+  const {
+    debounce = 500,
+    reference,
+    target,
+    filter = defaultFilter,
+    exporter = defaultExporter,
+    source = 'id',
+    page: initialPage,
+    perPage: initialPerPage,
+    sort: initialSort = { field: 'id', order: 'DESC' },
+    queryOptions = {} as UseQueryOptions<{ data: ReferenceRecordType[]; total: number }, ErrorType>,
+  } = props;
+  const notify = useNotify();
+  const translate = useTranslate();
+  const record = useRecordContext(props);
+  const resource = useResourceContext(props);
+  const dataProvider = useDataProvider();
+  const queryClient = useQueryClient();
+  const { meta, ...otherQueryOptions } = queryOptions;
 
-    // pagination logic
-    const { page, setPage, perPage, setPerPage } = usePaginationState({
-        page: initialPage,
-        perPage: initialPerPage,
-    });
+  // pagination logic
+  const { page, setPage, perPage, setPerPage } = usePaginationState({
+    page: initialPage,
+    perPage: initialPerPage,
+  });
 
-    // sort logic
-    const { sort, setSort: setSortState } = useSortState(initialSort);
-    const setSort = useCallback(
-        (sort: SortPayload) => {
-            setSortState(sort);
-            setPage(1);
-        },
-        [setPage, setSortState]
-    );
+  // sort logic
+  const { sort, setSort: setSortState } = useSortState(initialSort);
+  const setSort = useCallback(
+    (sort: SortPayload) => {
+      setSortState(sort);
+      setPage(1);
+    },
+    [setPage, setSortState],
+  );
 
-    // selection logic
-    const [selectedIds, selectionModifiers] = useRecordSelection({
-        resource: reference,
-        storeKey: props.storeKey ?? `${resource}.${record?.id}.${reference}`,
-    });
+  // selection logic
+  const [selectedIds, selectionModifiers] = useRecordSelection({
+    resource: reference,
+    storeKey: props.storeKey ?? `${resource}.${record?.id}.${reference}`,
+  });
 
-    const onUnselectItems = useCallback(
-        (fromAllStoreKeys?: boolean) => {
-            return selectionModifiers.unselect(selectedIds, fromAllStoreKeys);
-        },
-        [selectedIds, selectionModifiers]
-    );
+  const onUnselectItems = useCallback(
+    (fromAllStoreKeys?: boolean) => {
+      return selectionModifiers.unselect(selectedIds, fromAllStoreKeys);
+    },
+    [selectedIds, selectionModifiers],
+  );
 
-    // filter logic
-    const filterRef = useRef(filter);
-    const [displayedFilters, setDisplayedFilters] = useState<{
-        [key: string]: boolean;
-    }>({});
-    const [filterValues, setFilterValues] = useState<{
-        [key: string]: any;
-    }>(filter);
-    const hideFilter = useCallback(
-        (filterName: string) => {
-            setDisplayedFilters(previousState => {
-                const { [filterName]: _, ...newState } = previousState;
-                return newState;
-            });
-            setFilterValues(previousState => {
-                const { [filterName]: _, ...newState } = previousState;
-                return newState;
-            });
-        },
-        [setDisplayedFilters, setFilterValues]
-    );
-    const showFilter = useCallback(
-        (filterName: string, defaultValue: any) => {
-            setDisplayedFilters(previousState => ({
-                ...previousState,
-                [filterName]: true,
-            }));
-            setFilterValues(previousState => ({
-                ...previousState,
-                [filterName]: defaultValue,
-            }));
-        },
-        [setDisplayedFilters, setFilterValues]
-    );
+  // filter logic
+  const filterRef = useRef(filter);
+  const [displayedFilters, setDisplayedFilters] = useState<{
+    [key: string]: boolean;
+  }>({});
+  const [filterValues, setFilterValues] = useState<{
+    [key: string]: any;
+  }>(filter);
+  const hideFilter = useCallback(
+    (filterName: string) => {
+      setDisplayedFilters((previousState) => {
+        const { [filterName]: _, ...newState } = previousState;
+        return newState;
+      });
+      setFilterValues((previousState) => {
+        const { [filterName]: _, ...newState } = previousState;
+        return newState;
+      });
+    },
+    [setDisplayedFilters, setFilterValues],
+  );
+  const showFilter = useCallback(
+    (filterName: string, defaultValue: any) => {
+      setDisplayedFilters((previousState) => ({
+        ...previousState,
+        [filterName]: true,
+      }));
+      setFilterValues((previousState) => ({
+        ...previousState,
+        [filterName]: defaultValue,
+      }));
+    },
+    [setDisplayedFilters, setFilterValues],
+  );
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    const debouncedSetFilters = useCallback(
-        lodashDebounce((filters, displayedFilters) => {
-            setFilterValues(removeEmpty(filters));
-            setDisplayedFilters(displayedFilters);
-            setPage(1);
-        }, debounce),
-        [setDisplayedFilters, setFilterValues, setPage]
-    );
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const debouncedSetFilters = useCallback(
+    lodashDebounce((filters, displayedFilters) => {
+      setFilterValues(removeEmpty(filters));
+      setDisplayedFilters(displayedFilters);
+      setPage(1);
+    }, debounce),
+    [setDisplayedFilters, setFilterValues, setPage],
+  );
 
-    const setFilters = useCallback(
-        (filters, displayedFilters, debounce = false) => {
-            if (debounce) {
-                debouncedSetFilters(filters, displayedFilters);
-            } else {
-                setFilterValues(removeEmpty(filters));
-                setDisplayedFilters(displayedFilters);
-                setPage(1);
-            }
-        },
-        [setDisplayedFilters, setFilterValues, setPage, debouncedSetFilters]
-    );
-    // handle filter prop change
-    useEffect(() => {
-        if (!isEqual(filter, filterRef.current)) {
-            filterRef.current = filter;
-            setFilterValues(filter);
-        }
-    }, [filter]);
+  const setFilters = useCallback(
+    (filters, displayedFilters, debounce = false) => {
+      if (debounce) {
+        debouncedSetFilters(filters, displayedFilters);
+      } else {
+        setFilterValues(removeEmpty(filters));
+        setDisplayedFilters(displayedFilters);
+        setPage(1);
+      }
+    },
+    [setDisplayedFilters, setFilterValues, setPage, debouncedSetFilters],
+  );
+  // handle filter prop change
+  useEffect(() => {
+    if (!isEqual(filter, filterRef.current)) {
+      filterRef.current = filter;
+      setFilterValues(filter);
+    }
+  }, [filter]);
 
-    const recordValue = get(record, source) as Identifier;
-    const {
-        data,
-        total,
-        meta: responseMeta,
-        pageInfo,
-        error,
-        isFetching,
-        isLoading,
-        isPaused,
-        isPending,
-        isPlaceholderData,
-        refetch,
-    } = useGetManyReference<ReferenceRecordType, ErrorType>(
-        reference,
-        {
+  const recordValue = get(record, source) as Identifier;
+  const {
+    data,
+    total,
+    meta: responseMeta,
+    pageInfo,
+    error,
+    isFetching,
+    isLoading,
+    isPaused,
+    isPending,
+    isPlaceholderData,
+    refetch,
+  } = useGetManyReference<ReferenceRecordType, ErrorType>(
+    reference,
+    {
+      target,
+      id: recordValue,
+      pagination: { page, perPage },
+      sort,
+      filter: filterValues,
+      meta,
+    },
+    {
+      enabled: recordValue != null,
+      placeholderData: (previousData) => previousData,
+      onError: (error) =>
+        notify(typeof error === 'string' ? error : (error as Error)?.message || 'ra.notification.http_error', {
+          type: 'error',
+          messageArgs: {
+            _: typeof error === 'string' ? error : (error as Error)?.message ? (error as Error).message : undefined,
+          },
+        }),
+      ...otherQueryOptions,
+    },
+  );
+
+  const onSelectAll = useEvent(async ({ limit = 250, queryOptions = {} }: HandleSelectAllParams = {}) => {
+    const { meta, onSuccess, onError } = queryOptions;
+    try {
+      const results = await queryClient.fetchQuery({
+        queryKey: [
+          reference,
+          'getManyReference',
+          {
             target,
-            id: recordValue,
-            pagination: { page, perPage },
+            id: get(record, source) as Identifier,
+            pagination: { page: 1, perPage: limit },
             sort,
-            filter: filterValues,
+            filter,
             meta,
-        },
+          },
+        ],
+        queryFn: () =>
+          dataProvider.getManyReference(reference, {
+            target,
+            id: get(record, source) as Identifier,
+            pagination: { page: 1, perPage: limit },
+            sort,
+            filter,
+            meta,
+          }),
+      });
+
+      const allIds = results.data?.map(({ id }) => id) || [];
+      selectionModifiers.select(allIds);
+      if (allIds.length === limit) {
+        notify('ra.message.select_all_limit_reached', {
+          messageArgs: { max: limit },
+          type: 'warning',
+        });
+      }
+
+      if (onSuccess) {
+        onSuccess(results);
+      }
+
+      return results.data;
+    } catch (error) {
+      if (onError) {
+        onError(error);
+      }
+      notify('ra.notification.http_error', { type: 'warning' });
+    }
+  });
+
+  const getData = useEvent(async ({ maxResults, meta: metaOverride }: GetDataOptions = {}) => {
+    if (recordValue == null || total === 0) {
+      return [];
+    }
+    const limit = maxResults ?? (total != null ? total : DEFAULT_MAX_RESULTS);
+    const { data } = await queryClient.fetchQuery({
+      queryKey: [
+        reference,
+        'getManyReference',
         {
-            enabled: recordValue != null,
-            placeholderData: previousData => previousData,
-            onError: error =>
-                notify(
-                    typeof error === 'string'
-                        ? error
-                        : (error as Error)?.message ||
-                              'ra.notification.http_error',
-                    {
-                        type: 'error',
-                        messageArgs: {
-                            _:
-                                typeof error === 'string'
-                                    ? error
-                                    : (error as Error)?.message
-                                      ? (error as Error).message
-                                      : undefined,
-                        },
-                    }
-                ),
-            ...otherQueryOptions,
-        }
-    );
-
-    const onSelectAll = useEvent(
-        async ({
-            limit = 250,
-            queryOptions = {},
-        }: HandleSelectAllParams = {}) => {
-            const { meta, onSuccess, onError } = queryOptions;
-            try {
-                const results = await queryClient.fetchQuery({
-                    queryKey: [
-                        reference,
-                        'getManyReference',
-                        {
-                            target,
-                            id: get(record, source) as Identifier,
-                            pagination: { page: 1, perPage: limit },
-                            sort,
-                            filter,
-                            meta,
-                        },
-                    ],
-                    queryFn: () =>
-                        dataProvider.getManyReference(reference, {
-                            target,
-                            id: get(record, source) as Identifier,
-                            pagination: { page: 1, perPage: limit },
-                            sort,
-                            filter,
-                            meta,
-                        }),
-                });
-
-                const allIds = results.data?.map(({ id }) => id) || [];
-                selectionModifiers.select(allIds);
-                if (allIds.length === limit) {
-                    notify('ra.message.select_all_limit_reached', {
-                        messageArgs: { max: limit },
-                        type: 'warning',
-                    });
-                }
-
-                if (onSuccess) {
-                    onSuccess(results);
-                }
-
-                return results.data;
-            } catch (error) {
-                if (onError) {
-                    onError(error);
-                }
-                notify('ra.notification.http_error', { type: 'warning' });
-            }
-        }
-    );
-
-    const getData = useEvent(
-        async ({ maxResults, meta: metaOverride }: GetDataOptions = {}) => {
-            if (recordValue == null || total === 0) {
-                return [];
-            }
-            const limit =
-                maxResults ?? (total != null ? total : DEFAULT_MAX_RESULTS);
-            const { data } = await queryClient.fetchQuery({
-                queryKey: [
-                    reference,
-                    'getManyReference',
-                    {
-                        target,
-                        id: recordValue,
-                        pagination: { page: 1, perPage: limit },
-                        sort,
-                        filter: filterValues,
-                        meta: metaOverride ?? meta,
-                    },
-                ],
-                queryFn: () =>
-                    dataProvider.getManyReference(reference, {
-                        target,
-                        id: recordValue,
-                        pagination: { page: 1, perPage: limit },
-                        sort,
-                        filter: filterValues,
-                        meta: metaOverride ?? meta,
-                    }),
-            });
-            return data;
-        }
-    );
-
-    const getResourceLabel = useGetResourceLabel();
-    const defaultTitle = translate(`resources.${reference}.page.list`, {
-        _: translate('ra.page.list', {
-            name: getResourceLabel(reference, 2),
+          target,
+          id: recordValue,
+          pagination: { page: 1, perPage: limit },
+          sort,
+          filter: filterValues,
+          meta: metaOverride ?? meta,
+        },
+      ],
+      queryFn: () =>
+        dataProvider.getManyReference(reference, {
+          target,
+          id: recordValue,
+          pagination: { page: 1, perPage: limit },
+          sort,
+          filter: filterValues,
+          meta: metaOverride ?? meta,
         }),
     });
+    return data;
+  });
 
-    return {
-        sort,
-        data,
-        meta: responseMeta,
-        defaultTitle,
-        displayedFilters,
-        error,
-        exporter,
-        filterValues,
-        hideFilter,
-        isFetching,
-        isLoading,
-        isPaused,
-        isPending,
-        isPlaceholderData,
-        onSelect: selectionModifiers.select,
-        onSelectAll,
-        onToggleItem: selectionModifiers.toggle,
-        onUnselectItems,
-        page,
-        perPage,
-        refetch,
-        resource: reference,
-        selectedIds,
-        setFilters,
-        setPage,
-        setPerPage,
-        hasNextPage: pageInfo
-            ? pageInfo.hasNextPage
-            : total != null
-              ? page * perPage < total
-              : undefined,
-        hasPreviousPage: pageInfo ? pageInfo.hasPreviousPage : page > 1,
-        setSort,
-        showFilter,
-        total,
-        getData,
-    } as ListControllerResult<ReferenceRecordType, ErrorType>;
+  const getResourceLabel = useGetResourceLabel();
+  const defaultTitle = translate(`resources.${reference}.page.list`, {
+    _: translate('ra.page.list', {
+      name: getResourceLabel(reference, 2),
+    }),
+  });
+
+  return {
+    sort,
+    data,
+    meta: responseMeta,
+    defaultTitle,
+    displayedFilters,
+    error,
+    exporter,
+    filterValues,
+    hideFilter,
+    isFetching,
+    isLoading,
+    isPaused,
+    isPending,
+    isPlaceholderData,
+    onSelect: selectionModifiers.select,
+    onSelectAll,
+    onToggleItem: selectionModifiers.toggle,
+    onUnselectItems,
+    page,
+    perPage,
+    refetch,
+    resource: reference,
+    selectedIds,
+    setFilters,
+    setPage,
+    setPerPage,
+    hasNextPage: pageInfo ? pageInfo.hasNextPage : total != null ? page * perPage < total : undefined,
+    hasPreviousPage: pageInfo ? pageInfo.hasPreviousPage : page > 1,
+    setSort,
+    showFilter,
+    total,
+    getData,
+  } as ListControllerResult<ReferenceRecordType, ErrorType>;
 };
 
 export interface UseReferenceManyFieldControllerParams<
-    RecordType extends Record<string, any> = Record<string, any>,
-    ReferenceRecordType extends Record<string, any> = Record<string, any>,
-    ErrorType = Error,
+  RecordType extends Record<string, any> = Record<string, any>,
+  ReferenceRecordType extends Record<string, any> = Record<string, any>,
+  ErrorType = Error,
 > {
-    debounce?: number;
-    filter?: FilterPayload;
-    page?: number;
-    perPage?: number;
-    record?: RecordType;
-    reference: string;
-    resource?: string;
-    exporter?: Exporter<ReferenceRecordType & RaRecord> | false;
-    sort?: SortPayload;
-    source?: string;
-    storeKey?: string;
-    target: string;
-    queryOptions?: Omit<
-        UseQueryOptions<
-            { data: ReferenceRecordType[]; total: number },
-            ErrorType
-        >,
-        'queryKey' | 'queryFn'
-    >;
+  debounce?: number;
+  filter?: FilterPayload;
+  page?: number;
+  perPage?: number;
+  record?: RecordType;
+  reference: string;
+  resource?: string;
+  exporter?: Exporter<ReferenceRecordType & RaRecord> | false;
+  sort?: SortPayload;
+  source?: string;
+  storeKey?: string;
+  target: string;
+  queryOptions?: Omit<
+    UseQueryOptions<{ data: ReferenceRecordType[]; total: number }, ErrorType>,
+    'queryKey' | 'queryFn'
+  >;
 }
 
 const defaultFilter = {};

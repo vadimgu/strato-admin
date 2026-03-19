@@ -19,15 +19,8 @@
       "@strato-admin/language-en": ["../strato-language-en/src"],
       "@strato-admin/language-fr": ["../strato-language-fr/src"]
     },
-    "types": [
-      "node"
-    ]
+    "types": ["node"]
   },
-  "include": [
-    "src"
-  ],
-  "exclude": [
-    "dist",
-    "node_modules"
-  ]
+  "include": ["src"],
+  "exclude": ["dist", "node_modules"]
 }

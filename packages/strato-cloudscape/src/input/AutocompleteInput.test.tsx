@@ -1,4 +1,3 @@
-
 import { render, fireEvent } from '@testing-library/react';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 import { useInput, useResourceContext, useChoicesContext } from '@strato-admin/core';

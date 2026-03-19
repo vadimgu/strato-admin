@@ -25,13 +25,7 @@ export const ProductResource = (
     <TextField source="id" label="ID" link="show" input={false} />
     <TextField source="name" label="Name" sortable isRequired />
     <TextField source="reference" label="Reference" sortable isRequired />
-    <ReferenceField
-      source="category_id"
-      reference="categories"
-      label="Category"
-      link={false}
-      isRequired
-    />
+    <ReferenceField source="category_id" reference="categories" label="Category" link={false} isRequired />
     <NumberField
       source="price"
       label="Price"
@@ -46,12 +40,9 @@ export const ProductResource = (
       source="rating"
       label="Rating"
       sortable
-      input={<SliderInput source="rating" min={1} max={5} step={1} />} />
-    <TextField
-      source="description"
-      label="Description"
-      input={<TextAreaInput source="description" />}
+      input={<SliderInput source="rating" min={1} max={5} step={1} />}
     />
+    <TextField source="description" label="Description" input={<TextAreaInput source="description" />} />
   </ResourceSchema>
 );
 
@@ -62,11 +53,7 @@ export function ProductShow() {
     <Show title="Product Details">
       <KeyValuePairs columns={3} exclude={['description']} />
       <KeyValuePairs columns={1} include={['description']} />
-      <ReferenceManyField
-        reference="reviews"
-        target="product_id"
-        sort={{ field: 'date', order: 'DESC' }}
-      >
+      <ReferenceManyField reference="reviews" target="product_id" sort={{ field: 'date', order: 'DESC' }}>
         <Table exclude={['product_id']} title="Product Reviews" />
       </ReferenceManyField>
     </Show>

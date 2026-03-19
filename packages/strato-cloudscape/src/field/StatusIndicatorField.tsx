@@ -28,8 +28,7 @@ export interface StatusIndicatorLabelProps {
  */
 export const StatusIndicatorLabel = (_: StatusIndicatorLabelProps) => null;
 
-export interface StatusIndicatorFieldProps<RecordType extends RaRecord = RaRecord>
-  extends FieldProps<RecordType> {
+export interface StatusIndicatorFieldProps<RecordType extends RaRecord = RaRecord> extends FieldProps<RecordType> {
   /**
    * The type of the status indicator.
    * If provided as a string, it will be used for all values.
@@ -55,20 +54,8 @@ export interface StatusIndicatorFieldProps<RecordType extends RaRecord = RaRecor
   children?: React.ReactNode;
 }
 
-const StatusIndicatorField = <RecordType extends RaRecord = RaRecord>(
-  props: StatusIndicatorFieldProps<RecordType>
-) => {
-  const {
-    source,
-    record: recordProp,
-    emptyText,
-    link,
-    type,
-    mapping,
-    iconAriaLabel,
-    colorOverride,
-    children,
-  } = props;
+const StatusIndicatorField = <RecordType extends RaRecord = RaRecord>(props: StatusIndicatorFieldProps<RecordType>) => {
+  const { source, record: recordProp, emptyText, link, type, mapping, iconAriaLabel, colorOverride, children } = props;
 
   const record = useRecordContext<RecordType>({ record: recordProp });
   const value = useFieldValue<RecordType>({ source: source as any, record });
@@ -93,9 +80,10 @@ const StatusIndicatorField = <RecordType extends RaRecord = RaRecord>(
       finalColorOverride = matchingLabel.props.color;
     }
     if (matchingLabel.props.label) {
-      label = typeof matchingLabel.props.label === 'string'
-        ? translate(matchingLabel.props.label)
-        : matchingLabel.props.label;
+      label =
+        typeof matchingLabel.props.label === 'string'
+          ? translate(matchingLabel.props.label)
+          : matchingLabel.props.label;
     }
   } else if (typeof type === 'function') {
     statusType = type(value, record as RecordType);

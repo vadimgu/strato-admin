@@ -11,17 +11,17 @@ import { useRouterProvider } from './RouterProviderContext';
  * the appropriate router type (HashRouter by default with react-router).
  */
 export const AdminRouter = ({ basename = '', children }: AdminRouterProps) => {
-    const { RouterWrapper, useInRouterContext } = useRouterProvider();
-    const isInRouter = useInRouterContext();
+  const { RouterWrapper, useInRouterContext } = useRouterProvider();
+  const isInRouter = useInRouterContext();
 
-    return (
-        <BasenameContextProvider basename={isInRouter ? basename : ''}>
-            <RouterWrapper basename={basename}>{children}</RouterWrapper>
-        </BasenameContextProvider>
-    );
+  return (
+    <BasenameContextProvider basename={isInRouter ? basename : ''}>
+      <RouterWrapper basename={basename}>{children}</RouterWrapper>
+    </BasenameContextProvider>
+  );
 };
 
 export interface AdminRouterProps {
-    basename?: string;
-    children: React.ReactNode;
+  basename?: string;
+  children: React.ReactNode;
 }

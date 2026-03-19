@@ -31,12 +31,12 @@ export * from './useMutationWithMutationMode';
 export type { Options } from './fetch';
 
 export {
-    convertLegacyDataProvider,
-    DataProviderContext,
-    fetchUtils,
-    HttpError,
-    /**
-     * @deprecated use the useTakeUndoableMutation hook instead
-     */
-    undoableEventEmitter,
+  convertLegacyDataProvider,
+  DataProviderContext,
+  fetchUtils,
+  HttpError,
+  /**
+   * @deprecated use the useTakeUndoableMutation hook instead
+   */
+  undoableEventEmitter,
 };

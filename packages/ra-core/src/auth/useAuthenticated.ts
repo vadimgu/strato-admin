@@ -31,20 +31,20 @@ import useAuthState from './useAuthState';
  * );
  */
 export const useAuthenticated = <ParamsType = any>({
-    params,
-    logoutOnFailure = true,
-    ...options
+  params,
+  logoutOnFailure = true,
+  ...options
 }: UseAuthenticatedOptions<ParamsType> = {}) => {
-    return useAuthState(params ?? emptyParams, logoutOnFailure, options);
+  return useAuthState(params ?? emptyParams, logoutOnFailure, options);
 };
 
 export type UseAuthenticatedOptions<ParamsType> = Omit<
-    UseQueryOptions<boolean, any> & {
-        params?: ParamsType;
-    },
-    'queryKey' | 'queryFn'
+  UseQueryOptions<boolean, any> & {
+    params?: ParamsType;
+  },
+  'queryKey' | 'queryFn'
 > & {
-    logoutOnFailure?: boolean;
+  logoutOnFailure?: boolean;
 };
 
 const emptyParams = {};

@@ -44,13 +44,13 @@ const ListUI = ({
   const finalTitle = title ?? label ?? 'List';
 
   const finalChildren = children || (
-    <Table 
-      include={include} 
-      exclude={exclude} 
-      title={finalTitle} 
-      actions={actions} 
-      filtering={filtering} 
-      preferences={preferences} 
+    <Table
+      include={include}
+      exclude={exclude}
+      title={finalTitle}
+      actions={actions}
+      filtering={filtering}
+      preferences={preferences}
     />
   );
 
@@ -66,7 +66,7 @@ const ListUI = ({
  *     <Table.Column source="name" />
  *   </Table>
  * </List>
- * 
+ *
  * @example
  * // Using FieldSchema from context
  * <List include={['name', 'price']} />
@@ -84,10 +84,10 @@ export const List = <RecordType extends RaRecord = any>({
   return (
     <ListBase {...props}>
       <ResourceSchemaProvider resource={props.resource}>
-        <ListUI 
-          title={title} 
-          actions={actions} 
-          include={include} 
+        <ListUI
+          title={title}
+          actions={actions}
+          include={include}
           exclude={exclude}
           filtering={filtering}
           preferences={preferences}

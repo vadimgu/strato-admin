@@ -2,8 +2,8 @@ import merge from 'lodash/merge.js';
 import { DEFAULT_LOCALE } from './index';
 
 interface AllNavigatorLanguage extends NavigatorLanguage {
-    browserLanguage?: string;
-    userLanguage?: string;
+  browserLanguage?: string;
+  userLanguage?: string;
 }
 
 /**
@@ -37,23 +37,14 @@ interface AllNavigatorLanguage extends NavigatorLanguage {
  * @param options
  * @param {boolean} options.fullLocale Defaults to false
  */
-export const resolveBrowserLocale = (
-    defaultLocale?: string,
-    options?: { fullLocale?: boolean }
-): string => {
-    // from http://blog.ksol.fr/user-locale-detection-browser-javascript/
-    // Rely on the window.navigator object to determine user locale
-    const { language, browserLanguage, userLanguage } =
-        window.navigator as AllNavigatorLanguage;
+export const resolveBrowserLocale = (defaultLocale?: string, options?: { fullLocale?: boolean }): string => {
+  // from http://blog.ksol.fr/user-locale-detection-browser-javascript/
+  // Rely on the window.navigator object to determine user locale
+  const { language, browserLanguage, userLanguage } = window.navigator as AllNavigatorLanguage;
 
-    const locale =
-        language ||
-        browserLanguage ||
-        userLanguage ||
-        defaultLocale ||
-        DEFAULT_LOCALE;
+  const locale = language || browserLanguage || userLanguage || defaultLocale || DEFAULT_LOCALE;
 
-    return options?.fullLocale ? locale : locale.split('-')[0];
+  return options?.fullLocale ? locale : locale.split('-')[0];
 };
 
 /**
@@ -81,5 +72,4 @@ export const resolveBrowserLocale = (
  *        </Admin>
  *    );
  */
-export const mergeTranslations = (...translationsModules: object[]) =>
-    merge({}, ...translationsModules);
+export const mergeTranslations = (...translationsModules: object[]) => merge({}, ...translationsModules);

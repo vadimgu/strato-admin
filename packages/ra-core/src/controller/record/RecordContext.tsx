@@ -8,9 +8,7 @@ import { RaRecord } from '../../types';
  * @see RecordContextProvider
  * @see useRecordContext
  */
-export const RecordContext = createContext<
-    RaRecord | Omit<RaRecord, 'id'> | undefined
->(undefined);
+export const RecordContext = createContext<RaRecord | Omit<RaRecord, 'id'> | undefined>(undefined);
 
 RecordContext.displayName = 'RecordContext';
 
@@ -36,16 +34,12 @@ RecordContext.displayName = 'RecordContext';
  *     );
  * };
  */
-export const RecordContextProvider = <
-    RecordType extends RaRecord | Omit<RaRecord, 'id'> = RaRecord,
->({
-    children,
-    value,
-}: RecordContextProviderProps<RecordType>) => (
-    <RecordContext.Provider value={value}>{children}</RecordContext.Provider>
-);
+export const RecordContextProvider = <RecordType extends RaRecord | Omit<RaRecord, 'id'> = RaRecord>({
+  children,
+  value,
+}: RecordContextProviderProps<RecordType>) => <RecordContext.Provider value={value}>{children}</RecordContext.Provider>;
 
 export interface RecordContextProviderProps<RecordType> {
-    children: ReactNode;
-    value?: RecordType;
+  children: ReactNode;
+  value?: RecordType;
 }

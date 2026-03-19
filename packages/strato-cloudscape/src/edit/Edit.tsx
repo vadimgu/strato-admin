@@ -42,11 +42,7 @@ const EditUI = ({
   const finalTitle = title ?? (label ? `Edit ${label}` : 'Edit');
   const finalChildren = children || <Form include={include} exclude={exclude} />;
 
-  return (
-    <Container header={<EditHeader title={finalTitle} actions={actions} />}>
-      {finalChildren}
-    </Container>
-  );
+  return <Container header={<EditHeader title={finalTitle} actions={actions} />}>{finalChildren}</Container>;
 };
 
 /**
@@ -58,7 +54,7 @@ const EditUI = ({
  *     <TextInput source="name" />
  *   </Form>
  * </Edit>
- * 
+ *
  * @example
  * // Using InputSchema from context
  * <Edit include={['name', 'price']} />
@@ -74,12 +70,7 @@ export const Edit = <RecordType extends RaRecord = any>({
   return (
     <EditBase {...props}>
       <ResourceSchemaProvider resource={props.resource}>
-        <EditUI 
-          title={title} 
-          actions={actions} 
-          include={include} 
-          exclude={exclude}
-        >
+        <EditUI title={title} actions={actions} include={include} exclude={exclude}>
           {children}
         </EditUI>
       </ResourceSchemaProvider>

@@ -30,12 +30,7 @@ export const reviewSchema = (
 export function ReviewList() {
   return (
     <List perPage={10}>
-      <Table
-        header="Reviews"
-        selectionType="multi"
-        filteringPlaceholder="Search reviews..."
-        exclude={['comment']}
-      />
+      <Table header="Reviews" selectionType="multi" filteringPlaceholder="Search reviews..." exclude={['comment']} />
     </List>
   );
 }

@@ -13,16 +13,18 @@ async function main() {
 
   let argProjectName = process.argv[2];
 
-  const projectName = argProjectName || await text({
-    message: 'What is the name of your project?',
-    placeholder: 'my-strato-admin',
-    validate(value) {
-      if (value.length === 0) return `Project name is required!`;
-      if (fs.existsSync(path.resolve(process.cwd(), value))) {
-        return `Directory ${value} already exists!`;
-      }
-    },
-  });
+  const projectName =
+    argProjectName ||
+    (await text({
+      message: 'What is the name of your project?',
+      placeholder: 'my-strato-admin',
+      validate(value) {
+        if (value.length === 0) return `Project name is required!`;
+        if (fs.existsSync(path.resolve(process.cwd(), value))) {
+          return `Directory ${value} already exists!`;
+        }
+      },
+    }));
 
   if (isCancel(projectName)) {
     cancel('Operation cancelled');
@@ -31,9 +33,7 @@ async function main() {
 
   const template = await select({
     message: 'Select a template',
-    options: [
-      { value: 'basic', label: 'Basic', hint: 'A minimal project with a simple Admin setup' },
-    ],
+    options: [{ value: 'basic', label: 'Basic', hint: 'A minimal project with a simple Admin setup' }],
   });
 
   if (isCancel(template)) {
@@ -69,10 +69,7 @@ async function main() {
 
     const cdCommand = projectName === '.' ? '' : `cd ${projectName}\n  `;
 
-    note(
-      `${pc.bold('Next steps:')}\n\n  ${pc.cyan(`${cdCommand}pnpm install\n  pnpm dev`)}`,
-      'Ready to start!'
-    );
+    note(`${pc.bold('Next steps:')}\n\n  ${pc.cyan(`${cdCommand}pnpm install\n  pnpm dev`)}`, 'Ready to start!');
 
     outro(`Happy hacking!`);
   } catch (err) {

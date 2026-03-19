@@ -35,7 +35,10 @@ export const generateEcommerceData = () => {
     const last_seen = faker.date.between({ from: first_seen, to: new Date() });
     const has_ordered = faker.datatype.boolean({ probability: 0.8 });
     const has_newsletter = faker.datatype.boolean({ probability: 0.3 });
-    const groups = faker.helpers.arrayElements(['collector', 'ordered_once', 'regular', 'reviewer'], { min: 0, max: 2 });
+    const groups = faker.helpers.arrayElements(['collector', 'ordered_once', 'regular', 'reviewer'], {
+      min: 0,
+      max: 2,
+    });
 
     return {
       id,
@@ -62,7 +65,7 @@ export const generateEcommerceData = () => {
     const category = faker.helpers.arrayElement(categories);
     const width = faker.number.float({ min: 10, max: 100, fractionDigits: 2 });
     const height = faker.number.float({ min: 10, max: 100, fractionDigits: 2 });
-    
+
     return {
       id,
       category_id: category.id,
@@ -100,10 +103,10 @@ export const generateEcommerceData = () => {
 
   // 5. Generate Orders
   const orders: Order[] = Array.from({ length: 300 }, (_, id) => {
-    const customer = faker.helpers.arrayElement(customers.filter(c => c.has_ordered));
+    const customer = faker.helpers.arrayElement(customers.filter((c) => c.has_ordered));
     const date = faker.date.between({ from: customer.first_seen, to: customer.last_seen });
     const nbItems = faker.number.int({ min: 1, max: 5 });
-    
+
     const basket: OrderItem[] = Array.from({ length: nbItems }, (_, itemId) => {
       const product = faker.helpers.arrayElement(products);
       return {
@@ -127,15 +130,15 @@ export const generateEcommerceData = () => {
     customer.nb_commands++;
     customer.total_spent += total;
     if (!customer.latest_purchase || date > customer.latest_purchase) {
-        customer.latest_purchase = date;
+      customer.latest_purchase = date;
     }
 
     // Update product stats
-    basket.forEach(item => {
-        const product = products.find(p => p.id === item.product_id);
-        if (product) {
-            product.sales += item.quantity;
-        }
+    basket.forEach((item) => {
+      const product = products.find((p) => p.id === item.product_id);
+      if (product) {
+        product.sales += item.quantity;
+      }
     });
 
     return {

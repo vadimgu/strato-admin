@@ -1,11 +1,4 @@
-import {
-  Table,
-  List,
-  FieldSchema,
-  Show,
-  KeyValuePairs,
-  TextField,
-} from '@strato-admin/admin';
+import { Table, List, FieldSchema, Show, KeyValuePairs, TextField } from '@strato-admin/admin';
 
 export const categorySchema = (
   <FieldSchema>

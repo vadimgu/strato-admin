@@ -1,10 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import {
-  useInput,
-  useResourceContext,
-  useChoicesContext,
-  useGetRecordRepresentation,
-} from '@strato-admin/core';
+import { useInput, useResourceContext, useChoicesContext, useGetRecordRepresentation } from '@strato-admin/core';
 import CloudscapeAutosuggest, {
   AutosuggestProps as CloudscapeAutosuggestProps,
 } from '@cloudscape-design/components/autosuggest';
@@ -13,13 +8,12 @@ import { FormFieldContext, useFormFieldContext } from './FormFieldContext';
 import { InputProps } from './types';
 
 export interface AutocompleteInputProps
-    extends Omit<CloudscapeAutosuggestProps, 'onChange' | 'value' | 'options' | 'onBlur'>,
-        InputProps {
-    choices?: Array<{ id: string | number; [key: string]: any }>;
+  extends Omit<CloudscapeAutosuggestProps, 'onChange' | 'value' | 'options' | 'onBlur'>, InputProps {
+  choices?: Array<{ id: string | number; [key: string]: any }>;
 }
 
 export const AutocompleteInput = (props: AutocompleteInputProps) => {
-    const { label, source, defaultValue, validate, choices: choicesProp, ...rest } = props;
+  const { label, source, defaultValue, validate, choices: choicesProp, ...rest } = props;
   const resource = useResourceContext();
   const { allChoices, isPending, setFilters } = useChoicesContext(props);
   const getRecordRepresentation = useGetRecordRepresentation(resource);

@@ -31,7 +31,8 @@ export function useCollection<T extends RaRecord>(options: UseCollectionOptions<
     options.preferences?.visibleContent ?? options.preferences?.visibleContentOptions?.map((o) => o.id),
   );
   const [contentDisplay, setContentDisplay] = useState<ReadonlyArray<TableColumnDisplay> | undefined>(
-    options.preferences?.contentDisplay ?? options.preferences?.contentDisplayOptions?.map((o) => ({ id: o.id, visible: true })),
+    options.preferences?.contentDisplay ??
+      options.preferences?.contentDisplayOptions?.map((o) => ({ id: o.id, visible: true })),
   );
 
   useMemo(() => {
@@ -39,9 +40,15 @@ export function useCollection<T extends RaRecord>(options: UseCollectionOptions<
       options.preferences?.visibleContent ?? options.preferences?.visibleContentOptions?.map((o) => o.id),
     );
     setContentDisplay(
-      options.preferences?.contentDisplay ?? options.preferences?.contentDisplayOptions?.map((o) => ({ id: o.id, visible: true })),
+      options.preferences?.contentDisplay ??
+        options.preferences?.contentDisplayOptions?.map((o) => ({ id: o.id, visible: true })),
     );
-  }, [options.preferences?.visibleContent, options.preferences?.visibleContentOptions, options.preferences?.contentDisplay, options.preferences?.contentDisplayOptions]);
+  }, [
+    options.preferences?.visibleContent,
+    options.preferences?.visibleContentOptions,
+    options.preferences?.contentDisplay,
+    options.preferences?.contentDisplayOptions,
+  ]);
 
   const selectedItems = (selectedIds || []).map((id) => {
     const item = data?.find((i) => i.id === id);

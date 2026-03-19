@@ -1,4 +1,3 @@
-
 import { useTranslate } from '@strato-admin/core';
 import { Button, ButtonProps } from './Button';
 

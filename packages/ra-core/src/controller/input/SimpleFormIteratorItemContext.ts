@@ -6,13 +6,11 @@ import { createContext } from 'react';
  * @see {SimpleFormIterator}
  * @see {ArrayInput}
  */
-export const SimpleFormIteratorItemContext = createContext<
-    SimpleFormIteratorItemContextValue | undefined
->(undefined);
+export const SimpleFormIteratorItemContext = createContext<SimpleFormIteratorItemContextValue | undefined>(undefined);
 
 export type SimpleFormIteratorItemContextValue = {
-    index: number;
-    total: number;
-    remove: () => void;
-    reOrder: (newIndex: number) => void;
+  index: number;
+  total: number;
+  remove: () => void;
+  reOrder: (newIndex: number) => void;
 };

@@ -7,8 +7,6 @@ import { createContext } from 'react';
  *
  * This should only be used through a FormGroupContextProvider.
  */
-export const FormGroupContext = createContext<FormGroupContextValue | null>(
-    null
-);
+export const FormGroupContext = createContext<FormGroupContextValue | null>(null);
 
 export type FormGroupContextValue = string;

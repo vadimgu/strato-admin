@@ -66,125 +66,103 @@ import { BaseFieldProps } from './types';
  * </ReferenceArrayFieldBase>
  */
 export const ReferenceArrayFieldBase = <
-    RecordType extends RaRecord = RaRecord,
-    ReferenceRecordType extends RaRecord = RaRecord,
+  RecordType extends RaRecord = RaRecord,
+  ReferenceRecordType extends RaRecord = RaRecord,
 >(
-    props: ReferenceArrayFieldBaseProps<RecordType, ReferenceRecordType>
+  props: ReferenceArrayFieldBaseProps<RecordType, ReferenceRecordType>,
 ) => {
-    const {
-        children,
-        render,
-        error,
-        loading,
-        empty,
-        filter,
-        exporter,
-        offline,
-        page = 1,
-        perPage,
-        reference,
-        resource,
-        sort,
-        source,
-        queryOptions,
-    } = props;
-    const record = useRecordContext(props);
-    const controllerProps = useReferenceArrayFieldController<
-        RecordType,
-        ReferenceRecordType
-    >({
-        filter,
-        exporter,
-        page,
-        perPage,
-        record,
-        reference,
-        resource,
-        sort,
-        source,
-        queryOptions,
-    });
+  const {
+    children,
+    render,
+    error,
+    loading,
+    empty,
+    filter,
+    exporter,
+    offline,
+    page = 1,
+    perPage,
+    reference,
+    resource,
+    sort,
+    source,
+    queryOptions,
+  } = props;
+  const record = useRecordContext(props);
+  const controllerProps = useReferenceArrayFieldController<RecordType, ReferenceRecordType>({
+    filter,
+    exporter,
+    page,
+    perPage,
+    record,
+    reference,
+    resource,
+    sort,
+    source,
+    queryOptions,
+  });
 
-    if (!render && !children) {
-        throw new Error(
-            "<ReferenceArrayFieldBase> requires either a 'render' prop or 'children' prop"
-        );
-    }
-    const {
-        error: controllerError,
-        isPending,
-        isPaused,
-        isPlaceholderData,
-    } = controllerProps;
+  if (!render && !children) {
+    throw new Error("<ReferenceArrayFieldBase> requires either a 'render' prop or 'children' prop");
+  }
+  const { error: controllerError, isPending, isPaused, isPlaceholderData } = controllerProps;
 
-    const shouldRenderLoading =
-        isPending && !isPaused && loading !== undefined && loading !== false;
-    const shouldRenderOffline =
-        isPaused &&
-        (isPending || isPlaceholderData) &&
-        offline !== undefined &&
-        offline !== false;
-    const shouldRenderError =
-        !isPending &&
-        !isPaused &&
-        controllerError &&
-        error !== undefined &&
-        error !== false;
-    const shouldRenderEmpty = // there is an empty page component
-        empty &&
-        // there is no error
-        !controllerProps.error &&
-        // the list is not loading data for the first time
-        !controllerProps.isPending &&
-        // the API returned no data (using either normal or partial pagination)
-        (controllerProps.total === 0 ||
-            (controllerProps.total == null &&
-                // @ts-ignore FIXME total may be undefined when using partial pagination but the ListControllerResult type is wrong about it
-                controllerProps.hasPreviousPage === false &&
-                // @ts-ignore FIXME total may be undefined when using partial pagination but the ListControllerResult type is wrong about it
-                controllerProps.hasNextPage === false &&
-                // @ts-ignore FIXME total may be undefined when using partial pagination but the ListControllerResult type is wrong about it
-                controllerProps.data.length === 0)) &&
-        // the user didn't set any filters
-        !Object.keys(controllerProps.filterValues).length;
+  const shouldRenderLoading = isPending && !isPaused && loading !== undefined && loading !== false;
+  const shouldRenderOffline =
+    isPaused && (isPending || isPlaceholderData) && offline !== undefined && offline !== false;
+  const shouldRenderError = !isPending && !isPaused && controllerError && error !== undefined && error !== false;
+  const shouldRenderEmpty = // there is an empty page component
+    empty &&
+    // there is no error
+    !controllerProps.error &&
+    // the list is not loading data for the first time
+    !controllerProps.isPending &&
+    // the API returned no data (using either normal or partial pagination)
+    (controllerProps.total === 0 ||
+      (controllerProps.total == null &&
+        // @ts-ignore FIXME total may be undefined when using partial pagination but the ListControllerResult type is wrong about it
+        controllerProps.hasPreviousPage === false &&
+        // @ts-ignore FIXME total may be undefined when using partial pagination but the ListControllerResult type is wrong about it
+        controllerProps.hasNextPage === false &&
+        // @ts-ignore FIXME total may be undefined when using partial pagination but the ListControllerResult type is wrong about it
+        controllerProps.data.length === 0)) &&
+    // the user didn't set any filters
+    !Object.keys(controllerProps.filterValues).length;
 
-    return (
-        <ResourceContextProvider value={reference}>
-            <ListContextProvider value={controllerProps}>
-                {shouldRenderLoading
-                    ? loading
-                    : shouldRenderOffline
-                      ? offline
-                      : shouldRenderError
-                        ? error
-                        : shouldRenderEmpty
-                          ? empty
-                          : render
-                            ? render(controllerProps)
-                            : children}
-            </ListContextProvider>
-        </ResourceContextProvider>
-    );
+  return (
+    <ResourceContextProvider value={reference}>
+      <ListContextProvider value={controllerProps}>
+        {shouldRenderLoading
+          ? loading
+          : shouldRenderOffline
+            ? offline
+            : shouldRenderError
+              ? error
+              : shouldRenderEmpty
+                ? empty
+                : render
+                  ? render(controllerProps)
+                  : children}
+      </ListContextProvider>
+    </ResourceContextProvider>
+  );
 };
 
 export interface ReferenceArrayFieldBaseProps<
-    RecordType extends RaRecord = RaRecord,
-    ReferenceRecordType extends RaRecord = RaRecord,
+  RecordType extends RaRecord = RaRecord,
+  ReferenceRecordType extends RaRecord = RaRecord,
 > extends BaseFieldProps<RecordType> {
-    children?: ReactNode;
-    render?: (props: ListControllerResult<ReferenceRecordType>) => ReactNode;
-    error?: ReactNode;
-    loading?: ReactNode;
-    empty?: ReactNode;
-    filter?: FilterPayload;
-    exporter?: Exporter<ReferenceRecordType> | false;
-    offline?: ReactNode;
-    page?: number;
-    perPage?: number;
-    reference: string;
-    sort?: SortPayload;
-    queryOptions?: Omit<
-        UseQueryOptions<ReferenceRecordType[], Error>,
-        'queryFn' | 'queryKey'
-    >;
+  children?: ReactNode;
+  render?: (props: ListControllerResult<ReferenceRecordType>) => ReactNode;
+  error?: ReactNode;
+  loading?: ReactNode;
+  empty?: ReactNode;
+  filter?: FilterPayload;
+  exporter?: Exporter<ReferenceRecordType> | false;
+  offline?: ReactNode;
+  page?: number;
+  perPage?: number;
+  reference: string;
+  sort?: SortPayload;
+  queryOptions?: Omit<UseQueryOptions<ReferenceRecordType[], Error>, 'queryFn' | 'queryKey'>;
 }

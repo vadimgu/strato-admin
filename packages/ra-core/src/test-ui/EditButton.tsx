@@ -5,17 +5,17 @@ import { useRecordContext } from '../controller/record/useRecordContext';
 import { useResourceContext } from '../core/useResourceContext';
 
 export const EditButton = (props: { record?: RaRecord; resource?: string }) => {
-    const record = useRecordContext(props);
-    const resource = useResourceContext(props);
-    if (!record) return null;
-    return (
-        <LinkBase
-            to={`/${resource}/${record.id}`}
-            onClick={e => {
-                e.stopPropagation();
-            }}
-        >
-            Edit
-        </LinkBase>
-    );
+  const record = useRecordContext(props);
+  const resource = useResourceContext(props);
+  if (!record) return null;
+  return (
+    <LinkBase
+      to={`/${resource}/${record.id}`}
+      onClick={(e) => {
+        e.stopPropagation();
+      }}
+    >
+      Edit
+    </LinkBase>
+  );
 };

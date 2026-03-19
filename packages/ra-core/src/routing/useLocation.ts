@@ -10,6 +10,6 @@ import type { RouterLocation } from './RouterProvider';
  * console.log(location.pathname);
  */
 export const useLocation = (): RouterLocation => {
-    const provider = useRouterProvider();
-    return provider.useLocation();
+  const provider = useRouterProvider();
+  return provider.useLocation();
 };

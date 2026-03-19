@@ -5,27 +5,24 @@ import { useGetResourceLabel } from './useGetResourceLabel';
 import { TestTranslationProvider } from '../i18n';
 
 describe('useGetResourceLabel', () => {
-    test.each([
-        [2, 'Posts'],
-        [1, 'Post'],
-        [0, 'Posts'],
-    ])(
-        'should infer the %s and %s version of the resource name',
-        (count, expected) => {
-            const Component = () => {
-                const getResourceLabel = useGetResourceLabel();
-                const label = getResourceLabel('posts', count);
+  test.each([
+    [2, 'Posts'],
+    [1, 'Post'],
+    [0, 'Posts'],
+  ])('should infer the %s and %s version of the resource name', (count, expected) => {
+    const Component = () => {
+      const getResourceLabel = useGetResourceLabel();
+      const label = getResourceLabel('posts', count);
 
-                return <p>{label}</p>;
-            };
+      return <p>{label}</p>;
+    };
 
-            render(
-                <TestTranslationProvider messages={{}}>
-                    <Component />
-                </TestTranslationProvider>
-            );
-
-            expect(screen.queryByText(expected)).not.toBeNull();
-        }
+    render(
+      <TestTranslationProvider messages={{}}>
+        <Component />
+      </TestTranslationProvider>,
     );
+
+    expect(screen.queryByText(expected)).not.toBeNull();
+  });
 });

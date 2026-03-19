@@ -1,42 +1,39 @@
 import * as React from 'react';
 import { useContext, useEffect, useRef, ReactNode } from 'react';
 import {
-    useNavigate as useReactRouterNavigate,
-    useLocation,
-    useParams,
-    useBlocker,
-    useMatch,
-    useInRouterContext,
-    Link,
-    Navigate,
-    Route,
-    Routes,
-    Outlet,
-    matchPath,
-    createHashRouter,
-    RouterProvider as ReactRouterProvider,
-    UNSAFE_DataRouterContext,
-    UNSAFE_DataRouterStateContext,
-    type FutureConfig,
+  useNavigate as useReactRouterNavigate,
+  useLocation,
+  useParams,
+  useBlocker,
+  useMatch,
+  useInRouterContext,
+  Link,
+  Navigate,
+  Route,
+  Routes,
+  Outlet,
+  matchPath,
+  createHashRouter,
+  RouterProvider as ReactRouterProvider,
+  UNSAFE_DataRouterContext,
+  UNSAFE_DataRouterStateContext,
+  type FutureConfig,
 } from 'react-router-dom';
-import type {
-    RouterProvider,
-    RouterWrapperProps,
-    RouterNavigateFunction,
-} from '../RouterProvider';
+import type { RouterProvider, RouterWrapperProps, RouterNavigateFunction } from '../RouterProvider';
 
-const routerProviderFuture: Partial<
-    Pick<FutureConfig, 'v7_startTransition' | 'v7_relativeSplatPath'>
-> = { v7_startTransition: false, v7_relativeSplatPath: false };
+const routerProviderFuture: Partial<Pick<FutureConfig, 'v7_startTransition' | 'v7_relativeSplatPath'>> = {
+  v7_startTransition: false,
+  v7_relativeSplatPath: false,
+};
 
 /**
  * Hook to check if navigation blocking is supported.
  * In react-router, blocking requires a data router.
  */
 const useCanBlock = (): boolean => {
-    const dataRouterContext = useContext(UNSAFE_DataRouterContext);
-    const dataRouterStateContext = useContext(UNSAFE_DataRouterStateContext);
-    return !!(dataRouterContext && dataRouterStateContext);
+  const dataRouterContext = useContext(UNSAFE_DataRouterContext);
+  const dataRouterStateContext = useContext(UNSAFE_DataRouterStateContext);
+  return !!(dataRouterContext && dataRouterStateContext);
 };
 
 /**
@@ -49,45 +46,35 @@ const useCanBlock = (): boolean => {
  * in components that use navigate but don't need to rerender on navigation.
  */
 const useNavigate = (): RouterNavigateFunction => {
-    const navigate = useReactRouterNavigate();
-    const navigateRef = useRef<RouterNavigateFunction>(
-        navigate as RouterNavigateFunction
-    );
+  const navigate = useReactRouterNavigate();
+  const navigateRef = useRef<RouterNavigateFunction>(navigate as RouterNavigateFunction);
 
-    useEffect(() => {
-        navigateRef.current = navigate as RouterNavigateFunction;
-    }, [navigate]);
+  useEffect(() => {
+    navigateRef.current = navigate as RouterNavigateFunction;
+  }, [navigate]);
 
-    // Return a stable function that always calls the latest navigate
-    return React.useCallback((...args: Parameters<RouterNavigateFunction>) => {
-        return navigateRef.current(...args);
-    }, []) as RouterNavigateFunction;
+  // Return a stable function that always calls the latest navigate
+  return React.useCallback((...args: Parameters<RouterNavigateFunction>) => {
+    return navigateRef.current(...args);
+  }, []) as RouterNavigateFunction;
 };
 
 /**
  * Internal router component that creates a HashRouter.
  * Only used when not already inside a router context.
  */
-const InternalRouter = ({
-    children,
+const InternalRouter = ({ children, basename }: { children: ReactNode; basename?: string }) => {
+  const router = createHashRouter([{ path: '*', element: <>{children}</> }], {
     basename,
-}: {
-    children: ReactNode;
-    basename?: string;
-}) => {
-    const router = createHashRouter([{ path: '*', element: <>{children}</> }], {
-        basename,
-        future: {
-            v7_fetcherPersist: false,
-            v7_normalizeFormMethod: false,
-            v7_partialHydration: false,
-            v7_relativeSplatPath: false,
-            v7_skipActionErrorRevalidation: false,
-        },
-    });
-    return (
-        <ReactRouterProvider router={router} future={routerProviderFuture} />
-    );
+    future: {
+      v7_fetcherPersist: false,
+      v7_normalizeFormMethod: false,
+      v7_partialHydration: false,
+      v7_relativeSplatPath: false,
+      v7_skipActionErrorRevalidation: false,
+    },
+  });
+  return <ReactRouterProvider router={router} future={routerProviderFuture} />;
 };
 
 /**
@@ -95,13 +82,13 @@ const InternalRouter = ({
  * Creates a HashRouter if not already inside a router context.
  */
 const RouterWrapper = ({ basename, children }: RouterWrapperProps) => {
-    const isInRouter = useInRouterContext();
+  const isInRouter = useInRouterContext();
 
-    if (isInRouter) {
-        return <>{children}</>;
-    }
+  if (isInRouter) {
+    return <>{children}</>;
+  }
 
-    return <InternalRouter basename={basename}>{children}</InternalRouter>;
+  return <InternalRouter basename={basename}>{children}</InternalRouter>;
 };
 
 /**
@@ -109,25 +96,25 @@ const RouterWrapper = ({ basename, children }: RouterWrapperProps) => {
  * This provider is used by default when no custom routerProvider is provided to <Admin>.
  */
 export const reactRouterProvider: RouterProvider = {
-    // Hooks
-    useNavigate,
-    useLocation,
-    useParams: useParams as RouterProvider['useParams'],
-    useBlocker,
-    useMatch,
-    useInRouterContext,
-    useCanBlock,
+  // Hooks
+  useNavigate,
+  useLocation,
+  useParams: useParams as RouterProvider['useParams'],
+  useBlocker,
+  useMatch,
+  useInRouterContext,
+  useCanBlock,
 
-    // Components
-    Link,
-    Navigate,
-    Route,
-    Routes,
-    Outlet,
+  // Components
+  Link,
+  Navigate,
+  Route,
+  Routes,
+  Outlet,
 
-    // Router creation
-    RouterWrapper,
+  // Router creation
+  RouterWrapper,
 
-    // Utilities
-    matchPath,
+  // Utilities
+  matchPath,
 };

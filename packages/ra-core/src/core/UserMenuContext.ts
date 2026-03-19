@@ -26,14 +26,12 @@ import { createContext } from 'react';
  *     </UserMenu>
  * );
  */
-export const UserMenuContext = createContext<UserMenuContextValue | undefined>(
-    undefined
-);
+export const UserMenuContext = createContext<UserMenuContextValue | undefined>(undefined);
 
 export type UserMenuContextValue = {
-    /**
-     * Closes the user menu
-     * @see UserMenu
-     */
-    onClose: () => void;
+  /**
+   * Closes the user menu
+   * @see UserMenu
+   */
+  onClose: () => void;
 };

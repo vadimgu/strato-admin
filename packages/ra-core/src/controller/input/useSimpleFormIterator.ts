@@ -8,11 +8,9 @@ import { SimpleFormIteratorContext } from './SimpleFormIteratorContext';
  * @see {ArrayInput}
  */
 export const useSimpleFormIterator = () => {
-    const context = useContext(SimpleFormIteratorContext);
-    if (!context) {
-        throw new Error(
-            'useSimpleFormIterator must be used inside a SimpleFormIterator'
-        );
-    }
-    return context;
+  const context = useContext(SimpleFormIteratorContext);
+  if (!context) {
+    throw new Error('useSimpleFormIterator must be used inside a SimpleFormIterator');
+  }
+  return context;
 };

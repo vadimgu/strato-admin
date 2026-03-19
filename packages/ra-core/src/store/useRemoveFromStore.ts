@@ -19,20 +19,15 @@ import { useStoreContext } from './useStoreContext';
  * }
  */
 export const useRemoveFromStore = (hookTimeKey?: string) => {
-    const { removeItem } = useStoreContext();
-    return useCallback(
-        (key?: string) => {
-            if (
-                typeof key === 'undefined' &&
-                typeof hookTimeKey === 'undefined'
-            ) {
-                throw new Error(
-                    'You must provide a key to remove an item from the store'
-                );
-            }
-            // @ts-ignore
-            return removeItem(key ?? hookTimeKey);
-        },
-        [removeItem, hookTimeKey]
-    );
+  const { removeItem } = useStoreContext();
+  return useCallback(
+    (key?: string) => {
+      if (typeof key === 'undefined' && typeof hookTimeKey === 'undefined') {
+        throw new Error('You must provide a key to remove an item from the store');
+      }
+      // @ts-ignore
+      return removeItem(key ?? hookTimeKey);
+    },
+    [removeItem, hookTimeKey],
+  );
 };

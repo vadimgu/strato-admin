@@ -8,50 +8,50 @@ import isEqual from 'lodash/isEqual.js';
  * issues warnings when calling setState on unmounted components.
  */
 export function useSafeSetState<T>(
-    initialState?: T | (() => T)
+  initialState?: T | (() => T),
 ): [T | undefined, React.Dispatch<React.SetStateAction<T>>] {
-    const [state, setState] = useState(initialState);
+  const [state, setState] = useState(initialState);
 
-    const mountedRef = useRef(false);
-    useEffect(() => {
-        mountedRef.current = true;
-        return () => {
-            mountedRef.current = false;
-        };
-    }, []);
-    const safeSetState = useCallback(
-        args => {
-            if (mountedRef.current) {
-                return setState(args);
-            }
-        },
-        [mountedRef, setState]
-    );
+  const mountedRef = useRef(false);
+  useEffect(() => {
+    mountedRef.current = true;
+    return () => {
+      mountedRef.current = false;
+    };
+  }, []);
+  const safeSetState = useCallback(
+    (args) => {
+      if (mountedRef.current) {
+        return setState(args);
+      }
+    },
+    [mountedRef, setState],
+  );
 
-    return [state, safeSetState];
+  return [state, safeSetState];
 }
 
 export function usePrevious<T>(value: T) {
-    const ref = useRef<T>(null!);
-    useEffect(() => {
-        ref.current = value;
-    });
-    return ref.current;
+  const ref = useRef<T>(null!);
+  useEffect(() => {
+    ref.current = value;
+  });
+  return ref.current;
 }
 
 export function useDeepCompareEffect(callback, inputs) {
-    const cleanupRef = useRef<(() => void) | undefined>(undefined);
-    useEffect(() => {
-        if (!isEqual(previousInputs, inputs)) {
-            cleanupRef.current = callback();
-        }
-        return () => {
-            if (typeof cleanupRef.current === 'function') {
-                cleanupRef.current();
-            }
-        };
-    });
-    const previousInputs = usePrevious(inputs);
+  const cleanupRef = useRef<(() => void) | undefined>(undefined);
+  useEffect(() => {
+    if (!isEqual(previousInputs, inputs)) {
+      cleanupRef.current = callback();
+    }
+    return () => {
+      if (typeof cleanupRef.current === 'function') {
+        cleanupRef.current();
+      }
+    };
+  });
+  const previousInputs = usePrevious(inputs);
 }
 
 /**
@@ -61,29 +61,29 @@ export function useDeepCompareEffect(callback, inputs) {
  * @returns true if the delay has expired, false otherwise
  */
 export function useTimeout(ms = 0, key = '') {
-    const [ready, setReady] = useState(false);
+  const [ready, setReady] = useState(false);
 
-    useEffect(() => {
-        setReady(false);
-        const timer = setTimeout(() => {
-            setReady(true);
-        }, ms);
+  useEffect(() => {
+    setReady(false);
+    const timer = setTimeout(() => {
+      setReady(true);
+    }, ms);
 
-        return () => {
-            clearTimeout(timer);
-        };
-    }, [key, ms, setReady]);
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [key, ms, setReady]);
 
-    return ready;
+  return ready;
 }
 
 export function useIsMounted() {
-    const isMounted = useRef(true);
-    useEffect(() => {
-        isMounted.current = true;
-        return () => {
-            isMounted.current = false;
-        };
-    }, []);
-    return isMounted;
+  const isMounted = useRef(true);
+  useEffect(() => {
+    isMounted.current = true;
+    return () => {
+      isMounted.current = false;
+    };
+  }, []);
+  return isMounted;
 }

@@ -19,20 +19,18 @@ import { DataProvider } from '../types';
  *
  * const dataProvider = addRefreshAuthToDataProvider(jsonServerProvider('http://localhost:3000'), refreshAuth);
  */
-export const addRefreshAuthToDataProvider = <
-    DataProviderType extends DataProvider = DataProvider,
->(
-    provider: DataProviderType,
-    refreshAuth: () => Promise<void>
+export const addRefreshAuthToDataProvider = <DataProviderType extends DataProvider = DataProvider>(
+  provider: DataProviderType,
+  refreshAuth: () => Promise<void>,
 ): DataProviderType => {
-    const proxy = new Proxy(provider, {
-        get(_, name) {
-            return async (...args: any[]) => {
-                await refreshAuth();
-                return provider[name.toString()](...args);
-            };
-        },
-    });
+  const proxy = new Proxy(provider, {
+    get(_, name) {
+      return async (...args: any[]) => {
+        await refreshAuth();
+        return provider[name.toString()](...args);
+      };
+    },
+  });
 
-    return proxy;
+  return proxy;
 };
