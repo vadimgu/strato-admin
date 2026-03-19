@@ -1,7 +1,7 @@
 import React, { createContext, useContext, ReactNode, useState, useCallback, useMemo, ComponentType, Fragment } from 'react';
-import { required } from '@strato-admin/ra-core';
-import { FieldSchema } from './FieldSchema';
-import { InputSchema } from './InputSchema';
+import { required, useResourceContext, useResourceDefinition, useGetResourceLabel } from '@strato-admin/ra-core';
+import { FieldSchema, useFieldSchema } from './FieldSchema';
+import { InputSchema, useInputSchema } from './InputSchema';
 
 export interface ResourceSchemas {
   fieldSchema?: ReactNode;
@@ -52,9 +52,9 @@ export const getDefaultInputForField = (fieldComponent: any) => {
  */
 export const registerGlobalSchemas = (resource: string, schemas: ResourceSchemas) => {
   if (!resource) return;
-  
+
   const existing = globalSchemaRegistry[resource];
-  
+
   // Only update if we actually have new schema content to avoid redundant re-renders
   if (schemas.fieldSchema || schemas.inputSchema) {
     globalSchemaRegistry[resource] = {
@@ -134,9 +134,9 @@ export const parseUnifiedSchema = (children: React.ReactNode): ResourceSchemas =
 
   walk(children);
 
-  return { 
-    fieldSchema: fieldSchema.length > 0 ? fieldSchema : undefined, 
-    inputSchema: inputSchema.length > 0 ? inputSchema : undefined 
+  return {
+    fieldSchema: fieldSchema.length > 0 ? fieldSchema : undefined,
+    inputSchema: inputSchema.length > 0 ? inputSchema : undefined
   };
 };
 
@@ -164,10 +164,10 @@ export const SchemaRegistryProvider = ({ children }: { children: ReactNode }) =>
 
   const getSchemas = useCallback((resource: string) => globalSchemaRegistry[resource], []);
 
-  const value = useMemo(() => ({ 
-    registerSchemas, 
-    getSchemas, 
-    defaultComponents: globalDefaultComponents 
+  const value = useMemo(() => ({
+    registerSchemas,
+    getSchemas,
+    defaultComponents: globalDefaultComponents
   }), [registerSchemas, getSchemas]);
 
   return (
@@ -187,4 +187,55 @@ export const useSchemaRegistry = () => {
     };
   }
   return context;
+};
+
+/**
+ * Hook to access all schema-related information for a resource.
+ * It combines information from ResourceContext, FieldSchemaContext, InputSchemaContext,
+ * and the central SchemaRegistry.
+ */
+export const useResourceSchema = (resourceProp?: string) => {
+  const resourceContext = useResourceContext();
+  const resource = resourceProp || resourceContext;
+
+  const fieldSchemaFromContext = useFieldSchema();
+  const inputSchemaFromContext = useInputSchema();
+  const { getSchemas } = useSchemaRegistry();
+  const definition = useResourceDefinition({ resource });
+  const getResourceLabel = useGetResourceLabel();
+
+  return useMemo(() => {
+    const isDifferentResource = resourceProp && resourceProp !== resourceContext;
+
+    let fieldSchema = fieldSchemaFromContext;
+    let inputSchema = inputSchemaFromContext;
+
+    // Use registry if we are looking for a different resource,
+    // or if the current context has empty schemas (fallback).
+    if (resource && (isDifferentResource || fieldSchema.length === 0 || inputSchema.length === 0)) {
+      const registrySchemas = getSchemas(resource);
+      if (registrySchemas) {
+        if (isDifferentResource || fieldSchema.length === 0) {
+          fieldSchema = registrySchemas.fieldSchema ? React.Children.toArray(registrySchemas.fieldSchema) : [];
+        }
+        if (isDifferentResource || inputSchema.length === 0) {
+          inputSchema = registrySchemas.inputSchema ? React.Children.toArray(registrySchemas.inputSchema) : [];
+        }
+      }
+    }
+
+    return {
+      resource,
+      fieldSchema,
+      inputSchema,
+      definition,
+      label: resource ? getResourceLabel(resource, 2) : undefined, // TODO: stop hardcoding pluralization - translation issues in some languages. 
+      getField: (source: string) => fieldSchema.find(
+        (child) => React.isValidElement(child) && (child.props as any).source === source
+      ),
+      getInput: (source: string) => inputSchema.find(
+        (child) => React.isValidElement(child) && (child.props as any).source === source
+      ),
+    };
+  }, [resource, resourceProp, resourceContext, fieldSchemaFromContext, inputSchemaFromContext, getSchemas, definition, getResourceLabel]);
 };

@@ -4,7 +4,7 @@ import Pagination from '@cloudscape-design/components/pagination';
 import Box from '@cloudscape-design/components/box';
 import TextFilter from '@cloudscape-design/components/text-filter';
 import CollectionPreferences from '@cloudscape-design/components/collection-preferences';
-import { RecordContextProvider, RaRecord, useResourceContext, useFieldSchema, useResourceDefinition, useGetResourceLabel, useTranslateLabel, useTranslate } from '@strato-admin/core';
+import { RecordContextProvider, RaRecord, useResourceSchema, useTranslateLabel, useTranslate } from '@strato-admin/core';
 import { useCollection } from '../collection-hooks';
 import TextField from '../field/TextField';
 import NumberField from '../field/NumberField';
@@ -218,13 +218,11 @@ export const Table = <RecordType extends RaRecord = any>({
   selectionType,
   ...props
 }: TableProps<RecordType>) => {
-  const resource = useResourceContext();
   const translate = useTranslate();
   const translateLabel = useTranslateLabel();
-  const schemaChildren = useFieldSchema();
-  const resourceDefinition = useResourceDefinition({ resource });
+  const { resource, fieldSchema: schemaChildren, definition, label: schemaLabel } = useResourceSchema();
 
-  const finalSelectionType = selectionType ?? (resourceDefinition?.options?.canDelete ? 'multi' : undefined);
+  const finalSelectionType = selectionType ?? (definition?.options?.canDelete ? 'multi' : undefined);
 
   const finalChildren = React.useMemo(() => {
     const baseChildren = children || schemaChildren;
@@ -355,8 +353,6 @@ export const Table = <RecordType extends RaRecord = any>({
     });
   }, [extractedColumns.columns, extractedColumns.options, preferencesProps.preferences.visibleContent, reorderable]);
 
-  const getResourceLabel = useGetResourceLabel();
-
   const tableHeader = React.useMemo(() => {
     if (title === null || title === false) {
       return undefined;
@@ -364,9 +360,9 @@ export const Table = <RecordType extends RaRecord = any>({
     if (React.isValidElement(title)) {
       return title;
     }
-    const finalTitle = title !== undefined ? title : getResourceLabel(resource as string, 2);
+    const finalTitle = title !== undefined ? title : schemaLabel;
     return <TableHeader title={finalTitle} actions={actions} />;
-  }, [title, actions, resource, getResourceLabel]);
+  }, [title, actions, schemaLabel]);
 
   return (
     <CloudscapeTable

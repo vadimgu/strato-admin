@@ -75,7 +75,7 @@ describe('Show', () => {
 
     expect(getByTestId('container')).toBeDefined();
     expect(getByTestId('content').textContent).toBe('Hello World');
-    expect(getByText('Products')).toBeDefined();
+    expect(getByText(/Products/)).toBeDefined();
   });
 
   it('should use provided title', () => {

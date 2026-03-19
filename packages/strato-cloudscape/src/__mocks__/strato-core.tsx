@@ -37,6 +37,23 @@ export const useBulkDeleteController = vi.fn(() => ({
   isLoading: false,
 }));
 
+export const useResourceSchema = vi.fn((resourceProp?: string) => {
+  const resource = resourceProp || useResourceContext();
+  const label = resource ? resource.charAt(0).toUpperCase() + resource.slice(1) : '';
+  return {
+    resource,
+    fieldSchema: [],
+    inputSchema: [],
+    definition: {
+      name: resource,
+      options: { label },
+    },
+    label,
+    getField: vi.fn(),
+    getInput: vi.fn(),
+  };
+});
+
 export const CreateBase = vi.fn(({ children }: any) => <div data-testid="create-base">{children}</div>);
 export const EditBase = vi.fn(({ children }: any) => <div data-testid="edit-base">{children}</div>);
 export const ShowBase = vi.fn(({ children }: any) => <div data-testid="show-base">{children}</div>);

@@ -46,7 +46,7 @@ describe('Create', () => {
 
     expect(getByTestId('container')).toBeDefined();
     expect(getByTestId('content').textContent).toBe('Create New');
-    expect(getByText('Products')).toBeDefined();
+    expect(getByText(/Products/)).toBeDefined();
   });
 
   it('should use provided title', () => {

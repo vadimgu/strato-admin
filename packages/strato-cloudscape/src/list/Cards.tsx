@@ -1,7 +1,7 @@
 import React from 'react';
 import CloudscapeCards, { CardsProps } from '@cloudscape-design/components/cards';
 import Pagination from '@cloudscape-design/components/pagination';
-import { RaRecord, RecordContextProvider, useFieldSchema } from '@strato-admin/core';
+import { RaRecord, RecordContextProvider, useResourceSchema } from '@strato-admin/core';
 import { useCollection } from '../collection-hooks';
 import KeyValuePairs from '../detail/KeyValuePairs';
 
@@ -23,7 +23,7 @@ export const ListCards = <T extends RaRecord = any>({
     sorting: {},
   });
 
-  const schemaChildren = useFieldSchema();
+  const { fieldSchema: schemaChildren } = useResourceSchema();
 
   const defaultRenderItem = (_item: T) => (
     <KeyValuePairs include={include} exclude={exclude}>

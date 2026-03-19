@@ -1,5 +1,5 @@
 import React from 'react';
-import { ShowBase, useShowContext, type RaRecord, ResourceSchemaProvider } from '@strato-admin/core';
+import { ShowBase, useShowContext, type RaRecord, ResourceSchemaProvider, useResourceSchema } from '@strato-admin/core';
 import Container from '@cloudscape-design/components/container';
 import SpaceBetween from '@cloudscape-design/components/space-between';
 import { ShowHeader } from './ShowHeader';
@@ -7,7 +7,6 @@ import KeyValuePairs from './KeyValuePairs';
 
 export interface ShowProps<_RecordType extends RaRecord = RaRecord> {
   children?: React.ReactNode;
-  fieldSchema?: React.ReactNode;
   title?: React.ReactNode;
   actions?: React.ReactNode;
   resource?: string;
@@ -19,37 +18,33 @@ export interface ShowProps<_RecordType extends RaRecord = RaRecord> {
 
 const ShowUI = ({
   children,
-  resource,
-  fieldSchema,
   title,
   actions,
   include,
   exclude,
 }: {
   children?: React.ReactNode;
-  resource?: string;
-  fieldSchema?: React.ReactNode;
   title?: React.ReactNode;
   actions?: React.ReactNode;
   include?: string[];
   exclude?: string[];
 }) => {
   const { record, isLoading } = useShowContext();
+  const { label } = useResourceSchema();
 
   if (isLoading || !record) {
     return null;
   }
 
+  const finalTitle = title ?? (label ? `${label} Details` : 'Details');
   const finalChildren = children || <KeyValuePairs include={include} exclude={exclude} />;
 
   return (
-    <ResourceSchemaProvider resource={resource} fieldSchema={fieldSchema}>
-      <Container header={<ShowHeader title={title} actions={actions} />}>
-        <SpaceBetween direction="vertical" size="l">
-          {finalChildren}
-        </SpaceBetween>
-      </Container>
-    </ResourceSchemaProvider>
+    <Container header={<ShowHeader title={finalTitle} actions={actions} />}>
+      <SpaceBetween direction="vertical" size="l">
+        {finalChildren}
+      </SpaceBetween>
+    </Container>
   );
 };
 
@@ -67,16 +62,9 @@ const ShowUI = ({
  * @example
  * // Using FieldSchema from context
  * <Show include={['name', 'price']} />
- * 
- * @example
- * // Passing a custom field schema
- * <Show fieldSchema={<FieldSchema>...</FieldSchema>}>
- *   <KeyValuePairs />
- * </Show>
  */
 export const Show = <RecordType extends RaRecord = RaRecord>({
   children,
-  fieldSchema,
   title,
   actions,
   include,
@@ -85,16 +73,16 @@ export const Show = <RecordType extends RaRecord = RaRecord>({
 }: ShowProps<RecordType>) => {
   return (
     <ShowBase {...props}>
-      <ShowUI 
-        resource={props.resource}
-        title={title} 
-        actions={actions} 
-        include={include} 
-        exclude={exclude}
-        fieldSchema={fieldSchema}
-      >
-        {children}
-      </ShowUI>
+      <ResourceSchemaProvider resource={props.resource}>
+        <ShowUI 
+          title={title} 
+          actions={actions} 
+          include={include} 
+          exclude={exclude}
+        >
+          {children}
+        </ShowUI>
+      </ResourceSchemaProvider>
     </ShowBase>
   );
 };

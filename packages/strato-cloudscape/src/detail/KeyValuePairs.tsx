@@ -3,12 +3,11 @@ import CloudscapeKeyValuePairs, {
   type KeyValuePairsProps as CloudscapeKeyValuePairsProps,
 } from '@cloudscape-design/components/key-value-pairs';
 import {
-  useResourceContext,
   useRecordContext,
   FieldTitle,
   RecordContextProvider,
   type RaRecord,
-  useFieldSchema,
+  useResourceSchema,
 } from '@strato-admin/core';
 import TextField from '../field/TextField';
 
@@ -65,9 +64,8 @@ export const KeyValuePairs = <RecordType extends RaRecord = RaRecord>({
   minColumnWidth,
   ...props
 }: KeyValuePairsProps) => {
-  const resource = useResourceContext();
   const record = useRecordContext<RecordType>();
-  const schemaChildren = useFieldSchema();
+  const { resource, fieldSchema: schemaChildren } = useResourceSchema();
 
   const finalChildren = React.useMemo(() => {
     const baseChildren = children || schemaChildren;

@@ -1,10 +1,9 @@
 import React from 'react';
-import { ListBase, type RaRecord, ResourceSchemaProvider } from '@strato-admin/core';
+import { ListBase, type RaRecord, ResourceSchemaProvider, useResourceSchema } from '@strato-admin/core';
 import Table from './Table';
 
 export interface ListProps<_RecordType extends RaRecord = any> {
   children?: React.ReactNode;
-  fieldSchema?: React.ReactNode;
   include?: string[];
   exclude?: string[];
   title?: React.ReactNode;
@@ -22,6 +21,42 @@ export interface ListProps<_RecordType extends RaRecord = any> {
   [key: string]: any;
 }
 
+const ListUI = ({
+  children,
+  title,
+  actions,
+  include,
+  exclude,
+  filtering,
+  preferences,
+}: {
+  children?: React.ReactNode;
+  title?: React.ReactNode;
+  actions?: React.ReactNode;
+  include?: string[];
+  exclude?: string[];
+  filtering?: boolean;
+  preferences?: boolean | React.ReactNode;
+}) => {
+  const { label } = useResourceSchema();
+
+  // Resolve title: Prop > Schema Label > Fallback
+  const finalTitle = title ?? label ?? 'List';
+
+  const finalChildren = children || (
+    <Table 
+      include={include} 
+      exclude={exclude} 
+      title={finalTitle} 
+      actions={actions} 
+      filtering={filtering} 
+      preferences={preferences} 
+    />
+  );
+
+  return <>{finalChildren}</>;
+};
+
 /**
  * A List component that provides a list context and a Cloudscape Table.
  *
@@ -35,16 +70,9 @@ export interface ListProps<_RecordType extends RaRecord = any> {
  * @example
  * // Using FieldSchema from context
  * <List include={['name', 'price']} />
- * 
- * @example
- * // Passing a custom field schema
- * <List fieldSchema={<FieldSchema>...</FieldSchema>}>
- *   <Table />
- * </List>
  */
 export const List = <RecordType extends RaRecord = any>({
   children,
-  fieldSchema,
   include,
   exclude,
   title,
@@ -53,21 +81,19 @@ export const List = <RecordType extends RaRecord = any>({
   preferences = true,
   ...props
 }: ListProps<RecordType>) => {
-  const finalChildren = children || (
-    <Table 
-      include={include} 
-      exclude={exclude} 
-      title={title} 
-      actions={actions} 
-      filtering={filtering} 
-      preferences={preferences} 
-    />
-  );
-
   return (
     <ListBase {...props}>
-      <ResourceSchemaProvider resource={props.resource} fieldSchema={fieldSchema}>
-        {finalChildren as any}
+      <ResourceSchemaProvider resource={props.resource}>
+        <ListUI 
+          title={title} 
+          actions={actions} 
+          include={include} 
+          exclude={exclude}
+          filtering={filtering}
+          preferences={preferences}
+        >
+          {children}
+        </ListUI>
       </ResourceSchemaProvider>
     </ListBase>
   );

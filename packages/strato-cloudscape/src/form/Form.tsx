@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form as RaForm, type FormProps as RaFormProps, useSaveContext, useInputSchema } from '@strato-admin/core';
+import { Form as RaForm, type FormProps as RaFormProps, useSaveContext, useResourceSchema } from '@strato-admin/core';
 import CloudscapeForm from '@cloudscape-design/components/form';
 import SpaceBetween from '@cloudscape-design/components/space-between';
 import { SaveButton } from '../button/SaveButton';
@@ -14,7 +14,7 @@ export interface FormProps extends Omit<RaFormProps, 'children'> {
 
 export const Form = ({ children, include, exclude, toolbar, ...props }: FormProps) => {
   const saveContext = useSaveContext();
-  const schemaChildren = useInputSchema();
+  const { inputSchema: schemaChildren } = useResourceSchema();
 
   const finalChildren = React.useMemo(() => {
     const baseChildren = children || schemaChildren;

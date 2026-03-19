@@ -57,7 +57,6 @@ export const BulkDeleteButton = ({
   const handleClose = () => {
     setIsOpen(false);
   };
-  console.log('selectedIds', selectedIds);
   const defaultTitle = translate('ra.message.bulk_delete_title', {
     smart_count: selectedIds?.length || 0,
     _: `Delete ${selectedIds?.length || 0} items`,
