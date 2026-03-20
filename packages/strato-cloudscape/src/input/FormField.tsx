@@ -1,5 +1,5 @@
 import React from 'react';
-import { useInput, useResourceContext, ValidationError } from '@strato-admin/core';
+import { useInput, useResourceContext, ValidationError, useTranslate } from '@strato-admin/core';
 import CloudscapeFormField from '@cloudscape-design/components/form-field';
 import { FieldTitle } from './FieldTitle';
 import { FormFieldContext, useFormFieldContext } from './FormFieldContext';
@@ -25,6 +25,7 @@ export const FormField = (props: FormFieldProps) => {
     ...rest
   } = props;
   const resource = useResourceContext();
+  const translate = useTranslate();
   const context = useFormFieldContext();
   const inputState =
     context ??
@@ -56,6 +57,17 @@ export const FormField = (props: FormFieldProps) => {
       <ValidationError error={errorToProcess} />
     ) : undefined;
 
+  const finalConstraintText = React.useMemo(() => {
+    if (isRequired) return constraintText;
+    const optionalLabel = `(${translate('optional')})`;
+    if (!constraintText) return optionalLabel;
+    return (
+      <>
+        {constraintText} ({optionalLabel})
+      </>
+    );
+  }, [isRequired, constraintText, translate]);
+
   const content = (
     <CloudscapeFormField
       id={id}
@@ -65,7 +77,7 @@ export const FormField = (props: FormFieldProps) => {
         )
       }
       description={description}
-      constraintText={constraintText}
+      constraintText={finalConstraintText}
       info={info}
       secondaryControl={secondaryControl}
       stretch={stretch}

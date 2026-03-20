@@ -75,6 +75,6 @@ describe('ShowHeader', () => {
     const { getByTestId, queryByText } = render(<ShowHeader actions={<div data-testid="custom-action">Custom</div>} />);
 
     expect(getByTestId('custom-action')).toBeDefined();
-    expect(queryByText('ra.action.edit')).toBeNull();
+    expect(queryByText("strato.action.edit")).toBeNull();
   });
 });

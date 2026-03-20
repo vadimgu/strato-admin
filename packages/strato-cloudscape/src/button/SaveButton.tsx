@@ -10,7 +10,7 @@ export const SaveButton = ({ label, variant = 'primary', ...props }: SaveButtonP
 
   return (
     <Button variant={variant} formAction="submit" nativeButtonAttributes={{ type: 'submit' }} {...props}>
-      {label || translate('ra.action.save', { _: 'Save' })}
+      {label || translate("strato.action.save", { _: 'Save' })}
     </Button>
   );
 };

@@ -7,6 +7,7 @@ import {
   type CreateBaseProps,
   Identifier,
   useTranslate,
+  useConstructedPageTitle,
 } from '@strato-admin/core';
 import Container from '@cloudscape-design/components/container';
 import { CreateHeader } from './CreateHeader';
@@ -18,8 +19,8 @@ export interface CreateProps<
   MutationOptionsError = Error,
 > extends CreateBaseProps<RecordType, ResultRecordType, MutationOptionsError> {
   children?: React.ReactNode;
-  title?: React.ReactNode;
-  description?: React.ReactNode;
+  title?: string | ((record: Partial<RecordType>) => string);
+  description?: string | ((record: Partial<RecordType>) => string);
   actions?: React.ReactNode;
   include?: string[];
   exclude?: string[];
@@ -36,32 +37,32 @@ const CreateUI = ({
   saveButtonLabel,
 }: {
   children?: React.ReactNode;
-  title?: React.ReactNode;
+  title?: string | ((record: any) => string);
   actions?: React.ReactNode;
-  description?: React.ReactNode;
+  description?: string | ((record: any) => string);
   include?: string[];
   exclude?: string[];
   saveButtonLabel?: string;
 }) => {
-  const { label, labelCreate, descriptionCreate } = useResourceSchema();
+  const { label, titleCreate, descriptionCreate } = useResourceSchema();
   const translate = useTranslate();
+  const constructedTitle = useConstructedPageTitle('create', label);
 
-  const finalTitle =
-    (typeof title === 'string' ? translate(title, { _: title }) : title) ??
-    (typeof labelCreate === 'string' ? translate(labelCreate, { _: labelCreate }) : labelCreate) ??
-    (label
-      ? translate('ra.page.create', { name: label, _: `Create ${label}` })
-      : translate('ra.page.create', { _: 'Create' }));
+  const finalTitle = React.useMemo(() => {
+    if (typeof title === 'function') return title({});
+    if (title) return translate(title);
+    if (titleCreate) return translate(titleCreate);
+    return constructedTitle;
+  }, [title, titleCreate, translate, constructedTitle]);
 
-  const finalDescription =
-    (typeof description === 'string' ? translate(description, { _: description }) : description) ??
-    (typeof descriptionCreate === 'string'
-      ? translate(descriptionCreate, { _: descriptionCreate })
-      : descriptionCreate);
+  const finalDescription = React.useMemo(() => {
+    if (typeof description === 'function') return description({});
+    if (description) return translate(description);
+    if (descriptionCreate) return translate(descriptionCreate);
+    return undefined;
+  }, [description, descriptionCreate, translate]);
 
-  const finalSaveButtonLabel = saveButtonLabel
-    ? translate(saveButtonLabel, { _: saveButtonLabel })
-    : translate('ra.action.create', { _: 'Create' });
+  const finalSaveButtonLabel = saveButtonLabel ? translate(saveButtonLabel) : translate('Create');
 
   const finalChildren = children || (
     <Form include={include} exclude={exclude} saveButtonLabel={finalSaveButtonLabel} />

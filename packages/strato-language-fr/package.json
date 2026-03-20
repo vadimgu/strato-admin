@@ -23,8 +23,8 @@
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "i18n:extract": "formatjs extract '../*/src/**/*.{ts,tsx}' --out-file messages.json",
-    "i18n:compile": "formatjs compile messages.json --out-file src/messages.json"
+    "i18n:extract": "strato-extract --format=po '../strato-{cloudscape,core}/src/**/*.{ts,tsx}' --ignore='../**/*.stories.tsx' --ignore='../**/*.test.tsx' --ignore='../**/stories/**' --locale fr --out-file messages.po",
+    "i18n:compile": "strato-compile messages.po --out-file src/messages.json"
   },
   "keywords": [
     "strato",
@@ -41,6 +41,6 @@
     "directory": "packages/strato-language-fr"
   },
   "devDependencies": {
-    "@formatjs/cli": "^6.13.0"
+    "@strato-admin/i18n-cli": "workspace:*"
   }
 }

@@ -42,11 +42,12 @@
     "@strato-admin/core": "workspace:*"
   },
   "dependencies": {
+    "@formatjs/icu-messageformat-parser": "^3.5.3",
     "intl-messageformat": "^11.1.2"
   },
   "devDependencies": {
-    "@types/node": "^25.5.0",
     "@strato-admin/ra-core": "workspace:^",
+    "@types/node": "^25.5.0",
     "typescript": "^5.9.3",
     "vitest": "^3.0.7"
   }

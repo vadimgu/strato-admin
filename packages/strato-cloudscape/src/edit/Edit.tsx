@@ -7,6 +7,7 @@ import {
   useResourceSchema,
   type EditBaseProps,
   useTranslate,
+  useConstructedPageTitle,
 } from '@strato-admin/core';
 import Container from '@cloudscape-design/components/container';
 import { EditHeader } from './EditHeader';
@@ -15,8 +16,8 @@ import Form from '../form/Form';
 export interface EditProps<RecordType extends RaRecord = RaRecord, ErrorType = Error>
   extends EditBaseProps<RecordType, ErrorType> {
   children?: React.ReactNode;
-  title?: React.ReactNode;
-  description?: React.ReactNode;
+  title?: string | ((record: RecordType) => string);
+  description?: string | ((record: RecordType) => string);
   actions?: React.ReactNode;
   include?: string[];
   exclude?: string[];
@@ -33,37 +34,41 @@ const EditUI = ({
   saveButtonLabel,
 }: {
   children?: React.ReactNode;
-  title?: React.ReactNode;
+  title?: string | ((record: any) => string);
   actions?: React.ReactNode;
-  description?: React.ReactNode;
+  description?: string | ((record: any) => string);
   include?: string[];
   exclude?: string[];
   saveButtonLabel?: string;
 }) => {
   const { record, isLoading } = useEditContext();
-  const { label, labelEdit, descriptionEdit } = useResourceSchema();
+  const { label, titleEdit, descriptionEdit } = useResourceSchema();
   const translate = useTranslate();
+  const constructedTitle = useConstructedPageTitle('edit', label);
+
+  const finalTitle = React.useMemo(() => {
+    if (isLoading || !record) return '';
+    if (typeof title === 'function') return title(record);
+    if (title) return translate(title);
+    if (typeof titleEdit === 'function') return titleEdit(record);
+    if (titleEdit) return translate(titleEdit);
+    return constructedTitle;
+  }, [isLoading, record, title, titleEdit, translate, constructedTitle]);
+
+  const finalDescription = React.useMemo(() => {
+    if (isLoading || !record) return undefined;
+    if (typeof description === 'function') return description(record);
+    if (description) return translate(description);
+    if (typeof descriptionEdit === 'function') return descriptionEdit(record);
+    if (descriptionEdit) return translate(descriptionEdit);
+    return undefined;
+  }, [isLoading, record, description, descriptionEdit, translate]);
 
   if (isLoading || !record) {
     return null;
   }
 
-  const resolvedLabelEdit = typeof labelEdit === 'function' ? labelEdit(record) : labelEdit;
-  const finalTitle =
-    (typeof title === 'string' ? translate(title, { _: title }) : title) ??
-    (typeof resolvedLabelEdit === 'string' ? translate(resolvedLabelEdit, { _: resolvedLabelEdit }) : resolvedLabelEdit) ??
-    (label ? translate('ra.page.edit', { name: label, _: `Edit ${label}` }) : translate('ra.page.edit', { _: 'Edit' }));
-
-  const resolvedDescriptionEdit = typeof descriptionEdit === 'function' ? descriptionEdit(record) : descriptionEdit;
-  const finalDescription =
-    (typeof description === 'string' ? translate(description, { _: description }) : description) ??
-    (typeof resolvedDescriptionEdit === 'string'
-      ? translate(resolvedDescriptionEdit, { _: resolvedDescriptionEdit })
-      : resolvedDescriptionEdit);
-
-  const finalSaveButtonLabel = saveButtonLabel
-    ? translate(saveButtonLabel, { _: saveButtonLabel })
-    : translate('ra.action.save', { _: 'Save' });
+  const finalSaveButtonLabel = saveButtonLabel ? translate(saveButtonLabel) : translate('Save');
 
   const finalChildren = children || (
     <Form include={include} exclude={exclude} saveButtonLabel={finalSaveButtonLabel} />

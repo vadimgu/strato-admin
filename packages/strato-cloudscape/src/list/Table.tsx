@@ -403,29 +403,29 @@ export const Table = <RecordType extends RaRecord = any>({
             pageSizePreference={
               pageSizeOptions
                 ? {
-                    options: pageSizeOptions,
-                  }
+                  options: pageSizeOptions,
+                }
                 : undefined
             }
             visibleContentPreference={
               !reorderable && extractedColumns.options.length > 0
                 ? {
-                    title: translate('ra.action.select_columns', { _: 'Select visible columns' }),
-                    options: [
-                      {
-                        label: translate('ra.action.select_columns', { _: 'Select visible columns' }),
-                        options: extractedColumns.options,
-                      },
-                    ],
-                  }
+                  title: translate("strato.action.select_columns", { _: 'Select visible columns' }),
+                  options: [
+                    {
+                      label: translate("strato.action.select_columns", { _: 'Select visible columns' }),
+                      options: extractedColumns.options,
+                    },
+                  ],
+                }
                 : undefined
             }
             contentDisplayPreference={
               reorderable && extractedColumns.options.length > 0
                 ? {
-                    title: translate('ra.action.select_columns', { _: 'Select visible columns' }),
-                    options: extractedColumns.options,
-                  }
+                  title: translate("strato.action.select_columns", { _: 'Select visible columns' }),
+                  options: extractedColumns.options,
+                }
                 : undefined
             }
           />

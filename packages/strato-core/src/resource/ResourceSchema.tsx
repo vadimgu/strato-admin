@@ -20,35 +20,35 @@ export interface ResourceSchemaProps extends ResourceProps {
   /**
    * The label to use for the list view title. If not provided, the label will be used.
    */
-  labelList?: string | ReactNode;
+  titleList?: string;
   /**
    * The label to use for the create view title.
    */
-  labelCreate?: string | ReactNode;
+  titleCreate?: string;
   /**
    * The label to use for the edit view title.
    */
-  labelEdit?: string | ((record?: any) => ReactNode);
+  titleEdit?: string | ((record?: any) => string);
   /**
    * The label to use for the show view title.
    */
-  labelShow?: string | ((record?: any) => ReactNode);
+  titleShow?: string | ((record?: any) => string);
   /**
    * The description to use for the list view.
    */
-  descriptionList?: string | ReactNode;
+  descriptionList?: string;
   /**
    * The description to use for the create view.
    */
-  descriptionCreate?: string | ReactNode;
+  descriptionCreate?: string;
   /**
    * The description to use for the edit view.
    */
-  descriptionEdit?: string | ((record?: any) => ReactNode);
+  descriptionEdit?: string | ((record?: any) => string);
   /**
    * The description to use for the show view.
    */
-  descriptionShow?: string | ((record?: any) => ReactNode);
+  descriptionShow?: string | ((record?: any) => string);
   /**
    * Whether the resource can be created. If true, the create view is enabled.
    * @default true
@@ -113,10 +113,10 @@ export interface ResourceSchemaProps extends ResourceProps {
 export const ResourceSchema = ({
   children,
   label,
-  labelList,
-  labelCreate,
-  labelEdit,
-  labelShow,
+  titleList,
+  titleCreate,
+  titleEdit,
+  titleShow,
   descriptionList,
   descriptionCreate,
   descriptionEdit,
@@ -143,10 +143,10 @@ export const ResourceSchema = ({
   const mergedOptions = {
     ...options,
     ...(label ? { label } : {}),
-    labelList,
-    labelCreate,
-    labelEdit,
-    labelShow,
+    titleList,
+    titleCreate,
+    titleEdit,
+    titleShow,
     descriptionList,
     descriptionCreate,
     descriptionEdit,
@@ -190,10 +190,10 @@ ResourceSchema.registerResource = (props: ResourceSchemaProps) => {
     name,
     children,
     label,
-    labelList,
-    labelCreate,
-    labelEdit,
-    labelShow,
+    titleList,
+    titleCreate,
+    titleEdit,
+    titleShow,
     descriptionList,
     descriptionCreate,
     descriptionEdit,
@@ -229,10 +229,10 @@ ResourceSchema.registerResource = (props: ResourceSchemaProps) => {
       excludeShowFields,
       formFields,
       excludeFormFields,
-      labelList,
-      labelCreate,
-      labelEdit,
-      labelShow,
+      titleList,
+      titleCreate,
+      titleEdit,
+      titleShow,
       descriptionList,
       descriptionCreate,
       descriptionEdit,
@@ -244,10 +244,10 @@ ResourceSchema.registerResource = (props: ResourceSchemaProps) => {
   const mergedOptions = {
     ...options,
     ...(label ? { label } : {}),
-    labelList,
-    labelCreate,
-    labelEdit,
-    labelShow,
+    titleList,
+    titleCreate,
+    titleEdit,
+    titleShow,
     descriptionList,
     descriptionCreate,
     descriptionEdit,

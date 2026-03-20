@@ -6,6 +6,7 @@ import {
   useResourceSchema,
   type ListBaseProps,
   useTranslate,
+  useConstructedPageTitle,
 } from '@strato-admin/core';
 import Table from './Table';
 
@@ -13,8 +14,8 @@ export interface ListProps<RecordType extends RaRecord = any> extends ListBasePr
   children?: React.ReactNode;
   include?: string[];
   exclude?: string[];
-  title?: React.ReactNode;
-  description?: React.ReactNode;
+  title?: string | (() => string);
+  description?: string | (() => string);
   actions?: React.ReactNode;
   /**
    * Whether to enable text filtering in the implicit Table.
@@ -39,26 +40,31 @@ const ListUI = ({
   preferences,
 }: {
   children?: React.ReactNode;
-  title?: React.ReactNode;
+  title?: string | (() => string);
   actions?: React.ReactNode;
-  description?: React.ReactNode;
+  description?: string | (() => string);
   include?: string[];
   exclude?: string[];
   filtering?: boolean;
   preferences?: boolean | React.ReactNode;
 }) => {
-  const { label, labelList, descriptionList } = useResourceSchema();
+  const { label, titleList, descriptionList } = useResourceSchema();
   const translate = useTranslate();
+  const constructedTitle = useConstructedPageTitle('list', label);
 
-  // Resolve title: Prop > Schema labelList > Schema Label > Fallback
-  const finalTitle =
-    (typeof title === 'string' ? translate(title, { _: title }) : title) ??
-    (typeof labelList === 'string' ? translate(labelList, { _: labelList }) : labelList) ??
-    (label ? translate('ra.page.list', { name: label, _: label }) : translate('ra.page.list', { _: 'List' }));
+  const finalTitle = React.useMemo(() => {
+    if (typeof title === 'function') return title();
+    if (title) return translate(title);
+    if (titleList) return translate(titleList);
+    return constructedTitle;
+  }, [title, titleList, translate, constructedTitle]);
 
-  const finalDescription =
-    (typeof description === 'string' ? translate(description, { _: description }) : description) ??
-    (typeof descriptionList === 'string' ? translate(descriptionList, { _: descriptionList }) : descriptionList);
+  const finalDescription = React.useMemo(() => {
+    if (typeof description === 'function') return description();
+    if (description) return translate(description);
+    if (descriptionList) return translate(descriptionList);
+    return undefined;
+  }, [description, descriptionList, translate]);
 
   const finalChildren = children || (
     <Table

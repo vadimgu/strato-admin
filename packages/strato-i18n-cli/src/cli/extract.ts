@@ -6,7 +6,8 @@ import { parse } from '@babel/parser';
 import traverse from '@babel/traverse';
 import * as t from '@babel/types';
 import * as gettextParser from 'gettext-parser';
-import { generateMessageId } from '@strato-admin/i18n';
+import { generateMessageId, normalizeMessage, prettyPrintICU } from '@strato-admin/i18n';
+import { minimatch } from 'minimatch';
 
 // List of Strato Admin components to extract from
 const DEFAULT_STRATO_COMPONENTS = new Set([
@@ -49,6 +50,10 @@ const DEFAULT_TRANSLATABLE_PROPS = new Set([
   'labelEdit',
   'labelShow',
   'title',
+  'titleList',
+  'titleCreate',
+  'titleEdit',
+  'titleShow',
   'placeholder',
   'emptyText',
   'helperText',
@@ -109,10 +114,13 @@ function parseArgs() {
   const args = process.argv.slice(2);
   let format: string | undefined = undefined;
   let config: string | undefined = undefined;
+  let outFile: string | undefined = undefined;
+  let locale: string | undefined = undefined;
+  const ignorePatterns: string[] = [];
   const positionalArgs: string[] = [];
 
   for (let i = 0; i < args.length; i++) {
-    if (args[i] === '--format' && i + 1 < args.length) {
+    if ((args[i] === '--format' || args[i] === '-f') && i + 1 < args.length) {
       format = args[i + 1];
       i++;
     } else if (args[i].startsWith('--format=')) {
@@ -122,6 +130,21 @@ function parseArgs() {
       i++;
     } else if (args[i].startsWith('--config=')) {
       config = args[i].split('=')[1];
+    } else if ((args[i] === '--out-file' || args[i] === '-o') && i + 1 < args.length) {
+      outFile = args[i + 1];
+      i++;
+    } else if (args[i].startsWith('--out-file=')) {
+      outFile = args[i].split('=')[1];
+    } else if ((args[i] === '--locale' || args[i] === '-l') && i + 1 < args.length) {
+      locale = args[i + 1];
+      i++;
+    } else if (args[i].startsWith('--locale=')) {
+      locale = args[i].split('=')[1];
+    } else if ((args[i] === '--ignore' || args[i] === '-i') && i + 1 < args.length) {
+      ignorePatterns.push(args[i + 1]);
+      i++;
+    } else if (args[i].startsWith('--ignore=')) {
+      ignorePatterns.push(args[i].split('=')[1]);
     } else {
       positionalArgs.push(args[i]);
     }
@@ -148,17 +171,53 @@ function parseArgs() {
     localeArgs = ['en'];
   }
 
-  return { srcPattern, outDir, localeArgs, format, config };
+  return { srcPattern, outDir, localeArgs, format, config, outFile, ignorePatterns, locale };
+}
+
+interface ExtractedMessage {
+  msgid: string;
+  msgctxt?: string;
+  locations: Set<string>;
 }
 
 function main() {
-  const { srcPattern, outDir, localeArgs, format: formatArg, config: configPath } = parseArgs();
+  const { srcPattern, outDir, localeArgs, format: formatArg, config: configPath, outFile: explicitOutFile, ignorePatterns, locale: explicitLocale } = parseArgs();
   const { components, translatableProps } = loadConfig(configPath);
 
   console.log(`Extracting messages from ${srcPattern} (using Babel)...`);
+  if (ignorePatterns.length > 0) {
+    console.log(`Ignoring patterns: ${ignorePatterns.join(', ')}`);
+  }
 
-  const files = globSync(srcPattern, { absolute: true });
-  const extractedMessages = new Set<string>();
+  let files = globSync(srcPattern, { absolute: true });
+
+  if (ignorePatterns.length > 0) {
+    files = files.filter(file => {
+      const relativeFile = path.relative(process.cwd(), file);
+      const isIgnored = ignorePatterns.some(pattern => minimatch(relativeFile, pattern));
+      return !isIgnored;
+    });
+  }
+
+  console.log(`Processing ${files.length} files...`);
+  if (files.length < 10) {
+    console.log('Files:', files);
+  } else {
+    console.log('Sample files:', files.slice(0, 5));
+  }
+  
+  const extractedMessages = new Map<string, ExtractedMessage>();
+
+  const addExtractedMessage = (msgid: string, msgctxt: string | undefined, location: string) => {
+    const normalizedMsgid = normalizeMessage(msgid);
+    const prettyMsgid = prettyPrintICU(msgid);
+    const key = msgctxt ? `ctx:${msgctxt}` : `msg:${normalizedMsgid}`;
+    
+    if (!extractedMessages.has(key)) {
+      extractedMessages.set(key, { msgid: prettyMsgid, msgctxt, locations: new Set() });
+    }
+    extractedMessages.get(key)!.locations.add(location);
+  };
 
   files.forEach((file) => {
     try {
@@ -168,15 +227,64 @@ function main() {
         plugins: ['typescript', 'jsx', 'decorators-legacy'],
       });
 
+      const relativeFile = path.relative(process.cwd(), file);
+
       traverse(ast, {
-        JSXOpeningElement(path) {
-          const tagName = getJSXElementName(path.node.name);
+        CallExpression(p) {
+          const { callee, arguments: args } = p.node;
+          if (
+            t.isIdentifier(callee) &&
+            (callee.name === 'translate' || callee.name === 'translateLabel') &&
+            args.length > 0
+          ) {
+            const firstArg = args[0];
+            let firstArgValue: string | null = null;
+            if (t.isStringLiteral(firstArg)) {
+              firstArgValue = firstArg.value;
+            } else if (t.isTemplateLiteral(firstArg) && firstArg.quasis.length === 1) {
+              firstArgValue = firstArg.quasis[0].value.cooked || firstArg.quasis[0].value.raw;
+            }
+
+            if (firstArgValue) {
+              let msgid = firstArgValue;
+              let msgctxt: string | undefined = undefined;
+
+              // Check for second argument { _: "Default Text" }
+              if (args.length > 1) {
+                const secondArg = args[1];
+                if (t.isObjectExpression(secondArg)) {
+                  const defaultProp = secondArg.properties.find(
+                    (prop) => {
+                      const isMatch = t.isObjectProperty(prop) && t.isIdentifier(prop.key) && prop.key.name === '_';
+                      return isMatch;
+                    }
+                  );
+                  if (defaultProp && t.isObjectProperty(defaultProp)) {
+                    if (t.isStringLiteral(defaultProp.value)) {
+                      msgid = defaultProp.value.value;
+                      msgctxt = firstArgValue; // The first arg is the explicit ID
+                    } else if (t.isTemplateLiteral(defaultProp.value) && defaultProp.value.quasis.length === 1) {
+                      msgid = defaultProp.value.quasis[0].value.cooked || defaultProp.value.quasis[0].value.raw;
+                      msgctxt = firstArgValue;
+                    }
+                  }
+                }
+              }
+
+              const line = p.node.loc?.start.line || 0;
+              const location = `${relativeFile}:${line}`;
+              addExtractedMessage(msgid, msgctxt, location);
+            }
+          }
+        },
+        JSXOpeningElement(p) {
+          const tagName = getJSXElementName(p.node.name);
 
           const baseNameMatch =
             components.has(tagName) || Array.from(components).some((c) => tagName.startsWith(c + '.') || tagName === c);
 
           if (baseNameMatch) {
-            path.node.attributes.forEach((attr) => {
+            p.node.attributes.forEach((attr) => {
               if (t.isJSXAttribute(attr) && t.isJSXIdentifier(attr.name) && translatableProps.has(attr.name.name)) {
                 let textValue: string | null = null;
 
@@ -189,14 +297,16 @@ function main() {
                       if (t.isStringLiteral(expr)) {
                         textValue = expr.value;
                       } else if (expr.quasis.length === 1) {
-                        textValue = expr.quasis[0].value.raw;
+                        textValue = expr.quasis[0].value.cooked || expr.quasis[0].value.raw;
                       }
                     }
                   }
                 }
 
                 if (textValue && textValue.trim() !== '') {
-                  extractedMessages.add(textValue);
+                  const line = attr.loc?.start.line || 0;
+                  const location = `${relativeFile}:${line}`;
+                  addExtractedMessage(textValue, undefined, location);
                 }
               }
             });
@@ -212,45 +322,51 @@ function main() {
 
   const targets: { outFile: string; locale: string; format: string }[] = [];
 
-  localeArgs.forEach((arg) => {
-    if (arg.includes('*')) {
-      const matchedFiles = globSync(arg, { absolute: true });
-      matchedFiles.forEach((file) => {
-        const ext = path.extname(file).slice(1);
-        const format = formatArg || (ext === 'po' ? 'po' : 'json');
+  if (explicitOutFile) {
+    const ext = path.extname(explicitOutFile).slice(1);
+    const format = formatArg || (ext === 'po' ? 'po' : 'json');
+    targets.push({ outFile: explicitOutFile, locale: explicitLocale || 'en', format });
+  } else {
+    localeArgs.forEach((arg) => {
+      if (arg.includes('*')) {
+        const matchedFiles = globSync(arg, { absolute: true });
+        matchedFiles.forEach((file) => {
+          const ext = path.extname(file).slice(1);
+          const format = formatArg || (ext === 'po' ? 'po' : 'json');
 
-        // Guess locale from path: locales/en.po -> en, locales/en/messages.po -> en
-        let locale = path.basename(file, '.' + ext);
-        if (locale === 'messages' || locale === 'translations' || locale === 'LC_MESSAGES') {
-          const parts = file.split(path.sep);
-          locale = parts[parts.length - 2];
-        }
-        targets.push({ outFile: file, locale, format });
-      });
-    } else {
-      let outFile: string;
-      let locale: string;
-      let format: string;
-
-      if (arg.includes('.') || arg.includes('/') || arg.includes('\\')) {
-        outFile = arg;
-        const ext = path.extname(arg).slice(1);
-        format = formatArg || (ext === 'po' ? 'po' : 'json');
-
-        locale = path.basename(arg, '.' + ext);
-        if (locale === 'messages' || locale === 'translations' || locale === 'LC_MESSAGES') {
-          const parts = path.resolve(arg).split(path.sep);
-          locale = parts[parts.length - 2];
-        }
+          // Guess locale from path: locales/en.po -> en, locales/en/messages.po -> en
+          let locale = path.basename(file, '.' + ext);
+          if (locale === 'messages' || locale === 'translations' || locale === 'LC_MESSAGES') {
+            const parts = file.split(path.sep);
+            locale = parts[parts.length - 2];
+          }
+          targets.push({ outFile: file, locale, format });
+        });
       } else {
-        format = formatArg || 'json';
-        const extension = format === 'po' ? 'po' : 'json';
-        outFile = path.join(outDir, `${arg}.${extension}`);
-        locale = arg;
+        let outFile: string;
+        let locale: string;
+        let format: string;
+
+        if (arg.includes('.') || arg.includes('/') || arg.includes('\\')) {
+          outFile = arg;
+          const ext = path.extname(arg).slice(1);
+          format = formatArg || (ext === 'po' ? 'po' : 'json');
+
+          locale = path.basename(arg, '.' + ext);
+          if (locale === 'messages' || locale === 'translations' || locale === 'LC_MESSAGES') {
+            const parts = path.resolve(arg).split(path.sep);
+            locale = parts[parts.length - 2];
+          }
+        } else {
+          format = formatArg || 'json';
+          const extension = format === 'po' ? 'po' : 'json';
+          outFile = path.join(outDir, `${arg}.${extension}`);
+          locale = arg;
+        }
+        targets.push({ outFile, locale, format });
       }
-      targets.push({ outFile, locale, format });
-    }
-  });
+    });
+  }
 
   if (targets.length === 0) {
     console.error('No target files found or specified.');
@@ -258,7 +374,7 @@ function main() {
   }
 
   targets.forEach(({ outFile, locale, format }) => {
-    let existingTranslations: Record<string, { defaultMessage: string; translation: string }> = {};
+    let existingTranslations: Record<string, any> = {};
 
     if (fs.existsSync(outFile)) {
       try {
@@ -294,26 +410,38 @@ function main() {
       }
     }
 
-    const updatedTranslations: Record<string, { defaultMessage: string; translation: string }> = {};
+    const updatedTranslations: Record<string, { defaultMessage: string; translation: string; locations?: string[]; msgctxt?: string }> = {};
     let addedCount = 0;
 
-    extractedMessages.forEach((msg) => {
-      const msgid = generateMessageId(msg);
-      if (existingTranslations[msgid]) {
-        updatedTranslations[msgid] = { ...existingTranslations[msgid] };
-        updatedTranslations[msgid].defaultMessage = msg;
+    extractedMessages.forEach((data) => {
+      const hash = data.msgctxt ? data.msgctxt : generateMessageId(data.msgid);
+      if (existingTranslations[hash]) {
+        const existing = existingTranslations[hash];
+        updatedTranslations[hash] = {
+          defaultMessage: data.msgid,
+          translation: existing.translation || (existing.description ? '' : ''),
+          locations: Array.from(data.locations),
+          msgctxt: data.msgctxt,
+        };
       } else {
-        updatedTranslations[msgid] = {
-          defaultMessage: msg,
+        updatedTranslations[hash] = {
+          defaultMessage: data.msgid,
           translation: '',
+          locations: Array.from(data.locations),
+          msgctxt: data.msgctxt,
         };
         addedCount++;
       }
     });
 
+    // Keep hardcoded keys (like ra.*)
     Object.keys(existingTranslations).forEach((key) => {
       if (!updatedTranslations[key]) {
-        updatedTranslations[key] = existingTranslations[key];
+        const existing = existingTranslations[key];
+        updatedTranslations[key] = {
+          defaultMessage: existing.defaultMessage || '',
+          translation: existing.translation || '',
+        };
       }
     });
 
@@ -332,11 +460,25 @@ function main() {
       };
 
       Object.entries(updatedTranslations).forEach(([hash, data]) => {
-        poData.translations[''][data.defaultMessage] = {
+        const context = data.msgctxt || '';
+        if (!poData.translations[context]) {
+          poData.translations[context] = {};
+        }
+
+        // To achieve multi-line PO visual without \n, we must ensure the strings
+        // themselves don't have newlines before gettext-parser sees them.
+        // However, we WANT the structured look. 
+        // If we want gettext-parser to wrap, we usually can't control it.
+        // Instead, we will use our previously successful "compiledPo.replace" approach 
+        // but with a better regex that actually works on the serialized output.
+        
+        poData.translations[context][data.defaultMessage] = {
           msgid: data.defaultMessage,
+          msgctxt: data.msgctxt ? data.msgctxt : undefined,
           msgstr: [data.translation],
           comments: {
             extracted: `id: ${hash}`,
+            reference: data.locations?.join('\n'),
           },
         };
       });
@@ -351,6 +493,4 @@ function main() {
   });
 }
 
-if (require.main === module) {
-  main();
-}
+main();

@@ -29,7 +29,7 @@ export const EditButton = ({ label, record: recordProp, variant = 'primary', ...
 
   return (
     <Button variant={variant} onClick={handleClick} {...props}>
-      {label || translate('ra.action.edit', { _: 'Edit' })}
+      {label || translate("strato.action.edit", { _: 'Edit' })}
     </Button>
   );
 };

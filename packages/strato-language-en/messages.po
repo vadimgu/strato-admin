@@ -1,0 +1,130 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=utf-8\n"
+"Language: en\n"
+
+#: ../strato-cloudscape/src/list/Table.examples.tsx:4
+#. id: 152c2aj
+msgid "Product Catalog"
+msgstr ""
+
+#: ../strato-cloudscape/src/input/FormField.tsx:62
+#. id: kgw9o9
+msgid "optional"
+msgstr ""
+
+#: ../strato-cloudscape/src/edit/Edit.tsx:71
+#. id: lewgh4
+msgid "Save"
+msgstr ""
+
+#: ../strato-cloudscape/src/create/Create.tsx:65
+#. id: 16gte2l
+msgid "Create"
+msgstr ""
+
+#: ../strato-cloudscape/src/list/Table.tsx:413
+#: ../strato-cloudscape/src/list/Table.tsx:416
+#: ../strato-cloudscape/src/list/Table.tsx:426
+#. id: ra.action.select_columns
+msgctxt "strato.action.select_columns"
+msgid "Select visible columns"
+msgstr ""
+
+#: ../strato-cloudscape/src/layout/TopNavigation.tsx:41
+#. id: strato.action.toggle_theme
+msgctxt "strato.action.toggle_theme"
+msgid "Toggle theme"
+msgstr ""
+
+#: ../strato-cloudscape/src/layout/TopNavigation.tsx:62
+#. id: ra.auth.user_menu
+msgctxt "strato.auth.user_menu"
+msgid "User"
+msgstr ""
+
+#: ../strato-cloudscape/src/layout/TopNavigation.tsx:65
+#. id: ra.auth.profile
+msgctxt "strato.auth.profile"
+msgid "Profile"
+msgstr ""
+
+#: ../strato-cloudscape/src/layout/TopNavigation.tsx:66
+#. id: ra.auth.logout
+msgctxt "strato.auth.logout"
+msgid "Sign out"
+msgstr ""
+
+#: ../strato-cloudscape/src/field/BooleanField.tsx:31
+#. id: ra.boolean.true
+msgctxt "strato.boolean.true"
+msgid "Yes"
+msgstr ""
+
+#: ../strato-cloudscape/src/field/BooleanField.tsx:35
+#. id: ra.boolean.false
+msgctxt "strato.boolean.false"
+msgid "No"
+msgstr ""
+
+#: ../strato-cloudscape/src/button/SaveButton.tsx:13
+#. id: ra.action.save
+msgctxt "strato.action.save"
+msgid "Save"
+msgstr ""
+
+#: ../strato-cloudscape/src/button/EditButton.tsx:32
+#. id: ra.action.edit
+msgctxt "strato.action.edit"
+msgid "Edit"
+msgstr ""
+
+#: ../strato-cloudscape/src/button/CreateButton.tsx:32
+#. id: ra.action.create
+msgctxt "strato.action.create"
+msgid "Create"
+msgstr ""
+
+#: ../strato-cloudscape/src/button/BulkDeleteButton.tsx:50
+#. id: ra.message.bulk_delete_title
+msgctxt "strato.message.bulk_delete_title"
+msgid ""
+"{smart_count, plural,\n"
+"  one {Delete this item}\n"
+"  other {Delete these # items}\n"
+"}"
+msgstr ""
+
+#: ../strato-cloudscape/src/button/BulkDeleteButton.tsx:55
+#. id: ra.message.bulk_delete_content
+msgctxt "strato.message.bulk_delete_content"
+msgid ""
+"{smart_count, plural,\n"
+"  one {Are you sure you want to delete this item?}\n"
+"  other {Are you sure you want to delete these # items?}\n"
+"}"
+msgstr ""
+
+#: ../strato-cloudscape/src/button/BulkDeleteButton.tsx:71
+#. id: ra.action.delete
+msgctxt "strato.action.delete"
+msgid "Delete"
+msgstr ""
+
+#: ../strato-cloudscape/src/button/BulkDeleteButton.tsx:76
+#. id: ra.action.close
+msgctxt "strato.action.close"
+msgid "Close"
+msgstr ""
+
+#: ../strato-cloudscape/src/button/BulkDeleteButton.tsx:81
+#. id: ra.action.cancel
+msgctxt "strato.action.cancel"
+msgid "Cancel"
+msgstr ""
+
+#: ../strato-cloudscape/src/button/BulkDeleteButton.tsx:84
+#. id: ra.action.confirm
+msgctxt "strato.action.confirm"
+msgid "Confirm"
+msgstr ""

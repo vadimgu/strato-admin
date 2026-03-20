@@ -15,14 +15,14 @@ import { InputSchema, useInputSchema } from './InputSchema';
 export interface ResourceSchemas {
   fieldSchema?: ReactNode;
   inputSchema?: ReactNode;
-  labelList?: string | ReactNode;
-  labelCreate?: string | ReactNode;
-  labelEdit?: string | ((record?: any) => ReactNode);
-  labelShow?: string | ((record?: any) => ReactNode);
-  descriptionList?: string | ReactNode;
-  descriptionCreate?: string | ReactNode;
-  descriptionEdit?: string | ((record?: any) => ReactNode);
-  descriptionShow?: string | ((record?: any) => ReactNode);
+  titleList?: string;
+  titleCreate?: string;
+  titleEdit?: string | ((record?: any) => string);
+  titleShow?: string | ((record?: any) => string);
+  descriptionList?: string;
+  descriptionCreate?: string;
+  descriptionEdit?: string | ((record?: any) => string);
+  descriptionShow?: string | ((record?: any) => string);
   listFields?: string[];
   excludeListFields?: string[];
   showFields?: string[];
@@ -82,10 +82,10 @@ export const registerGlobalSchemas = (resource: string, schemas: ResourceSchemas
   if (
     schemas.fieldSchema ||
     schemas.inputSchema ||
-    schemas.labelList ||
-    schemas.labelCreate ||
-    schemas.labelEdit ||
-    schemas.labelShow ||
+    schemas.titleList ||
+    schemas.titleCreate ||
+    schemas.titleEdit ||
+    schemas.titleShow ||
     schemas.descriptionList ||
     schemas.descriptionCreate ||
     schemas.descriptionEdit ||
@@ -268,10 +268,10 @@ export const useResourceSchema = (resourceProp?: string) => {
     let excludeShowFields = (definition as any)?.options?.excludeShowFields;
     let formFields = (definition as any)?.options?.formFields;
     let excludeFormFields = (definition as any)?.options?.excludeFormFields;
-    let labelList = (definition as any)?.options?.labelList;
-    let labelCreate = (definition as any)?.options?.labelCreate;
-    let labelEdit = (definition as any)?.options?.labelEdit;
-    let labelShow = (definition as any)?.options?.labelShow;
+    let titleList = (definition as any)?.options?.titleList;
+    let titleCreate = (definition as any)?.options?.titleCreate;
+    let titleEdit = (definition as any)?.options?.titleEdit;
+    let titleShow = (definition as any)?.options?.titleShow;
     let descriptionList = (definition as any)?.options?.descriptionList;
     let descriptionCreate = (definition as any)?.options?.descriptionCreate;
     let descriptionEdit = (definition as any)?.options?.descriptionEdit;
@@ -294,10 +294,10 @@ export const useResourceSchema = (resourceProp?: string) => {
         excludeShowFields = excludeShowFields || registrySchemas.excludeShowFields;
         formFields = formFields || registrySchemas.formFields;
         excludeFormFields = excludeFormFields || registrySchemas.excludeFormFields;
-        labelList = labelList || registrySchemas.labelList;
-        labelCreate = labelCreate || registrySchemas.labelCreate;
-        labelEdit = labelEdit || registrySchemas.labelEdit;
-        labelShow = labelShow || registrySchemas.labelShow;
+        titleList = titleList || registrySchemas.titleList;
+        titleCreate = titleCreate || registrySchemas.titleCreate;
+        titleEdit = titleEdit || registrySchemas.titleEdit;
+        titleShow = titleShow || registrySchemas.titleShow;
         descriptionList = descriptionList || registrySchemas.descriptionList;
         descriptionCreate = descriptionCreate || registrySchemas.descriptionCreate;
         descriptionEdit = descriptionEdit || registrySchemas.descriptionEdit;
@@ -315,10 +315,10 @@ export const useResourceSchema = (resourceProp?: string) => {
       excludeShowFields,
       formFields,
       excludeFormFields,
-      labelList,
-      labelCreate,
-      labelEdit,
-      labelShow,
+      titleList,
+      titleCreate,
+      titleEdit,
+      titleShow,
       descriptionList,
       descriptionCreate,
       descriptionEdit,

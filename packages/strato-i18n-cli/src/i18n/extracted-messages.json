@@ -1,28 +1,28 @@
 {
-  "ra.action.add": {
+  "strato.action.add": {
     "defaultMessage": "Add",
     "description": "Label for the button to add a new record"
   },
-  "ra.action.add_filter": {
+  "strato.action.add_filter": {
     "defaultMessage": "Add filter"
   },
-  "ra.action.cancel": {
+  "strato.action.cancel": {
     "defaultMessage": "Cancel"
   },
-  "ra.action.delete": {
+  "strato.action.delete": {
     "defaultMessage": "Delete"
   },
-  "ra.action.edit": {
+  "strato.action.edit": {
     "defaultMessage": "Edit"
   },
-  "ra.action.remove_filter": {
+  "strato.action.remove_filter": {
     "defaultMessage": "Remove filter"
   },
-  "ra.action.save": {
+  "strato.action.save": {
     "defaultMessage": "Save",
     "description": "Label for the button to save a record"
   },
-  "ra.action.search": {
+  "strato.action.search": {
     "defaultMessage": "Search"
   }
 }

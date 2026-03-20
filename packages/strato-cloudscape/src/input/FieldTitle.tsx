@@ -10,7 +10,7 @@ export interface FieldTitleProps {
 }
 
 export const FieldTitle = (props: FieldTitleProps) => {
-  const { resource, source, label, isRequired } = props;
+  const { resource, source, label } = props;
   const translate = useTranslate();
   const definitions = useResourceDefinitions();
 
@@ -35,18 +35,7 @@ export const FieldTitle = (props: FieldTitleProps) => {
     });
   }, [label, translate, resource, source, definitions]);
 
-  return (
-    <span>
-      {labelString}
-      {!isRequired && (
-        <span
-          style={{ color: '#687078', fontWeight: 'normal', fontStyle: 'italic', fontSize: '12px', marginLeft: '4px' }}
-        >
-          (optional)
-        </span>
-      )}
-    </span>
-  );
+  return <span>{labelString}</span>;
 };
 
 export default FieldTitle;

@@ -7,6 +7,7 @@ import {
   useResourceSchema,
   type ShowBaseProps,
   useTranslate,
+  useConstructedPageTitle,
 } from '@strato-admin/core';
 import Container from '@cloudscape-design/components/container';
 import SpaceBetween from '@cloudscape-design/components/space-between';
@@ -15,8 +16,8 @@ import KeyValuePairs from './KeyValuePairs';
 
 export interface ShowProps<RecordType extends RaRecord = RaRecord> extends ShowBaseProps<RecordType> {
   children?: React.ReactNode;
-  title?: React.ReactNode;
-  description?: React.ReactNode;
+  title?: string | ((record: RecordType) => string);
+  description?: string | ((record: RecordType) => string);
   actions?: React.ReactNode;
   include?: string[];
   exclude?: string[];
@@ -31,32 +32,38 @@ const ShowUI = ({
   exclude,
 }: {
   children?: React.ReactNode;
-  title?: React.ReactNode;
+  title?: string | ((record: any) => string);
   actions?: React.ReactNode;
-  description?: React.ReactNode;
+  description?: string | ((record: any) => string);
   include?: string[];
   exclude?: string[];
 }) => {
   const { record, isLoading } = useShowContext();
-  const { label, labelShow, descriptionShow } = useResourceSchema();
+  const { label, titleShow, descriptionShow } = useResourceSchema();
   const translate = useTranslate();
+  const constructedTitle = useConstructedPageTitle('show', label);
+
+  const finalTitle = React.useMemo(() => {
+    if (isLoading || !record) return '';
+    if (typeof title === 'function') return title(record);
+    if (title) return translate(title);
+    if (typeof titleShow === 'function') return titleShow(record);
+    if (titleShow) return translate(titleShow);
+    return constructedTitle;
+  }, [isLoading, record, title, titleShow, translate, constructedTitle]);
+
+  const finalDescription = React.useMemo(() => {
+    if (isLoading || !record) return undefined;
+    if (typeof description === 'function') return description(record);
+    if (description) return translate(description);
+    if (typeof descriptionShow === 'function') descriptionShow(record);
+    if (descriptionShow) return translate(descriptionShow);
+    return undefined;
+  }, [isLoading, record, description, descriptionShow, translate]);
 
   if (isLoading || !record) {
     return null;
   }
-
-  const resolvedLabelShow = typeof labelShow === 'function' ? labelShow(record) : labelShow;
-  const finalTitle =
-    (typeof title === 'string' ? translate(title, { _: title }) : title) ??
-    (typeof resolvedLabelShow === 'string' ? translate(resolvedLabelShow, { _: resolvedLabelShow }) : resolvedLabelShow) ??
-    (label ? translate('ra.page.show', { name: label, _: `${label} Details` }) : translate('ra.page.show', { _: 'Details' }));
-
-  const resolvedDescriptionShow = typeof descriptionShow === 'function' ? descriptionShow(record) : descriptionShow;
-  const finalDescription =
-    (typeof description === 'string' ? translate(description, { _: description }) : description) ??
-    (typeof resolvedDescriptionShow === 'string'
-      ? translate(resolvedDescriptionShow, { _: resolvedDescriptionShow })
-      : resolvedDescriptionShow);
 
   const finalChildren = children || <KeyValuePairs include={include} exclude={exclude} />;
 

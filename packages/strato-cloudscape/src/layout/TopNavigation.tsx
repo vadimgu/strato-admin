@@ -59,11 +59,11 @@ export const TopNavigation = ({ utilities: providedUtilities, identity, ...props
     if (authProvider) {
       autoUtilities.push({
         type: 'menu-dropdown',
-        text: translate('ra.auth.user_menu', { _: 'User' }),
+        text: translate("strato.auth.user_menu", { _: 'User' }),
         iconName: 'user-profile',
         items: [
-          { id: 'profile', text: translate('ra.auth.profile', { _: 'Profile' }) },
-          { id: 'signout', text: translate('ra.auth.logout', { _: 'Sign out' }) },
+          { id: 'profile', text: translate("strato.auth.profile", { _: 'Profile' }) },
+          { id: 'signout', text: translate("strato.auth.logout", { _: 'Sign out' }) },
         ],
       });
     }

@@ -3,10 +3,30 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { globSync } from 'glob';
 import * as gettextParser from 'gettext-parser';
+import { normalizeMessage } from '@strato-admin/i18n';
+
+function parseArgs() {
+  const args = process.argv.slice(2);
+  let outFile: string | undefined = undefined;
+  const positionalArgs: string[] = [];
+
+  for (let i = 0; i < args.length; i++) {
+    if ((args[i] === '--out-file' || args[i] === '-o') && i + 1 < args.length) {
+      outFile = args[i + 1];
+      i++;
+    } else if (args[i].startsWith('--out-file=')) {
+      outFile = args[i].split('=')[1];
+    } else {
+      positionalArgs.push(args[i]);
+    }
+  }
+
+  const pattern = positionalArgs[0] || 'locales';
+  return { pattern, outFile };
+}
 
 function main() {
-  const args = process.argv.slice(2);
-  const pattern = args[0] || 'locales';
+  const { pattern, outFile: explicitOutFile } = parseArgs();
 
   let files: string[] = [];
 
@@ -28,13 +48,20 @@ function main() {
     return;
   }
 
+  // If explicitOutFile is provided, we only expect ONE input file or we combine them?
+  // FormatJS compile behavior: formatjs compile <file> --out-file <outFile>
+  if (explicitOutFile && files.length > 1) {
+    console.warn(`Warning: Multiple input files found but only one --out-file specified. Using the first one.`);
+    files = [files[0]];
+  }
+
   let processedCount = 0;
 
   files.forEach((filePath) => {
-    const compiledFilePath = filePath.replace(/\.(json|po)$/, '.compiled.json');
+    const compiledFilePath = explicitOutFile || filePath.replace(/\.(json|po)$/, '.compiled.json');
     const fileName = path.basename(filePath);
 
-    let translations: Record<string, { defaultMessage: string; translation: string }> = {};
+    let translations: Record<string, any> = {};
 
     try {
       if (filePath.endsWith('.po')) {
@@ -63,15 +90,25 @@ function main() {
     }
 
     const compiledMapping: Record<string, string> = {};
+    const sortedKeys = Object.keys(translations).sort();
 
-    Object.entries(translations).forEach(([msgid, data]) => {
-      // If translation is empty or whitespace, fallback to defaultMessage
-      if (data.translation && data.translation.trim() !== '') {
-        compiledMapping[msgid] = data.translation;
+    sortedKeys.forEach((hash) => {
+      const data = translations[hash];
+      // Support both strato-i18n-cli format and formatjs format (with translation or defaultMessage as translation)
+      if (typeof data === 'string') {
+        compiledMapping[hash] = normalizeMessage(data);
+      } else if (data.translation && data.translation.trim() !== '') {
+        compiledMapping[hash] = normalizeMessage(data.translation);
       } else {
-        compiledMapping[msgid] = data.defaultMessage;
+        // Fallback to defaultMessage
+        compiledMapping[hash] = normalizeMessage(data.defaultMessage || '');
       }
     });
+
+    const parentDir = path.dirname(compiledFilePath);
+    if (!fs.existsSync(parentDir)) {
+      fs.mkdirSync(parentDir, { recursive: true });
+    }
 
     fs.writeFileSync(compiledFilePath, JSON.stringify(compiledMapping, null, 2));
     console.log(
@@ -83,6 +120,4 @@ function main() {
   console.log(`Successfully compiled ${processedCount} files.`);
 }
 
-if (require.main === module) {
-  main();
-}
+main();
