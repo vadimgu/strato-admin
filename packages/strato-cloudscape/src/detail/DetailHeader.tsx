@@ -4,12 +4,18 @@ import SpaceBetween from '@cloudscape-design/components/space-between';
 import { useShowContext, useTranslate } from '@strato-admin/core';
 import { EditButton } from '../button/EditButton';
 
-export interface ShowHeaderProps extends Omit<HeaderProps, 'children'> {
+export interface DetailHeaderProps extends Omit<HeaderProps, 'children'> {
   title?: React.ReactNode;
   description?: React.ReactNode;
 }
 
-export const ShowHeader = ({ title, actions, ...props }: ShowHeaderProps) => {
+/** @deprecated Use DetailHeader instead */
+export type ShowHeaderProps = DetailHeaderProps;
+
+/** @deprecated Use DetailHeader instead */
+export const ShowHeader = (props: DetailHeaderProps) => <DetailHeader {...props} />;
+
+export const DetailHeader = ({ title, actions, ...props }: DetailHeaderProps) => {
   const translate = useTranslate();
   const { record, defaultTitle } = useShowContext();
 
@@ -33,4 +39,4 @@ export const ShowHeader = ({ title, actions, ...props }: ShowHeaderProps) => {
   );
 };
 
-export default ShowHeader;
+export default DetailHeader;

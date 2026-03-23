@@ -44,23 +44,23 @@ const CreateUI = ({
   exclude?: string[];
   saveButtonLabel?: string;
 }) => {
-  const { label, titleCreate, descriptionCreate } = useResourceSchema();
+  const { label, createTitle, createDescription } = useResourceSchema();
   const translate = useTranslate();
   const constructedTitle = useConstructedPageTitle('create', label);
 
   const finalTitle = React.useMemo(() => {
     if (typeof title === 'function') return title({});
     if (title) return translate(title);
-    if (titleCreate) return translate(titleCreate);
+    if (createTitle) return translate(createTitle);
     return constructedTitle;
-  }, [title, titleCreate, translate, constructedTitle]);
+  }, [title, createTitle, translate, constructedTitle]);
 
   const finalDescription = React.useMemo(() => {
     if (typeof description === 'function') return description({});
     if (description) return translate(description);
-    if (descriptionCreate) return translate(descriptionCreate);
+    if (createDescription) return translate(createDescription);
     return undefined;
-  }, [description, descriptionCreate, translate]);
+  }, [description, createDescription, translate]);
 
   const finalSaveButtonLabel = saveButtonLabel ? translate(saveButtonLabel) : translate('Create');
 

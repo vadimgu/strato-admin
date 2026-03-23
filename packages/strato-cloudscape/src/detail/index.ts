@@ -1,3 +1,4 @@
 export * from './KeyValuePairs';
-export * from './Show';
-export * from './ShowHeader';
+export * from './Detail';
+export * from './DetailHub';
+export * from './DetailHeader';

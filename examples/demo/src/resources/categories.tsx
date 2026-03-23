@@ -1,10 +1,17 @@
-import { Table, List, FieldSchema, Show, KeyValuePairs, TextField } from '@strato-admin/admin';
+import { ResourceSchema, Table, List, Show, KeyValuePairs, TextField } from '@strato-admin/admin';
 
-export const categorySchema = (
-  <FieldSchema>
+export const categoryResource = (
+  <ResourceSchema
+    label="Categories"
+    name="categories"
+    list={false}
+    delete={false}
+    details={false}
+    recordRepresentation={(record: any) => record.name}
+  >
     <TextField source="id" label="ID" link="show" />
     <TextField source="name" label="Category Name" link="show" />
-  </FieldSchema>
+  </ResourceSchema>
 );
 
 export function CategoryList() {

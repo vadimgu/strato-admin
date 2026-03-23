@@ -71,27 +71,34 @@ export const KeyValuePairs = <RecordType extends RaRecord = RaRecord>({
   ...props
 }: KeyValuePairsProps) => {
   const record = useRecordContext<RecordType>();
-  const { resource, fieldSchema: schemaChildren, showFields, excludeShowFields } = useResourceSchema();
+  const { resource, fieldSchema: schemaChildren, detailInclude, detailExclude } = useResourceSchema();
 
   const finalChildren = React.useMemo(() => {
     const baseChildren = children || schemaChildren;
     let result = React.Children.toArray(baseChildren);
 
-    const finalInclude = include || showFields;
-    const finalExclude = exclude || excludeShowFields;
+    const finalInclude = include || detailInclude;
+    const finalExclude = exclude || detailExclude;
 
     if (finalInclude) {
       result = result.filter(
         (child) => React.isValidElement(child) && finalInclude.includes((child.props as any).source),
       );
-    } else if (finalExclude) {
+    } else {
+      // Filter out fields marked as collection fields by default
       result = result.filter(
-        (child) => React.isValidElement(child) && !finalExclude.includes((child.props as any).source),
+        (child) => React.isValidElement(child) && !(child.type as any).isCollectionField,
       );
+
+      if (finalExclude) {
+        result = result.filter(
+          (child) => React.isValidElement(child) && !finalExclude.includes((child.props as any).source),
+        );
+      }
     }
 
     return result;
-  }, [children, schemaChildren, include, exclude, showFields, excludeShowFields]);
+  }, [children, schemaChildren, include, exclude, detailInclude, detailExclude]);
 
   const items =
     React.Children.map(finalChildren, (child) => {

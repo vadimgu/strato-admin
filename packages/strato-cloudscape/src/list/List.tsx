@@ -27,6 +27,10 @@ export interface ListProps<RecordType extends RaRecord = any> extends ListBasePr
    * @default true
    */
   preferences?: boolean | React.ReactNode;
+  /**
+   * The fields to display by default.
+   */
+  display?: string[];
 }
 
 const ListUI = ({
@@ -38,6 +42,7 @@ const ListUI = ({
   exclude,
   filtering,
   preferences,
+  display,
 }: {
   children?: React.ReactNode;
   title?: string | (() => string);
@@ -47,29 +52,31 @@ const ListUI = ({
   exclude?: string[];
   filtering?: boolean;
   preferences?: boolean | React.ReactNode;
+  display?: string[];
 }) => {
-  const { label, titleList, descriptionList } = useResourceSchema();
+  const { label, listTitle, listDescription, listComponent: ListComponent = Table } = useResourceSchema();
   const translate = useTranslate();
   const constructedTitle = useConstructedPageTitle('list', label);
 
   const finalTitle = React.useMemo(() => {
     if (typeof title === 'function') return title();
     if (title) return translate(title);
-    if (titleList) return translate(titleList);
+    if (listTitle) return translate(listTitle);
     return constructedTitle;
-  }, [title, titleList, translate, constructedTitle]);
+  }, [title, listTitle, translate, constructedTitle]);
 
   const finalDescription = React.useMemo(() => {
     if (typeof description === 'function') return description();
     if (description) return translate(description);
-    if (descriptionList) return translate(descriptionList);
+    if (listDescription) return translate(listDescription);
     return undefined;
-  }, [description, descriptionList, translate]);
+  }, [description, listDescription, translate]);
 
   const finalChildren = children || (
-    <Table
+    <ListComponent
       include={include}
       exclude={exclude}
+      display={display}
       title={finalTitle}
       description={finalDescription}
       actions={actions}
@@ -104,6 +111,7 @@ export const List = <RecordType extends RaRecord = any>({
   description,
   filtering = true,
   preferences = true,
+  display,
   ...props
 }: ListProps<RecordType>) => {
   return (
@@ -117,6 +125,7 @@ export const List = <RecordType extends RaRecord = any>({
           exclude={exclude}
           filtering={filtering}
           preferences={preferences}
+          display={display}
         >
           {children}
         </ListUI>

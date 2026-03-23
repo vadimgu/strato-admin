@@ -2,7 +2,7 @@ import React from 'react';
 import { render } from '@testing-library/react';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 import { useResourceContext, useShowContext } from '@strato-admin/core';
-import { ShowHeader } from './ShowHeader';
+import { DetailHeader } from './DetailHeader';
 
 // Mock strato-core
 vi.mock('@strato-admin/core', () => import('../__mocks__/strato-core'));
@@ -34,7 +34,7 @@ vi.mock('@cloudscape-design/components/button', () => ({
   ),
 }));
 
-describe('ShowHeader', () => {
+describe('DetailHeader', () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
@@ -43,7 +43,7 @@ describe('ShowHeader', () => {
     (useResourceContext as any).mockReturnValue('products');
     (useShowContext as any).mockReturnValue({ record: { id: 1 }, defaultTitle: 'Products' });
 
-    const { getByTestId } = render(<ShowHeader />);
+    const { getByTestId } = render(<DetailHeader />);
 
     expect(getByTestId('header-title').textContent).toBe('Products');
   });
@@ -52,7 +52,7 @@ describe('ShowHeader', () => {
     (useResourceContext as any).mockReturnValue('products');
     (useShowContext as any).mockReturnValue({ record: { id: 1 }, defaultTitle: 'Products' });
 
-    const { getByTestId } = render(<ShowHeader title="My Product" />);
+    const { getByTestId } = render(<DetailHeader title="My Product" />);
 
     expect(getByTestId('header-title').textContent).toBe('My Product');
   });
@@ -61,7 +61,7 @@ describe('ShowHeader', () => {
     (useResourceContext as any).mockReturnValue('products');
     (useShowContext as any).mockReturnValue({ record: { id: 1 }, defaultTitle: 'Products' });
 
-    const { getByText } = render(<ShowHeader />);
+    const { getByText } = render(<DetailHeader />);
 
     const editButton = getByText('Edit');
     expect(editButton).toBeDefined();
@@ -72,7 +72,7 @@ describe('ShowHeader', () => {
     (useResourceContext as any).mockReturnValue('products');
     (useShowContext as any).mockReturnValue({ record: { id: 1 }, defaultTitle: 'Products' });
 
-    const { getByTestId, queryByText } = render(<ShowHeader actions={<div data-testid="custom-action">Custom</div>} />);
+    const { getByTestId, queryByText } = render(<DetailHeader actions={<div data-testid="custom-action">Custom</div>} />);
 
     expect(getByTestId('custom-action')).toBeDefined();
     expect(queryByText("strato.action.edit")).toBeNull();

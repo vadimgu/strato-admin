@@ -1,4 +1,4 @@
-import { ReactNode, useState, useEffect } from 'react';
+import React, { ReactNode, useState, useEffect, useMemo } from 'react';
 import {
   CoreAdmin,
   type CoreAdminProps,
@@ -12,10 +12,11 @@ import {
 import { icuI18nProvider } from '@strato-admin/i18n';
 import englishMessages from '@strato-admin/language-en';
 import AppLayout from './layout/AppLayout';
-import { List } from './list';
+import Ready from './layout/Ready';
+import { List, Table } from './list';
 import { Create } from './create';
 import { Edit } from './edit';
-import { Show } from './detail';
+import { Detail, DetailHub } from './detail';
 
 import { TextField, NumberField, CurrencyField, ReferenceField } from './field';
 import { TextInput, NumberInput, ReferenceInput } from './input';
@@ -28,7 +29,9 @@ registerDefaultResourceComponents({
   list: List,
   create: Create,
   edit: Edit,
-  show: Show,
+  show: Detail,
+  listComponent: Table,
+  detailComponent: DetailHub,
 });
 
 registerFieldInputMapping(
@@ -43,6 +46,8 @@ registerFieldInputMapping(
 export interface AdminProps extends CoreAdminProps {
   children?: AdminChildren;
   title?: string;
+  listComponent?: React.ComponentType<any>;
+  detailComponent?: React.ComponentType<any>;
 }
 
 const defaultI18nProvider = icuI18nProvider(() => englishMessages as any);
@@ -101,16 +106,29 @@ export const Admin = ({
   children,
   title,
   layout: Layout = AppLayout,
+  ready = Ready,
   i18nProvider = defaultI18nProvider,
   store = defaultStore,
+  listComponent,
+  detailComponent,
   ...props
 }: AdminProps) => {
+  React.useMemo(() => {
+    if (listComponent || detailComponent) {
+      registerDefaultResourceComponents({
+        listComponent,
+        detailComponent,
+      });
+    }
+  }, [listComponent, detailComponent]);
+
   return (
     <SchemaRegistryProvider>
       <CoreAdmin
         {...props}
         layout={(layoutProps: any) => <CloudscapeLayout {...layoutProps} layout={Layout} />}
         title={title}
+        ready={ready}
         i18nProvider={i18nProvider}
         store={store}
       >

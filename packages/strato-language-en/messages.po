@@ -128,3 +128,23 @@ msgstr ""
 msgctxt "strato.action.confirm"
 msgid "Confirm"
 msgstr ""
+
+#. id: strato.pages.create.title
+msgctxt "strato.pages.create.title"
+msgid "Create"
+msgstr ""
+
+#. id: strato.pages.edit.title
+msgctxt "strato.pages.edit.title"
+msgid "Edit"
+msgstr ""
+
+#. id: strato.pages.show.title
+msgctxt "strato.pages.show.title"
+msgid "Details"
+msgstr ""
+
+#. id: strato.pages.list.title
+msgctxt "strato.pages.list.title"
+msgid "List"
+msgstr ""

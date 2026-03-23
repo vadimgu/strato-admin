@@ -1,9 +1,5 @@
 import {
-  Table,
-  List,
-  FieldSchema,
-  Show,
-  KeyValuePairs,
+  ResourceSchema,
   TextField,
   NumberField,
   DateField,
@@ -11,8 +7,14 @@ import {
   StatusIndicatorField,
 } from '@strato-admin/admin';
 
-export const orderSchema = (
-  <FieldSchema>
+export const orderRepresentation = (record: any) => record.reference;
+
+export const orderResource = (
+  <ResourceSchema
+    label="Orders"
+    name="orders"
+    recordRepresentation="reference"
+  >
     <TextField source="id" label="ID" link="show" />
     <TextField source="reference" label="Reference" sortable />
     <DateField source="date" label="Date" sortable />
@@ -24,21 +26,6 @@ export const orderSchema = (
       <StatusIndicatorField.Label value="cancelled" type="error" label="Cancelled" />
       <StatusIndicatorField.Label value="unknown" type="warning" label="Unknown" />
     </StatusIndicatorField>
-  </FieldSchema>
+  </ResourceSchema>
 );
 
-export function OrderList() {
-  return (
-    <List perPage={10}>
-      <Table header="Orders" selectionType="multi" filtering filteringPlaceholder="Search orders..." preferences />
-    </List>
-  );
-}
-
-export function OrderShow() {
-  return (
-    <Show title="Order Details">
-      <KeyValuePairs columns={3} />
-    </Show>
-  );
-}

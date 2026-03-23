@@ -34,7 +34,7 @@ const ProductShow = () => (
 );
 
 export const productsResource = (
-  <ResourceSchema name="products" recordRepresentation={(record) => record.title} label="Products" show={ProductShow}>
+  <ResourceSchema name="products" recordRepresentation={(record) => record.title} label="Products" details={ProductShow}>
     <TextField source="title" label="Title" link="show" sortable input={{ constraints: [required] }} />
     <TextField source="brand" label="Brand" sortable />
     <ReferenceField source="category" reference="products/categories" label="Category" link="show" sortable />

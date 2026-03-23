@@ -3,19 +3,19 @@ import {
   TextField,
   NumberField,
   ReferenceField,
+  ArrayField,
+  Table,
   Show,
   KeyValuePairs,
-  Table,
-  ArrayField,
+  SpaceBetween,
 } from '@strato-admin/admin';
-import SpaceBetween from '@cloudscape-design/components/space-between';
 
 const required = (value: any) => (value ? undefined : 'Required');
 
 const CartShow = () => (
   <Show title="Cart Details">
     <SpaceBetween size="l">
-      <KeyValuePairs columns={2}>
+      <KeyValuePairs columns={3}>
         <TextField source="id" label="ID" />
         <ReferenceField source="userId" reference="users" label="User" link="show" />
         <NumberField source="total" label="Total" options={{ style: 'currency', currency: 'USD' }} />
@@ -27,9 +27,10 @@ const CartShow = () => (
         <NumberField source="totalProducts" label="Total Products" />
         <NumberField source="totalQuantity" label="Total Quantity" />
       </KeyValuePairs>
-      <ArrayField source="products" resource="products">
-        <Table variant="embedded" actions={null}>
-          <Table.Column source="title" label="Title" />
+
+      <ArrayField source="products">
+        <Table header="Products">
+          <Table.Column source="title" label="Product" />
           <Table.NumberColumn source="price" label="Price">
             <NumberField options={{ style: 'currency', currency: 'USD' }} />
           </Table.NumberColumn>
@@ -46,7 +47,7 @@ const CartShow = () => (
 );
 
 export const cartsResource = (
-  <ResourceSchema name="carts" recordRepresentation={(record) => `Cart #${record.id}`} label="Carts" show={CartShow}>
+  <ResourceSchema name="carts" recordRepresentation={(record) => `Cart #${record.id}`} label="Carts" details={CartShow}>
     <TextField source="id" label="ID" link="show" sortable />
     <ReferenceField
       source="userId"

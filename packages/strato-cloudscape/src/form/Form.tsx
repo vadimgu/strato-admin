@@ -24,14 +24,14 @@ export interface FormProps extends Omit<RaFormProps, 'children'> {
 
 export const Form = ({ children, include, exclude, toolbar, saveButtonLabel, ...props }: FormProps) => {
   const saveContext = useSaveContext();
-  const { inputSchema: schemaChildren, formFields, excludeFormFields } = useResourceSchema();
+  const { inputSchema: schemaChildren, formInclude, formExclude } = useResourceSchema();
 
   const finalChildren = React.useMemo(() => {
     const baseChildren = children || schemaChildren;
     let result = React.Children.toArray(baseChildren);
 
-    const finalInclude = include || formFields;
-    const finalExclude = exclude || excludeFormFields;
+    const finalInclude = include || formInclude;
+    const finalExclude = exclude || formExclude;
 
     if (finalInclude) {
       result = result.filter(
@@ -44,7 +44,7 @@ export const Form = ({ children, include, exclude, toolbar, saveButtonLabel, ...
     }
 
     return result;
-  }, [children, schemaChildren, include, exclude, formFields, excludeFormFields]);
+  }, [children, schemaChildren, include, exclude, formInclude, formExclude]);
 
   const handleSubmit = async (values: any, event: any) => {
     if (props.onSubmit) {

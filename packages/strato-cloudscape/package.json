@@ -42,15 +42,16 @@
     "directory": "packages/strato-cloudscape"
   },
   "dependencies": {
+    "@cloudscape-design/code-view": "^3.0.108",
     "@cloudscape-design/collection-hooks": "^1.0.85",
     "@cloudscape-design/components": "^3.0.1217",
     "@cloudscape-design/global-styles": "^1.0.0",
-    "inflection": "^3.0.2",
     "@strato-admin/core": "workspace:*",
-    "react-hook-form": "^7.71.2",
-    "react-router-dom": "^6.22.3",
     "@strato-admin/i18n": "workspace:*",
-    "@strato-admin/language-en": "workspace:*"
+    "@strato-admin/language-en": "workspace:*",
+    "inflection": "^3.0.2",
+    "react-hook-form": "^7.71.2",
+    "react-router-dom": "^6.22.3"
   },
   "devDependencies": {
     "@chromatic-com/storybook": "^5.0.1",

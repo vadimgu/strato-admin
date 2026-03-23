@@ -197,11 +197,11 @@ describe('DataTable', () => {
     expect(tableProps.selectionType).toBe('multi');
   });
 
-  it('should pass default visible fields to useCollection', () => {
+  it('should pass display fields to useCollection', () => {
     (useResourceContext as any).mockReturnValue('products');
 
     render(
-      <Table defaultVisibleFields={['name', 'price']}>
+      <Table display={['name', 'price']}>
         <Table.Column source="id" label="ID" />
         <Table.Column source="name" label="Name" />
         <Table.Column source="price" label="Price" />
@@ -219,7 +219,7 @@ describe('DataTable', () => {
     ]);
   });
 
-  it('should default to first 5 columns if defaultVisibleFields is not provided', () => {
+  it('should default to first 5 columns if display is not provided', () => {
     (useResourceContext as any).mockReturnValue('products');
 
     render(
@@ -251,5 +251,40 @@ describe('DataTable', () => {
     );
 
     expect(queryByTestId('table-header')).toBeNull();
+  });
+
+  it('should hide collection fields by default', () => {
+    (useResourceContext as any).mockReturnValue('products');
+    const CollectionField = () => <div />;
+    (CollectionField as any).isCollectionField = true;
+
+    render(
+      <Table>
+        <Table.Column source="name" />
+        <CollectionField key="collection" source="items" />
+      </Table>,
+    );
+
+    const tableProps = (CloudscapeTable as any).mock.calls[0][0];
+    expect(tableProps.columnDefinitions).toHaveLength(1);
+    expect(tableProps.columnDefinitions[0].id).toBe('products___name');
+  });
+
+  it('should show collection fields when explicitly included', () => {
+    (useResourceContext as any).mockReturnValue('products');
+    const CollectionField = () => <div />;
+    (CollectionField as any).isCollectionField = true;
+
+    render(
+      <Table include={['name', 'items']}>
+        <Table.Column source="name" />
+        <CollectionField key="collection" source="items" />
+      </Table>,
+    );
+
+    const tableProps = (CloudscapeTable as any).mock.calls[0][0];
+    expect(tableProps.columnDefinitions).toHaveLength(2);
+    expect(tableProps.columnDefinitions[0].id).toBe('products___name');
+    expect(tableProps.columnDefinitions[1].id).toBe('products___items');
   });
 });

@@ -1,19 +1,24 @@
 import {
-  Table,
-  List,
-  FieldSchema,
-  Show,
-  KeyValuePairs,
+  ResourceSchema,
   TextField,
   DateField,
   ReferenceField,
   StatusIndicatorField,
+  Cards,
 } from '@strato-admin/admin';
 import StarRatingField from '../components/StarRatingField';
 
-export const reviewSchema = (
-  <FieldSchema>
-    <TextField source="id" label="ID" link="show" />
+export const reviewResource = (
+  <ResourceSchema
+    name="reviews"
+    label="Reviews"
+    delete={false}
+    create={false}
+    listComponent={Cards}
+    perPage={16}
+    listInclude={["id", "date", "rating", "comment"]}
+  >
+    <TextField source="id" label="ID" link="show" sortable />
     <DateField source="date" label="Date" sortable />
     <ReferenceField source="customer_id" reference="customers" label="Customer" link="show" />
     <ReferenceField source="product_id" reference="products" label="Product" link="show" />
@@ -24,21 +29,6 @@ export const reviewSchema = (
       <StatusIndicatorField.Label value="rejected" type="error" label="Rejected" />
     </StatusIndicatorField>
     <TextField source="comment" label="Comment" />
-  </FieldSchema>
+  </ResourceSchema>
 );
 
-export function ReviewList() {
-  return (
-    <List perPage={10}>
-      <Table header="Reviews" selectionType="multi" filteringPlaceholder="Search reviews..." exclude={['comment']} />
-    </List>
-  );
-}
-
-export function ReviewShow() {
-  return (
-    <Show title="Review Details">
-      <KeyValuePairs columns={3} />
-    </Show>
-  );
-}

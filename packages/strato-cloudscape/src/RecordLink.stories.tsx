@@ -19,7 +19,7 @@ export const Default: Story = {
   },
 };
 
-export const Show: Story = {
+export const Detail: Story = {
   args: {
     link: 'show',
     children: 'Show details',

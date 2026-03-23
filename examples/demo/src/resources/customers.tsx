@@ -1,7 +1,17 @@
-import { Table, List, FieldSchema, Show, KeyValuePairs, TextField, NumberField } from '@strato-admin/admin';
+import {
+  ResourceSchema,
+  TextField,
+  NumberField,
+} from '@strato-admin/admin';
 
-export const customerSchema = (
-  <FieldSchema>
+export const customerRepresentation = (record: any) => `${record.first_name} ${record.last_name}`;
+
+export const customerResource = (
+  <ResourceSchema
+    label="Customers"
+    name="customers"
+    recordRepresentation={customerRepresentation}
+  >
     <TextField source="id" label="ID" link="show" />
     <TextField source="first_name" label="First Name" sortable />
     <TextField source="last_name" label="Last Name" sortable />
@@ -9,27 +19,6 @@ export const customerSchema = (
     <TextField source="city" label="City" sortable />
     <NumberField source="nb_commands" label="Orders" sortable />
     <NumberField source="total_spent" label="Total Spent" sortable options={{ style: 'currency', currency: 'USD' }} />
-  </FieldSchema>
+  </ResourceSchema>
 );
 
-export function CustomerList() {
-  return (
-    <List perPage={10}>
-      <Table
-        header="Customers"
-        selectionType="multi"
-        filtering
-        filteringPlaceholder="Search customers..."
-        preferences
-      />
-    </List>
-  );
-}
-
-export function CustomerShow() {
-  return (
-    <Show title="Customer Details">
-      <KeyValuePairs columns={3} />
-    </Show>
-  );
-}

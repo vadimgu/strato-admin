@@ -1,30 +1,157 @@
 import React from 'react';
 import CloudscapeCards, { CardsProps } from '@cloudscape-design/components/cards';
 import Pagination from '@cloudscape-design/components/pagination';
-import { RaRecord, RecordContextProvider, useResourceSchema } from '@strato-admin/core';
+import TextFilter from '@cloudscape-design/components/text-filter';
+import CollectionPreferences from '@cloudscape-design/components/collection-preferences';
+import {
+  RaRecord,
+  RecordContextProvider,
+  useResourceSchema,
+  useTranslateLabel,
+  useTranslate,
+} from '@strato-admin/core';
 import { useCollection } from '../collection-hooks';
 import KeyValuePairs from '../detail/KeyValuePairs';
+import TableHeader from './TableHeader';
 
-export interface ListCardsProps<T extends RaRecord = any> extends Omit<CardsProps<T>, 'items' | 'cardDefinition'> {
+export interface ListCardsProps<T extends RaRecord = any>
+  extends Omit<CardsProps<T>, 'items' | 'cardDefinition' | 'preferences'> {
   renderItem?: (item: T) => React.ReactNode;
   include?: string[];
   exclude?: string[];
+  children?: React.ReactNode;
+  title?: React.ReactNode;
+  description?: string;
+  actions?: React.ReactNode;
+  selectionType?: 'single' | 'multi';
+  /**
+   * Whether to enable text filtering.
+   * @default true
+   */
+  filtering?: boolean;
+  /**
+   * Placeholder text for the filter input.
+   * @default "Search..."
+   */
+  filteringPlaceholder?: string;
+  /**
+   * Options for the page size selector.
+   */
+  pageSizeOptions?: ReadonlyArray<{ value: number; label?: string }>;
+  /**
+   * Whether to show the preferences button or custom preferences content.
+   * @default true
+   */
+  preferences?: boolean | React.ReactNode;
 }
 
-export const ListCards = <T extends RaRecord = any>({ renderItem, include, exclude, ...props }: ListCardsProps<T>) => {
-  const { items, paginationProps, collectionProps } = useCollection<T>({
-    filtering: {},
+const defaultPageSizeOptions = [
+  { value: 10, label: '10 items' },
+  { value: 25, label: '25 items' },
+  { value: 50, label: '50 items' },
+  { value: 100, label: '100 items' },
+];
+
+export const ListCards = <T extends RaRecord = any>({
+  renderItem,
+  include,
+  exclude,
+  children,
+  title,
+  description,
+  actions,
+  selectionType,
+  filtering = true,
+  filteringPlaceholder,
+  pageSizeOptions = defaultPageSizeOptions,
+  preferences = true,
+  ...props
+}: ListCardsProps<T>) => {
+  const translate = useTranslate();
+  const translateLabel = useTranslateLabel();
+  const {
+    resource,
+    fieldSchema: schemaChildren,
+    listInclude,
+    listExclude,
+    label: schemaLabel,
+    definition,
+  } = useResourceSchema();
+
+  const finalSelectionType = selectionType ?? (definition?.options?.canDelete ? 'multi' : undefined);
+
+  const finalChildren = React.useMemo(() => {
+    const baseChildren = children || schemaChildren;
+    let result = React.Children.toArray(baseChildren);
+
+    const finalInclude = include || listInclude;
+    const finalExclude = exclude || listExclude;
+
+    if (finalInclude) {
+      result = result.filter(
+        (child) => React.isValidElement(child) && finalInclude.includes((child.props as any).source),
+      );
+    } else {
+      // Filter out fields marked as collection fields by default
+      result = result.filter(
+        (child) => React.isValidElement(child) && !(child.type as any).isCollectionField,
+      );
+
+      if (finalExclude) {
+        result = result.filter(
+          (child) => React.isValidElement(child) && !finalExclude.includes((child.props as any).source),
+        );
+      }
+    }
+
+    return result;
+  }, [children, schemaChildren, include, exclude, listInclude, listExclude]);
+
+  const visibleContentOptions = React.useMemo(() => {
+    const options: { id: string; label: string }[] = [];
+    finalChildren.forEach((child, index) => {
+      if (!React.isValidElement(child)) return;
+      const { source, label } = child.props as any;
+      const headerLabel = translateLabel({ label, resource, source });
+      if (typeof headerLabel === 'string') {
+        options.push({
+          id: source || `section-${index}`,
+          label: headerLabel,
+        });
+      }
+    });
+    return options;
+  }, [finalChildren, resource, translateLabel]);
+
+  const { items, paginationProps, collectionProps, filterProps, preferencesProps } = useCollection<T>({
+    filtering: {
+      filteringPlaceholder,
+    },
     pagination: {},
     sorting: {},
+    preferences: {
+      pageSizeOptions,
+      visibleContentOptions: visibleContentOptions.length > 0 ? visibleContentOptions : undefined,
+    },
   });
 
-  const { fieldSchema: schemaChildren } = useResourceSchema();
+  const displayedChildren = React.useMemo(() => {
+    const { visibleContent } = preferencesProps.preferences;
+    if (!visibleContent) return finalChildren;
 
-  const defaultRenderItem = (_item: T) => (
-    <KeyValuePairs include={include} exclude={exclude}>
-      {schemaChildren}
-    </KeyValuePairs>
-  );
+    return finalChildren.filter((child) => {
+      if (!React.isValidElement(child)) return true;
+      const { source } = child.props as any;
+      // If the child doesn't have a source, we don't know how to toggle it, so we keep it.
+      if (!source) return true;
+      // If it's not in the options, it's not toggleable, so we keep it.
+      if (!visibleContentOptions.some((opt) => opt.id === source)) return true;
+
+      return visibleContent.includes(source);
+    });
+  }, [finalChildren, preferencesProps.preferences.visibleContent, visibleContentOptions]);
+
+  const defaultRenderItem = (_item: T) => <KeyValuePairs>{displayedChildren}</KeyValuePairs>;
 
   const finalRenderItem = renderItem || defaultRenderItem;
 
@@ -39,6 +166,14 @@ export const ListCards = <T extends RaRecord = any>({ renderItem, include, exclu
     ],
   };
 
+  const cardsHeader = React.useMemo(() => {
+    if (React.isValidElement(title)) {
+      return title;
+    }
+    const finalTitle = title !== undefined ? title : schemaLabel;
+    return <TableHeader title={finalTitle} description={description} actions={actions} />;
+  }, [title, description, actions, schemaLabel]);
+
   return (
     <CloudscapeCards
       {...collectionProps}
@@ -46,6 +181,38 @@ export const ListCards = <T extends RaRecord = any>({ renderItem, include, exclu
       items={items || []}
       cardDefinition={cardDefinition}
       pagination={<Pagination {...paginationProps} />}
+      header={cardsHeader}
+      selectionType={finalSelectionType}
+      filter={filtering && <TextFilter {...filterProps} />}
+      preferences={
+        preferences === true || pageSizeOptions ? (
+          <CollectionPreferences
+            {...preferencesProps}
+            pageSizePreference={
+              pageSizeOptions
+                ? {
+                    options: pageSizeOptions,
+                  }
+                : undefined
+            }
+            visibleContentPreference={
+              visibleContentOptions.length > 0
+                ? {
+                    title: translate('strato.action.select_sections', { _: 'Select visible sections' }),
+                    options: [
+                      {
+                        label: translate('strato.action.select_sections', { _: 'Select visible sections' }),
+                        options: visibleContentOptions,
+                      },
+                    ],
+                  }
+                : undefined
+            }
+          />
+        ) : React.isValidElement(preferences) ? (
+          preferences
+        ) : undefined
+      }
     />
   );
 };

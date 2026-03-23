@@ -8,27 +8,36 @@ import React, {
   ComponentType,
   Fragment,
 } from 'react';
-import { required, useResourceContext, useResourceDefinition, useGetResourceLabel } from '@strato-admin/ra-core';
+import {
+  required,
+  useResourceContext,
+  useResourceDefinition,
+  useGetResourceLabel,
+  ExtractRecordPaths,
+} from '@strato-admin/ra-core';
 import { FieldSchema, useFieldSchema } from './FieldSchema';
 import { InputSchema, useInputSchema } from './InputSchema';
 
-export interface ResourceSchemas {
+export interface ResourceSchemas<RecordType extends Record<string, any> = any> {
   fieldSchema?: ReactNode;
   inputSchema?: ReactNode;
-  titleList?: string;
-  titleCreate?: string;
-  titleEdit?: string | ((record?: any) => string);
-  titleShow?: string | ((record?: any) => string);
-  descriptionList?: string;
-  descriptionCreate?: string;
-  descriptionEdit?: string | ((record?: any) => string);
-  descriptionShow?: string | ((record?: any) => string);
-  listFields?: string[];
-  excludeListFields?: string[];
-  showFields?: string[];
-  excludeShowFields?: string[];
-  formFields?: string[];
-  excludeFormFields?: string[];
+  listTitle?: string;
+  createTitle?: string;
+  editTitle?: string | ((record?: any) => string);
+  detailTitle?: string | ((record?: any) => string);
+  listDescription?: string;
+  createDescription?: string;
+  editDescription?: string | ((record?: any) => string);
+  detailDescription?: string | ((record?: any) => string);
+  listInclude?: ExtractRecordPaths<RecordType>[];
+  listExclude?: ExtractRecordPaths<RecordType>[];
+  listDisplay?: ExtractRecordPaths<RecordType>[];
+  detailInclude?: ExtractRecordPaths<RecordType>[];
+  detailExclude?: ExtractRecordPaths<RecordType>[];
+  formInclude?: ExtractRecordPaths<RecordType>[];
+  formExclude?: ExtractRecordPaths<RecordType>[];
+  listComponent?: ComponentType<any>;
+  detailComponent?: ComponentType<any>;
 }
 
 export interface DefaultResourceComponents {
@@ -36,11 +45,16 @@ export interface DefaultResourceComponents {
   create?: ComponentType<any>;
   edit?: ComponentType<any>;
   show?: ComponentType<any>;
+  listComponent?: ComponentType<any>;
+  detailComponent?: ComponentType<any>;
 }
 
 export interface SchemaRegistryContextValue {
-  registerSchemas: (resource: string, schemas: ResourceSchemas) => void;
-  getSchemas: (resource: string) => ResourceSchemas | undefined;
+  registerSchemas: <RecordType extends Record<string, any> = any>(
+    resource: string,
+    schemas: ResourceSchemas<RecordType>
+  ) => void;
+  getSchemas: <RecordType extends Record<string, any> = any>(resource: string) => ResourceSchemas<RecordType> | undefined;
   defaultComponents: DefaultResourceComponents;
 }
 
@@ -48,7 +62,7 @@ const SchemaRegistryContext = createContext<SchemaRegistryContextValue | undefin
 
 // Use a global store for schemas to ensure they are available even before
 // components have finished their first render/useEffect cycle.
-const globalSchemaRegistry: Record<string, ResourceSchemas> = {};
+const globalSchemaRegistry: Record<string, ResourceSchemas<any>> = {};
 let globalDefaultComponents: DefaultResourceComponents = {};
 const globalFieldInputMapping = new Map<any, any>();
 
@@ -73,7 +87,10 @@ export const getDefaultInputForField = (fieldComponent: any) => {
  * Synchronously registers schemas for a resource.
  * Can be called during render or outside of React.
  */
-export const registerGlobalSchemas = (resource: string, schemas: ResourceSchemas) => {
+export const registerGlobalSchemas = <RecordType extends Record<string, any> = any>(
+  resource: string,
+  schemas: ResourceSchemas<RecordType>
+) => {
   if (!resource) return;
 
   const existing = globalSchemaRegistry[resource];
@@ -82,20 +99,23 @@ export const registerGlobalSchemas = (resource: string, schemas: ResourceSchemas
   if (
     schemas.fieldSchema ||
     schemas.inputSchema ||
-    schemas.titleList ||
-    schemas.titleCreate ||
-    schemas.titleEdit ||
-    schemas.titleShow ||
-    schemas.descriptionList ||
-    schemas.descriptionCreate ||
-    schemas.descriptionEdit ||
-    schemas.descriptionShow ||
-    schemas.listFields ||
-    schemas.excludeListFields ||
-    schemas.showFields ||
-    schemas.excludeShowFields ||
-    schemas.formFields ||
-    schemas.excludeFormFields
+    schemas.listTitle ||
+    schemas.createTitle ||
+    schemas.editTitle ||
+    schemas.detailTitle ||
+    schemas.listDescription ||
+    schemas.createDescription ||
+    schemas.editDescription ||
+    schemas.detailDescription ||
+    schemas.listInclude ||
+    schemas.listExclude ||
+    schemas.listDisplay ||
+    schemas.detailInclude ||
+    schemas.detailExclude ||
+    schemas.formInclude ||
+    schemas.formExclude ||
+    schemas.listComponent ||
+    schemas.detailComponent
   ) {
     globalSchemaRegistry[resource] = {
       ...existing,
@@ -115,16 +135,6 @@ export const registerGlobalSchemas = (resource: string, schemas: ResourceSchemas
 export const parseUnifiedSchema = (children: React.ReactNode): ResourceSchemas => {
   const fieldSchema: React.ReactNode[] = [];
   const inputSchema: React.ReactNode[] = [];
-
-  const mergeValidation = (isRequired: boolean, validate: any) => {
-    if (!isRequired) return validate;
-    const requiredValidator = required();
-    if (!validate) return requiredValidator;
-    if (Array.isArray(validate)) {
-      return validate.some((v) => (v as any).isRequired) ? validate : [requiredValidator, ...validate];
-    }
-    return (validate as any).isRequired ? validate : [requiredValidator, validate];
-  };
 
   const walk = (nodes: React.ReactNode) => {
     React.Children.forEach(nodes, (child) => {
@@ -186,6 +196,16 @@ export const parseUnifiedSchema = (children: React.ReactNode): ResourceSchemas =
     });
   };
 
+  const mergeValidation = (isRequired: boolean, validate: any) => {
+    if (!isRequired) return validate;
+    const requiredValidator = required();
+    if (!validate) return requiredValidator;
+    if (Array.isArray(validate)) {
+      return validate.some((v) => (v as any).isRequired) ? validate : [requiredValidator, ...validate];
+    }
+    return (validate as any).isRequired ? validate : [requiredValidator, validate];
+  };
+
   walk(children);
 
   return {
@@ -194,7 +214,8 @@ export const parseUnifiedSchema = (children: React.ReactNode): ResourceSchemas =
   };
 };
 
-export const getGlobalSchemas = (resource: string) => globalSchemaRegistry[resource];
+export const getGlobalSchemas = <RecordType extends Record<string, any> = any>(resource: string) =>
+  globalSchemaRegistry[resource] as ResourceSchemas<RecordType> | undefined;
 
 /**
  * Registers default components to be used by ResourceSchema when not explicitly provided.
@@ -209,14 +230,21 @@ export const SchemaRegistryProvider = ({ children }: { children: ReactNode }) =>
   // We still use state to trigger re-renders when new schemas are registered dynamically
   const [, setTick] = useState(0);
 
-  const registerSchemas = useCallback((resource: string, schemas: ResourceSchemas) => {
-    const updated = registerGlobalSchemas(resource, schemas);
-    if (updated) {
-      setTick((t) => t + 1);
-    }
-  }, []);
+  const registerSchemas = useCallback(
+    <RecordType extends Record<string, any> = any>(resource: string, schemas: ResourceSchemas<RecordType>) => {
+      const updated = registerGlobalSchemas(resource, schemas);
+      if (updated) {
+        setTick((t) => t + 1);
+      }
+    },
+    [],
+  );
 
-  const getSchemas = useCallback((resource: string) => globalSchemaRegistry[resource], []);
+  const getSchemas = useCallback(
+    <RecordType extends Record<string, any> = any>(resource: string) =>
+      globalSchemaRegistry[resource] as ResourceSchemas<RecordType> | undefined,
+    [],
+  );
 
   const value = useMemo(
     () => ({
@@ -247,13 +275,13 @@ export const useSchemaRegistry = () => {
  * It combines information from ResourceContext, FieldSchemaContext, InputSchemaContext,
  * and the central SchemaRegistry.
  */
-export const useResourceSchema = (resourceProp?: string) => {
+export const useResourceSchema = <RecordType extends Record<string, any> = any>(resourceProp?: string) => {
   const resourceContext = useResourceContext();
   const resource = resourceProp || resourceContext;
 
   const fieldSchemaFromContext = useFieldSchema();
   const inputSchemaFromContext = useInputSchema();
-  const { getSchemas } = useSchemaRegistry();
+  const { getSchemas, defaultComponents } = useSchemaRegistry();
   const definition = useResourceDefinition({ resource });
   const getResourceLabel = useGetResourceLabel();
 
@@ -262,25 +290,28 @@ export const useResourceSchema = (resourceProp?: string) => {
 
     let fieldSchema = fieldSchemaFromContext;
     let inputSchema = inputSchemaFromContext;
-    let listFields = (definition as any)?.options?.listFields;
-    let excludeListFields = (definition as any)?.options?.excludeListFields;
-    let showFields = (definition as any)?.options?.showFields;
-    let excludeShowFields = (definition as any)?.options?.excludeShowFields;
-    let formFields = (definition as any)?.options?.formFields;
-    let excludeFormFields = (definition as any)?.options?.excludeFormFields;
-    let titleList = (definition as any)?.options?.titleList;
-    let titleCreate = (definition as any)?.options?.titleCreate;
-    let titleEdit = (definition as any)?.options?.titleEdit;
-    let titleShow = (definition as any)?.options?.titleShow;
-    let descriptionList = (definition as any)?.options?.descriptionList;
-    let descriptionCreate = (definition as any)?.options?.descriptionCreate;
-    let descriptionEdit = (definition as any)?.options?.descriptionEdit;
-    let descriptionShow = (definition as any)?.options?.descriptionShow;
+    let listInclude = (definition as any)?.options?.listInclude;
+    let listExclude = (definition as any)?.options?.listExclude;
+    let listDisplay = (definition as any)?.options?.listDisplay;
+    let detailInclude = (definition as any)?.options?.detailInclude;
+    let detailExclude = (definition as any)?.options?.detailExclude;
+    let formInclude = (definition as any)?.options?.formInclude;
+    let formExclude = (definition as any)?.options?.formExclude;
+    let listTitle = (definition as any)?.options?.listTitle;
+    let createTitle = (definition as any)?.options?.createTitle;
+    let editTitle = (definition as any)?.options?.editTitle;
+    let detailTitle = (definition as any)?.options?.detailTitle;
+    let listDescription = (definition as any)?.options?.listDescription;
+    let createDescription = (definition as any)?.options?.createDescription;
+    let editDescription = (definition as any)?.options?.editDescription;
+    let detailDescription = (definition as any)?.options?.detailDescription;
+    let listComponent = (definition as any)?.options?.listComponent;
+    let detailComponent = (definition as any)?.options?.detailComponent;
 
     // Use registry if we are looking for a different resource,
     // or if the current context has empty schemas (fallback).
     if (resource && (isDifferentResource || fieldSchema.length === 0 || inputSchema.length === 0)) {
-      const registrySchemas = getSchemas(resource);
+      const registrySchemas = getSchemas<RecordType>(resource);
       if (registrySchemas) {
         if (isDifferentResource || fieldSchema.length === 0) {
           fieldSchema = registrySchemas.fieldSchema ? React.Children.toArray(registrySchemas.fieldSchema) : [];
@@ -288,41 +319,50 @@ export const useResourceSchema = (resourceProp?: string) => {
         if (isDifferentResource || inputSchema.length === 0) {
           inputSchema = registrySchemas.inputSchema ? React.Children.toArray(registrySchemas.inputSchema) : [];
         }
-        listFields = listFields || registrySchemas.listFields;
-        excludeListFields = excludeListFields || registrySchemas.excludeListFields;
-        showFields = showFields || registrySchemas.showFields;
-        excludeShowFields = excludeShowFields || registrySchemas.excludeShowFields;
-        formFields = formFields || registrySchemas.formFields;
-        excludeFormFields = excludeFormFields || registrySchemas.excludeFormFields;
-        titleList = titleList || registrySchemas.titleList;
-        titleCreate = titleCreate || registrySchemas.titleCreate;
-        titleEdit = titleEdit || registrySchemas.titleEdit;
-        titleShow = titleShow || registrySchemas.titleShow;
-        descriptionList = descriptionList || registrySchemas.descriptionList;
-        descriptionCreate = descriptionCreate || registrySchemas.descriptionCreate;
-        descriptionEdit = descriptionEdit || registrySchemas.descriptionEdit;
-        descriptionShow = descriptionShow || registrySchemas.descriptionShow;
+        listInclude = listInclude || registrySchemas.listInclude;
+        listExclude = listExclude || registrySchemas.listExclude;
+        listDisplay = listDisplay || registrySchemas.listDisplay;
+        detailInclude = detailInclude || registrySchemas.detailInclude;
+        detailExclude = detailExclude || registrySchemas.detailExclude;
+        formInclude = formInclude || registrySchemas.formInclude;
+        formExclude = formExclude || registrySchemas.formExclude;
+        listTitle = listTitle || registrySchemas.listTitle;
+        createTitle = createTitle || registrySchemas.createTitle;
+        editTitle = editTitle || registrySchemas.editTitle;
+        detailTitle = detailTitle || registrySchemas.detailTitle;
+        listDescription = listDescription || registrySchemas.listDescription;
+        createDescription = createDescription || registrySchemas.createDescription;
+        editDescription = editDescription || registrySchemas.editDescription;
+        detailDescription = detailDescription || registrySchemas.detailDescription;
+        listComponent = listComponent || registrySchemas.listComponent;
+        detailComponent = detailComponent || registrySchemas.detailComponent;
       }
     }
+
+    listComponent = listComponent || defaultComponents.listComponent;
+    detailComponent = detailComponent || defaultComponents.detailComponent;
 
     return {
       resource,
       fieldSchema,
       inputSchema,
-      listFields,
-      excludeListFields,
-      showFields,
-      excludeShowFields,
-      formFields,
-      excludeFormFields,
-      titleList,
-      titleCreate,
-      titleEdit,
-      titleShow,
-      descriptionList,
-      descriptionCreate,
-      descriptionEdit,
-      descriptionShow,
+      listInclude,
+      listExclude,
+      listDisplay,
+      detailInclude,
+      detailExclude,
+      formInclude,
+      formExclude,
+      listTitle,
+      createTitle,
+      editTitle,
+      detailTitle,
+      listDescription,
+      createDescription,
+      editDescription,
+      detailDescription,
+      listComponent,
+      detailComponent,
       definition,
       label: resource ? getResourceLabel(resource, 2) : undefined, // TODO: stop hardcoding pluralization - translation issues in some languages.
       getField: (source: string) =>

@@ -22,7 +22,11 @@ vi.mock('@strato-admin/core', () => ({
 describe('BulkDeleteButton', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    (useTranslate as any).mockReturnValue((key: string, options: any) => options?._ || key);
+    (useTranslate as any).mockReturnValue((key: string, options: any) => {
+      if (key === 'strato.message.bulk_delete_title') return 'Delete 2 items';
+      if (key === 'strato.message.bulk_delete_content') return 'Are you sure you want to delete these 2 items?';
+      return options?._ || key;
+    });
     (useBulkDeleteController as any).mockReturnValue({
       handleDelete: vi.fn(),
       isPending: false,

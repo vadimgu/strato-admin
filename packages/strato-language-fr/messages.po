@@ -138,3 +138,23 @@ msgstr "Annuler"
 msgctxt "strato.action.confirm"
 msgid "Confirm"
 msgstr "Confirmer"
+
+#. id: strato.pages.create.title
+msgctxt "strato.pages.create.title"
+msgid "Create"
+msgstr "Créer"
+
+#. id: strato.pages.edit.title
+msgctxt "strato.pages.edit.title"
+msgid "Edit"
+msgstr "Modifier"
+
+#. id: strato.pages.show.title
+msgctxt "strato.pages.show.title"
+msgid "Details"
+msgstr "Détails"
+
+#. id: strato.pages.list.title
+msgctxt "strato.pages.list.title"
+msgid "List"
+msgstr "Liste"

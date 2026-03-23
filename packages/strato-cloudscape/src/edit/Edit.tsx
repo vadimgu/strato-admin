@@ -42,7 +42,7 @@ const EditUI = ({
   saveButtonLabel?: string;
 }) => {
   const { record, isLoading } = useEditContext();
-  const { label, titleEdit, descriptionEdit } = useResourceSchema();
+  const { label, editTitle, editDescription } = useResourceSchema();
   const translate = useTranslate();
   const constructedTitle = useConstructedPageTitle('edit', label);
 
@@ -50,19 +50,19 @@ const EditUI = ({
     if (isLoading || !record) return '';
     if (typeof title === 'function') return title(record);
     if (title) return translate(title);
-    if (typeof titleEdit === 'function') return titleEdit(record);
-    if (titleEdit) return translate(titleEdit);
+    if (typeof editTitle === 'function') return editTitle(record);
+    if (editTitle) return translate(editTitle);
     return constructedTitle;
-  }, [isLoading, record, title, titleEdit, translate, constructedTitle]);
+  }, [isLoading, record, title, editTitle, translate, constructedTitle]);
 
   const finalDescription = React.useMemo(() => {
     if (isLoading || !record) return undefined;
     if (typeof description === 'function') return description(record);
     if (description) return translate(description);
-    if (typeof descriptionEdit === 'function') return descriptionEdit(record);
-    if (descriptionEdit) return translate(descriptionEdit);
+    if (typeof editDescription === 'function') return editDescription(record);
+    if (editDescription) return translate(editDescription);
     return undefined;
-  }, [isLoading, record, description, descriptionEdit, translate]);
+  }, [isLoading, record, description, editDescription, translate]);
 
   if (isLoading || !record) {
     return null;

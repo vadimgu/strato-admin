@@ -1,7 +1,10 @@
 import React from 'react';
 import { vi } from 'vitest';
 
-export const useTranslate = vi.fn(() => (key: string, options: any) => options?._ || key);
+export const useTranslate = vi.fn(() => (key: string, options: any) => {
+  return options?._ || key;
+});
+
 export const useTranslateLabel = vi.fn(() => (label: any) => (typeof label === 'string' ? label : label?.source || ''));
 export const useGetResourceLabel = vi.fn(() => (resource: string) => {
   if (resource === 'products') return 'Products';
@@ -63,6 +66,15 @@ export const useShowContext = vi.fn(() => ({ isLoading: false, record: {}, defau
 export const useEditContext = vi.fn(() => ({ isLoading: false, record: {}, defaultTitle: 'Products' }));
 export const useCreateContext = vi.fn(() => ({ isLoading: false, record: {}, defaultTitle: 'Products' }));
 export const useListContext = vi.fn(() => ({ total: 0, isPending: false, selectedIds: [], defaultTitle: 'Products' }));
+
+export const useShowController = vi.fn(() => ({ isLoading: false, record: {}, resource: 'products' }));
+export const useEditController = vi.fn(() => ({ isLoading: false, record: {}, resource: 'products' }));
+export const useCreateController = vi.fn(() => ({ isLoading: false, record: {}, resource: 'products' }));
+export const useConstructedPageTitle = vi.fn((type, label) => `${type} ${label}`);
+
+export const ShowContextProvider = vi.fn(({ children }: any) => <>{children}</>);
+export const EditContextProvider = vi.fn(({ children }: any) => <>{children}</>);
+export const CreateContextProvider = vi.fn(({ children }: any) => <>{children}</>);
 
 export const Form = vi.fn(({ children }: any) => <div data-testid="ra-form">{children}</div>);
 export const FieldTitle = vi.fn(({ label, source }: any) => <span data-testid="field-title">{label || source}</span>);

@@ -4,6 +4,7 @@ import { vi, describe, it, expect, beforeEach } from 'vitest';
 import { AppLayout } from './AppLayout';
 import { useDefaultTitle, useResourceDefinitions } from '@strato-admin/core';
 import { TopNavigation } from './TopNavigation';
+import SideNavigationMock from '@cloudscape-design/components/side-navigation';
 
 // Mock strato-core
 vi.mock('@strato-admin/core', () => import('../__mocks__/strato-core'));
@@ -35,12 +36,31 @@ vi.mock('@cloudscape-design/components/app-layout', () => ({
 }));
 
 vi.mock('@cloudscape-design/components/side-navigation', () => ({
-  default: () => <div data-testid="side-navigation" />,
+  default: vi.fn(() => <div data-testid="side-navigation" />),
 }));
 
 describe('AppLayout', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+  });
+
+  it('should only show resources with hasList: true in SideNavigation', () => {
+    (useResourceDefinitions as any).mockReturnValue({
+      posts: { name: 'posts', hasList: true },
+      comments: { name: 'comments', hasList: false },
+      users: { name: 'users', hasList: true },
+    });
+
+    render(
+      <AppLayout>
+        <div>Content</div>
+      </AppLayout>,
+    );
+
+    const sideNavProps = vi.mocked(SideNavigationMock).mock.calls[0][0];
+    expect(sideNavProps.items).toHaveLength(2);
+    expect(sideNavProps.items[0]).toMatchObject({ text: 'posts', href: '/posts' });
+    expect(sideNavProps.items[1]).toMatchObject({ text: 'users', href: '/users' });
   });
 
   it('should use title from useDefaultTitle hook if no title prop provided', () => {

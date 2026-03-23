@@ -191,7 +191,7 @@ export interface TableProps<RecordType extends RaRecord = any> extends Partial<
    * Can be an array of field sources/IDs.
    * If not specified, the first 5 fields will be shown.
    */
-  defaultVisibleFields?: string[];
+  display?: string[];
 }
 
 const defaultPageSizeOptions = [
@@ -225,7 +225,7 @@ export const Table = <RecordType extends RaRecord = any>({
   pageSizeOptions = defaultPageSizeOptions,
   preferences = true,
   reorderable = true,
-  defaultVisibleFields,
+  display,
   selectionType,
   ...props
 }: TableProps<RecordType>) => {
@@ -236,31 +236,40 @@ export const Table = <RecordType extends RaRecord = any>({
     fieldSchema: schemaChildren,
     definition,
     label: schemaLabel,
-    listFields,
-    excludeListFields,
+    listInclude,
+    listExclude,
+    listDisplay,
   } = useResourceSchema();
 
   const finalSelectionType = selectionType ?? (definition?.options?.canDelete ? 'multi' : undefined);
+  const finalDisplay = display || listDisplay;
 
   const finalChildren = React.useMemo(() => {
     const baseChildren = children || schemaChildren;
     let result = React.Children.toArray(baseChildren);
 
-    const finalInclude = include || listFields;
-    const finalExclude = exclude || excludeListFields;
+    const finalInclude = include || listInclude;
+    const finalExclude = exclude || listExclude;
 
     if (finalInclude) {
       result = result.filter(
         (child) => React.isValidElement(child) && finalInclude.includes((child.props as any).source),
       );
-    } else if (finalExclude) {
+    } else {
+      // Filter out fields marked as collection fields by default
       result = result.filter(
-        (child) => React.isValidElement(child) && !finalExclude.includes((child.props as any).source),
+        (child) => React.isValidElement(child) && !(child.type as any).isCollectionField,
       );
+
+      if (finalExclude) {
+        result = result.filter(
+          (child) => React.isValidElement(child) && !finalExclude.includes((child.props as any).source),
+        );
+      }
     }
 
     return result;
-  }, [children, schemaChildren, include, exclude, listFields, excludeListFields]);
+  }, [children, schemaChildren, include, exclude, listInclude, listExclude]);
 
   // 1. Extract columns and options before calling useCollection
   const extractedColumns = React.useMemo(() => {
@@ -317,14 +326,14 @@ export const Table = <RecordType extends RaRecord = any>({
   const defaultVisibleContent = React.useMemo(() => {
     if (extractedColumns.options.length === 0) return undefined;
 
-    if (defaultVisibleFields) {
+    if (finalDisplay) {
       // Map user-provided fields to their actual IDs
       return extractedColumns.options
         .filter((opt) => {
           const column = extractedColumns.columns.find((c) => c.id === opt.id);
           return (
-            defaultVisibleFields.includes(opt.id) ||
-            (column?.sortingField && defaultVisibleFields.includes(column.sortingField))
+            finalDisplay.includes(opt.id) ||
+            (column?.sortingField && finalDisplay.includes(column.sortingField))
           );
         })
         .map((opt) => opt.id);
@@ -332,7 +341,7 @@ export const Table = <RecordType extends RaRecord = any>({
 
     // Default to first 5 toggleable columns
     return extractedColumns.options.slice(0, 5).map((opt) => opt.id);
-  }, [extractedColumns, defaultVisibleFields]);
+  }, [extractedColumns, finalDisplay]);
 
   const defaultContentDisplay = React.useMemo(() => {
     if (extractedColumns.options.length === 0) return undefined;

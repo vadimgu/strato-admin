@@ -55,3 +55,4 @@ export const ArrayField = <RecordType extends RaRecord = any>(props: ArrayFieldP
 };
 
 export default ArrayField;
+ArrayField.isCollectionField = true;

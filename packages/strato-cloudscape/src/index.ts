@@ -21,5 +21,7 @@ export { Form, type FormProps } from './form';
 export { List, type ListProps } from './list';
 export { Create, type CreateProps } from './create';
 export { Edit, type EditProps } from './edit';
-export { Show, type ShowProps } from './detail';
+export { Detail, type DetailProps, Detail as Show, type DetailProps as ShowProps } from './detail';
 export { type InputProps } from './input';
+export { Ready, AppLayout, TopNavigation } from './layout';
+export { Button } from './button';

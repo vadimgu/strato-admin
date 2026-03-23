@@ -21,11 +21,13 @@ export const AppLayout = ({ children, header, title }: AppLayoutProps) => {
 
   const appTitle = title ?? (typeof defaultTitle === 'string' ? defaultTitle : '');
 
-  const items = Object.values(resources).map((resource) => ({
-    type: 'link' as const,
-    text: getResourceLabel(resource.name),
-    href: `/${resource.name}`,
-  }));
+  const items = Object.values(resources)
+    .filter((resource) => resource.hasList)
+    .map((resource) => ({
+      type: 'link' as const,
+      text: getResourceLabel(resource.name),
+      href: `/${resource.name}`,
+    }));
 
   return (
     <>
