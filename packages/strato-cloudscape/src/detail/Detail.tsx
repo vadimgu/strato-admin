@@ -39,8 +39,8 @@ export interface DetailProps extends ShowBaseProps {
  */
 export const Detail = (props: DetailProps) => {
   const { children, ...rest } = props;
-  const controllerProps = useShowController(rest);
-  const { detailComponent: DetailComponent = DetailHub } = useResourceSchema();
+  const { queryOptions, detailComponent: DetailComponent = DetailHub } = useResourceSchema(props.resource);
+  const controllerProps = useShowController({ queryOptions, ...rest });
 
   return (
     <ShowContextProvider value={controllerProps}>

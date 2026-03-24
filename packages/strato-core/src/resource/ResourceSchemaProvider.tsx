@@ -9,6 +9,7 @@ export interface ResourceSchemaProviderProps {
   resource?: string;
   fieldSchema?: ReactNode;
   inputSchema?: ReactNode;
+  queryOptions?: any;
 }
 
 /**
@@ -23,16 +24,17 @@ export const ResourceSchemaProvider = ({
   resource,
   fieldSchema,
   inputSchema,
+  queryOptions,
 }: ResourceSchemaProviderProps) => {
   const { registerSchemas, getSchemas } = useSchemaRegistry();
   const parentResource = useContext(ResourceContext);
 
   // 1. Register schemas synchronously during render.
   useMemo(() => {
-    if (resource && (fieldSchema || inputSchema)) {
-      registerSchemas(resource, { fieldSchema, inputSchema });
+    if (resource && (fieldSchema || inputSchema || queryOptions)) {
+      registerSchemas(resource, { fieldSchema, inputSchema, queryOptions });
     }
-  }, [resource, fieldSchema, inputSchema, registerSchemas]);
+  }, [resource, fieldSchema, inputSchema, queryOptions, registerSchemas]);
 
   // 2. Lookup schemas if not provided
   // We MUST check the registry if resource is provided, even if we have some schemas from props,

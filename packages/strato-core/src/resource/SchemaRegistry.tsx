@@ -38,6 +38,7 @@ export interface ResourceSchemas<RecordType extends Record<string, any> = any> {
   formExclude?: ExtractRecordPaths<RecordType>[];
   listComponent?: ComponentType<any>;
   detailComponent?: ComponentType<any>;
+  queryOptions?: any;
 }
 
 export interface DefaultResourceComponents {
@@ -115,7 +116,8 @@ export const registerGlobalSchemas = <RecordType extends Record<string, any> = a
     schemas.formInclude ||
     schemas.formExclude ||
     schemas.listComponent ||
-    schemas.detailComponent
+    schemas.detailComponent ||
+    schemas.queryOptions
   ) {
     globalSchemaRegistry[resource] = {
       ...existing,
@@ -169,8 +171,25 @@ export const parseUnifiedSchema = (children: React.ReactNode): ResourceSchemas =
       if (React.isValidElement(input)) {
         // Escape hatch: explicit input component provided
         const validate = mergeValidation(isRequired, (input.props as any).validate);
+
+        // Handle collection fields (like ArrayField) that need to propagate their children to their input counterpart (e.g. ArrayInput)
+        let inputChildren = (input.props as any).children || (child.props as any).children;
+        if ((child.type as any).isCollectionField && inputChildren && !(input.props as any).children) {
+          // Recursively parse children to get their input versions
+          const parsed = parseUnifiedSchema(inputChildren);
+          inputChildren = parsed.inputSchema;
+        }
+
         inputSchema.push(
-          React.cloneElement(input, { ...rest, source, isRequired, validate, description, constraintText }),
+          React.cloneElement(input as React.ReactElement, {
+            ...rest,
+            source,
+            isRequired,
+            validate,
+            description,
+            constraintText,
+            children: inputChildren,
+          }),
         );
         return;
       }
@@ -180,6 +199,15 @@ export const parseUnifiedSchema = (children: React.ReactNode): ResourceSchemas =
       if (InputComponent) {
         const inputProps = input || {};
         const validate = mergeValidation(isRequired, inputProps.validate);
+
+        // Handle collection fields (like ArrayField) that need to propagate their children to their input counterpart (e.g. ArrayInput)
+        let inputChildren = (child.props as any).children;
+        if ((child.type as any).isCollectionField && inputChildren) {
+          // Recursively parse children to get their input versions
+          const parsed = parseUnifiedSchema(inputChildren);
+          inputChildren = parsed.inputSchema;
+        }
+
         inputSchema.push(
           <InputComponent
             key={source}
@@ -190,7 +218,9 @@ export const parseUnifiedSchema = (children: React.ReactNode): ResourceSchemas =
             validate={validate}
             description={description}
             constraintText={constraintText}
-          />,
+          >
+            {inputChildren}
+          </InputComponent>,
         );
       }
     });
@@ -307,6 +337,7 @@ export const useResourceSchema = <RecordType extends Record<string, any> = any>(
     let detailDescription = (definition as any)?.options?.detailDescription;
     let listComponent = (definition as any)?.options?.listComponent;
     let detailComponent = (definition as any)?.options?.detailComponent;
+    let queryOptions = (definition as any)?.options?.queryOptions;
 
     // Use registry if we are looking for a different resource,
     // or if the current context has empty schemas (fallback).
@@ -336,6 +367,7 @@ export const useResourceSchema = <RecordType extends Record<string, any> = any>(
         detailDescription = detailDescription || registrySchemas.detailDescription;
         listComponent = listComponent || registrySchemas.listComponent;
         detailComponent = detailComponent || registrySchemas.detailComponent;
+        queryOptions = queryOptions || registrySchemas.queryOptions;
       }
     }
 
@@ -363,6 +395,7 @@ export const useResourceSchema = <RecordType extends Record<string, any> = any>(
       detailDescription,
       listComponent,
       detailComponent,
+      queryOptions,
       definition,
       label: resource ? getResourceLabel(resource, 2) : undefined, // TODO: stop hardcoding pluralization - translation issues in some languages.
       getField: (source: string) =>

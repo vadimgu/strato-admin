@@ -1,5 +1,5 @@
 import { type ReactNode } from 'react';
-import { ReferenceFieldBase, type RaRecord, useRecordContext, useGetRecordRepresentation } from '@strato-admin/core';
+import { ReferenceFieldBase, type RaRecord, useRecordContext, useGetRecordRepresentation, useResourceSchema } from '@strato-admin/core';
 import RecordLink from '../RecordLink';
 import { type FieldProps } from './types';
 
@@ -17,13 +17,20 @@ export type ReferenceFieldProps<RecordType extends RaRecord = RaRecord> = FieldP
 
 const ReferenceField = <RecordType extends RaRecord = RaRecord>(props: ReferenceFieldProps<RecordType>) => {
   const { source, reference, children, emptyText, record, link } = props;
+  const { queryOptions } = useResourceSchema(reference);
 
   if (!source) {
     return null; // Or some fallback
   }
 
   return (
-    <ReferenceFieldBase source={source} reference={reference} record={record} empty={<>{emptyText ?? null}</>}>
+    <ReferenceFieldBase
+      source={source}
+      reference={reference}
+      record={record}
+      empty={<>{emptyText ?? null}</>}
+      queryOptions={queryOptions}
+    >
       <ReferenceFieldValue emptyText={emptyText} link={link} reference={reference}>
         {children}
       </ReferenceFieldValue>

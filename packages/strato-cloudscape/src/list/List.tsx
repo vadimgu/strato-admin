@@ -114,8 +114,10 @@ export const List = <RecordType extends RaRecord = any>({
   display,
   ...props
 }: ListProps<RecordType>) => {
+  const { queryOptions } = useResourceSchema(props.resource);
+
   return (
-    <ListBase {...props}>
+    <ListBase queryOptions={queryOptions} {...props}>
       <ResourceSchemaProvider resource={props.resource}>
         <ListUI
           title={title}

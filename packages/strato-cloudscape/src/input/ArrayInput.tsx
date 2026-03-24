@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { useInput, RecordContextProvider, useResourceContext } from '@strato-admin/core';
 import { useFieldArray, useFormContext } from 'react-hook-form';
-import CloudscapeAttributeEditor from '@cloudscape-design/components/attribute-editor';
+import CloudscapeAttributeEditor, { AttributeEditorProps as CloudscapeAttributeEditorProps } from '@cloudscape-design/components/attribute-editor';
 import Box from '@cloudscape-design/components/box';
 import { FieldTitle } from './FieldTitle';
 import TextInput from './TextInput';
@@ -9,7 +9,7 @@ import FormField from './FormField';
 import { FormFieldContext, useFormFieldContext } from './FormFieldContext';
 import { InputProps } from './types';
 
-export interface AttributeEditorItemProps {
+export interface ArrayInputItemProps {
   source: string;
   label?: string | false;
   field?: React.ComponentType<any>;
@@ -18,23 +18,30 @@ export interface AttributeEditorItemProps {
   children?: React.ReactNode;
 }
 
-export const Item = (_props: AttributeEditorItemProps) => {
+export const Item = (_props: ArrayInputItemProps) => {
   // This is a placeholder component used to collect props.
-  // The actual rendering is handled by the AttributeEditor.
+  // The actual rendering is handled by the ArrayInput.
   return null;
 };
 
-export interface AttributeEditorProps extends Omit<InputProps, 'source'> {
+export interface ArrayInputProps extends Omit<InputProps, 'source'> {
   source?: string;
-  children: React.ReactNode;
+  children?: React.ReactNode;
   addButtonText?: string;
   removeButtonText?: string;
   empty?: React.ReactNode;
   disableAddButton?: boolean;
   hideAddButton?: boolean;
+  /**
+   * Optionally specifies the layout of the attributes.
+   */
+  gridLayout?: ReadonlyArray<CloudscapeAttributeEditorProps.GridLayout>;
 }
 
-export const AttributeEditor = (props: AttributeEditorProps) => {
+/**
+ * ArrayInput component that uses Cloudscape's AttributeEditor to edit arrays of objects.
+ */
+export const ArrayInput = (props: ArrayInputProps) => {
   const {
     children,
     label,
@@ -46,6 +53,7 @@ export const AttributeEditor = (props: AttributeEditorProps) => {
     empty,
     disableAddButton,
     hideAddButton,
+    gridLayout,
     ...rest
   } = props;
 
@@ -86,14 +94,25 @@ export const AttributeEditor = (props: AttributeEditorProps) => {
       const childSource = childProps.source;
       const childLabel = childProps.label;
       const childValidate = childProps.validate;
+      const childDescription = childProps.description;
+      const childInfo = childProps.info;
 
       // Determine if the field is required by checking validators
       const isRequired = Array.isArray(childValidate)
-        ? childValidate.some((v: any) => v.isRequired)
-        : childValidate?.isRequired || childProps.isRequired;
+        ? childValidate.some((v: any) => v.isRequired || v.name === 'required')
+        : childValidate?.isRequired || childValidate?.name === 'required' || childProps.isRequired;
 
       return {
-        label: <FieldTitle label={childLabel} source={childSource} resource={resource} isRequired={isRequired} />,
+        label: (
+          <FieldTitle
+            label={childLabel}
+            source={childSource}
+            resource={childProps.resource || resource}
+            isRequired={isRequired}
+          />
+        ),
+        description: childDescription,
+        info: childInfo,
         control: (item: any, index: number) => {
           const prefixedSource = `${source}.${index}.${childSource}`;
 
@@ -137,7 +156,7 @@ export const AttributeEditor = (props: AttributeEditorProps) => {
 
           return (
             <RecordContextProvider value={item}>
-              <Box padding={{ top: 's' }}>{content}</Box>
+              {content}
             </RecordContextProvider>
           );
         },
@@ -163,6 +182,7 @@ export const AttributeEditor = (props: AttributeEditorProps) => {
         removeButtonText={removeButtonText}
         disableAddButton={disableAddButton}
         hideAddButton={hideAddButton}
+        gridLayout={gridLayout}
       />
     </FormFieldContext.Provider>
   );
@@ -180,6 +200,6 @@ export const AttributeEditor = (props: AttributeEditorProps) => {
   );
 };
 
-AttributeEditor.Item = Item;
+ArrayInput.Item = Item;
 
-export default AttributeEditor;
+export default ArrayInput;

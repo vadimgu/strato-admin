@@ -2,7 +2,7 @@ export * from './types';
 export * from './TextInput';
 export * from './TextAreaInput';
 export * from './NumberInput';
-export * from './AttributeEditor';
+export * from './ArrayInput';
 export * from './SelectInput';
 export * from './AutocompleteInput';
 export * from './ReferenceInput';

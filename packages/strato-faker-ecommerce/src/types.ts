@@ -54,7 +54,7 @@ export interface Order {
   reference: string;
   date: Date;
   customer_id: number;
-  basket: OrderItem[];
+  items: OrderItem[];
   total_ex_taxes: number;
   delivery_fees: number;
   tax_rate: number;

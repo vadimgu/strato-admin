@@ -18,8 +18,8 @@ import { Create } from './create';
 import { Edit } from './edit';
 import { Detail, DetailHub } from './detail';
 
-import { TextField, NumberField, CurrencyField, ReferenceField } from './field';
-import { TextInput, NumberInput, ReferenceInput } from './input';
+import { TextField, NumberField, CurrencyField, ReferenceField, ArrayField } from './field';
+import { TextInput, NumberInput, ReferenceInput, ArrayInput } from './input';
 
 import { I18nProvider, importMessages, I18nProviderProps } from '@cloudscape-design/components/i18n';
 
@@ -40,6 +40,7 @@ registerFieldInputMapping(
     [NumberField, NumberInput],
     [CurrencyField, NumberInput],
     [ReferenceField, ReferenceInput],
+    [ArrayField, ArrayInput],
   ]),
 );
 
@@ -129,7 +130,7 @@ export const Admin = ({
         layout={(layoutProps: any) => <CloudscapeLayout {...layoutProps} layout={Layout} />}
         title={title}
         ready={ready}
-        i18nProvider={i18nProvider}
+         i18nProvider={i18nProvider}
         store={store}
       >
         {children}

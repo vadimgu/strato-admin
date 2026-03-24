@@ -106,8 +106,10 @@ export const Edit = <RecordType extends RaRecord = any>({
   saveButtonLabel,
   ...props
 }: EditProps<RecordType>) => {
+  const { queryOptions } = useResourceSchema(props.resource);
+
   return (
-    <EditBase redirect={redirect} {...props}>
+    <EditBase redirect={redirect} queryOptions={queryOptions} {...props}>
       <ResourceSchemaProvider resource={props.resource}>
         <EditUI
           title={title}

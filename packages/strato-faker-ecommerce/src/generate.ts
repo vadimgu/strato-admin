@@ -102,23 +102,26 @@ export const generateEcommerceData = () => {
   });
 
   // 5. Generate Orders
+  const allOrderItems: OrderItem[] = [];
   const orders: Order[] = Array.from({ length: 300 }, (_, id) => {
     const customer = faker.helpers.arrayElement(customers.filter((c) => c.has_ordered));
     const date = faker.date.between({ from: customer.first_seen, to: customer.last_seen });
     const nbItems = faker.number.int({ min: 1, max: 5 });
 
-    const basket: OrderItem[] = Array.from({ length: nbItems }, (_, itemId) => {
+    const items: OrderItem[] = Array.from({ length: nbItems }, (_, itemId) => {
       const product = faker.helpers.arrayElement(products);
-      return {
+      const item = {
         id: id * 10 + itemId,
         order_id: id,
         product_id: product.id,
         quantity: faker.number.int({ min: 1, max: 10 }),
         unit_price: product.price,
       };
+      allOrderItems.push(item);
+      return item;
     });
 
-    const total_ex_taxes = basket.reduce((sum, item) => sum + item.quantity * item.unit_price, 0);
+    const total_ex_taxes = items.reduce((sum, item) => sum + item.quantity * item.unit_price, 0);
     const delivery_fees = faker.number.float({ min: 0, max: 20, fractionDigits: 2 });
     const tax_rate = 0.2;
     const taxes = (total_ex_taxes + delivery_fees) * tax_rate;
@@ -134,7 +137,7 @@ export const generateEcommerceData = () => {
     }
 
     // Update product stats
-    basket.forEach((item) => {
+    items.forEach((item) => {
       const product = products.find((p) => p.id === item.product_id);
       if (product) {
         product.sales += item.quantity;
@@ -146,7 +149,7 @@ export const generateEcommerceData = () => {
       reference: faker.string.alphanumeric({ length: 6, casing: 'upper' }),
       date,
       customer_id: customer.id,
-      basket,
+      items,
       total_ex_taxes,
       delivery_fees,
       tax_rate,
@@ -163,5 +166,6 @@ export const generateEcommerceData = () => {
     products,
     reviews,
     orders,
+    'order-items': allOrderItems,
   };
 };

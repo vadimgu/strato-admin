@@ -35,7 +35,7 @@ export const productResource = (
 
     // details={ProductShow}
     // listDisplay={['id', 'name', 'reference']}
-    recordRepresentation={productRepresentation}
+    recordRepresentation="name"
   >
     <TextField source="id" label="ID" link="show" input={false} />
     <TextField source="name" label="Name" sortable isRequired />

@@ -122,6 +122,10 @@ export interface ResourceSchemaProps<RecordType extends Record<string, any> = an
    * The default presentation component for the detail view (e.g., KeyValuePairs).
    */
   detailComponent?: React.ComponentType<any>;
+  /**
+   * Options passed to the data provider for all queries of this resource.
+   */
+  queryOptions?: any;
 }
 
 /**
@@ -162,6 +166,7 @@ export const ResourceSchema = <RecordType extends Record<string, any> = any>({
   perPage,
   listComponent,
   detailComponent,
+  queryOptions,
   ...props
 }: ResourceSchemaProps<RecordType>) => {
   const { defaultComponents } = useSchemaRegistry();
@@ -201,6 +206,7 @@ export const ResourceSchema = <RecordType extends Record<string, any> = any>({
     formExclude,
     listComponent,
     detailComponent,
+    queryOptions,
   };
 
   const getListComponent = () => {
@@ -230,7 +236,12 @@ export const ResourceSchema = <RecordType extends Record<string, any> = any>({
   };
 
   return (
-    <ResourceSchemaProvider resource={props.name} fieldSchema={fieldSchema} inputSchema={inputSchema}>
+    <ResourceSchemaProvider
+      resource={props.name}
+      fieldSchema={fieldSchema}
+      inputSchema={inputSchema}
+      queryOptions={queryOptions}
+    >
       <Resource {...finalProps} options={mergedOptions} />
     </ResourceSchemaProvider>
   );
@@ -275,6 +286,7 @@ ResourceSchema.registerResource = <RecordType extends Record<string, any> = any>
     perPage,
     listComponent,
     detailComponent,
+    queryOptions,
   } = props;
 
   // Determine effective boolean flags
@@ -308,6 +320,7 @@ ResourceSchema.registerResource = <RecordType extends Record<string, any> = any>
       detailDescription,
       listComponent,
       detailComponent,
+      queryOptions,
     });
   }
 
@@ -337,6 +350,7 @@ ResourceSchema.registerResource = <RecordType extends Record<string, any> = any>
     formExclude,
     listComponent,
     detailComponent,
+    queryOptions,
   };
 
   const getListComponent = () => {

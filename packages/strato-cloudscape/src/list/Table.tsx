@@ -227,6 +227,7 @@ export const Table = <RecordType extends RaRecord = any>({
   reorderable = true,
   display,
   selectionType,
+  pagination = true,
   ...props
 }: TableProps<RecordType>) => {
   const translate = useTranslate();
@@ -392,6 +393,49 @@ export const Table = <RecordType extends RaRecord = any>({
     return <TableHeader title={finalTitle} description={description} actions={actions} />;
   }, [title, description, actions, schemaLabel]);
 
+  const finalPreferences = React.useMemo(() => {
+    if (preferences === false) return undefined;
+    if (React.isValidElement(preferences)) return preferences;
+    
+    // preferences is true or an object, or we have pageSizeOptions
+    if (preferences === true || pageSizeOptions) {
+      return (
+        <CollectionPreferences
+          {...preferencesProps}
+          pageSizePreference={
+            pageSizeOptions
+              ? {
+                options: pageSizeOptions,
+              }
+              : undefined
+          }
+          visibleContentPreference={
+            !reorderable && extractedColumns.options.length > 0
+              ? {
+                title: translate("strato.action.select_columns", { _: 'Select visible columns' }),
+                options: [
+                  {
+                    label: translate("strato.action.select_columns", { _: 'Select visible columns' }),
+                    options: extractedColumns.options,
+                  },
+                ],
+              }
+              : undefined
+          }
+          contentDisplayPreference={
+            reorderable && extractedColumns.options.length > 0
+              ? {
+                title: translate("strato.action.select_columns", { _: 'Select visible columns' }),
+                options: extractedColumns.options,
+              }
+              : undefined
+          }
+        />
+      );
+    }
+    return undefined;
+  }, [preferences, pageSizeOptions, preferencesProps, reorderable, extractedColumns.options, translate]);
+
   return (
     <CloudscapeTable
       {...collectionProps}
@@ -404,44 +448,8 @@ export const Table = <RecordType extends RaRecord = any>({
       items={items || []}
       header={tableHeader}
       filter={filtering && <TextFilter {...filterProps} />}
-      pagination={<Pagination {...paginationProps} />}
-      preferences={
-        preferences === true || pageSizeOptions ? (
-          <CollectionPreferences
-            {...preferencesProps}
-            pageSizePreference={
-              pageSizeOptions
-                ? {
-                  options: pageSizeOptions,
-                }
-                : undefined
-            }
-            visibleContentPreference={
-              !reorderable && extractedColumns.options.length > 0
-                ? {
-                  title: translate("strato.action.select_columns", { _: 'Select visible columns' }),
-                  options: [
-                    {
-                      label: translate("strato.action.select_columns", { _: 'Select visible columns' }),
-                      options: extractedColumns.options,
-                    },
-                  ],
-                }
-                : undefined
-            }
-            contentDisplayPreference={
-              reorderable && extractedColumns.options.length > 0
-                ? {
-                  title: translate("strato.action.select_columns", { _: 'Select visible columns' }),
-                  options: extractedColumns.options,
-                }
-                : undefined
-            }
-          />
-        ) : React.isValidElement(preferences) ? (
-          preferences
-        ) : undefined
-      }
+      pagination={pagination === true ? <Pagination {...paginationProps} /> : pagination || undefined}
+      preferences={finalPreferences}
     />
   );
 };

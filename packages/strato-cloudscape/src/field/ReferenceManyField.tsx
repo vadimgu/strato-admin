@@ -99,9 +99,10 @@ export const ReferenceManyField = <RecordType extends RaRecord = RaRecord>(
     title,
     ...rest
   } = props;
+  const { queryOptions } = useResourceSchema(reference);
 
   return (
-    <ReferenceManyFieldBase reference={reference} {...rest}>
+    <ReferenceManyFieldBase reference={reference} queryOptions={queryOptions} {...rest}>
       <ResourceSchemaProvider resource={reference} fieldSchema={fieldSchema}>
         <ReferenceManyFieldUI
           reference={reference}

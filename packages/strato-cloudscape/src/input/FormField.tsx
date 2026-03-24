@@ -76,8 +76,8 @@ export const FormField = (props: FormFieldProps) => {
           <FieldTitle label={label} source={source} resource={resource} isRequired={isRequired} />
         )
       }
-      description={description}
-      constraintText={finalConstraintText}
+      description={label === false ? undefined : description}
+      constraintText={label === false ? undefined : finalConstraintText}
       info={info}
       secondaryControl={secondaryControl}
       stretch={stretch}
