@@ -1,5 +1,5 @@
 import React from 'react';
-import { useInput, useResourceContext, useChoicesContext, useGetRecordRepresentation } from '@strato-admin/core';
+import { useInput, useResourceContext, useChoicesContext, useGetRecordRepresentation } from '@strato-admin/ra-core';
 import CloudscapeSelect, { SelectProps as CloudscapeSelectProps } from '@cloudscape-design/components/select';
 import { FormField } from './FormField';
 import { FormFieldContext, useFormFieldContext } from './FormFieldContext';

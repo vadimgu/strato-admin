@@ -5,7 +5,7 @@ export const App = () => (
   <Admin dataProvider={dataProvider} title="My Strato Admin">
     <ResourceSchema name="products">
       <IdField source="id" />
-      <TextField source="name" isRequired link="show" />
+      <TextField source="name" isRequired link="detail" />
       <TextField source="description" />
     </ResourceSchema>
   </Admin>

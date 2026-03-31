@@ -1,12 +1,12 @@
 import React from 'react';
 import { render, cleanup } from '@testing-library/react';
 import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { useResourceContext, useListContext, useResourceDefinitions } from '@strato-admin/core';
+import { useResourceContext, useListContext, useResourceDefinitions } from '@strato-admin/ra-core';
 import { useCollection } from '../collection-hooks';
 import Table from './Table';
 import CloudscapeTable from '@cloudscape-design/components/table';
 
-// Mock ra-core
+vi.mock('@strato-admin/ra-core', () => import('../__mocks__/ra-core'));
 vi.mock('@strato-admin/core', () => import('../__mocks__/strato-core'));
 
 // Mock react-router-dom

@@ -1,10 +1,6 @@
 import React, { ReactNode } from 'react';
-import {
-  ReferenceManyFieldBase,
-  type RaRecord,
-  ResourceSchemaProvider,
-  useResourceSchema,
-} from '@strato-admin/core';
+import { ReferenceManyFieldBase, type RaRecord } from '@strato-admin/ra-core';
+import { ResourceSchemaProvider, useResourceSchema } from '@strato-admin/core';
 import { type FieldProps } from './types';
 import Table from '../list/Table';
 

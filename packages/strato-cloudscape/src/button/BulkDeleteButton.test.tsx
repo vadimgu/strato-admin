@@ -8,15 +8,25 @@ import {
   useResourceDefinition,
   useResourceContext,
   useGetResourceLabel,
-} from '@strato-admin/core';
+} from '@strato-admin/ra-core';
 
-vi.mock('@strato-admin/core', () => ({
+vi.mock('@strato-admin/ra-core', () => ({
   useListContext: vi.fn(),
   useBulkDeleteController: vi.fn(),
   useTranslate: vi.fn(),
   useResourceDefinition: vi.fn(),
   useResourceContext: vi.fn(),
   useGetResourceLabel: vi.fn(),
+}));
+
+vi.mock('@strato-admin/core', () => ({
+  useSchemaRegistry: vi.fn(() => ({ defaultComponents: {} })),
+  useSettings: vi.fn(() => ({})),
+  useSettingValue: vi.fn(() => (propValue: any, _settingKey: any, schemaValue?: any) => {
+    if (propValue !== undefined) return propValue;
+    if (schemaValue !== undefined) return schemaValue;
+    return undefined;
+  }),
 }));
 
 describe('BulkDeleteButton', () => {

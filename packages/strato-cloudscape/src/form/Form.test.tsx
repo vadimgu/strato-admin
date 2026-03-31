@@ -1,9 +1,10 @@
 import React from 'react';
 import { render } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 import { Form } from './Form';
 
-// Mock ra-core
+vi.mock('@strato-admin/ra-core', () => import('../__mocks__/ra-core'));
 vi.mock('@strato-admin/core', () => import('../__mocks__/strato-core'));
 
 // Mock Cloudscape components
@@ -31,14 +32,17 @@ describe('Form', () => {
 
   it('should render children and default toolbar', () => {
     const { getByTestId, getByText } = render(
-      <Form>
-        <div data-testid="child" />
-      </Form>,
+      <MemoryRouter>
+        <Form>
+          <div data-testid="child" />
+        </Form>
+      </MemoryRouter>,
     );
 
     expect(getByTestId('ra-form')).toBeDefined();
     expect(getByTestId('cloudscape-form')).toBeDefined();
     expect(getByTestId('child')).toBeDefined();
+    expect(getByText('Cancel')).toBeDefined();
     expect(getByText('Save')).toBeDefined();
   });
 

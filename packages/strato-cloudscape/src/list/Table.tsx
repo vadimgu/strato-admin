@@ -4,14 +4,10 @@ import Pagination from '@cloudscape-design/components/pagination';
 import Box from '@cloudscape-design/components/box';
 import TextFilter from '@cloudscape-design/components/text-filter';
 import CollectionPreferences from '@cloudscape-design/components/collection-preferences';
-import {
-  RecordContextProvider,
-  RaRecord,
-  useResourceSchema,
-  useTranslateLabel,
-  useTranslate,
-} from '@strato-admin/core';
+import { RecordContextProvider, RaRecord, useTranslateLabel, useTranslate } from '@strato-admin/ra-core';
+import { useResourceSchema, useSettings } from '@strato-admin/core';
 import { useCollection } from '../collection-hooks';
+import { useSchemaFields } from '../hooks/useSchemaFields';
 import TextField from '../field/TextField';
 import NumberField from '../field/NumberField';
 import DateField from '../field/DateField';
@@ -194,12 +190,6 @@ export interface TableProps<RecordType extends RaRecord = any> extends Partial<
   display?: string[];
 }
 
-const defaultPageSizeOptions = [
-  { value: 10, label: '10 items' },
-  { value: 25, label: '25 items' },
-  { value: 50, label: '50 items' },
-  { value: 100, label: '100 items' },
-];
 
 /**
  * The Table component provides a declarative way to build data tables with Cloudscape components
@@ -222,7 +212,7 @@ export const Table = <RecordType extends RaRecord = any>({
   exclude,
   filtering = true,
   filteringPlaceholder,
-  pageSizeOptions = defaultPageSizeOptions,
+  pageSizeOptions,
   preferences = true,
   reorderable = true,
   display,
@@ -231,46 +221,33 @@ export const Table = <RecordType extends RaRecord = any>({
   ...props
 }: TableProps<RecordType>) => {
   const translate = useTranslate();
+  const { listPageSizes, listPageSizeLabel } = useSettings();
+
+  const resolvedPageSizeOptions = pageSizeOptions ?? (
+    listPageSizes && listPageSizeLabel
+      ? listPageSizes.map((value) => ({
+          value,
+          label: listPageSizeLabel(value),
+        }))
+      : undefined
+  );
   const translateLabel = useTranslateLabel();
   const {
     resource,
-    fieldSchema: schemaChildren,
     definition,
     label: schemaLabel,
-    listInclude,
-    listExclude,
     listDisplay,
   } = useResourceSchema();
+
+  const { getListFields } = useSchemaFields();
 
   const finalSelectionType = selectionType ?? (definition?.options?.canDelete ? 'multi' : undefined);
   const finalDisplay = display || listDisplay;
 
-  const finalChildren = React.useMemo(() => {
-    const baseChildren = children || schemaChildren;
-    let result = React.Children.toArray(baseChildren);
-
-    const finalInclude = include || listInclude;
-    const finalExclude = exclude || listExclude;
-
-    if (finalInclude) {
-      result = result.filter(
-        (child) => React.isValidElement(child) && finalInclude.includes((child.props as any).source),
-      );
-    } else {
-      // Filter out fields marked as collection fields by default
-      result = result.filter(
-        (child) => React.isValidElement(child) && !(child.type as any).isCollectionField,
-      );
-
-      if (finalExclude) {
-        result = result.filter(
-          (child) => React.isValidElement(child) && !finalExclude.includes((child.props as any).source),
-        );
-      }
-    }
-
-    return result;
-  }, [children, schemaChildren, include, exclude, listInclude, listExclude]);
+  const finalChildren = React.useMemo(
+    () => getListFields(children, { include, exclude }),
+    [getListFields, children, include, exclude],
+  );
 
   // 1. Extract columns and options before calling useCollection
   const extractedColumns = React.useMemo(() => {
@@ -356,11 +333,8 @@ export const Table = <RecordType extends RaRecord = any>({
   }, [extractedColumns.options, defaultVisibleContent]);
 
   const { items, paginationProps, collectionProps, filterProps, preferencesProps } = useCollection<RecordType>({
-    filtering: {},
-    pagination: {},
-    sorting: {},
     preferences: {
-      pageSizeOptions,
+      pageSizeOptions: resolvedPageSizeOptions,
       visibleContentOptions: !reorderable && extractedColumns.options.length > 0 ? extractedColumns.options : undefined,
       contentDisplayOptions: reorderable && extractedColumns.options.length > 0 ? extractedColumns.options : undefined,
       visibleContent: defaultVisibleContent,
@@ -398,14 +372,14 @@ export const Table = <RecordType extends RaRecord = any>({
     if (React.isValidElement(preferences)) return preferences;
     
     // preferences is true or an object, or we have pageSizeOptions
-    if (preferences === true || pageSizeOptions) {
+    if (preferences === true || resolvedPageSizeOptions) {
       return (
         <CollectionPreferences
           {...preferencesProps}
           pageSizePreference={
-            pageSizeOptions
+            resolvedPageSizeOptions
               ? {
-                options: pageSizeOptions,
+                options: resolvedPageSizeOptions,
               }
               : undefined
           }
@@ -434,7 +408,7 @@ export const Table = <RecordType extends RaRecord = any>({
       );
     }
     return undefined;
-  }, [preferences, pageSizeOptions, preferencesProps, reorderable, extractedColumns.options, translate]);
+  }, [preferences, resolvedPageSizeOptions, preferencesProps, reorderable, extractedColumns.options, translate]);
 
   return (
     <CloudscapeTable

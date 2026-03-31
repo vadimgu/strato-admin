@@ -1,37 +1,40 @@
-import React, { ReactNode, useState, useEffect, useMemo } from 'react';
+import React, { ReactNode, useState, useEffect } from 'react';
 import {
   CoreAdmin,
   type CoreAdminProps,
   type AdminChildren,
-  SchemaRegistryProvider,
   localStorageStore,
   useLocaleState,
+} from '@strato-admin/ra-core';
+import {
+  SchemaRegistryProvider,
   registerDefaultResourceComponents,
   registerFieldInputMapping,
+  SettingsContext,
+  type AdminSettings,
 } from '@strato-admin/core';
 import { icuI18nProvider } from '@strato-admin/i18n';
 import englishMessages from '@strato-admin/language-en';
 import AppLayout from './layout/AppLayout';
 import Ready from './layout/Ready';
-import { List, Table } from './list';
+import { List } from './list';
 import { Create } from './create';
 import { Edit } from './edit';
-import { Detail, DetailHub } from './detail';
+import { Detail } from './detail';
+import { FRAMEWORK_DEFAULTS } from './defaults';
 
-import { TextField, NumberField, CurrencyField, ReferenceField, ArrayField } from './field';
-import { TextInput, NumberInput, ReferenceInput, ArrayInput } from './input';
+import { TextField, NumberField, CurrencyField, ReferenceField, ArrayField, BooleanField } from './field';
+import { TextInput, NumberInput, ReferenceInput, ArrayInput, BooleanInput } from './input';
 
 import { I18nProvider, importMessages, I18nProviderProps } from '@cloudscape-design/components/i18n';
 
-// Register Cloudscape themed components as defaults for ResourceSchema.
+// Register Cloudscape themed routing components as defaults for ResourceSchema.
 // This is done once, here, to avoid circular dependencies at the module level.
 registerDefaultResourceComponents({
   list: List,
   create: Create,
   edit: Edit,
   show: Detail,
-  listComponent: Table,
-  detailComponent: DetailHub,
 });
 
 registerFieldInputMapping(
@@ -39,6 +42,7 @@ registerFieldInputMapping(
     [TextField, TextInput],
     [NumberField, NumberInput],
     [CurrencyField, NumberInput],
+    [BooleanField, BooleanInput],
     [ReferenceField, ReferenceInput],
     [ArrayField, ArrayInput],
   ]),
@@ -47,8 +51,8 @@ registerFieldInputMapping(
 export interface AdminProps extends CoreAdminProps {
   children?: AdminChildren;
   title?: string;
-  listComponent?: React.ComponentType<any>;
-  detailComponent?: React.ComponentType<any>;
+  /** Declarative Admin-level defaults. Pass a <Settings> element. */
+  settings?: React.ReactElement<AdminSettings>;
 }
 
 const defaultI18nProvider = icuI18nProvider(() => englishMessages as any);
@@ -110,32 +114,26 @@ export const Admin = ({
   ready = Ready,
   i18nProvider = defaultI18nProvider,
   store = defaultStore,
-  listComponent,
-  detailComponent,
+  settings,
   ...props
 }: AdminProps) => {
-  React.useMemo(() => {
-    if (listComponent || detailComponent) {
-      registerDefaultResourceComponents({
-        listComponent,
-        detailComponent,
-      });
-    }
-  }, [listComponent, detailComponent]);
+  const mergedSettings: AdminSettings = { ...FRAMEWORK_DEFAULTS, ...settings?.props };
 
   return (
-    <SchemaRegistryProvider>
-      <CoreAdmin
-        {...props}
-        layout={(layoutProps: any) => <CloudscapeLayout {...layoutProps} layout={Layout} />}
-        title={title}
-        ready={ready}
-         i18nProvider={i18nProvider}
-        store={store}
-      >
-        {children}
-      </CoreAdmin>
-    </SchemaRegistryProvider>
+    <SettingsContext.Provider value={mergedSettings}>
+      <SchemaRegistryProvider>
+        <CoreAdmin
+          {...props}
+          layout={(layoutProps: any) => <CloudscapeLayout {...layoutProps} layout={Layout} />}
+          title={title}
+          ready={ready}
+          i18nProvider={i18nProvider}
+          store={store}
+        >
+          {children}
+        </CoreAdmin>
+      </SchemaRegistryProvider>
+    </SettingsContext.Provider>
   );
 };
 

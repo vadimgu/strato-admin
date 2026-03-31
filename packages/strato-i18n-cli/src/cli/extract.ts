@@ -9,6 +9,9 @@ import * as gettextParser from 'gettext-parser';
 import { generateMessageId, normalizeMessage, prettyPrintICU } from '@strato-admin/i18n';
 import { minimatch } from 'minimatch';
 
+// Components whose JSX children text is the translatable string (source-as-key)
+const CHILDREN_AS_KEY_COMPONENTS = new Set(['Message', 'RecordMessage']);
+
 // List of Strato Admin components to extract from
 const DEFAULT_STRATO_COMPONENTS = new Set([
   'ArrayField',
@@ -177,7 +180,10 @@ function parseArgs() {
 interface ExtractedMessage {
   msgid: string;
   msgctxt?: string;
+  /** Pre-computed hash or explicit id, written to `#. id:` and used as the compiled JSON key. */
+  precomputedHash?: string;
   locations: Set<string>;
+  translatorComment?: string;
 }
 
 function main() {
@@ -208,13 +214,13 @@ function main() {
   
   const extractedMessages = new Map<string, ExtractedMessage>();
 
-  const addExtractedMessage = (msgid: string, msgctxt: string | undefined, location: string) => {
+  const addExtractedMessage = (msgid: string, msgctxt: string | undefined, location: string, translatorComment?: string, precomputedHash?: string) => {
     const normalizedMsgid = normalizeMessage(msgid);
     const prettyMsgid = prettyPrintICU(msgid);
-    const key = msgctxt ? `ctx:${msgctxt}` : `msg:${normalizedMsgid}`;
-    
+    const key = precomputedHash ? `hash:${precomputedHash}` : msgctxt ? `ctx:${msgctxt}` : `msg:${normalizedMsgid}`;
+
     if (!extractedMessages.has(key)) {
-      extractedMessages.set(key, { msgid: prettyMsgid, msgctxt, locations: new Set() });
+      extractedMessages.set(key, { msgid: prettyMsgid, msgctxt, precomputedHash, locations: new Set(), translatorComment });
     }
     extractedMessages.get(key)!.locations.add(location);
   };
@@ -311,6 +317,56 @@ function main() {
               }
             });
           }
+        },
+        JSXElement(p) {
+          const tagName = getJSXElementName(p.node.openingElement.name);
+          if (!CHILDREN_AS_KEY_COMPONENTS.has(tagName)) return;
+
+          // Extract text from children: JSXText or StringLiteral in JSXExpressionContainer
+          let textValue: string | null = null;
+          for (const child of p.node.children) {
+            if (t.isJSXText(child) && child.value.trim()) {
+              textValue = child.value.trim();
+              break;
+            }
+            if (t.isJSXExpressionContainer(child) && t.isStringLiteral(child.expression)) {
+              textValue = child.expression.value;
+              break;
+            }
+          }
+          if (!textValue) return;
+
+          // Extract id, context, and comment from opening element attributes
+          let explicitId: string | undefined;
+          let msgctxt: string | undefined;
+          let translatorComment: string | undefined;
+          for (const attr of p.node.openingElement.attributes) {
+            if (!t.isJSXAttribute(attr) || !t.isJSXIdentifier(attr.name)) continue;
+            const val = t.isStringLiteral(attr.value)
+              ? attr.value.value
+              : t.isJSXExpressionContainer(attr.value) && t.isStringLiteral(attr.value.expression)
+                ? attr.value.expression.value
+                : undefined;
+            if (val === undefined) continue;
+            if (attr.name.name === 'id') explicitId = val;
+            if (attr.name.name === 'context') msgctxt = val;
+            if (attr.name.name === 'comment') translatorComment = val;
+          }
+
+          // Compute the hash written to `#. id:` and used as the compiled JSON key:
+          //   id present   → literal id (e.g. "action.archive"), no msgctxt
+          //   context only → hash(context + \x04 + message), msgctxt = context
+          //   neither      → hash(message), no msgctxt
+          let precomputedHash: string | undefined;
+          if (explicitId) {
+            precomputedHash = explicitId;
+            msgctxt = undefined; // id supersedes context; no msgctxt in PO
+          } else if (msgctxt) {
+            precomputedHash = generateMessageId(`${msgctxt}\x04${normalizeMessage(textValue)}`);
+          }
+
+          const line = p.node.loc?.start.line || 0;
+          addExtractedMessage(textValue, msgctxt, `${relativeFile}:${line}`, translatorComment, precomputedHash);
         },
       });
     } catch (e: any) {
@@ -410,11 +466,11 @@ function main() {
       }
     }
 
-    const updatedTranslations: Record<string, { defaultMessage: string; translation: string; locations?: string[]; msgctxt?: string }> = {};
+    const updatedTranslations: Record<string, { defaultMessage: string; translation: string; locations?: string[]; msgctxt?: string; translatorComment?: string }> = {};
     let addedCount = 0;
 
     extractedMessages.forEach((data) => {
-      const hash = data.msgctxt ? data.msgctxt : generateMessageId(data.msgid);
+      const hash = data.precomputedHash ?? (data.msgctxt ? data.msgctxt : generateMessageId(data.msgid));
       if (existingTranslations[hash]) {
         const existing = existingTranslations[hash];
         updatedTranslations[hash] = {
@@ -422,6 +478,7 @@ function main() {
           translation: existing.translation || (existing.description ? '' : ''),
           locations: Array.from(data.locations),
           msgctxt: data.msgctxt,
+          translatorComment: data.translatorComment,
         };
       } else {
         updatedTranslations[hash] = {
@@ -429,6 +486,7 @@ function main() {
           translation: '',
           locations: Array.from(data.locations),
           msgctxt: data.msgctxt,
+          translatorComment: data.translatorComment,
         };
         addedCount++;
       }
@@ -477,6 +535,7 @@ function main() {
           msgctxt: data.msgctxt ? data.msgctxt : undefined,
           msgstr: [data.translation],
           comments: {
+            ...(data.translatorComment ? { translator: data.translatorComment } : {}),
             extracted: `id: ${hash}`,
             reference: data.locations?.join('\n'),
           },

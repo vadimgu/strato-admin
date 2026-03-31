@@ -18,10 +18,10 @@ export const reviewResource = (
     perPage={16}
     listInclude={["id", "date", "rating", "comment"]}
   >
-    <TextField source="id" label="ID" link="show" sortable />
+    <TextField source="id" label="ID" link="detail" sortable />
     <DateField source="date" label="Date" sortable />
-    <ReferenceField source="customer_id" reference="customers" label="Customer" link="show" />
-    <ReferenceField source="product_id" reference="products" label="Product" link="show" />
+    <ReferenceField source="customer_id" reference="customers" label="Customer" link="detail" />
+    <ReferenceField source="product_id" reference="products" label="Product" link="detail" />
     <StarRatingField source="rating" label="Rating" sortable />
     <StatusIndicatorField source="status" label="Status" sortable>
       <StatusIndicatorField.Label value="accepted" type="success" label="Accepted" />

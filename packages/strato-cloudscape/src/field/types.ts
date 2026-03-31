@@ -1,5 +1,5 @@
 import { type ReactNode } from 'react';
-import { type BaseFieldProps, type RaRecord } from '@strato-admin/core';
+import { ExtractRecordPaths, type BaseFieldProps, type RaRecord } from '@strato-admin/ra-core';
 import { type RecordLinkType } from '../RecordLink';
 
 /**
@@ -9,11 +9,11 @@ export interface FieldProps<RecordType extends RaRecord = RaRecord> extends Omit
   /**
    * The property name in the record that should be displayed.
    */
-  source?: string;
+  source?: ExtractRecordPaths<RecordType>;
   /**
-   * The label to display for this field. Usually inferred from the source.
+   * The label to display for this field. If not provided, it will be inferred from the `source`.
    */
-  label?: ReactNode;
+  label?: string | ReactNode;
   /**
    * Whether the field is sortable in a table.
    * @default true
@@ -21,8 +21,8 @@ export interface FieldProps<RecordType extends RaRecord = RaRecord> extends Omit
   sortable?: boolean;
   /**
    * Whether to link the field to another page.
-   * - true: links to the 'edit' page of the current resource
-   * - 'edit' | 'show': links to the specified page type
+   * - true: links to the 'detail' page of the current resource
+   * - 'edit' | 'detail': links to the specified page type
    * - string: a custom URL
    * - function: (record, resource) => string
    */
@@ -30,7 +30,7 @@ export interface FieldProps<RecordType extends RaRecord = RaRecord> extends Omit
   /**
    * The text to display if the value is empty or null.
    */
-  emptyText?: ReactNode;
+  emptyText?: string | ReactNode;
   /**
    * Configuration for the inferred form input.
    * - object: Props passed to the inferred Input component.
@@ -48,10 +48,10 @@ export interface FieldProps<RecordType extends RaRecord = RaRecord> extends Omit
    * Additional text to help the user fill in the field.
    * Passed to the inferred Input component's FormField.
    */
-  description?: ReactNode;
+  description?: string | ReactNode;
   /**
    * Text describing constraints (e.g., "Must be between 1 and 100").
    * Passed to the inferred Input component's FormField.
    */
-  constraintText?: ReactNode;
+  constraintText?: string | ReactNode;
 }

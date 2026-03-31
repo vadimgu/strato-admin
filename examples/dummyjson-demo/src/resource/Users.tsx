@@ -8,7 +8,7 @@ export const usersResource = (
     recordRepresentation={(record) => `${record.firstName} ${record.lastName}`}
     label="Users"
   >
-    <TextField source="firstName" label="First Name" link="show" sortable input={{ constraints: [required] }} />
+    <TextField source="firstName" label="First Name" link="detail" sortable input={{ constraints: [required] }} />
     <TextField source="lastName" label="Last Name" sortable input={{ constraints: [required] }} />
     <TextField source="username" label="Username" sortable input={{ constraints: [required] }} />
     <TextField source="email" label="Email" sortable input={{ constraints: [required] }} />

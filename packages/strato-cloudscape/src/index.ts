@@ -11,7 +11,9 @@ export * from './form';
 export * from './layout';
 export * from './theme';
 export * from './button';
+export * from './i18n';
 export * from './Admin';
+export * from './Settings';
 export { default as RecordLink } from './RecordLink';
 export * from './RecordLink';
 

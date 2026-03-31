@@ -1,10 +1,10 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
-import { useResourceContext, useShowContext } from '@strato-admin/core';
+import { useResourceContext, useShowContext } from '@strato-admin/ra-core';
 import { DetailHeader } from './DetailHeader';
 
-// Mock strato-core
+vi.mock('@strato-admin/ra-core', () => import('../__mocks__/ra-core'));
 vi.mock('@strato-admin/core', () => import('../__mocks__/strato-core'));
 
 // Mock react-router-dom

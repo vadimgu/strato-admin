@@ -17,7 +17,7 @@ const CartShow = () => (
     <SpaceBetween size="l">
       <KeyValuePairs columns={3}>
         <TextField source="id" label="ID" />
-        <ReferenceField source="userId" reference="users" label="User" link="show" />
+        <ReferenceField source="userId" reference="users" label="User" link="detail" />
         <NumberField source="total" label="Total" options={{ style: 'currency', currency: 'USD' }} />
         <NumberField
           source="discountedTotal"
@@ -47,13 +47,13 @@ const CartShow = () => (
 );
 
 export const cartsResource = (
-  <ResourceSchema name="carts" recordRepresentation={(record) => `Cart #${record.id}`} label="Carts" details={CartShow}>
-    <TextField source="id" label="ID" link="show" sortable />
+  <ResourceSchema name="carts" recordRepresentation={(record) => `Cart #${record.id}`} label="Carts" detail={CartShow}>
+    <TextField source="id" label="ID" link="detail" sortable />
     <ReferenceField
       source="userId"
       reference="users"
       label="User"
-      link="show"
+      link="detail"
       sortable
       input={{ constraints: [required] }}
     />

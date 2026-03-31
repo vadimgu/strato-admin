@@ -1,11 +1,11 @@
 import { render } from '@testing-library/react';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
-import { useAuthProvider } from '@strato-admin/core';
+import { useAuthProvider } from '@strato-admin/ra-core';
 import CloudscapeTopNavigation from '@cloudscape-design/components/top-navigation';
 import TopNavigation from './TopNavigation';
 
 // Mock ra-core
-vi.mock('@strato-admin/core', () => ({
+vi.mock('@strato-admin/ra-core', () => ({
   useLocale: vi.fn(() => 'en'),
   useSetLocale: vi.fn(),
   useLocales: vi.fn(() => []),

@@ -1,5 +1,5 @@
 import React from 'react';
-import { ReferenceInputBase, type ReferenceInputBaseProps, useInput } from '@strato-admin/core';
+import { ReferenceInputBase, type ReferenceInputBaseProps, useInput } from '@strato-admin/ra-core';
 import { FormField } from './FormField';
 import { FormFieldContext, useFormFieldContext } from './FormFieldContext';
 import { AutocompleteInput } from './AutocompleteInput';
@@ -46,7 +46,7 @@ export const ReferenceInput = (props: ReferenceInputBaseProps) => {
 
   return (
     <FormFieldContext.Provider value={inputState}>
-      <FormField {...props}>{inner}</FormField>
+      <FormField {...(props as any)}>{inner}</FormField>
     </FormFieldContext.Provider>
   );
 };

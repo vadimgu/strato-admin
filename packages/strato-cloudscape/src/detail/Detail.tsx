@@ -3,8 +3,8 @@ import {
   ShowBaseProps,
   ShowContextProvider,
   useShowController,
-  useResourceSchema,
-} from '@strato-admin/core';
+} from '@strato-admin/ra-core';
+import { useResourceSchema } from '@strato-admin/core';
 import DetailHub from './DetailHub';
 
 export interface DetailProps extends ShowBaseProps {

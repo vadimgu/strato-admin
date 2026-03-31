@@ -1,8 +1,10 @@
 import React from 'react';
-import { Form as RaForm, type FormProps as RaFormProps, useSaveContext, useResourceSchema } from '@strato-admin/core';
+import { Form as RaForm, type FormProps as RaFormProps, useSaveContext, useRecordContext } from '@strato-admin/ra-core';
+import { useSchemaFields } from '../hooks/useSchemaFields';
 import CloudscapeForm from '@cloudscape-design/components/form';
 import SpaceBetween from '@cloudscape-design/components/space-between';
 import { SaveButton } from '../button/SaveButton';
+import { CancelButton } from '../button/CancelButton';
 import { FormField } from '../input/FormField';
 
 export interface FormProps extends Omit<RaFormProps, 'children'> {
@@ -24,27 +26,17 @@ export interface FormProps extends Omit<RaFormProps, 'children'> {
 
 export const Form = ({ children, include, exclude, toolbar, saveButtonLabel, ...props }: FormProps) => {
   const saveContext = useSaveContext();
-  const { inputSchema: schemaChildren, formInclude, formExclude } = useResourceSchema();
+  const record = useRecordContext();
+  const isEditMode = record?.id != null;
 
-  const finalChildren = React.useMemo(() => {
-    const baseChildren = children || schemaChildren;
-    let result = React.Children.toArray(baseChildren);
+  const { getEditFields, getCreateFields } = useSchemaFields();
 
-    const finalInclude = include || formInclude;
-    const finalExclude = exclude || formExclude;
-
-    if (finalInclude) {
-      result = result.filter(
-        (child) => React.isValidElement(child) && finalInclude.includes((child.props as any).source),
-      );
-    } else if (finalExclude) {
-      result = result.filter(
-        (child) => React.isValidElement(child) && !finalExclude.includes((child.props as any).source),
-      );
-    }
-
-    return result;
-  }, [children, schemaChildren, include, exclude, formInclude, formExclude]);
+  const finalChildren = React.useMemo(
+    () => isEditMode
+      ? getEditFields(children, { include, exclude })
+      : getCreateFields(children, { include, exclude }),
+    [isEditMode, getEditFields, getCreateFields, children, include, exclude],
+  );
 
   const handleSubmit = async (values: any, event: any) => {
     if (props.onSubmit) {
@@ -61,6 +53,7 @@ export const Form = ({ children, include, exclude, toolbar, saveButtonLabel, ...
         actions={
           toolbar || (
             <SpaceBetween direction="horizontal" size="xs">
+              <CancelButton />
               <SaveButton label={saveButtonLabel} />
             </SpaceBetween>
           )

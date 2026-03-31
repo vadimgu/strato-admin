@@ -2,11 +2,11 @@ import React from 'react';
 import { render } from '@testing-library/react';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 import { AppLayout } from './AppLayout';
-import { useDefaultTitle, useResourceDefinitions } from '@strato-admin/core';
+import { useDefaultTitle, useResourceDefinitions } from '@strato-admin/ra-core';
 import { TopNavigation } from './TopNavigation';
 import SideNavigationMock from '@cloudscape-design/components/side-navigation';
 
-// Mock strato-core
+vi.mock('@strato-admin/ra-core', () => import('../__mocks__/ra-core'));
 vi.mock('@strato-admin/core', () => import('../__mocks__/strato-core'));
 
 // Mock global-styles

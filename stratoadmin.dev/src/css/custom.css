@@ -1,0 +1,48 @@
+/**
+ * Any CSS included here will be global. The classic template
+ * bundles Infima by default. Infima is a CSS framework designed to
+ * work well for content-centric websites.
+ */
+
+/* You can override the default Infima variables here. */
+:root {
+  --ifm-color-primary: #4a7fa5;
+  --ifm-color-primary-dark: #427494;
+  --ifm-color-primary-darker: #3f6e8c;
+  --ifm-color-primary-darkest: #345b75;
+  --ifm-color-primary-light: #5b8db0;
+  --ifm-color-primary-lighter: #6495b6;
+  --ifm-color-primary-lightest: #7aaac5;
+  --ifm-code-font-size: 95%;
+  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
+}
+
+/* For readability concerns, you should choose a lighter palette in dark mode. */
+[data-theme='dark'] {
+  --ifm-color-primary: #7ab2d4;
+  --ifm-color-primary-dark: #62a5cc;
+  --ifm-color-primary-darker: #579fc8;
+  --ifm-color-primary-darkest: #3d8dba;
+  --ifm-color-primary-light: #91bfdb;
+  --ifm-color-primary-lighter: #9dc7e0;
+  --ifm-color-primary-lightest: #bcd8ea;
+  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
+}
+
+.component-preview {
+  display: block;
+  margin: 1rem 0;
+  padding: 1.5rem;
+  border: 1px solid var(--ifm-contents-border-color);
+  border-radius: var(--ifm-global-radius);
+  background-color: var(--ifm-background-surface-color);
+  text-align: center;
+}
+
+.component-preview img {
+  display: inline-block;
+  max-width: 100%;
+  height: auto;
+  /* Ensure the image doesn't stretch beyond its original size */
+  width: auto;
+}

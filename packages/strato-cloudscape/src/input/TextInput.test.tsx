@@ -1,10 +1,9 @@
 import { render } from '@testing-library/react';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
-import { useInput, useResourceContext } from '@strato-admin/core';
+import { useInput, useResourceContext } from '@strato-admin/ra-core';
 import { TextInput } from './TextInput';
 
-// Mock ra-core
-vi.mock('@strato-admin/core', () => ({
+vi.mock('@strato-admin/ra-core', () => ({
   useInput: vi.fn(),
   useResourceContext: vi.fn(),
   useTranslate: () => (key: string) => key,

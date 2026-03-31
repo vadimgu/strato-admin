@@ -1,4 +1,4 @@
-import { type RaRecord, useResourceDefinition } from '@strato-admin/core';
+import { type RaRecord, useResourceDefinition } from '@strato-admin/ra-core';
 import TextField, { type TextFieldProps } from './TextField';
 
 export type IdFieldProps<RecordType extends RaRecord = RaRecord> = TextFieldProps<RecordType>;
@@ -17,9 +17,9 @@ export type IdFieldProps<RecordType extends RaRecord = RaRecord> = TextFieldProp
  */
 const IdField = <RecordType extends RaRecord = RaRecord>(props: IdFieldProps<RecordType>) => {
   const { hasShow } = useResourceDefinition(props);
-  const { source = 'id', link = hasShow ? 'show' : undefined, input = false, ...rest } = props;
+  const { source = 'id', link = hasShow ? 'detail' : undefined, input = false, ...rest } = props;
 
-  return <TextField<RecordType> source={source} link={link} input={input} {...rest} />;
+  return <TextField<RecordType> source={source as any} link={link} input={input} {...rest} />;
 };
 
 export default IdField;

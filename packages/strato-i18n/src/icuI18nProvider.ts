@@ -46,7 +46,13 @@ export const icuI18nProvider = (
       const message = (messages as any)[msgid] || (messages as any)[finalKey];
 
       if (message === undefined) {
-        return defaultMessage !== undefined ? defaultMessage : finalKey;
+        if (defaultMessage === undefined) return finalKey;
+        try {
+          const formatter = new IntlMessageFormat(defaultMessage, locale);
+          return formatter.format(values) as string;
+        } catch {
+          return defaultMessage;
+        }
       }
 
       if (typeof message !== 'string') {

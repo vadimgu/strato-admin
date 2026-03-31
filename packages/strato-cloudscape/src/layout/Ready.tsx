@@ -12,7 +12,7 @@ import {
 } from '@cloudscape-design/components';
 import { CodeView } from "@cloudscape-design/code-view";
 import typescriptHighlight from "@cloudscape-design/code-view/highlight/typescript";
-import { useDefaultTitle } from '@strato-admin/core';
+import { useDefaultTitle } from '@strato-admin/ra-core';
 
 /**
  * Default component to display when the admin has no resources.

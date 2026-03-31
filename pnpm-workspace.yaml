@@ -1,5 +1,5 @@
 prefer-workspace-packages: true
 packages:
-  - 'docs'
+  - 'stratoadmin.dev'
   - 'packages/**'
   - 'examples/**'

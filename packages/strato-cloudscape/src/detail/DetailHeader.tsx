@@ -1,7 +1,7 @@
 import React from 'react';
 import Header, { HeaderProps } from '@cloudscape-design/components/header';
 import SpaceBetween from '@cloudscape-design/components/space-between';
-import { useShowContext, useTranslate } from '@strato-admin/core';
+import { useShowContext, useTranslate } from '@strato-admin/ra-core';
 import { EditButton } from '../button/EditButton';
 
 export interface DetailHeaderProps extends Omit<HeaderProps, 'children'> {
@@ -28,7 +28,7 @@ export const DetailHeader = ({ title, actions, ...props }: DetailHeaderProps) =>
 
   const headerActions = actions || (
     <SpaceBetween direction="horizontal" size="xs">
-      <EditButton record={record} />
+      <EditButton record={record} variant="primary" />
     </SpaceBetween>
   );
 

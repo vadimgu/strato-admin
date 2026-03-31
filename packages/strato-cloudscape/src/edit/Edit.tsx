@@ -3,11 +3,14 @@ import {
   EditBase,
   useEditContext,
   type RaRecord,
-  ResourceSchemaProvider,
-  useResourceSchema,
   type EditBaseProps,
   useTranslate,
+} from '@strato-admin/ra-core';
+import {
+  ResourceSchemaProvider,
+  useResourceSchema,
   useConstructedPageTitle,
+  useSettingValue,
 } from '@strato-admin/core';
 import Container from '@cloudscape-design/components/container';
 import { EditHeader } from './EditHeader';
@@ -16,8 +19,8 @@ import Form from '../form/Form';
 export interface EditProps<RecordType extends RaRecord = RaRecord, ErrorType = Error>
   extends EditBaseProps<RecordType, ErrorType> {
   children?: React.ReactNode;
-  title?: string | ((record: RecordType) => string);
-  description?: string | ((record: RecordType) => string);
+  title?: React.ReactNode | ((record: RecordType) => React.ReactNode);
+  description?: React.ReactNode | ((record: RecordType) => React.ReactNode);
   actions?: React.ReactNode;
   include?: string[];
   exclude?: string[];
@@ -34,9 +37,9 @@ const EditUI = ({
   saveButtonLabel,
 }: {
   children?: React.ReactNode;
-  title?: string | ((record: any) => string);
+  title?: React.ReactNode | ((record: any) => React.ReactNode);
   actions?: React.ReactNode;
-  description?: string | ((record: any) => string);
+  description?: React.ReactNode | ((record: any) => React.ReactNode);
   include?: string[];
   exclude?: string[];
   saveButtonLabel?: string;
@@ -49,18 +52,22 @@ const EditUI = ({
   const finalTitle = React.useMemo(() => {
     if (isLoading || !record) return '';
     if (typeof title === 'function') return title(record);
-    if (title) return translate(title);
+    if (React.isValidElement(title)) return title;
+    if (title) return translate(title as string, record);
     if (typeof editTitle === 'function') return editTitle(record);
-    if (editTitle) return translate(editTitle);
+    if (React.isValidElement(editTitle)) return editTitle;
+    if (editTitle) return translate(editTitle as string, record);
     return constructedTitle;
   }, [isLoading, record, title, editTitle, translate, constructedTitle]);
 
   const finalDescription = React.useMemo(() => {
     if (isLoading || !record) return undefined;
     if (typeof description === 'function') return description(record);
-    if (description) return translate(description);
+    if (React.isValidElement(description)) return description;
+    if (description) return translate(description as string, record);
     if (typeof editDescription === 'function') return editDescription(record);
-    if (editDescription) return translate(editDescription);
+    if (React.isValidElement(editDescription)) return editDescription;
+    if (editDescription) return translate(editDescription as string, record);
     return undefined;
   }, [isLoading, record, description, editDescription, translate]);
 
@@ -102,14 +109,16 @@ export const Edit = <RecordType extends RaRecord = any>({
   description,
   include,
   exclude,
-  redirect = 'show',
+  redirect,
   saveButtonLabel,
   ...props
 }: EditProps<RecordType>) => {
   const { queryOptions } = useResourceSchema(props.resource);
+  const resolve = useSettingValue();
+  const resolvedRedirect = redirect !== undefined ? redirect : resolve(undefined, 'editRedirect');
 
   return (
-    <EditBase redirect={redirect} queryOptions={queryOptions} {...props}>
+    <EditBase redirect={resolvedRedirect} queryOptions={queryOptions} {...props}>
       <ResourceSchemaProvider resource={props.resource}>
         <EditUI
           title={title}

@@ -2,13 +2,8 @@ import React from 'react';
 import CloudscapeKeyValuePairs, {
   type KeyValuePairsProps as CloudscapeKeyValuePairsProps,
 } from '@cloudscape-design/components/key-value-pairs';
-import {
-  useRecordContext,
-  FieldTitle,
-  RecordContextProvider,
-  type RaRecord,
-  useResourceSchema,
-} from '@strato-admin/core';
+import { useRecordContext, FieldTitle, RecordContextProvider, type RaRecord } from '@strato-admin/ra-core';
+import { useResourceSchema } from '@strato-admin/core';
 import TextField from '../field/TextField';
 
 export interface KeyValuePairsProps extends Partial<Omit<CloudscapeKeyValuePairsProps, 'items'>> {

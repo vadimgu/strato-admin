@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { useBulkDeleteController, useTranslate, useListContext, useResourceDefinition } from '@strato-admin/core';
+import { useBulkDeleteController, useTranslate, useListContext, useResourceDefinition } from '@strato-admin/ra-core';
+import { useSettingValue } from '@strato-admin/core';
 import Modal from '@cloudscape-design/components/modal';
 import Box from '@cloudscape-design/components/box';
 import SpaceBetween from '@cloudscape-design/components/space-between';
@@ -9,6 +10,7 @@ export interface BulkDeleteButtonProps {
   label?: string;
   variant?: 'primary' | 'normal' | 'link';
   mutationMode?: 'undoable' | 'optimistic' | 'pessimistic';
+  successMessage?: string;
   dialogTitle?: string;
   dialogDescription?: string;
 }
@@ -16,15 +18,22 @@ export interface BulkDeleteButtonProps {
 export const BulkDeleteButton = ({
   label,
   variant = 'normal',
-  mutationMode = 'pessimistic',
+  mutationMode,
+  successMessage,
   dialogTitle,
   dialogDescription,
 }: BulkDeleteButtonProps) => {
   const translate = useTranslate();
   const { selectedIds } = useListContext();
   const { options } = useResourceDefinition();
+  const resolve = useSettingValue();
+  const rawDefault = resolve(undefined, 'bulkDeleteSuccessMessage');
+  const resolvedDefault = typeof rawDefault === 'function'
+    ? rawDefault(selectedIds?.length ?? 0)
+    : rawDefault;
   const { handleDelete, isPending, isLoading } = useBulkDeleteController({
-    mutationMode,
+    mutationMode: resolve(mutationMode, 'mutationMode'),
+    successMessage: successMessage ?? options?.bulkDeleteSuccessMessage ?? resolvedDefault,
   });
 
   const [isOpen, setIsOpen] = useState(false);

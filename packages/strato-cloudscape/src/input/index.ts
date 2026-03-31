@@ -1,4 +1,5 @@
 export * from './types';
+export * from './BooleanInput';
 export * from './TextInput';
 export * from './TextAreaInput';
 export * from './NumberInput';

@@ -1,7 +1,9 @@
 import Box from '@cloudscape-design/components/box';
 import Icon from '@cloudscape-design/components/icon';
 import SpaceBetween from '@cloudscape-design/components/space-between';
-import { useFieldValue, useRecordContext, type RaRecord, type FieldProps } from '@strato-admin/admin';
+import { type FieldProps } from '@strato-admin/admin';
+
+import { useFieldValue, useRecordContext, type RaRecord } from '@strato-admin/ra-core';
 
 export interface StarRatingFieldProps<RecordType extends RaRecord = RaRecord> extends FieldProps<RecordType> {
   /**

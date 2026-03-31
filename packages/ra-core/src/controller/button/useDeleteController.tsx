@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback, useMemo, ReactNode } from 'react';
 
 import { useDelete, UseDeleteOptions } from '../../dataProvider/useDelete';
 import { useUnselect } from '../list/useUnselect';
@@ -127,7 +127,7 @@ export interface UseDeleteControllerParams<RecordType extends RaRecord = any, Mu
   record?: RecordType;
   redirect?: RedirectionSideEffect;
   resource?: string;
-  successMessage?: string;
+  successMessage?: string | ReactNode;
 }
 
 export interface UseDeleteControllerReturn {

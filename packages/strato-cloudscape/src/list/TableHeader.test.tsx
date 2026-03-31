@@ -1,22 +1,26 @@
 import React from 'react';
 import { render, cleanup } from '@testing-library/react';
 import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { useResourceContext, useListContext, useResourceDefinitions, useTranslate } from '@strato-admin/core';
+import { useResourceContext, useListContext, useResourceDefinitions, useTranslate } from '@strato-admin/ra-core';
 import { TableHeader } from './TableHeader';
 
 // Mock ra-core
-vi.mock('@strato-admin/core', () => ({
+vi.mock('@strato-admin/ra-core', () => ({
   useResourceContext: vi.fn(),
   useListContext: vi.fn(),
   useTranslate: vi.fn(() => (key: string, options: any) => options?._ || key),
   useResourceDefinitions: vi.fn(() => ({})),
   useLocale: vi.fn(() => 'en'),
-  useCreatePath: vi.fn(() => (params: any) => `/${params.resource}/${params.type}`),
   useBulkDeleteController: vi.fn(() => ({
     handleDelete: vi.fn(),
     isPending: false,
     isLoading: false,
   })),
+}));
+
+// Mock strato-core
+vi.mock('@strato-admin/core', () => ({
+  useCreatePath: vi.fn(() => (params: any) => `/${params.resource}/${params.type}`),
 }));
 
 // Mock react-router-dom

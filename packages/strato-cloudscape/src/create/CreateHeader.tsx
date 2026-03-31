@@ -1,7 +1,6 @@
 import React from 'react';
 import Header, { HeaderProps } from '@cloudscape-design/components/header';
-import SpaceBetween from '@cloudscape-design/components/space-between';
-import { useCreateContext, useTranslate } from '@strato-admin/core';
+import { useCreateContext, useTranslate } from '@strato-admin/ra-core';
 
 export interface CreateHeaderProps extends Omit<HeaderProps, 'children'> {
   title?: React.ReactNode;
@@ -19,11 +18,7 @@ export const CreateHeader = ({ title, actions, ...props }: CreateHeaderProps) =>
     return defaultTitle;
   }, [title, defaultTitle, translate]);
 
-  const headerActions = actions || (
-    <SpaceBetween direction="horizontal" size="xs">
-      {/* Add default create actions here if needed */}
-    </SpaceBetween>
-  );
+  const headerActions = actions ?? null;
 
   return (
     <Header variant="h2" {...props} actions={headerActions}>

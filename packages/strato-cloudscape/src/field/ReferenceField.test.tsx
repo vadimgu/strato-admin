@@ -1,17 +1,27 @@
 import { render, screen } from '@testing-library/react';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 import ReferenceField from './ReferenceField';
-import { useRecordContext, useGetRecordRepresentation } from '@strato-admin/core';
+import { useRecordContext, useGetRecordRepresentation } from '@strato-admin/ra-core';
 
 // Mock ra-core
-vi.mock('@strato-admin/core', () => ({
+vi.mock('@strato-admin/ra-core', () => ({
   ReferenceFieldBase: vi.fn(({ children }: any) => <div data-testid="ra-reference-field-base">{children}</div>),
   useRecordContext: vi.fn(),
   useGetRecordRepresentation: vi.fn(),
   useResourceDefinition: vi.fn(),
   useResourceContext: vi.fn(() => 'categories'),
-  useCreatePath: vi.fn(() => (params: any) => `/${params.resource}/${params.id}/${params.type}`),
   ResourceContextProvider: ({ children }: any) => <div data-testid="resource-context-provider">{children}</div>,
+}));
+
+// Mock strato-core
+vi.mock('@strato-admin/core', () => ({
+  useCreatePath: vi.fn(() => (params: any) => {
+    if (params.type === 'detail') return `/${params.resource}/${params.id}`;
+    if (params.type === 'edit') return `/${params.resource}/${params.id}/edit`;
+    if (params.type === 'create') return `/${params.resource}/create`;
+    return `/${params.resource}`;
+  }),
+  useResourceSchema: vi.fn(() => ({ queryOptions: undefined })),
 }));
 
 // Mock react-router-dom
@@ -77,11 +87,11 @@ describe('ReferenceField', () => {
     (useRecordContext as any).mockReturnValue(record);
     (useGetRecordRepresentation as any).mockReturnValue(() => 'Category 1');
 
-    render(<ReferenceField source="categoryId" reference="categories" link="show" />);
+    render(<ReferenceField source="categoryId" reference="categories" link="detail" />);
 
     const link = screen.getByTestId('cloudscape-link');
     expect(link).toBeDefined();
-    expect(link.getAttribute('href')).toBe('/categories/1/show');
+    expect(link.getAttribute('href')).toBe('/categories/1');
     expect(link.textContent).toBe('Category 1');
   });
 });

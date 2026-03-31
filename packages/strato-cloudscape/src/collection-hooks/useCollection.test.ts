@@ -1,9 +1,9 @@
 import { renderHook, act } from '@testing-library/react';
 import { vi, describe, it, expect } from 'vitest';
-import { useListContext } from '@strato-admin/core';
+import { useListContext } from '@strato-admin/ra-core';
 import { useCollection } from './useCollection';
 
-vi.mock('@strato-admin/core', () => ({
+vi.mock('@strato-admin/ra-core', () => ({
   useListContext: vi.fn(),
 }));
 
@@ -375,6 +375,32 @@ describe('useCollection', () => {
     expect(result.current.preferencesProps.preferences.contentDisplay).toEqual(contentDisplay);
   });
 
+  it('should re-sync visibleContent when options.preferences.visibleContent prop changes after mount', () => {
+    (useListContext as any).mockReturnValue({
+      data: [],
+      perPage: 25,
+      setPerPage: vi.fn(),
+      page: 1,
+      isPending: false,
+      isFetching: false,
+      isLoading: false,
+      setPage: vi.fn(),
+      selectedIds: [],
+      onSelect: vi.fn(),
+    });
+
+    const { result, rerender } = renderHook(
+      ({ visibleContent }: { visibleContent: ReadonlyArray<string> }) =>
+        useCollection({ preferences: { visibleContent } }),
+      { initialProps: { visibleContent: ['id'] } },
+    );
+
+    expect(result.current.preferencesProps.preferences.visibleContent).toEqual(['id']);
+
+    rerender({ visibleContent: ['id', 'name'] });
+    expect(result.current.preferencesProps.preferences.visibleContent).toEqual(['id', 'name']);
+  });
+
   it('should update wrapLines and stripedRows when preferences onConfirm is called', () => {
     (useListContext as any).mockReturnValue({
       data: [],
@@ -409,5 +435,84 @@ describe('useCollection', () => {
 
     expect(result.current.preferencesProps.preferences.wrapLines).toBe(true);
     expect(result.current.preferencesProps.preferences.stripedRows).toBe(true);
+  });
+});
+
+describe('useCollection — client-side pagination', () => {
+  const makeData = (count: number) => Array.from({ length: count }, (_, i) => ({ id: i + 1, name: `Item ${i + 1}` }));
+
+  const mockContext = (overrides: object) =>
+    (useListContext as any).mockReturnValue({
+      data: [],
+      total: undefined,
+      page: 1,
+      perPage: 25,
+      isPending: false,
+      isFetching: false,
+      isLoading: false,
+      setPage: vi.fn(),
+      setPerPage: vi.fn(),
+      selectedIds: [],
+      onSelect: vi.fn(),
+      sort: undefined,
+      setSort: vi.fn(),
+      filterValues: {},
+      setFilters: vi.fn(),
+      ...overrides,
+    });
+
+  it('should return all data unsliced when clientSidePagination is false (default)', () => {
+    const data = makeData(10);
+    mockContext({ data, total: 10, page: 1, perPage: 3 });
+
+    const { result } = renderHook(() => useCollection({}));
+
+    expect(result.current.items).toEqual(data);
+  });
+
+  it('should return the first page slice when clientSidePagination is true', () => {
+    const data = makeData(10);
+    mockContext({ data, total: 10, page: 1, perPage: 3 });
+
+    const { result } = renderHook(() => useCollection({ clientSidePagination: true }));
+
+    expect(result.current.items).toEqual([{ id: 1, name: 'Item 1' }, { id: 2, name: 'Item 2' }, { id: 3, name: 'Item 3' }]);
+  });
+
+  it('should return the correct slice for a middle page', () => {
+    const data = makeData(10);
+    mockContext({ data, total: 10, page: 2, perPage: 3 });
+
+    const { result } = renderHook(() => useCollection({ clientSidePagination: true }));
+
+    expect(result.current.items).toEqual([{ id: 4, name: 'Item 4' }, { id: 5, name: 'Item 5' }, { id: 6, name: 'Item 6' }]);
+  });
+
+  it('should return the remaining items on the last partial page', () => {
+    const data = makeData(10);
+    mockContext({ data, total: 10, page: 4, perPage: 3 });
+
+    const { result } = renderHook(() => useCollection({ clientSidePagination: true }));
+
+    expect(result.current.items).toEqual([{ id: 10, name: 'Item 10' }]);
+  });
+
+  it('should NOT slice when a server-side provider returns all items in one response', () => {
+    // 30 items, perPage=25 — old heuristic would have incorrectly sliced to 25
+    const data = makeData(30);
+    mockContext({ data, total: 30, page: 1, perPage: 25 });
+
+    const { result } = renderHook(() => useCollection({}));
+
+    expect(result.current.items).toEqual(data);
+    expect(result.current.items).toHaveLength(30);
+  });
+
+  it('should return undefined items when data is undefined and clientSidePagination is true', () => {
+    mockContext({ data: undefined, total: undefined, page: 1, perPage: 25 });
+
+    const { result } = renderHook(() => useCollection({ clientSidePagination: true }));
+
+    expect(result.current.items).toBeUndefined();
   });
 });

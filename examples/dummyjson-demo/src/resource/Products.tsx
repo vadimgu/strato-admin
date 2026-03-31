@@ -21,7 +21,7 @@ const ProductShow = () => (
       <TextField source="id" label="ID" />
       <TextField source="title" label="Title" />
       <TextField source="brand" label="Brand" />
-      <ReferenceField source="category" reference="products/categories" label="Category" link="show" />
+      <ReferenceField source="category" reference="products/categories" label="Category" link="detail" />
       <NumberField source="price" label="Price" options={{ style: 'currency', currency: 'USD' }} />
       <NumberField source="discountPercentage" label="Discount %" />
       <NumberField source="rating" label="Rating" />
@@ -34,10 +34,10 @@ const ProductShow = () => (
 );
 
 export const productsResource = (
-  <ResourceSchema name="products" recordRepresentation={(record) => record.title} label="Products" details={ProductShow}>
-    <TextField source="title" label="Title" link="show" sortable input={{ constraints: [required] }} />
+  <ResourceSchema name="products" recordRepresentation={(record) => record.title} label="Products" detail={ProductShow}>
+    <TextField source="title" label="Title" link="detail" sortable input={{ constraints: [required] }} />
     <TextField source="brand" label="Brand" sortable />
-    <ReferenceField source="category" reference="products/categories" label="Category" link="show" sortable />
+    <ReferenceField source="category" reference="products/categories" label="Category" link="detail" sortable />
     <NumberField
       source="price"
       label="Price"

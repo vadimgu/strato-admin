@@ -32,10 +32,10 @@ export const orderResource = (
     name="orders"
     recordRepresentation="reference"
   >
-    <TextField source="id" label="ID" link="show" input={false} />
+    <TextField source="id" label="ID" link="detail" input={false} />
     <TextField source="reference" label="Reference" sortable />
     <DateField source="date" label="Date" input={false} sortable />
-    <ReferenceField source="customer_id" reference="customers" label="Customer" link="show" />
+    <ReferenceField source="customer_id" reference="customers" label="Customer" link="detail" />
     <NumberField source="total" label="Total" sortable options={{ style: 'currency', currency: 'USD' }} input={false} />
     <StatusIndicatorField source="status" label="Status" sortable>
       <StatusIndicatorField.Label value="ordered" type="info" label="Ordered" />

@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import CloudscapeAppLayout from '@cloudscape-design/components/app-layout';
 import SideNavigation from '@cloudscape-design/components/side-navigation';
-import { useResourceDefinitions, useDefaultTitle, useGetResourceLabel } from '@strato-admin/core';
+import { useResourceDefinitions, useDefaultTitle, useGetResourceLabel } from '@strato-admin/ra-core';
 import { useNavigate } from 'react-router-dom';
 import { TopNavigation } from './TopNavigation';
+import { Notifications } from './Notifications';
 import ThemeManager from '../theme/ThemeManager';
 
 export interface AppLayoutProps {
@@ -52,6 +53,7 @@ export const AppLayout = ({ children, header, title }: AppLayoutProps) => {
             }}
           />
         }
+        notifications={<Notifications />}
         content={<div>{children}</div>}
       />
     </>

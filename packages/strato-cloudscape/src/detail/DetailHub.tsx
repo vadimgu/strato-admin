@@ -1,12 +1,9 @@
 import React, { useMemo, ReactNode, isValidElement } from 'react';
 import Container from '@cloudscape-design/components/container';
 import SpaceBetween from '@cloudscape-design/components/space-between';
-import {
-  useTranslate,
-  useResourceSchema,
-  useShowContext,
-  RaRecord,
-} from '@strato-admin/core';
+import { useTranslate, useShowContext, RaRecord } from '@strato-admin/ra-core';
+import { useResourceSchema } from '@strato-admin/core';
+import { useSchemaFields } from '../hooks/useSchemaFields';
 import KeyValuePairs from './KeyValuePairs';
 import DetailHeader from './DetailHeader';
 
@@ -42,10 +39,9 @@ export const DetailHub = <RecordType extends RaRecord = RaRecord>(props: DetailH
     label,
     detailTitle,
     detailDescription,
-    fieldSchema: schemaChildren,
-    detailInclude,
-    detailExclude,
   } = useResourceSchema();
+
+  const { getDetailFields } = useSchemaFields();
 
   const constructedTitle = useMemo(
     () => label || translate(`resources.${resource}.name`, { smart_count: 1 }),
@@ -55,43 +51,23 @@ export const DetailHub = <RecordType extends RaRecord = RaRecord>(props: DetailH
   const finalTitle = useMemo(() => {
     if (title) return title;
     if (typeof detailTitle === 'function') return detailTitle(record);
-    if (detailTitle) return translate(detailTitle);
+    if (isValidElement(detailTitle)) return detailTitle;
+    if (detailTitle) return translate(detailTitle as string, record);
     return constructedTitle;
   }, [record, title, detailTitle, translate, constructedTitle]);
 
   const finalDescription = useMemo(() => {
     if (description) return description;
-    if (typeof detailDescription === 'function') detailDescription(record);
-    if (detailDescription) return translate(detailDescription);
+    if (typeof detailDescription === 'function') return detailDescription(record);
+    if (isValidElement(detailDescription)) return detailDescription;
+    if (detailDescription) return translate(detailDescription as string, record);
     return undefined;
   }, [record, description, detailDescription, translate]);
 
-  const { scalarFields, collectionFields } = useMemo(() => {
-    const baseChildren = React.Children.count(children) > 0 ? children : schemaChildren;
-    let result = React.Children.toArray(baseChildren);
-
-    // Apply include/exclude only if no children were provided (schema-first case)
-    if (React.Children.count(children) === 0) {
-      if (detailInclude) {
-        result = result.filter(
-          (child) => isValidElement(child) && detailInclude.includes((child.props as any).source),
-        );
-      } else if (detailExclude) {
-        result = result.filter(
-          (child) => isValidElement(child) && !detailExclude.includes((child.props as any).source),
-        );
-      }
-    }
-
-    const scalars = result.filter(
-      (child) => isValidElement(child) && !(child.type as any).isCollectionField,
-    );
-    const collections = result.filter(
-      (child) => isValidElement(child) && (child.type as any).isCollectionField,
-    );
-
-    return { scalarFields: scalars, collectionFields: collections };
-  }, [children, schemaChildren, detailInclude, detailExclude]);
+  const { scalarFields, collectionFields } = useMemo(
+    () => getDetailFields(children),
+    [getDetailFields, children],
+  );
 
   if (isLoading || !record) {
     return null;

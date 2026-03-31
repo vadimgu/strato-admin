@@ -3,8 +3,19 @@ import { vi, describe, it, expect } from 'vitest';
 import { ReferenceInput } from './ReferenceInput';
 
 // Mock ra-core
-vi.mock('@strato-admin/core', () => ({
+vi.mock('@strato-admin/ra-core', () => ({
   ReferenceInputBase: ({ children }: any) => <div data-testid="reference-input-base">{children}</div>,
+  useInput: vi.fn(() => ({
+    id: 'test',
+    field: { value: '', onChange: vi.fn(), onBlur: vi.fn() },
+    fieldState: { isTouched: false, invalid: false, error: null },
+    formState: { isSubmitted: false },
+    isRequired: false,
+  })),
+  useResourceContext: vi.fn(() => 'products'),
+  useTranslate: vi.fn(() => (key: string) => key),
+  useResourceDefinitions: vi.fn(() => ({})),
+  ValidationError: ({ error }: any) => <span>{error}</span>,
 }));
 
 describe('ReferenceInput', () => {

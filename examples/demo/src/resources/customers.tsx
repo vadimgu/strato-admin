@@ -15,7 +15,7 @@ export const customerResource = (
     detailDescription="Customer"
     recordRepresentation={customerRepresentation}
   >
-    <TextField source="id" label="ID" link="show" />
+    <TextField source="id" label="ID" link="detail" />
     <TextField source="first_name" label="First Name" sortable />
     <TextField source="last_name" label="Last Name" sortable />
     <TextField source="email" label="Email" />

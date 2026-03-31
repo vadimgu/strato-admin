@@ -1,5 +1,5 @@
 import CloudscapeTopNavigation, { TopNavigationProps } from '@cloudscape-design/components/top-navigation';
-import { useLocale, useSetLocale, useLocales, useTranslate, useAuthProvider, useStore } from '@strato-admin/core';
+import { useLocale, useSetLocale, useLocales, useTranslate, useAuthProvider, useStore } from '@strato-admin/ra-core';
 
 export interface MyTopNavigationProps extends Omit<TopNavigationProps, 'identity'> {
   identity?: TopNavigationProps.Identity;

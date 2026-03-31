@@ -1,5 +1,5 @@
 import { createContext, useContext } from 'react';
-import { UseInputValue } from '@strato-admin/core';
+import { UseInputValue } from '@strato-admin/ra-core';
 
 export interface FormFieldContextValue extends UseInputValue {
   source?: string;

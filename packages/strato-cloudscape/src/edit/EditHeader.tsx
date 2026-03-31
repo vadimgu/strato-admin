@@ -1,7 +1,8 @@
 import React from 'react';
 import Header, { HeaderProps } from '@cloudscape-design/components/header';
 import SpaceBetween from '@cloudscape-design/components/space-between';
-import { useEditContext, useTranslate } from '@strato-admin/core';
+import { useEditContext, useTranslate } from '@strato-admin/ra-core';
+import { DeleteButton } from '../button/DeleteButton';
 
 export interface EditHeaderProps extends Omit<HeaderProps, 'children'> {
   title?: React.ReactNode;
@@ -21,7 +22,7 @@ export const EditHeader = ({ title, actions, ...props }: EditHeaderProps) => {
 
   const headerActions = actions || (
     <SpaceBetween direction="horizontal" size="xs">
-      {/* Add default edit actions here if needed */}
+      <DeleteButton />
     </SpaceBetween>
   );
 

@@ -1,4 +1,4 @@
-import { useTranslate } from '@strato-admin/core';
+import { useTranslate } from '@strato-admin/ra-core';
 import { Button, ButtonProps } from './Button';
 
 export interface SaveButtonProps extends Omit<ButtonProps, 'children'> {

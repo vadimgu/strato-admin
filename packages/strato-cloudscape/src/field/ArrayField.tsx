@@ -5,7 +5,7 @@ import {
   ListContextProvider,
   ResourceContextProvider,
   type RaRecord,
-} from '@strato-admin/core';
+} from '@strato-admin/ra-core';
 import { type FieldProps } from './types';
 import Table from '../list/Table';
 
@@ -63,7 +63,7 @@ export const ArrayField = <RecordType extends RaRecord = any>(props: ArrayFieldP
 
   return (
     <ResourceContextProvider value={targetResource}>
-      <ListContextProvider value={listContext}>
+      <ListContextProvider value={listContext as any}>
         <ArrayFieldUI title={label}>{children}</ArrayFieldUI>
       </ListContextProvider>
     </ResourceContextProvider>

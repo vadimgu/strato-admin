@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { useInput, useResourceContext, useChoicesContext, useGetRecordRepresentation } from '@strato-admin/core';
+import { useInput, useResourceContext, useChoicesContext, useGetRecordRepresentation } from '@strato-admin/ra-core';
 import CloudscapeAutosuggest, {
   AutosuggestProps as CloudscapeAutosuggestProps,
 } from '@cloudscape-design/components/autosuggest';

@@ -47,6 +47,7 @@
     "@cloudscape-design/components": "^3.0.1217",
     "@cloudscape-design/global-styles": "^1.0.0",
     "@strato-admin/core": "workspace:*",
+    "@strato-admin/ra-core": "workspace:*",
     "@strato-admin/i18n": "workspace:*",
     "@strato-admin/language-en": "workspace:*",
     "inflection": "^3.0.2",

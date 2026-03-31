@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { useInput, RecordContextProvider, useResourceContext } from '@strato-admin/core';
+import { useInput, RecordContextProvider, useResourceContext } from '@strato-admin/ra-core';
 import { useFieldArray, useFormContext } from 'react-hook-form';
 import CloudscapeAttributeEditor, { AttributeEditorProps as CloudscapeAttributeEditorProps } from '@cloudscape-design/components/attribute-editor';
 import Box from '@cloudscape-design/components/box';

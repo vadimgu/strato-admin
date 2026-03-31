@@ -1,21 +1,14 @@
 import React from 'react';
-import {
-  ListBase,
-  type RaRecord,
-  ResourceSchemaProvider,
-  useResourceSchema,
-  type ListBaseProps,
-  useTranslate,
-  useConstructedPageTitle,
-} from '@strato-admin/core';
+import { ListBase, type RaRecord, type ListBaseProps, useTranslate } from '@strato-admin/ra-core';
+import { ResourceSchemaProvider, useResourceSchema, useConstructedPageTitle, useSettings } from '@strato-admin/core';
 import Table from './Table';
 
 export interface ListProps<RecordType extends RaRecord = any> extends ListBaseProps<RecordType> {
   children?: React.ReactNode;
   include?: string[];
   exclude?: string[];
-  title?: string | (() => string);
-  description?: string | (() => string);
+  title?: React.ReactNode | (() => React.ReactNode);
+  description?: React.ReactNode | (() => React.ReactNode);
   actions?: React.ReactNode;
   /**
    * Whether to enable text filtering in the implicit Table.
@@ -45,9 +38,9 @@ const ListUI = ({
   display,
 }: {
   children?: React.ReactNode;
-  title?: string | (() => string);
+  title?: React.ReactNode | (() => React.ReactNode);
   actions?: React.ReactNode;
-  description?: string | (() => string);
+  description?: React.ReactNode | (() => React.ReactNode);
   include?: string[];
   exclude?: string[];
   filtering?: boolean;
@@ -60,15 +53,19 @@ const ListUI = ({
 
   const finalTitle = React.useMemo(() => {
     if (typeof title === 'function') return title();
-    if (title) return translate(title);
-    if (listTitle) return translate(listTitle);
+    if (React.isValidElement(title)) return title;
+    if (title) return translate(title as string);
+    if (React.isValidElement(listTitle)) return listTitle;
+    if (listTitle) return translate(listTitle as string);
     return constructedTitle;
   }, [title, listTitle, translate, constructedTitle]);
 
   const finalDescription = React.useMemo(() => {
     if (typeof description === 'function') return description();
-    if (description) return translate(description);
-    if (listDescription) return translate(listDescription);
+    if (React.isValidElement(description)) return description;
+    if (description) return translate(description as string);
+    if (React.isValidElement(listDescription)) return listDescription;
+    if (listDescription) return translate(listDescription as string);
     return undefined;
   }, [description, listDescription, translate]);
 
@@ -115,9 +112,10 @@ export const List = <RecordType extends RaRecord = any>({
   ...props
 }: ListProps<RecordType>) => {
   const { queryOptions } = useResourceSchema(props.resource);
+  const { listPageSize } = useSettings();
 
   return (
-    <ListBase queryOptions={queryOptions} {...props}>
+    <ListBase queryOptions={queryOptions} {...props} perPage={props.perPage ?? listPageSize}>
       <ResourceSchemaProvider resource={props.resource}>
         <ListUI
           title={title}

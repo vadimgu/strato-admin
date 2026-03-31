@@ -4,13 +4,17 @@ import { vi, describe, it, expect, beforeEach } from 'vitest';
 import ReferenceManyField from './ReferenceManyField';
 import Table from '../list/Table';
 
-// Mock ra-core (via strato-core)
-vi.mock('@strato-admin/core', () => ({
+// Mock ra-core
+vi.mock('@strato-admin/ra-core', () => ({
   ReferenceManyFieldBase: vi.fn(({ children }: any) => (
     <div data-testid="ra-reference-many-field-base">{children}</div>
   )),
-  ResourceSchemaProvider: vi.fn(({ children }: any) => <div data-testid="resource-schema-provider">{children}</div>),
   ResourceContextProvider: ({ children }: any) => <div data-testid="resource-context-provider">{children}</div>,
+}));
+
+// Mock strato-core
+vi.mock('@strato-admin/core', () => ({
+  ResourceSchemaProvider: vi.fn(({ children }: any) => <div data-testid="resource-schema-provider">{children}</div>),
   useResourceSchema: vi.fn((resource: string) => ({
     listComponent: resource === 'with-custom-list' ? MockCustomList : undefined,
   })),

@@ -15,20 +15,21 @@ import {
   useGetResourceLabel,
   ExtractRecordPaths,
 } from '@strato-admin/ra-core';
+import { useSettings } from '../settings/SettingsContext';
 import { FieldSchema, useFieldSchema } from './FieldSchema';
 import { InputSchema, useInputSchema } from './InputSchema';
 
 export interface ResourceSchemas<RecordType extends Record<string, any> = any> {
   fieldSchema?: ReactNode;
   inputSchema?: ReactNode;
-  listTitle?: string;
-  createTitle?: string;
-  editTitle?: string | ((record?: any) => string);
-  detailTitle?: string | ((record?: any) => string);
-  listDescription?: string;
-  createDescription?: string;
-  editDescription?: string | ((record?: any) => string);
-  detailDescription?: string | ((record?: any) => string);
+  listTitle?: ReactNode;
+  createTitle?: ReactNode;
+  editTitle?: ReactNode | ((record?: any) => ReactNode);
+  detailTitle?: ReactNode | ((record?: any) => ReactNode);
+  listDescription?: ReactNode;
+  createDescription?: ReactNode;
+  editDescription?: ReactNode | ((record?: any) => ReactNode);
+  detailDescription?: ReactNode | ((record?: any) => ReactNode);
   listInclude?: ExtractRecordPaths<RecordType>[];
   listExclude?: ExtractRecordPaths<RecordType>[];
   listDisplay?: ExtractRecordPaths<RecordType>[];
@@ -36,6 +37,10 @@ export interface ResourceSchemas<RecordType extends Record<string, any> = any> {
   detailExclude?: ExtractRecordPaths<RecordType>[];
   formInclude?: ExtractRecordPaths<RecordType>[];
   formExclude?: ExtractRecordPaths<RecordType>[];
+  editInclude?: ExtractRecordPaths<RecordType>[];
+  editExclude?: ExtractRecordPaths<RecordType>[];
+  createInclude?: ExtractRecordPaths<RecordType>[];
+  createExclude?: ExtractRecordPaths<RecordType>[];
   listComponent?: ComponentType<any>;
   detailComponent?: ComponentType<any>;
   queryOptions?: any;
@@ -46,8 +51,6 @@ export interface DefaultResourceComponents {
   create?: ComponentType<any>;
   edit?: ComponentType<any>;
   show?: ComponentType<any>;
-  listComponent?: ComponentType<any>;
-  detailComponent?: ComponentType<any>;
 }
 
 export interface SchemaRegistryContextValue {
@@ -115,6 +118,10 @@ export const registerGlobalSchemas = <RecordType extends Record<string, any> = a
     schemas.detailExclude ||
     schemas.formInclude ||
     schemas.formExclude ||
+    schemas.editInclude ||
+    schemas.editExclude ||
+    schemas.createInclude ||
+    schemas.createExclude ||
     schemas.listComponent ||
     schemas.detailComponent ||
     schemas.queryOptions
@@ -311,7 +318,8 @@ export const useResourceSchema = <RecordType extends Record<string, any> = any>(
 
   const fieldSchemaFromContext = useFieldSchema();
   const inputSchemaFromContext = useInputSchema();
-  const { getSchemas, defaultComponents } = useSchemaRegistry();
+  const { getSchemas } = useSchemaRegistry();
+  const settings = useSettings();
   const definition = useResourceDefinition({ resource });
   const getResourceLabel = useGetResourceLabel();
 
@@ -327,6 +335,10 @@ export const useResourceSchema = <RecordType extends Record<string, any> = any>(
     let detailExclude = (definition as any)?.options?.detailExclude;
     let formInclude = (definition as any)?.options?.formInclude;
     let formExclude = (definition as any)?.options?.formExclude;
+    let editInclude = (definition as any)?.options?.editInclude;
+    let editExclude = (definition as any)?.options?.editExclude;
+    let createInclude = (definition as any)?.options?.createInclude;
+    let createExclude = (definition as any)?.options?.createExclude;
     let listTitle = (definition as any)?.options?.listTitle;
     let createTitle = (definition as any)?.options?.createTitle;
     let editTitle = (definition as any)?.options?.editTitle;
@@ -357,6 +369,10 @@ export const useResourceSchema = <RecordType extends Record<string, any> = any>(
         detailExclude = detailExclude || registrySchemas.detailExclude;
         formInclude = formInclude || registrySchemas.formInclude;
         formExclude = formExclude || registrySchemas.formExclude;
+        editInclude = editInclude || registrySchemas.editInclude;
+        editExclude = editExclude || registrySchemas.editExclude;
+        createInclude = createInclude || registrySchemas.createInclude;
+        createExclude = createExclude || registrySchemas.createExclude;
         listTitle = listTitle || registrySchemas.listTitle;
         createTitle = createTitle || registrySchemas.createTitle;
         editTitle = editTitle || registrySchemas.editTitle;
@@ -371,8 +387,8 @@ export const useResourceSchema = <RecordType extends Record<string, any> = any>(
       }
     }
 
-    listComponent = listComponent || defaultComponents.listComponent;
-    detailComponent = detailComponent || defaultComponents.detailComponent;
+    listComponent = listComponent || settings.listComponent;
+    detailComponent = detailComponent || settings.detailComponent;
 
     return {
       resource,
@@ -385,6 +401,10 @@ export const useResourceSchema = <RecordType extends Record<string, any> = any>(
       detailExclude,
       formInclude,
       formExclude,
+      editInclude,
+      editExclude,
+      createInclude,
+      createExclude,
       listTitle,
       createTitle,
       editTitle,
@@ -410,6 +430,7 @@ export const useResourceSchema = <RecordType extends Record<string, any> = any>(
     fieldSchemaFromContext,
     inputSchemaFromContext,
     getSchemas,
+    settings,
     definition,
     getResourceLabel,
   ]);

@@ -34,45 +34,80 @@ export interface ResourceSchemaProps<RecordType extends Record<string, any> = an
   /**
    * The component or element to use for the detail view. Set to false to disable, true to use default.
    */
-  details?: ResourceProps['show'] | boolean;
+  detail?: ResourceProps['show'] | boolean;
 
   /**
-   * The label to use for the list view title. If not provided, the label will be used.
+   * Title for the list page. Accepts a string or ReactNode.
+   * If not provided, falls back to `label`.
    */
-  listTitle?: string;
+  listTitle?: ReactNode;
   /**
-   * The label to use for the create view title.
+   * Title for the create page. Accepts a string or ReactNode.
    */
-  createTitle?: string;
+  createTitle?: ReactNode;
   /**
-   * The label to use for the edit view title.
+   * Title for the edit page. Accepts a string, ReactNode, or a function receiving the record.
+   *
+   * When a string is provided it is treated as an ICU message and all record fields are
+   * available as named variables.
+   *
+   * @example "Edit Product - {name}"
+   * @example (record) => `Edit ${record.name}`
    */
-  editTitle?: string | ((record?: any) => string);
+  editTitle?: ReactNode | ((record?: any) => ReactNode);
   /**
-   * The label to use for the detail view title.
+   * Title for the detail page. Accepts a string, ReactNode, or a function receiving the record.
+   *
+   * When a string is provided it is treated as an ICU message and all record fields are
+   * available as named variables.
+   *
+   * @example "Product: {name}"
+   * @example (record) => record.name
    */
-  detailTitle?: string | ((record?: any) => string);
+  detailTitle?: ReactNode | ((record?: any) => ReactNode);
   /**
-   * The description to use for the list view.
+   * Description for the list page. Accepts a string or ReactNode.
    */
-  listDescription?: string;
+  listDescription?: ReactNode;
   /**
-   * The description to use for the create view.
+   * Description for the create page. Accepts a string or ReactNode.
    */
-  createDescription?: string;
+  createDescription?: ReactNode;
   /**
-   * The description to use for the edit view.
+   * Description for the edit page. Accepts a string, ReactNode, or a function receiving the record.
+   *
+   * When a string is provided it is treated as an ICU message and all record fields are
+   * available as named variables.
+   *
+   * @example "Editing {name} (ID: {id})"
    */
-  editDescription?: string | ((record?: any) => string);
+  editDescription?: ReactNode | ((record?: any) => ReactNode);
   /**
-   * The description to use for the detail view.
+   * Description for the detail page. Accepts a string, ReactNode, or a function receiving the record.
+   *
+   * When a string is provided it is treated as an ICU message and all record fields are
+   * available as named variables.
+   *
+   * @example "Viewing details for {name}"
    */
-  detailDescription?: string | ((record?: any) => string);
+  detailDescription?: ReactNode | ((record?: any) => ReactNode);
 
   /**
    * Whether the resource can be deleted. Use false to disable the delete functionality.
    */
   delete?: boolean;
+  /**
+   * Success message shown after deleting a single record.
+   * Accepts a plain string or an ICU message.
+   */
+  deleteSuccessMessage?: string;
+  /**
+   * Success message shown after bulk-deleting records.
+   * Accepts a plain string or an ICU message with {smart_count} for the number of deleted items.
+   *
+   * @example "{smart_count, plural, =1 {Product deleted} other {# products deleted}}"
+   */
+  bulkDeleteSuccessMessage?: string;
 
   /**
    * List of field to include in the list view (Table/Cards).
@@ -95,13 +130,29 @@ export interface ResourceSchemaProps<RecordType extends Record<string, any> = an
    */
   detailExclude?: ExtractRecordPaths<RecordType>[];
   /**
-   * List of fields to include in the create/edit forms.
+   * List of fields to include in both create and edit forms.
    */
   formInclude?: ExtractRecordPaths<RecordType>[];
   /**
-   * List of fields to exclude from the create/edit forms.
+   * List of fields to exclude from both create and edit forms.
    */
   formExclude?: ExtractRecordPaths<RecordType>[];
+  /**
+   * List of fields to include in the edit form (takes priority over formInclude).
+   */
+  editInclude?: ExtractRecordPaths<RecordType>[];
+  /**
+   * List of fields to exclude from the edit form (takes priority over formExclude).
+   */
+  editExclude?: ExtractRecordPaths<RecordType>[];
+  /**
+   * List of fields to include in the create form (takes priority over formInclude).
+   */
+  createInclude?: ExtractRecordPaths<RecordType>[];
+  /**
+   * List of fields to exclude from the create form (takes priority over formExclude).
+   */
+  createExclude?: ExtractRecordPaths<RecordType>[];
   /**
    * Permanent filters applied to the list view.
    */
@@ -152,8 +203,10 @@ export const ResourceSchema = <RecordType extends Record<string, any> = any>({
   list,
   create,
   edit,
-  details,
+  detail,
   delete: deleteProp,
+  deleteSuccessMessage,
+  bulkDeleteSuccessMessage,
   listInclude,
   listExclude,
   listDisplay,
@@ -161,6 +214,10 @@ export const ResourceSchema = <RecordType extends Record<string, any> = any>({
   detailExclude,
   formInclude,
   formExclude,
+  editInclude,
+  editExclude,
+  createInclude,
+  createExclude,
   defaultFilters,
   defaultSort,
   perPage,
@@ -175,7 +232,7 @@ export const ResourceSchema = <RecordType extends Record<string, any> = any>({
   const canList = list !== false;
   const canCreate = create !== false;
   const canEdit = edit !== false;
-  const canShowDetails = details !== false;
+  const canShowDetails = detail !== false;
   const canDelete = deleteProp !== false;
 
   const parsedSchemas = children ? parseUnifiedSchema(children) : {};
@@ -207,6 +264,8 @@ export const ResourceSchema = <RecordType extends Record<string, any> = any>({
     listComponent,
     detailComponent,
     queryOptions,
+    deleteSuccessMessage,
+    bulkDeleteSuccessMessage,
   };
 
   const getListComponent = () => {
@@ -232,7 +291,7 @@ export const ResourceSchema = <RecordType extends Record<string, any> = any>({
     list: canList ? getListComponent() : undefined,
     create: canCreate ? (create === true || create === undefined ? defaultComponents.create : create) : undefined,
     edit: canEdit ? (edit === true || edit === undefined ? defaultComponents.edit : edit) : undefined,
-    show: canShowDetails ? (details === true || details === undefined ? defaultComponents.show : details) : undefined,
+    show: canShowDetails ? (detail === true || detail === undefined ? defaultComponents.show : detail) : undefined,
   };
 
   return (
@@ -272,8 +331,10 @@ ResourceSchema.registerResource = <RecordType extends Record<string, any> = any>
     list,
     create,
     edit,
-    details,
+    detail,
     delete: deleteProp,
+    deleteSuccessMessage,
+    bulkDeleteSuccessMessage,
     listInclude,
     listExclude,
     listDisplay,
@@ -281,6 +342,10 @@ ResourceSchema.registerResource = <RecordType extends Record<string, any> = any>
     detailExclude,
     formInclude,
     formExclude,
+    editInclude,
+    editExclude,
+    createInclude,
+    createExclude,
     defaultFilters,
     defaultSort,
     perPage,
@@ -293,7 +358,7 @@ ResourceSchema.registerResource = <RecordType extends Record<string, any> = any>
   const canList = list !== false;
   const canCreate = create !== false;
   const canEdit = edit !== false;
-  const canShowDetails = details !== false;
+  const canShowDetails = detail !== false;
   const canDelete = deleteProp !== false;
 
   const parsedSchemas = children ? parseUnifiedSchema(children) : {};
@@ -310,6 +375,10 @@ ResourceSchema.registerResource = <RecordType extends Record<string, any> = any>
       detailExclude,
       formInclude,
       formExclude,
+      editInclude,
+      editExclude,
+      createInclude,
+      createExclude,
       listTitle,
       createTitle,
       editTitle,
@@ -348,9 +417,15 @@ ResourceSchema.registerResource = <RecordType extends Record<string, any> = any>
     detailExclude,
     formInclude,
     formExclude,
+    editInclude,
+    editExclude,
+    createInclude,
+    createExclude,
     listComponent,
     detailComponent,
     queryOptions,
+    deleteSuccessMessage,
+    bulkDeleteSuccessMessage,
   };
 
   const getListComponent = () => {
@@ -376,9 +451,9 @@ ResourceSchema.registerResource = <RecordType extends Record<string, any> = any>
     create: canCreate ? (create === true || create === undefined ? defaultComponents.create : create) : undefined,
     edit: canEdit ? (edit === true || edit === undefined ? defaultComponents.edit : edit) : undefined,
     show: canShowDetails
-      ? details === true || details === undefined
+      ? detail === true || detail === undefined
         ? defaultComponents.show
-        : details
+        : detail
       : undefined,
     options: mergedOptions,
   };

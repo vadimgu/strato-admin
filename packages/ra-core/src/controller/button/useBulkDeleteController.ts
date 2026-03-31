@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback, useMemo, ReactNode } from 'react';
 import { useDeleteMany, UseDeleteManyOptions } from '../../dataProvider/useDeleteMany';
 import { useRefresh } from '../../dataProvider/useRefresh';
 import { useListContext } from '../list/useListContext';
@@ -71,7 +71,7 @@ export interface UseBulkDeleteControllerParams<RecordType extends RaRecord = any
   mutationMode?: MutationMode;
   mutationOptions?: UseDeleteManyOptions<RecordType, MutationOptionsError>;
   resource?: string;
-  successMessage?: string;
+  successMessage?: string | ReactNode;
 }
 
 export interface UseBulkDeleteControllerReturn {

@@ -1,10 +1,10 @@
 import React from 'react';
 import { render, cleanup } from '@testing-library/react';
 import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { useShowController, useResourceContext, useShowContext } from '@strato-admin/core';
+import { useShowController, useResourceContext, useShowContext } from '@strato-admin/ra-core';
 import { Detail } from './Detail';
 
-// Mock strato-core
+vi.mock('@strato-admin/ra-core', () => import('../__mocks__/ra-core'));
 vi.mock('@strato-admin/core', () => import('../__mocks__/strato-core'));
 
 // Mock Cloudscape components

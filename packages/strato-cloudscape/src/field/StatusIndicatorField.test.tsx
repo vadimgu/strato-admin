@@ -1,9 +1,9 @@
 import { render, cleanup } from '@testing-library/react';
 import { vi, describe, it, expect, afterEach } from 'vitest';
-import { useFieldValue, useRecordContext } from '@strato-admin/core';
+import { useFieldValue, useRecordContext } from '@strato-admin/ra-core';
 import StatusIndicatorField from './StatusIndicatorField';
 
-// Mock ra-core
+vi.mock('@strato-admin/ra-core', () => import('../__mocks__/ra-core'));
 vi.mock('@strato-admin/core', () => import('../__mocks__/strato-core'));
 
 // Mock Cloudscape components

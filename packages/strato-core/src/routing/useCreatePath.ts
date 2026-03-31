@@ -3,14 +3,14 @@ import { useBasename, CreatePathParams, removeDoubleSlashes } from '@strato-admi
 
 /**
  * Strato version of useCreatePath that implements the new routing scheme:
+ * - 'detail' -> /:resource/:id
  * - 'edit' -> /:resource/:id/edit
- * - 'show' -> /:resource/:id
  */
 export const useCreatePath = () => {
   const basename = useBasename();
   return useCallback(
     ({ resource, id, type }: CreatePathParams): string => {
-      if (['list', 'create', 'edit', 'show'].includes(type) && !resource) {
+      if (['list', 'create', 'edit', 'detail'].includes(type) && !resource) {
         throw new Error('Cannot create a link without a resource. You must provide the resource name.');
       }
       switch (type) {
@@ -24,6 +24,7 @@ export const useCreatePath = () => {
           }
           return removeDoubleSlashes(`${basename}/${resource}/${encodeURIComponent(id)}/edit`);
         }
+        case 'detail':
         case 'show': {
           if (id == null) {
             return removeDoubleSlashes(`${basename}/${resource}`);

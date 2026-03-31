@@ -6,26 +6,10 @@ export const categoryResource = (
     name="categories"
     list={false}
     delete={false}
-    details={false}
+    detail={false}
     recordRepresentation={(record: any) => record.name}
   >
-    <TextField source="id" label="ID" link="show" />
-    <TextField source="name" label="Category Name" link="show" />
+    <TextField source="id" label="ID" link="detail" />
+    <TextField source="name" label="Category Name" link="detail" />
   </ResourceSchema>
 );
-
-export function CategoryList() {
-  return (
-    <List>
-      <Table title="Categories" selectionType="multi" />
-    </List>
-  );
-}
-
-export function CategoryShow() {
-  return (
-    <Show title="Category Details">
-      <KeyValuePairs columns={2} />
-    </Show>
-  );
-}

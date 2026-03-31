@@ -1,10 +1,10 @@
 import { render, cleanup } from '@testing-library/react';
 import { vi, describe, it, expect, afterEach } from 'vitest';
-import { useFieldValue, useRecordContext, useResourceDefinition } from '@strato-admin/core';
+import { useFieldValue, useRecordContext, useResourceDefinition } from '@strato-admin/ra-core';
 import IdField from './IdField';
 
-// Mock strato-core
-vi.mock('@strato-admin/core', () => ({
+// Mock ra-core
+vi.mock('@strato-admin/ra-core', () => ({
   useRecordContext: vi.fn(),
   useFieldValue: vi.fn(),
   useResourceDefinition: vi.fn(),
@@ -35,7 +35,7 @@ describe('IdField', () => {
 
     expect(getByText('123')).toBeDefined();
     const link = getByTestId('record-link');
-    expect(link.getAttribute('data-link')).toBe('show');
+    expect(link.getAttribute('data-link')).toBe('detail');
   });
 
   it('should not link by default if hasShow is false', () => {

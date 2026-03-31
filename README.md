@@ -1,7 +1,5 @@
 # Strato Admin
 
-**WORK IN PROGRESS**
-
 Strato Admin is a React-based framework for building administrative interfaces.
 It integrates [React-Admin](https://marmelab.com/react-admin/) core logic with
 the [AWS Cloudscape Design System](https://cloudscape.design/) to provide a set
@@ -9,7 +7,7 @@ of components optimized for data-dense, accessible, and consistent back-office
 applications.
 
 <p align="center">
-  <img src="docs/images/quickstart_products_list.png" width="600" alt="Strato Admin Products List" />
+  <img src="stratoadmin.dev/images/quickstart_products_list.png" width="600" alt="Strato Admin Products List" />
 </p>
 
 ## Overview
@@ -62,11 +60,11 @@ export const QuickStartApp = () => (
 );
 ```
 
-| List Page                                                                              | Details Page                                                                          |
-| :------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------ |
-| <img src="docs/images/quickstart_products_list.png" width="600" alt="List Page" />     | <img src="docs/images/quickstart_products_show.png" width="600" alt="Details Page" /> |
-| Create Page                                                                            | Edit Page                                                                             |
-| <img src="docs/images/quickstart_products_create.png" width="600" alt="Create Page" /> | <img src="docs/images/quickstart_products_edit.png" width="600" alt="Edit Page" />    |
+| List Page                                                                                         | Details Page                                                                                     |
+| :------------------------------------------------------------------------------------------------ | :----------------------------------------------------------------------------------------------- |
+| <img src="stratoadmin.dev/images/quickstart_products_list.png" width="600" alt="List Page" />     | <img src="stratoadmin.dev/images/quickstart_products_show.png" width="600" alt="Details Page" /> |
+| Create Page                                                                                       | Edit Page                                                                                        |
+| <img src="stratoadmin.dev/images/quickstart_products_create.png" width="600" alt="Create Page" /> | <img src="stratoadmin.dev/images/quickstart_products_edit.png" width="600" alt="Edit Page" />    |
 
 ### Schema-Driven UI Generation
 

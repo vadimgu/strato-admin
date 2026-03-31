@@ -1,0 +1,95 @@
+.heroBanner {
+  padding: 4rem 0;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+@media screen and (max-width: 996px) {
+  .heroBanner {
+    padding: 2rem;
+  }
+}
+
+.buttons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+/* Code example section */
+.codeExample {
+  padding: 4rem 0;
+  background: var(--ifm-color-emphasis-100);
+}
+
+.codeExampleInner {
+  display: flex;
+  align-items: center;
+  gap: 3rem;
+}
+
+.codeExampleText {
+  flex: 1;
+  min-width: 260px;
+}
+
+.codeExampleText p {
+  font-size: 1.1rem;
+  margin-bottom: 1.5rem;
+}
+
+.codeExampleCode {
+  flex: 1.4;
+  min-width: 0;
+}
+
+@media screen and (max-width: 996px) {
+  .codeExampleInner {
+    flex-direction: column;
+  }
+}
+
+/* How it works section */
+.howItWorks {
+  padding: 4rem 0;
+}
+
+.sectionTitle {
+  margin-bottom: 2.5rem;
+}
+
+.steps {
+  display: flex;
+  gap: 2rem;
+  justify-content: center;
+}
+
+.step {
+  flex: 1;
+  max-width: 280px;
+  text-align: center;
+}
+
+.stepNumber {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--ifm-color-primary);
+  color: white;
+  font-size: 1.4rem;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1rem;
+}
+
+@media screen and (max-width: 768px) {
+  .steps {
+    flex-direction: column;
+    align-items: center;
+  }
+}

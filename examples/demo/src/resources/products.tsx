@@ -1,6 +1,4 @@
 import {
-  Detail,
-  KeyValuePairs,
   TextField,
   NumberField,
   ReferenceField,
@@ -9,6 +7,7 @@ import {
   ResourceSchema,
 } from '@strato-admin/admin';
 import StarRatingField from '../components/StarRatingField';
+import { RecordRepresentation } from '@strato-admin/ra-core';
 
 export const productRepresentation = (record: any) => `${record.name} (${record.reference})`;
 
@@ -28,16 +27,14 @@ export const productResource = (
   <ResourceSchema<Product>
     name="products"
     label="Products"
-    // detailTitle="Product Details"
-    //detailTitle={(record) => record.name}
+    detailTitle={<RecordRepresentation />}
     detailDescription="Product"
+    editTitle="Edit Product - {name}"
+    editDescription="Product"
     listExclude={['description', 'sales', 'category_id']}
-
-    // details={ProductShow}
-    // listDisplay={['id', 'name', 'reference']}
     recordRepresentation="name"
   >
-    <TextField source="id" label="ID" link="show" input={false} />
+    <TextField source="id" label="ID" link="detail" input={false} />
     <TextField source="name" label="Name" sortable isRequired />
     <TextField source="reference" label="Reference" sortable isRequired />
     <ReferenceField source="category_id" reference="categories" label="Category" isRequired />
@@ -56,15 +53,3 @@ export const productResource = (
     <ReferenceManyField reference="reviews" target="product_id" sort={{ field: 'date', order: 'DESC' }} />
   </ResourceSchema>
 );
-
-// We provide a custom detail view that still relies on the schema-first
-// approach.
-export function ProductShow() {
-  return (
-    <Detail title="Product Details">
-      <KeyValuePairs columns={3} exclude={['description']} />
-      <KeyValuePairs columns={1} include={['description']} />
-      <ReferenceManyField reference="reviews" target="product_id" sort={{ field: 'date', order: 'DESC' }} />
-    </Detail>
-  );
-}

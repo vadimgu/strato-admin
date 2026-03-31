@@ -1,4 +1,4 @@
-import { useInput } from '@strato-admin/core';
+import { useInput } from '@strato-admin/ra-core';
 import CloudscapeTextarea, { TextareaProps as CloudscapeTextareaProps } from '@cloudscape-design/components/textarea';
 import { FormField } from './FormField';
 import { FormFieldContext, useFormFieldContext } from './FormFieldContext';

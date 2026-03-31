@@ -6,14 +6,14 @@ export const QuickStartApp = () => (
   <Admin dataProvider={dataProvider} title="Strato Admin Quickstart">
     <ResourceSchema name="products">
       <IdField source="id" />
-      <TextField source="name" isRequired link="show" />
+      <TextField source="name" isRequired link="detail" />
       <CurrencyField source="price" currency="EUR" />
       <ReferenceField source="category_id" reference="categories" />
     </ResourceSchema>
 
     <ResourceSchema name="categories">
       <IdField source="id" />
-      <TextField source="name" link="show" isRequired />
+      <TextField source="name" link="detail" isRequired />
     </ResourceSchema>
   </Admin>
 );

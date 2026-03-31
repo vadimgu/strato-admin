@@ -18,9 +18,13 @@ export interface CollectionPreferences {
 }
 
 export interface UseCollectionOptions<_T> {
-  filtering?: any;
-  pagination?: any;
-  sorting?: any;
+  /**
+   * Set to true when using a client-side data provider where the data array
+   * contains ALL records, not just the current page. The hook will slice the
+   * array for pagination instead of relying on the server.
+   * @default false
+   */
+  clientSidePagination?: boolean;
   preferences?: {
     pageSizeOptions?: ReadonlyArray<{ value: number; label?: string }>;
     visibleContentOptions?: ReadonlyArray<{

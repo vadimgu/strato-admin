@@ -1,13 +1,14 @@
 import React from 'react';
 import { render, cleanup } from '@testing-library/react';
 import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { useResourceSchema, useTranslate, useTranslateLabel } from '@strato-admin/core';
+import { useTranslate, useTranslateLabel } from '@strato-admin/ra-core';
+import { useResourceSchema } from '@strato-admin/core';
 import { useCollection } from '../collection-hooks';
 import Cards from './Cards';
 import CloudscapeCards from '@cloudscape-design/components/cards';
 import KeyValuePairs from '../detail/KeyValuePairs';
 
-// Mock ra-core
+vi.mock('@strato-admin/ra-core', () => import('../__mocks__/ra-core'));
 vi.mock('@strato-admin/core', () => import('../__mocks__/strato-core'));
 
 // Mock useCollection
@@ -229,18 +230,14 @@ describe('Cards', () => {
     expect(queryByTestId('text-filter')).toBeNull();
   });
 
-  it('should pass filteringPlaceholder to useCollection', () => {
+  it('should pass filteringPlaceholder to TextFilter', () => {
     (useResourceSchema as any).mockReturnValue({
       fieldSchema: [],
     });
 
-    render(<Cards filteringPlaceholder="Custom Search" />);
+    const { getByTestId } = render(<Cards filteringPlaceholder="Custom Search" />);
 
-    expect(useCollection).toHaveBeenCalledWith(expect.objectContaining({
-      filtering: {
-        filteringPlaceholder: 'Custom Search'
-      }
-    }));
+    expect(getByTestId('text-filter').textContent).toBe('Custom Search');
   });
 
   it('should render CollectionPreferences by default', () => {

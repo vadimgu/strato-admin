@@ -71,9 +71,10 @@ function main() {
           Object.entries(entries).forEach(([msgid, data]: [string, any]) => {
             if (msgid === '') return; // skip header
 
-            // Find the hash: check context (v2), then comment (v3), then msgid (v1)
-            const commentHash = data.comments?.extracted?.match(/id: (\w+)/)?.[1];
-            const hash = context || commentHash || msgid;
+            // Find the hash: #. id: comment is authoritative (covers explicit ids and
+            // context-mangled hashes); fall back to msgctxt, then raw msgid.
+            const commentHash = data.comments?.extracted?.match(/id: (\S+)/)?.[1];
+            const hash = commentHash || context || msgid;
 
             translations[hash] = {
               defaultMessage: data.msgid || data.comments?.extracted || '',

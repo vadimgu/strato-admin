@@ -2,12 +2,15 @@ import React from 'react';
 import {
   CreateBase,
   type RaRecord,
-  ResourceSchemaProvider,
-  useResourceSchema,
   type CreateBaseProps,
   Identifier,
   useTranslate,
+} from '@strato-admin/ra-core';
+import {
+  ResourceSchemaProvider,
+  useResourceSchema,
   useConstructedPageTitle,
+  useSettingValue,
 } from '@strato-admin/core';
 import Container from '@cloudscape-design/components/container';
 import { CreateHeader } from './CreateHeader';
@@ -19,8 +22,8 @@ export interface CreateProps<
   MutationOptionsError = Error,
 > extends CreateBaseProps<RecordType, ResultRecordType, MutationOptionsError> {
   children?: React.ReactNode;
-  title?: string | ((record: Partial<RecordType>) => string);
-  description?: string | ((record: Partial<RecordType>) => string);
+  title?: React.ReactNode | ((record: Partial<RecordType>) => React.ReactNode);
+  description?: React.ReactNode | ((record: Partial<RecordType>) => React.ReactNode);
   actions?: React.ReactNode;
   include?: string[];
   exclude?: string[];
@@ -37,9 +40,9 @@ const CreateUI = ({
   saveButtonLabel,
 }: {
   children?: React.ReactNode;
-  title?: string | ((record: any) => string);
+  title?: React.ReactNode | ((record: any) => React.ReactNode);
   actions?: React.ReactNode;
-  description?: string | ((record: any) => string);
+  description?: React.ReactNode | ((record: any) => React.ReactNode);
   include?: string[];
   exclude?: string[];
   saveButtonLabel?: string;
@@ -50,15 +53,19 @@ const CreateUI = ({
 
   const finalTitle = React.useMemo(() => {
     if (typeof title === 'function') return title({});
-    if (title) return translate(title);
-    if (createTitle) return translate(createTitle);
+    if (React.isValidElement(title)) return title;
+    if (title) return translate(title as string);
+    if (React.isValidElement(createTitle)) return createTitle;
+    if (createTitle) return translate(createTitle as string);
     return constructedTitle;
   }, [title, createTitle, translate, constructedTitle]);
 
   const finalDescription = React.useMemo(() => {
     if (typeof description === 'function') return description({});
-    if (description) return translate(description);
-    if (createDescription) return translate(createDescription);
+    if (React.isValidElement(description)) return description;
+    if (description) return translate(description as string);
+    if (React.isValidElement(createDescription)) return createDescription;
+    if (createDescription) return translate(createDescription as string);
     return undefined;
   }, [description, createDescription, translate]);
 
@@ -96,12 +103,14 @@ export const Create = <RecordType extends RaRecord = RaRecord>({
   description,
   include,
   exclude,
-  redirect = 'list',
+  redirect,
   saveButtonLabel,
   ...props
 }: CreateProps<RecordType>) => {
+  const resolve = useSettingValue();
+  const resolvedRedirect = redirect !== undefined ? redirect : resolve(undefined, 'createRedirect');
   return (
-    <CreateBase redirect={redirect} {...props}>
+    <CreateBase redirect={resolvedRedirect} {...props}>
       <ResourceSchemaProvider resource={props.resource}>
         <CreateUI
           title={title}

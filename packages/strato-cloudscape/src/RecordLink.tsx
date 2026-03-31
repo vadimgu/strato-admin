@@ -1,6 +1,7 @@
 import React from 'react';
 import Link from '@cloudscape-design/components/link';
-import { useCreatePath, useResourceContext, useRecordContext } from '@strato-admin/core';
+import { useResourceContext, useRecordContext } from '@strato-admin/ra-core';
+import { useCreatePath } from '@strato-admin/core';
 import { useNavigate } from 'react-router-dom';
 
 export type RecordLinkType = string | boolean | ((record: any, reference?: string) => string);
@@ -27,9 +28,9 @@ const RecordLinkImpl = ({ link, resource, children }: RecordLinkProps) => {
   if (typeof link === 'function') {
     href = link(record, finalResource);
   } else if (link === true) {
-    href = createPath({ resource: finalResource, id: record.id, type: 'edit' });
-  } else if (link === 'edit' || link === 'show') {
-    href = createPath({ resource: finalResource, id: record.id, type: link });
+    href = createPath({ resource: finalResource, id: record.id, type: 'detail' });
+  } else if (link === 'edit' || link === 'detail' || link === 'show') {
+    href = createPath({ resource: finalResource, id: record.id, type: link === 'show' ? 'detail' : link });
   } else if (typeof link === 'string') {
     href = link;
   }

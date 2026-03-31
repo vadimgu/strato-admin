@@ -1,4 +1,4 @@
-import { InputProps as InputPropsBase } from '@strato-admin/core';
+import { InputProps as InputPropsBase } from '@strato-admin/ra-core';
 import { FormFieldProps as CloudscapeFormFieldProps } from '@cloudscape-design/components/form-field';
 
 export interface StratoInputProps<T = any>

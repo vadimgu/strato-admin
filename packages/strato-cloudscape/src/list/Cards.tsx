@@ -3,14 +3,10 @@ import CloudscapeCards, { CardsProps } from '@cloudscape-design/components/cards
 import Pagination from '@cloudscape-design/components/pagination';
 import TextFilter from '@cloudscape-design/components/text-filter';
 import CollectionPreferences from '@cloudscape-design/components/collection-preferences';
-import {
-  RaRecord,
-  RecordContextProvider,
-  useResourceSchema,
-  useTranslateLabel,
-  useTranslate,
-} from '@strato-admin/core';
+import { RaRecord, RecordContextProvider, useTranslateLabel, useTranslate } from '@strato-admin/ra-core';
+import { useResourceSchema, useSettings } from '@strato-admin/core';
 import { useCollection } from '../collection-hooks';
+import { useSchemaFields } from '../hooks/useSchemaFields';
 import KeyValuePairs from '../detail/KeyValuePairs';
 import TableHeader from './TableHeader';
 
@@ -45,13 +41,6 @@ export interface ListCardsProps<T extends RaRecord = any>
   preferences?: boolean | React.ReactNode;
 }
 
-const defaultPageSizeOptions = [
-  { value: 10, label: '10 items' },
-  { value: 25, label: '25 items' },
-  { value: 50, label: '50 items' },
-  { value: 100, label: '100 items' },
-];
-
 export const ListCards = <T extends RaRecord = any>({
   renderItem,
   include,
@@ -63,49 +52,33 @@ export const ListCards = <T extends RaRecord = any>({
   selectionType,
   filtering = true,
   filteringPlaceholder,
-  pageSizeOptions = defaultPageSizeOptions,
+  pageSizeOptions,
   preferences = true,
   ...props
 }: ListCardsProps<T>) => {
   const translate = useTranslate();
+  const { listPageSizes, listPageSizeLabel } = useSettings();
+
+  const resolvedPageSizeOptions = pageSizeOptions ?? (
+    listPageSizes && listPageSizeLabel
+      ? listPageSizes.map((value) => ({ value, label: listPageSizeLabel(value) }))
+      : undefined
+  );
   const translateLabel = useTranslateLabel();
   const {
     resource,
-    fieldSchema: schemaChildren,
-    listInclude,
-    listExclude,
     label: schemaLabel,
     definition,
   } = useResourceSchema();
 
+  const { getListFields } = useSchemaFields();
+
   const finalSelectionType = selectionType ?? (definition?.options?.canDelete ? 'multi' : undefined);
 
-  const finalChildren = React.useMemo(() => {
-    const baseChildren = children || schemaChildren;
-    let result = React.Children.toArray(baseChildren);
-
-    const finalInclude = include || listInclude;
-    const finalExclude = exclude || listExclude;
-
-    if (finalInclude) {
-      result = result.filter(
-        (child) => React.isValidElement(child) && finalInclude.includes((child.props as any).source),
-      );
-    } else {
-      // Filter out fields marked as collection fields by default
-      result = result.filter(
-        (child) => React.isValidElement(child) && !(child.type as any).isCollectionField,
-      );
-
-      if (finalExclude) {
-        result = result.filter(
-          (child) => React.isValidElement(child) && !finalExclude.includes((child.props as any).source),
-        );
-      }
-    }
-
-    return result;
-  }, [children, schemaChildren, include, exclude, listInclude, listExclude]);
+  const finalChildren = React.useMemo(
+    () => getListFields(children, { include, exclude }),
+    [getListFields, children, include, exclude],
+  );
 
   const visibleContentOptions = React.useMemo(() => {
     const options: { id: string; label: string }[] = [];
@@ -124,13 +97,8 @@ export const ListCards = <T extends RaRecord = any>({
   }, [finalChildren, resource, translateLabel]);
 
   const { items, paginationProps, collectionProps, filterProps, preferencesProps } = useCollection<T>({
-    filtering: {
-      filteringPlaceholder,
-    },
-    pagination: {},
-    sorting: {},
     preferences: {
-      pageSizeOptions,
+      pageSizeOptions: resolvedPageSizeOptions,
       visibleContentOptions: visibleContentOptions.length > 0 ? visibleContentOptions : undefined,
     },
   });
@@ -183,15 +151,15 @@ export const ListCards = <T extends RaRecord = any>({
       pagination={<Pagination {...paginationProps} />}
       header={cardsHeader}
       selectionType={finalSelectionType}
-      filter={filtering && <TextFilter {...filterProps} />}
+      filter={filtering && <TextFilter {...filterProps} filteringPlaceholder={filteringPlaceholder} />}
       preferences={
-        preferences === true || pageSizeOptions ? (
+        preferences === true || resolvedPageSizeOptions ? (
           <CollectionPreferences
             {...preferencesProps}
             pageSizePreference={
-              pageSizeOptions
+              resolvedPageSizeOptions
                 ? {
-                    options: pageSizeOptions,
+                    options: resolvedPageSizeOptions,
                   }
                 : undefined
             }

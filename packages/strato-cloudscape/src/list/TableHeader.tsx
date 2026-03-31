@@ -1,7 +1,7 @@
 import React from 'react';
 import Header, { HeaderProps } from '@cloudscape-design/components/header';
 import SpaceBetween from '@cloudscape-design/components/space-between';
-import { useListContext, useTranslate, useLocale } from '@strato-admin/core';
+import { useListContext, useTranslate, useLocale } from '@strato-admin/ra-core';
 import { BulkDeleteButton } from '../button/BulkDeleteButton';
 import { CreateButton } from '../button/CreateButton';
 
@@ -12,7 +12,7 @@ export interface TableHeaderProps extends Omit<HeaderProps, 'children'> {
 export const TableHeader = ({ title, actions, ...props }: TableHeaderProps) => {
   const translate = useTranslate();
   const locale = useLocale();
-  const { total, isPending, defaultTitle } = useListContext();
+  const { defaultTitle } = useListContext();
 
   const headerTitle = React.useMemo(() => {
     if (title !== undefined) {
@@ -21,8 +21,7 @@ export const TableHeader = ({ title, actions, ...props }: TableHeaderProps) => {
     return defaultTitle;
   }, [title, defaultTitle, translate, locale]);
 
-  const counter =
-    props.counter !== undefined ? props.counter : !isPending && total !== undefined ? `(${total})` : undefined;
+  const counter = props.counter;
 
   const headerActions =
     actions !== undefined ? (
