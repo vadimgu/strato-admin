@@ -25,6 +25,7 @@ If your resource uses a different field for its identifier, override `source`.
 ## Props
 
 Accepts the same props as [`<TextField>`](./TextField.md). Defaults:
+
 - `source` → `"id"`
 - `link` → `"detail"` (if the resource has a detail page, otherwise no link)
 - `input` → `false` (hidden in create/edit forms)

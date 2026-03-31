@@ -27,21 +27,21 @@ import { Message } from '@strato-admin/admin';
 
 ## Props
 
-| Prop | Type | Description |
-| :--- | :--- | :---------- |
-| `children` | `string` | **Required.** The English source string. Must be a static string literal for `strato-extract` to detect it. |
-| `id` | `string` | Explicit stable message ID. Used directly as the lookup key — bypasses hashing. Takes priority over `context`. Written as `#. id: <id>` in PO files. |
-| `context` | `string` | Disambiguation context. Prepended to the message before hashing so that `<Message context="x">Save</Message>` resolves to a different entry than `<Message>Save</Message>`. Ignored when `id` is provided. Stored as `msgctxt` in PO files. |
-| `comment` | `string` | Translator note written as a `#` comment in the PO file. Visible in tools like Poedit. Ignored at runtime. |
-| `vars` | `Record<string, any>` | ICU variables substituted into the message at runtime. |
+| Prop       | Type                  | Description                                                                                                                                                                                                                                 |
+| :--------- | :-------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `children` | `string`              | **Required.** The English source string. Must be a static string literal for `strato-extract` to detect it.                                                                                                                                 |
+| `id`       | `string`              | Explicit stable message ID. Used directly as the lookup key — bypasses hashing. Takes priority over `context`. Written as `#. id: <id>` in PO files.                                                                                        |
+| `context`  | `string`              | Disambiguation context. Prepended to the message before hashing so that `<Message context="x">Save</Message>` resolves to a different entry than `<Message>Save</Message>`. Ignored when `id` is provided. Stored as `msgctxt` in PO files. |
+| `comment`  | `string`              | Translator note written as a `#` comment in the PO file. Visible in tools like Poedit. Ignored at runtime.                                                                                                                                  |
+| `vars`     | `Record<string, any>` | ICU variables substituted into the message at runtime.                                                                                                                                                                                      |
 
 ## How the lookup key is determined
 
-| Props provided | Runtime key | PO representation |
-| :------------- | :---------- | :---------------- |
-| neither | `hash(children)` | `#. id: <hash>` |
-| `context="nav"` | `hash("nav\x04" + children)` | `msgctxt "nav"` + `#. id: <hash>` |
-| `id="action.archive"` | `"action.archive"` (literal) | `#. id: action.archive` |
+| Props provided        | Runtime key                  | PO representation                 |
+| :-------------------- | :--------------------------- | :-------------------------------- |
+| neither               | `hash(children)`             | `#. id: <hash>`                   |
+| `context="nav"`       | `hash("nav\x04" + children)` | `msgctxt "nav"` + `#. id: <hash>` |
+| `id="action.archive"` | `"action.archive"` (literal) | `#. id: action.archive`           |
 
 The `#. id:` comment in every PO entry is the authoritative key written into `messages.compiled.json` by `strato-compile`.
 
@@ -54,6 +54,7 @@ Use `id` when you want a stable, human-readable key independent of the English t
 ```
 
 PO output:
+
 ```po
 #: src/components/ArchiveButton.tsx:18
 #. id: action.archive
@@ -78,6 +79,7 @@ Use `context` when the same English string has different meanings in different p
 ```
 
 PO output — two separate entries with different hashes:
+
 ```po
 msgctxt "action"
 #. id: 1ab2cd3
@@ -95,6 +97,7 @@ msgstr ""
 `strato-extract` detects `<Message>` and emits a PO entry for each static children string. Dynamic expressions are not extracted.
 
 With `comment`:
+
 ```po
 #  Shown in the confirmation dialog title
 #: src/components/ConfirmDialog.tsx:4

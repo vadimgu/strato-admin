@@ -28,14 +28,14 @@ import { RecordMessage } from '@strato-admin/admin';
 
 ## Props
 
-| Prop | Type | Description |
-| :--- | :--- | :---------- |
-| `children` | `string` | **Required.** The ICU template string. All record fields are available as named placeholders. Must be a static string literal for `strato-extract` to detect it. |
-| `id` | `string` | Explicit stable message ID. Used directly as the lookup key — bypasses hashing. Takes priority over `context`. Written as `#. id: <id>` in PO files. |
-| `context` | `string` | Disambiguation context. Prepended to the message before hashing to produce a unique key. Stored as `msgctxt` in PO files. |
-| `comment` | `string` | Translator note written as a `#` comment in the PO file. Ignored at runtime. |
-| `record` | `object` | Explicit record to use as ICU variables. When provided, overrides the record from context. |
-| `vars` | `Record<string, any>` | Extra ICU variables. Override record fields of the same name. |
+| Prop       | Type                  | Description                                                                                                                                                      |
+| :--------- | :-------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `children` | `string`              | **Required.** The ICU template string. All record fields are available as named placeholders. Must be a static string literal for `strato-extract` to detect it. |
+| `id`       | `string`              | Explicit stable message ID. Used directly as the lookup key — bypasses hashing. Takes priority over `context`. Written as `#. id: <id>` in PO files.             |
+| `context`  | `string`              | Disambiguation context. Prepended to the message before hashing to produce a unique key. Stored as `msgctxt` in PO files.                                        |
+| `comment`  | `string`              | Translator note written as a `#` comment in the PO file. Ignored at runtime.                                                                                     |
+| `record`   | `object`              | Explicit record to use as ICU variables. When provided, overrides the record from context.                                                                       |
+| `vars`     | `Record<string, any>` | Extra ICU variables. Override record fields of the same name.                                                                                                    |
 
 See [`<Message>` — How the lookup key is determined](./Message.md#how-the-lookup-key-is-determined) for the full key resolution table — `RecordMessage` follows the same rules.
 

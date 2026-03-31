@@ -21,29 +21,27 @@ For more control over the header — such as adding a logo — you can render yo
 Create a custom layout component in `src/Layout.tsx`:
 
 ```tsx title="src/Layout.tsx"
-import { AppLayout, TopNavigation } from "@strato-admin/admin";
+import { AppLayout, TopNavigation } from '@strato-admin/admin';
 
-const logoUrl = "/logo.svg"; // place your logo in the public/ directory
+const logoUrl = '/logo.svg'; // place your logo in the public/ directory
 
 const customHeader = (
   <TopNavigation
     identity={{
-      title: "StratoShop",
-      href: "/",
-      logo: { src: logoUrl, alt: "StratoShop logo" },
+      title: 'StratoShop',
+      href: '/',
+      logo: { src: logoUrl, alt: 'StratoShop logo' },
     }}
   />
 );
 
-export const Layout = (props: any) => (
-  <AppLayout {...props} header={customHeader} />
-);
+export const Layout = (props: any) => <AppLayout {...props} header={customHeader} />;
 ```
 
 Then wire it into `<Admin>`:
 
 ```tsx title="src/App.tsx"
-import { Layout } from "./Layout";
+import { Layout } from './Layout';
 
 const App = () => (
   <Admin dataProvider={dataProvider} layout={Layout}>
@@ -65,7 +63,7 @@ Light/dark mode switching is built in. The theme toggle button in the top naviga
 If you want to force a specific mode as the default, you can initialize the store value in your app:
 
 ```tsx title="src/App.tsx"
-import { localStorageStore } from "@strato-admin/admin";
+import { localStorageStore } from '@strato-admin/admin';
 
 // Pre-set the theme to dark mode
 const store = localStorageStore();
@@ -102,6 +100,7 @@ const App = () => (
 ## Summary
 
 In this chapter, we've learned how to:
+
 - Set the application title with the `title` prop on `<Admin>`.
 - Provide a custom logo and header using `<TopNavigation>` and the `header` prop on `<AppLayout>`.
 - Override the entire layout by passing a custom `layout` component to `<Admin>`.

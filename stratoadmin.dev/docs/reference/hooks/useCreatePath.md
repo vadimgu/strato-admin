@@ -6,12 +6,12 @@ sidebar_label: useCreatePath
 
 Returns a function that generates URL paths for resource pages (list, detail, edit, create). Strato overrides the react-admin default with its own routing scheme:
 
-| Page | Path |
-|------|------|
-| List | `/:resource` |
-| Detail | `/:resource/:id` |
-| Edit | `/:resource/:id/edit` |
-| Create | `/:resource/create` |
+| Page   | Path                  |
+| ------ | --------------------- |
+| List   | `/:resource`          |
+| Detail | `/:resource/:id`      |
+| Edit   | `/:resource/:id/edit` |
+| Create | `/:resource/create`   |
 
 ```tsx
 import { useCreatePath } from '@strato-admin/core';

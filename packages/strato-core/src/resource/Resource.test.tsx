@@ -1,11 +1,7 @@
 import * as React from 'react';
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
-import {
-  TestMemoryRouter,
-  CoreAdminContext,
-  useRouterProvider,
-} from '@strato-admin/ra-core';
+import { TestMemoryRouter, CoreAdminContext, useRouterProvider } from '@strato-admin/ra-core';
 import { Resource } from './Resource';
 
 const List = () => <div>List</div>;
@@ -14,33 +10,31 @@ const Edit = () => <div>Edit</div>;
 const Show = () => <div>Show</div>;
 const Nested = () => <div>Nested</div>;
 
-const ResourceTestWrapper = ({ initialEntries, children }: { initialEntries: string[], children: React.ReactNode }) => {
+const ResourceTestWrapper = ({ initialEntries, children }: { initialEntries: string[]; children: React.ReactNode }) => {
   return (
     <TestMemoryRouter initialEntries={initialEntries}>
-        <CoreAdminContext>
-            <Wrapper path="/posts/*">
-                {children}
-            </Wrapper>
-        </CoreAdminContext>
+      <CoreAdminContext>
+        <Wrapper path="/posts/*">{children}</Wrapper>
+      </CoreAdminContext>
     </TestMemoryRouter>
   );
 };
 
-const Wrapper = ({ path, children }: { path: string, children: React.ReactNode }) => {
-    const { Route, Routes } = useRouterProvider();
-    return (
-        <Routes>
-            <Route path={path} element={children} />
-        </Routes>
-    );
-}
+const Wrapper = ({ path, children }: { path: string; children: React.ReactNode }) => {
+  const { Route, Routes } = useRouterProvider();
+  return (
+    <Routes>
+      <Route path={path} element={children} />
+    </Routes>
+  );
+};
 
 describe('Resource (Strato)', () => {
   it('renders the list view at the base path', async () => {
     render(
       <ResourceTestWrapper initialEntries={['/posts']}>
         <Resource name="posts" list={List} />
-      </ResourceTestWrapper>
+      </ResourceTestWrapper>,
     );
     await screen.findByText('List');
   });
@@ -49,7 +43,7 @@ describe('Resource (Strato)', () => {
     render(
       <ResourceTestWrapper initialEntries={['/posts/create']}>
         <Resource name="posts" create={Create} />
-      </ResourceTestWrapper>
+      </ResourceTestWrapper>,
     );
     await screen.findByText('Create');
   });
@@ -58,7 +52,7 @@ describe('Resource (Strato)', () => {
     render(
       <ResourceTestWrapper initialEntries={['/posts/123/edit']}>
         <Resource name="posts" edit={Edit} />
-      </ResourceTestWrapper>
+      </ResourceTestWrapper>,
     );
     await screen.findByText('Edit');
   });
@@ -67,23 +61,25 @@ describe('Resource (Strato)', () => {
     render(
       <ResourceTestWrapper initialEntries={['/posts/123']}>
         <Resource name="posts" show={Show} />
-      </ResourceTestWrapper>
+      </ResourceTestWrapper>,
     );
     await screen.findByText('Show');
   });
 
   it('renders nested resources before the base detail view', async () => {
     const NestedResource = () => {
-        const { Route } = useRouterProvider();
-        return <Resource name="posts" show={Show}>
-            <Route path=":id/comments" element={<Nested />} />
-        </Resource>;
+      const { Route } = useRouterProvider();
+      return (
+        <Resource name="posts" show={Show}>
+          <Route path=":id/comments" element={<Nested />} />
+        </Resource>
+      );
     };
 
     render(
       <ResourceTestWrapper initialEntries={['/posts/123/comments']}>
         <NestedResource />
-      </ResourceTestWrapper>
+      </ResourceTestWrapper>,
     );
     await screen.findByText('Nested');
     expect(screen.queryByText('Show')).toBeNull();

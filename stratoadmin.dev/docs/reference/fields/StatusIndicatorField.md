@@ -31,10 +31,7 @@ Use `StatusIndicatorField.Label` children to map individual values to indicator 
 Pass a `mapping` object to map values to indicator types without JSX children.
 
 ```tsx
-<StatusIndicatorField
-  source="status"
-  mapping={{ active: 'success', pending: 'pending', error: 'error' }}
-/>
+<StatusIndicatorField source="status" mapping={{ active: 'success', pending: 'pending', error: 'error' }} />
 ```
 
 ### Dynamic Type via Function
@@ -42,10 +39,7 @@ Pass a `mapping` object to map values to indicator types without JSX children.
 Use a function for `type` when the indicator type depends on runtime logic.
 
 ```tsx
-<StatusIndicatorField
-  source="score"
-  type={(value) => (value >= 80 ? 'success' : value >= 50 ? 'warning' : 'error')}
-/>
+<StatusIndicatorField source="score" type={(value) => (value >= 80 ? 'success' : value >= 50 ? 'warning' : 'error')} />
 ```
 
 ### Fixed Type

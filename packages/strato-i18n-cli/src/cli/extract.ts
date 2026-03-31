@@ -187,7 +187,16 @@ interface ExtractedMessage {
 }
 
 function main() {
-  const { srcPattern, outDir, localeArgs, format: formatArg, config: configPath, outFile: explicitOutFile, ignorePatterns, locale: explicitLocale } = parseArgs();
+  const {
+    srcPattern,
+    outDir,
+    localeArgs,
+    format: formatArg,
+    config: configPath,
+    outFile: explicitOutFile,
+    ignorePatterns,
+    locale: explicitLocale,
+  } = parseArgs();
   const { components, translatableProps } = loadConfig(configPath);
 
   console.log(`Extracting messages from ${srcPattern} (using Babel)...`);
@@ -198,9 +207,9 @@ function main() {
   let files = globSync(srcPattern, { absolute: true });
 
   if (ignorePatterns.length > 0) {
-    files = files.filter(file => {
+    files = files.filter((file) => {
       const relativeFile = path.relative(process.cwd(), file);
-      const isIgnored = ignorePatterns.some(pattern => minimatch(relativeFile, pattern));
+      const isIgnored = ignorePatterns.some((pattern) => minimatch(relativeFile, pattern));
       return !isIgnored;
     });
   }
@@ -211,16 +220,28 @@ function main() {
   } else {
     console.log('Sample files:', files.slice(0, 5));
   }
-  
+
   const extractedMessages = new Map<string, ExtractedMessage>();
 
-  const addExtractedMessage = (msgid: string, msgctxt: string | undefined, location: string, translatorComment?: string, precomputedHash?: string) => {
+  const addExtractedMessage = (
+    msgid: string,
+    msgctxt: string | undefined,
+    location: string,
+    translatorComment?: string,
+    precomputedHash?: string,
+  ) => {
     const normalizedMsgid = normalizeMessage(msgid);
     const prettyMsgid = prettyPrintICU(msgid);
     const key = precomputedHash ? `hash:${precomputedHash}` : msgctxt ? `ctx:${msgctxt}` : `msg:${normalizedMsgid}`;
 
     if (!extractedMessages.has(key)) {
-      extractedMessages.set(key, { msgid: prettyMsgid, msgctxt, precomputedHash, locations: new Set(), translatorComment });
+      extractedMessages.set(key, {
+        msgid: prettyMsgid,
+        msgctxt,
+        precomputedHash,
+        locations: new Set(),
+        translatorComment,
+      });
     }
     extractedMessages.get(key)!.locations.add(location);
   };
@@ -259,12 +280,10 @@ function main() {
               if (args.length > 1) {
                 const secondArg = args[1];
                 if (t.isObjectExpression(secondArg)) {
-                  const defaultProp = secondArg.properties.find(
-                    (prop) => {
-                      const isMatch = t.isObjectProperty(prop) && t.isIdentifier(prop.key) && prop.key.name === '_';
-                      return isMatch;
-                    }
-                  );
+                  const defaultProp = secondArg.properties.find((prop) => {
+                    const isMatch = t.isObjectProperty(prop) && t.isIdentifier(prop.key) && prop.key.name === '_';
+                    return isMatch;
+                  });
                   if (defaultProp && t.isObjectProperty(defaultProp)) {
                     if (t.isStringLiteral(defaultProp.value)) {
                       msgid = defaultProp.value.value;
@@ -466,7 +485,16 @@ function main() {
       }
     }
 
-    const updatedTranslations: Record<string, { defaultMessage: string; translation: string; locations?: string[]; msgctxt?: string; translatorComment?: string }> = {};
+    const updatedTranslations: Record<
+      string,
+      {
+        defaultMessage: string;
+        translation: string;
+        locations?: string[];
+        msgctxt?: string;
+        translatorComment?: string;
+      }
+    > = {};
     let addedCount = 0;
 
     extractedMessages.forEach((data) => {
@@ -525,11 +553,11 @@ function main() {
 
         // To achieve multi-line PO visual without \n, we must ensure the strings
         // themselves don't have newlines before gettext-parser sees them.
-        // However, we WANT the structured look. 
+        // However, we WANT the structured look.
         // If we want gettext-parser to wrap, we usually can't control it.
-        // Instead, we will use our previously successful "compiledPo.replace" approach 
+        // Instead, we will use our previously successful "compiledPo.replace" approach
         // but with a better regex that actually works on the serialized output.
-        
+
         poData.translations[context][data.defaultMessage] = {
           msgid: data.defaultMessage,
           msgctxt: data.msgctxt ? data.msgctxt : undefined,

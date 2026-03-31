@@ -8,9 +8,7 @@
 import { SaveButton } from '@strato-admin/cloudscape';
 
 // Default usage inside Create/Edit — no props required
-<Create actions={<SaveButton />}>
-  ...
-</Create>
+<Create actions={<SaveButton />}>...</Create>;
 ```
 
 `<Create>` and `<Edit>` already include a `SaveButton` by default. Use this component only when you need to customise the label, variant, or add additional actions alongside it.
@@ -34,12 +32,14 @@ The button label defaults to the translated string for `strato.action.save` ("Sa
 `<Create>` and `<Edit>` include both `<CancelButton>` and `<SaveButton>` in the default toolbar. To customise, pass your own `toolbar`:
 
 ```tsx
-<Create toolbar={
-  <SpaceBetween direction="horizontal" size="xs">
-    <CancelButton />
-    <SaveButton label="Publish" />
-  </SpaceBetween>
-}>
+<Create
+  toolbar={
+    <SpaceBetween direction="horizontal" size="xs">
+      <CancelButton />
+      <SaveButton label="Publish" />
+    </SpaceBetween>
+  }
+>
   ...
 </Create>
 ```
@@ -63,4 +63,3 @@ Override the button label. Useful for domain-specific phrasing such as `"Publish
 **Default:** `'primary'`
 
 Controls the Cloudscape button style. `SaveButton` is almost always `primary` since it is the main form action.
-

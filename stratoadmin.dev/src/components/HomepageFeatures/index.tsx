@@ -19,7 +19,9 @@ function IconOpenSource() {
       <circle cx="32" cy="32" r="22" stroke="currentColor" strokeWidth="3" />
       <path
         d="M32 10v6M32 48v6M10 32h6M48 32h6M16.1 16.1l4.2 4.2M43.7 43.7l4.2 4.2M16.1 47.9l4.2-4.2M43.7 20.3l4.2-4.2"
-        stroke="currentColor" strokeWidth="3" strokeLinecap="round"
+        stroke="currentColor"
+        strokeWidth="3"
+        strokeLinecap="round"
       />
       <circle cx="32" cy="32" r="8" stroke="currentColor" strokeWidth="3" />
     </svg>
@@ -31,7 +33,9 @@ function IconCloudscape() {
     <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" className={styles.featureIcon}>
       <path
         d="M48 38a12 12 0 00-22-6.7A10 10 0 1016 42h32a8 8 0 000-4z"
-        stroke="currentColor" strokeWidth="3" strokeLinejoin="round"
+        stroke="currentColor"
+        strokeWidth="3"
+        strokeLinejoin="round"
       />
       <path d="M24 50h16M32 42v10" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
     </svg>
@@ -61,8 +65,8 @@ const FeatureList: FeatureItem[] = [
     Icon: IconDeclarative,
     description: (
       <>
-        Define <b>what</b> you want and let the framework handle the <b>how</b>. Strato Admin turns
-        resource declarations into fully functional CRUD interfaces with minimal boilerplate.
+        Define <b>what</b> you want and let the framework handle the <b>how</b>. Strato Admin turns resource
+        declarations into fully functional CRUD interfaces with minimal boilerplate.
       </>
     ),
   },
@@ -88,8 +92,8 @@ const FeatureList: FeatureItem[] = [
         <a href="https://cloudscape.design" target="_blank" rel="noopener noreferrer">
           AWS Cloudscape
         </a>
-        , the same design system used across AWS products. Your admin gets a polished, accessible UI
-        with zero design work.
+        , the same design system used across AWS products. Your admin gets a polished, accessible UI with zero design
+        work.
       </>
     ),
   },
@@ -98,8 +102,8 @@ const FeatureList: FeatureItem[] = [
     Icon: IconSchema,
     description: (
       <>
-        Define field types, labels, and relationships once in a schema. Lists, forms, and detail
-        views all stay in sync — no repetition, no drift.
+        Define field types, labels, and relationships once in a schema. Lists, forms, and detail views all stay in sync
+        — no repetition, no drift.
       </>
     ),
   },

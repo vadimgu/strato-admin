@@ -36,12 +36,12 @@ const dataProvider = jsonServerProvider('https://jsonplaceholder.typicode.com');
 
 Popular options include:
 
-| Package | Backend |
-|---|---|
-| `ra-data-json-server` | JSON Server |
-| `ra-data-simple-rest` | Simple REST (CRUD with `Content-Range`) |
-| `ra-data-fakerest` | In-memory fake data (for development/testing) |
-| `ra-data-graphql` | GraphQL |
+| Package               | Backend                                       |
+| --------------------- | --------------------------------------------- |
+| `ra-data-json-server` | JSON Server                                   |
+| `ra-data-simple-rest` | Simple REST (CRUD with `Content-Range`)       |
+| `ra-data-fakerest`    | In-memory fake data (for development/testing) |
+| `ra-data-graphql`     | GraphQL                                       |
 
 ## The DataProvider Interface
 
@@ -49,15 +49,15 @@ A data provider is a plain object implementing nine methods. Each method receive
 
 ```ts
 const dataProvider = {
-  getList:           (resource, params) => Promise<{ data, total }>,
-  getOne:            (resource, params) => Promise<{ data }>,
-  getMany:           (resource, params) => Promise<{ data }>,
-  getManyReference:  (resource, params) => Promise<{ data, total }>,
-  create:            (resource, params) => Promise<{ data }>,
-  update:            (resource, params) => Promise<{ data }>,
-  updateMany:        (resource, params) => Promise<{ data }>,
-  delete:            (resource, params) => Promise<{ data }>,
-  deleteMany:        (resource, params) => Promise<{ data }>,
+  getList: (resource, params) => Promise<{ data; total }>,
+  getOne: (resource, params) => Promise<{ data }>,
+  getMany: (resource, params) => Promise<{ data }>,
+  getManyReference: (resource, params) => Promise<{ data; total }>,
+  create: (resource, params) => Promise<{ data }>,
+  update: (resource, params) => Promise<{ data }>,
+  updateMany: (resource, params) => Promise<{ data }>,
+  delete: (resource, params) => Promise<{ data }>,
+  deleteMany: (resource, params) => Promise<{ data }>,
 };
 ```
 
@@ -68,9 +68,9 @@ Fetches a paginated, sorted, filtered list of records. Called when rendering `<L
 ```ts
 getList('products', {
   pagination: { page: 1, perPage: 10 },
-  sort:       { field: 'name', order: 'ASC' },
-  filter:     { category_id: 3 },
-})
+  sort: { field: 'name', order: 'ASC' },
+  filter: { category_id: 3 },
+});
 // → { data: Product[], total: 42 }
 ```
 
@@ -81,7 +81,7 @@ The result must include `data` (an array of records) and either `total` (integer
 Fetches a single record by ID. Called when rendering detail and edit views.
 
 ```ts
-getOne('products', { id: 5 })
+getOne('products', { id: 5 });
 // → { data: Product }
 ```
 
@@ -90,7 +90,7 @@ getOne('products', { id: 5 })
 Fetches multiple records by an array of IDs. Called by `<ReferenceField>` to batch-load referenced records.
 
 ```ts
-getMany('categories', { ids: [1, 2, 3] })
+getMany('categories', { ids: [1, 2, 3] });
 // → { data: Category[] }
 ```
 
@@ -105,7 +105,7 @@ getManyReference('reviews', {
   pagination: { page: 1, perPage: 25 },
   sort: { field: 'date', order: 'DESC' },
   filter: {},
-})
+});
 // → { data: Review[], total: 7 }
 ```
 
@@ -114,7 +114,7 @@ getManyReference('reviews', {
 Creates a new record. Called on form submit in a `<Create>` view.
 
 ```ts
-create('products', { data: { name: 'Widget', price: 9.99 } })
+create('products', { data: { name: 'Widget', price: 9.99 } });
 // → { data: { id: 101, name: 'Widget', price: 9.99 } }
 ```
 
@@ -129,7 +129,7 @@ update('products', {
   id: 101,
   data: { name: 'Super Widget' },
   previousData: { id: 101, name: 'Widget', price: 9.99 },
-})
+});
 // → { data: { id: 101, name: 'Super Widget', price: 9.99 } }
 ```
 
@@ -138,7 +138,7 @@ update('products', {
 Bulk-updates multiple records. Called by bulk action buttons.
 
 ```ts
-updateMany('products', { ids: [1, 2, 3], data: { status: 'archived' } })
+updateMany('products', { ids: [1, 2, 3], data: { status: 'archived' } });
 // → { data: [1, 2, 3] }  // array of updated IDs
 ```
 
@@ -147,7 +147,7 @@ updateMany('products', { ids: [1, 2, 3], data: { status: 'archived' } })
 Deletes a single record.
 
 ```ts
-delete('products', { id: 101, previousData: { id: 101, name: 'Widget' } })
+delete ('products', { id: 101, previousData: { id: 101, name: 'Widget' } });
 // → { data: { id: 101, name: 'Widget' } }
 ```
 
@@ -156,7 +156,7 @@ delete('products', { id: 101, previousData: { id: 101, name: 'Widget' } })
 Bulk-deletes multiple records. Called by `<BulkDeleteButton>`.
 
 ```ts
-deleteMany('products', { ids: [1, 2, 3] })
+deleteMany('products', { ids: [1, 2, 3] });
 // → { data: [1, 2, 3] }  // array of deleted IDs
 ```
 
@@ -175,15 +175,15 @@ export const myDataProvider: DataProvider = {
     const { page, perPage } = params.pagination;
     const { field, order } = params.sort;
     const query = new URLSearchParams({
-      _page:   String(page),
-      _limit:  String(perPage),
-      _sort:   field,
-      _order:  order,
+      _page: String(page),
+      _limit: String(perPage),
+      _sort: field,
+      _order: order,
       ...params.filter,
     });
     const { json, headers } = await fetchJson(`${API_URL}/${resource}?${query}`);
     return {
-      data:  json,
+      data: json,
       total: parseInt(headers.get('X-Total-Count') ?? '0', 10),
     };
   },
@@ -194,7 +194,7 @@ export const myDataProvider: DataProvider = {
   },
 
   getMany: async (resource, params) => {
-    const ids = params.ids.map(id => `id=${id}`).join('&');
+    const ids = params.ids.map((id) => `id=${id}`).join('&');
     const { json } = await fetchJson(`${API_URL}/${resource}?${ids}`);
     return { data: json };
   },
@@ -203,12 +203,12 @@ export const myDataProvider: DataProvider = {
     const { page, perPage } = params.pagination;
     const query = new URLSearchParams({
       [params.target]: String(params.id),
-      _page:  String(page),
+      _page: String(page),
       _limit: String(perPage),
     });
     const { json, headers } = await fetchJson(`${API_URL}/${resource}?${query}`);
     return {
-      data:  json,
+      data: json,
       total: parseInt(headers.get('X-Total-Count') ?? '0', 10),
     };
   },
@@ -231,12 +231,12 @@ export const myDataProvider: DataProvider = {
 
   updateMany: async (resource, params) => {
     await Promise.all(
-      params.ids.map(id =>
+      params.ids.map((id) =>
         fetchJson(`${API_URL}/${resource}/${id}`, {
           method: 'PUT',
           body: JSON.stringify(params.data),
-        })
-      )
+        }),
+      ),
     );
     return { data: params.ids };
   },
@@ -249,11 +249,7 @@ export const myDataProvider: DataProvider = {
   },
 
   deleteMany: async (resource, params) => {
-    await Promise.all(
-      params.ids.map(id =>
-        fetchJson(`${API_URL}/${resource}/${id}`, { method: 'DELETE' })
-      )
-    );
+    await Promise.all(params.ids.map((id) => fetchJson(`${API_URL}/${resource}/${id}`, { method: 'DELETE' })));
     return { data: params.ids };
   },
 };

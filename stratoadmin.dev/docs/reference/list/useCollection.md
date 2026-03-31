@@ -13,9 +13,7 @@ This is the hook used internally by [`<Table>`](./Table.md) and [`<Cards>`](./Ca
 ```ts
 import { useCollection } from '@strato-admin/cloudscape';
 
-function useCollection<T extends RaRecord>(
-  options: UseCollectionOptions<T>
-): UseCollectionResult<T>
+function useCollection<T extends RaRecord>(options: UseCollectionOptions<T>): UseCollectionResult<T>;
 ```
 
 Must be called inside a `ListContext` (i.e. a descendant of `<List>`, `<ReferenceManyField>`, or `<ArrayField>`).
@@ -120,24 +118,18 @@ Without this flag the full data array is returned as-is, which is correct for se
 ## Example
 
 ```tsx
-import {
-  Table,
-  Pagination,
-  TextFilter,
-  CollectionPreferences,
-} from '@cloudscape-design/components';
+import { Table, Pagination, TextFilter, CollectionPreferences } from '@cloudscape-design/components';
 import { useCollection } from '@strato-admin/cloudscape';
 
 function CustomTable() {
-  const { items, collectionProps, paginationProps, filterProps, preferencesProps } =
-    useCollection({
-      preferences: {
-        pageSizeOptions: [
-          { value: 10, label: '10' },
-          { value: 25, label: '25' },
-        ],
-      },
-    });
+  const { items, collectionProps, paginationProps, filterProps, preferencesProps } = useCollection({
+    preferences: {
+      pageSizeOptions: [
+        { value: 10, label: '10' },
+        { value: 25, label: '25' },
+      ],
+    },
+  });
 
   return (
     <Table

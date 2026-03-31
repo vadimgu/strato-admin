@@ -54,8 +54,8 @@ function CodeExample() {
           <div className={styles.codeExampleText}>
             <Heading as="h2">Up and running in minutes</Heading>
             <p>
-              Define your resources and StratoAdmin generates fully functional list, create, edit,
-              and show pages — all powered by AWS Cloudscape components.
+              Define your resources and StratoAdmin generates fully functional list, create, edit, and show pages — all
+              powered by AWS Cloudscape components.
             </p>
             <Link className="button button--primary" to="/docs/getting-started/tutorial/">
               Follow the tutorial →
@@ -108,7 +108,6 @@ function HowItWorks() {
     </section>
   );
 }
-
 
 export default function Home(): ReactNode {
   const { siteConfig } = useDocusaurusContext();

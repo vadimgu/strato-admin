@@ -38,11 +38,11 @@ The hook itself is called once per component. The returned `resolve` function ca
 
 ## Parameters of the resolver
 
-| Parameter    | Type                       | Description                                                                 |
-| :----------- | :------------------------- | :-------------------------------------------------------------------------- |
-| `propValue`  | `AdminSettings[K] \| undefined` | The component's own prop, already destructured. Pass `undefined` to skip.   |
-| `settingKey` | `keyof AdminSettings`      | The `AdminSettings` key to look up as the fallback.                         |
-| `schemaValue`| `AdminSettings[K] \| undefined` | Optional middle-tier override (e.g. a per-resource schema value). Optional. |
+| Parameter     | Type                            | Description                                                                 |
+| :------------ | :------------------------------ | :-------------------------------------------------------------------------- |
+| `propValue`   | `AdminSettings[K] \| undefined` | The component's own prop, already destructured. Pass `undefined` to skip.   |
+| `settingKey`  | `keyof AdminSettings`           | The `AdminSettings` key to look up as the fallback.                         |
+| `schemaValue` | `AdminSettings[K] \| undefined` | Optional middle-tier override (e.g. a per-resource schema value). Optional. |
 
 The resolver uses strict `!== undefined` checks (not `??`) at every tier, so that `false` is treated as an intentional value — for example, `resolve(false, 'editRedirect')` returns `false` (disabling redirect) rather than falling through to the setting.
 

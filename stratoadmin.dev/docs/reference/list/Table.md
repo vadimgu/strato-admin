@@ -56,12 +56,12 @@ Use `display` to control which columns are visible by default (others are still 
 
 ## Column components
 
-| Component | Renders with |
-|---|---|
-| `Table.Column` | `<TextField>` |
-| `Table.NumberColumn` | `<NumberField>` (right-aligned) |
-| `Table.DateColumn` | `<DateField>` |
-| `Table.BooleanColumn` | `<BooleanField>` |
+| Component               | Renders with                                   |
+| ----------------------- | ---------------------------------------------- |
+| `Table.Column`          | `<TextField>`                                  |
+| `Table.NumberColumn`    | `<NumberField>` (right-aligned)                |
+| `Table.DateColumn`      | `<DateField>`                                  |
+| `Table.BooleanColumn`   | `<BooleanField>`                               |
 | `Table.ReferenceColumn` | `<ReferenceField>` — requires `reference` prop |
 
 All column components accept a `source` prop and an optional `link` prop (see [common field props](../fields/common-props.md#link)). You can also pass a custom `field` component:

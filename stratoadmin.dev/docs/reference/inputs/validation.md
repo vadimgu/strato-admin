@@ -81,10 +81,7 @@ Fails when the value is not a valid email address. Passes when empty.
 Fails when the string does not match the regular expression. Passes when empty.
 
 ```tsx
-<TextInput
-  source="zip"
-  validate={regex(/^\d{5}$/, 'Must be a 5-digit ZIP code')}
-/>
+<TextInput source="zip" validate={regex(/^\d{5}$/, 'Must be a 5-digit ZIP code')} />
 ```
 
 ### `choices(list, message?)`
@@ -92,10 +89,7 @@ Fails when the string does not match the regular expression. Passes when empty.
 Fails when the value is not in the provided list. Most useful for custom inputs; `<SelectInput>` validates choices automatically.
 
 ```tsx
-<TextInput
-  source="status"
-  validate={choices(['draft', 'published', 'archived'])}
-/>
+<TextInput source="status" validate={choices(['draft', 'published', 'archived'])} />
 ```
 
 ## Combining Validators
@@ -105,10 +99,7 @@ Pass an array to apply multiple validators. They run in order and stop at the fi
 ```tsx
 import { TextInput, required, minLength, maxLength } from '@strato-admin/admin';
 
-<TextInput
-  source="username"
-  validate={[required(), minLength(3), maxLength(20)]}
-/>
+<TextInput source="username" validate={[required(), minLength(3), maxLength(20)]} />;
 ```
 
 ## Custom Validators
@@ -116,19 +107,17 @@ import { TextInput, required, minLength, maxLength } from '@strato-admin/admin';
 A validator is a function with the signature `(value, allValues) => string | undefined`. Return an error message string to fail, or `undefined` to pass.
 
 ```tsx
-const mustBePositive = (value) =>
-  value > 0 ? undefined : 'Must be a positive number';
+const mustBePositive = (value) => (value > 0 ? undefined : 'Must be a positive number');
 
-<NumberInput source="price" validate={mustBePositive} />
+<NumberInput source="price" validate={mustBePositive} />;
 ```
 
 You can access the entire form state via the second argument:
 
 ```tsx
-const passwordsMatch = (value, allValues) =>
-  value !== allValues.password ? 'Passwords do not match' : undefined;
+const passwordsMatch = (value, allValues) => (value !== allValues.password ? 'Passwords do not match' : undefined);
 
-<TextInput source="password_confirm" validate={passwordsMatch} />
+<TextInput source="password_confirm" validate={passwordsMatch} />;
 ```
 
 ## Async Validators
@@ -142,7 +131,7 @@ const isSlugAvailable = async (value) => {
   return available ? undefined : 'This slug is already taken';
 };
 
-<TextInput source="slug" validate={[required(), isSlugAvailable]} />
+<TextInput source="slug" validate={[required(), isSlugAvailable]} />;
 ```
 
 :::tip Memoize inline validators
@@ -170,18 +159,18 @@ Options can be passed to `useUnique()` at declaration time or to the returned `u
 ```tsx
 // At declaration time
 const unique = useUnique({ message: 'This email is already registered' });
-<TextInput source="email" validate={unique()} />
+<TextInput source="email" validate={unique()} />;
 
 // At call time
 const unique = useUnique();
-<TextInput source="email" validate={unique({ message: 'Already taken' })} />
+<TextInput source="email" validate={unique({ message: 'Already taken' })} />;
 ```
 
-| Option | Type | Description |
-|--------|------|-------------|
-| `message` | `string` | Error message when uniqueness fails. Default: `'ra.validation.unique'` |
-| `filter` | `object` | Additional filters applied to the uniqueness check (e.g. scoping by tenant). |
-| `debounce` | `number` | Milliseconds to debounce the API call. **Default:** `1000` |
+| Option     | Type     | Description                                                                       |
+| ---------- | -------- | --------------------------------------------------------------------------------- |
+| `message`  | `string` | Error message when uniqueness fails. Default: `'ra.validation.unique'`            |
+| `filter`   | `object` | Additional filters applied to the uniqueness check (e.g. scoping by tenant).      |
+| `debounce` | `number` | Milliseconds to debounce the API call. **Default:** `1000`                        |
 | `resource` | `string` | Override the resource to check against. Defaults to the current resource context. |
 
 **Scoping uniqueness with a filter:**
@@ -190,10 +179,7 @@ const unique = useUnique();
 const unique = useUnique();
 
 // username unique within the user's organization
-<TextInput
-  source="username"
-  validate={unique({ filter: { organization_id: formData.organization_id } })}
-/>
+<TextInput source="username" validate={unique({ filter: { organization_id: formData.organization_id } })} />;
 ```
 
 ## Form-Level Validation
@@ -208,9 +194,7 @@ const validateOrder = (values) => {
   return errors;
 };
 
-<Create validate={validateOrder}>
-  ...
-</Create>
+<Create validate={validateOrder}>...</Create>;
 ```
 
 Form-level validation runs on every submit attempt. Per-field and form-level validation can be used together.

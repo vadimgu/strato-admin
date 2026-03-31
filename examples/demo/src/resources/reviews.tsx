@@ -1,11 +1,4 @@
-import {
-  ResourceSchema,
-  TextField,
-  DateField,
-  ReferenceField,
-  StatusIndicatorField,
-  Cards,
-} from '@strato-admin/admin';
+import { ResourceSchema, TextField, DateField, ReferenceField, StatusIndicatorField, Cards } from '@strato-admin/admin';
 import StarRatingField from '../components/StarRatingField';
 
 export const reviewResource = (
@@ -16,7 +9,7 @@ export const reviewResource = (
     create={false}
     listComponent={Cards}
     perPage={16}
-    listInclude={["id", "date", "rating", "comment"]}
+    listInclude={['id', 'date', 'rating', 'comment']}
   >
     <TextField source="id" label="ID" link="detail" sortable />
     <DateField source="date" label="Date" sortable />
@@ -31,4 +24,3 @@ export const reviewResource = (
     <TextField source="comment" label="Comment" />
   </ResourceSchema>
 );
-

@@ -1,11 +1,5 @@
 import React from 'react';
-import {
-  EditBase,
-  useEditContext,
-  type RaRecord,
-  type EditBaseProps,
-  useTranslate,
-} from '@strato-admin/ra-core';
+import { EditBase, useEditContext, type RaRecord, type EditBaseProps, useTranslate } from '@strato-admin/ra-core';
 import {
   ResourceSchemaProvider,
   useResourceSchema,
@@ -16,8 +10,10 @@ import Container from '@cloudscape-design/components/container';
 import { EditHeader } from './EditHeader';
 import Form from '../form/Form';
 
-export interface EditProps<RecordType extends RaRecord = RaRecord, ErrorType = Error>
-  extends EditBaseProps<RecordType, ErrorType> {
+export interface EditProps<RecordType extends RaRecord = RaRecord, ErrorType = Error> extends EditBaseProps<
+  RecordType,
+  ErrorType
+> {
   children?: React.ReactNode;
   title?: React.ReactNode | ((record: RecordType) => React.ReactNode);
   description?: React.ReactNode | ((record: RecordType) => React.ReactNode);
@@ -78,9 +74,7 @@ const EditUI = ({
 
   const finalSaveButtonLabel = saveButtonLabel ? translate(saveButtonLabel) : translate('Save');
 
-  const finalChildren = children || (
-    <Form include={include} exclude={exclude} saveButtonLabel={finalSaveButtonLabel} />
-  );
+  const finalChildren = children || <Form include={include} exclude={exclude} saveButtonLabel={finalSaveButtonLabel} />;
 
   return (
     <Container header={<EditHeader title={finalTitle} description={finalDescription} actions={actions} />}>

@@ -68,7 +68,7 @@ describe('TableHeader', () => {
     cleanup();
   });
 
-  it('should render title and counter', () => {
+  it('should render title', () => {
     (useResourceContext as any).mockReturnValue('products');
     (useListContext as any).mockReturnValue({
       total: 10,
@@ -78,10 +78,10 @@ describe('TableHeader', () => {
     });
     (useResourceDefinitions as any).mockReturnValue({ products: { hasCreate: false } });
 
-    const { getByTestId } = render(<TableHeader />);
+    const { getByTestId, queryByTestId } = render(<TableHeader />);
 
     expect(getByTestId('header-title').textContent).toBe('Products');
-    expect(getByTestId('header-counter').textContent).toBe('(10)');
+    expect(queryByTestId('header-counter')).toBeNull();
   });
 
   it('should render actions by default', () => {

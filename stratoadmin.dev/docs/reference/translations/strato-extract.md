@@ -10,22 +10,22 @@ strato-extract [options] <src-pattern> [<output-glob> | <locale-dir> [locale...]
 
 ## Arguments
 
-| Argument | Description |
-| :--- | :--- |
-| `src-pattern` | Glob matching source files to scan. **Default:** `src/**/*.{ts,tsx}` |
+| Argument      | Description                                                                                                                                              |
+| :------------ | :------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `src-pattern` | Glob matching source files to scan. **Default:** `src/**/*.{ts,tsx}`                                                                                     |
 | `output-glob` | A glob containing `*` — matched files are used as output targets. The locale is inferred from the directory name (e.g. `locales/fr/messages.po` → `fr`). |
-| `locale-dir` | Directory to write locale files into. Pass one or more locale codes as additional args. |
-| `locale...` | Locale codes to generate when using the `locale-dir` form. **Default:** `en` |
+| `locale-dir`  | Directory to write locale files into. Pass one or more locale codes as additional args.                                                                  |
+| `locale...`   | Locale codes to generate when using the `locale-dir` form. **Default:** `en`                                                                             |
 
 ## Options
 
-| Option | Short | Description |
-| :--- | :--- | :--- |
-| `--format <fmt>` | `-f` | Output format: `po` or `json`. Inferred from the file extension when not specified. |
-| `--config <path>` | | Path to a custom `strato-i18n.config.json`. Defaults to `./strato-i18n.config.json`. |
-| `--out-file <path>` | `-o` | Write all extracted messages to a single file. When used, only the first matched output file is written. |
-| `--locale <code>` | `-l` | Locale code to use when `--out-file` is set. |
-| `--ignore <glob>` | `-i` | Exclude files matching this glob. May be repeated. |
+| Option              | Short | Description                                                                                              |
+| :------------------ | :---- | :------------------------------------------------------------------------------------------------------- |
+| `--format <fmt>`    | `-f`  | Output format: `po` or `json`. Inferred from the file extension when not specified.                      |
+| `--config <path>`   |       | Path to a custom `strato-i18n.config.json`. Defaults to `./strato-i18n.config.json`.                     |
+| `--out-file <path>` | `-o`  | Write all extracted messages to a single file. When used, only the first matched output file is written. |
+| `--locale <code>`   | `-l`  | Locale code to use when `--out-file` is set.                                                             |
+| `--ignore <glob>`   | `-i`  | Exclude files matching this glob. May be repeated.                                                       |
 
 ## Examples
 
@@ -83,11 +83,11 @@ These components are handled differently from other Strato components: the extra
 
 Each supports three special props that control how the PO entry is generated:
 
-| Prop | PO effect | Runtime key |
-| :--- | :--- | :--- |
-| _(none)_ | `#. id: <hash(message)>` | `hash(message)` |
-| `id="action.save"` | `#. id: action.save` | `"action.save"` (literal) |
-| `context="nav"` | `msgctxt "nav"` + `#. id: <hash(nav\x04message)>` | `hash("nav\x04message")` |
+| Prop               | PO effect                                         | Runtime key               |
+| :----------------- | :------------------------------------------------ | :------------------------ |
+| _(none)_           | `#. id: <hash(message)>`                          | `hash(message)`           |
+| `id="action.save"` | `#. id: action.save`                              | `"action.save"` (literal) |
+| `context="nav"`    | `msgctxt "nav"` + `#. id: <hash(nav\x04message)>` | `hash("nav\x04message")`  |
 
 `id` takes priority over `context` when both are provided.
 
@@ -117,13 +117,13 @@ The extractor recognizes translatable props on these built-in Strato components:
 
 ## Default translatable props
 
-| Category | Props |
-| :--- | :--- |
-| Labels | `label`, `listLabel`, `createLabel`, `editLabel`, `detailLabel` |
-| Titles | `title`, `listTitle`, `createTitle`, `editTitle`, `detailTitle` |
+| Category     | Props                                                                                         |
+| :----------- | :-------------------------------------------------------------------------------------------- |
+| Labels       | `label`, `listLabel`, `createLabel`, `editLabel`, `detailLabel`                               |
+| Titles       | `title`, `listTitle`, `createTitle`, `editTitle`, `detailTitle`                               |
 | Descriptions | `description`, `listDescription`, `createDescription`, `editDescription`, `detailDescription` |
-| Form | `placeholder`, `emptyText`, `helperText`, `constraintText`, `saveButtonLabel` |
-| Feedback | `successMessage`, `errorMessage` |
+| Form         | `placeholder`, `emptyText`, `helperText`, `constraintText`, `saveButtonLabel`                 |
+| Feedback     | `successMessage`, `errorMessage`                                                              |
 
 ## Configuration file
 

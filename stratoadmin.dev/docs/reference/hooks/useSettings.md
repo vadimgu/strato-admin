@@ -50,11 +50,11 @@ const ResourcePreview = ({ resource }: { resource: string }) => {
 
 When no `<Settings>` prop is provided to `<Admin>`, the framework defaults apply:
 
-| Setting | Default |
-| :--- | :--- |
-| `listComponent` | `<Table>` |
-| `detailComponent` | `<DetailHub>` |
-| `deleteSuccessMessage` | `"Element deleted"` |
+| Setting                    | Default                                   |
+| :------------------------- | :---------------------------------------- |
+| `listComponent`            | `<Table>`                                 |
+| `detailComponent`          | `<DetailHub>`                             |
+| `deleteSuccessMessage`     | `"Element deleted"`                       |
 | `bulkDeleteSuccessMessage` | `"{count} elements deleted"` (ICU plural) |
 
 See [`<Settings>`](../Settings.md) for how to override these values.

@@ -72,9 +72,11 @@ describe('DetailHeader', () => {
     (useResourceContext as any).mockReturnValue('products');
     (useShowContext as any).mockReturnValue({ record: { id: 1 }, defaultTitle: 'Products' });
 
-    const { getByTestId, queryByText } = render(<DetailHeader actions={<div data-testid="custom-action">Custom</div>} />);
+    const { getByTestId, queryByText } = render(
+      <DetailHeader actions={<div data-testid="custom-action">Custom</div>} />,
+    );
 
     expect(getByTestId('custom-action')).toBeDefined();
-    expect(queryByText("strato.action.edit")).toBeNull();
+    expect(queryByText('strato.action.edit')).toBeNull();
   });
 });

@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 import { ExtractRecordPaths, type ResourceProps } from '@strato-admin/ra-core';
 import { ResourceSchemaProvider } from './ResourceSchemaProvider';
-import { Resource, } from './Resource';
+import { Resource } from './Resource';
 import {
   registerGlobalSchemas,
   useSchemaRegistry,
@@ -9,8 +9,10 @@ import {
   parseUnifiedSchema,
 } from './SchemaRegistry';
 
-export interface ResourceSchemaProps<RecordType extends Record<string, any> = any>
-  extends Omit<ResourceProps, 'list' | 'create' | 'edit' | 'show'> {
+export interface ResourceSchemaProps<RecordType extends Record<string, any> = any> extends Omit<
+  ResourceProps,
+  'list' | 'create' | 'edit' | 'show'
+> {
   /**
    * React elements that define the schema for fields and inputs (e.g., <TextField />, <TextInput />).
    */
@@ -275,14 +277,7 @@ export const ResourceSchema = <RecordType extends Record<string, any> = any>({
     // Wrap the list component to inject props from ResourceSchema
     return (listProps: any) => {
       const FinalList: any = listComponent;
-      return (
-        <FinalList
-          {...listProps}
-          filter={defaultFilters}
-          sort={defaultSort}
-          perPage={perPage}
-        />
-      );
+      return <FinalList {...listProps} filter={defaultFilters} sort={defaultSort} perPage={perPage} />;
     };
   };
 
@@ -313,7 +308,7 @@ ResourceSchema.raName = 'Resource';
  * We use it to register schemas globally before any component renders.
  */
 ResourceSchema.registerResource = <RecordType extends Record<string, any> = any>(
-  props: ResourceSchemaProps<RecordType>
+  props: ResourceSchemaProps<RecordType>,
 ) => {
   const {
     name,
@@ -434,14 +429,7 @@ ResourceSchema.registerResource = <RecordType extends Record<string, any> = any>
 
     return (listProps: any) => {
       const FinalList: any = listComponent;
-      return (
-        <FinalList
-          {...listProps}
-          filter={defaultFilters}
-          sort={defaultSort}
-          perPage={perPage}
-        />
-      );
+      return <FinalList {...listProps} filter={defaultFilters} sort={defaultSort} perPage={perPage} />;
     };
   };
 
@@ -450,11 +438,7 @@ ResourceSchema.registerResource = <RecordType extends Record<string, any> = any>
     list: canList ? getListComponent() : undefined,
     create: canCreate ? (create === true || create === undefined ? defaultComponents.create : create) : undefined,
     edit: canEdit ? (edit === true || edit === undefined ? defaultComponents.edit : edit) : undefined,
-    show: canShowDetails
-      ? detail === true || detail === undefined
-        ? defaultComponents.show
-        : detail
-      : undefined,
+    show: canShowDetails ? (detail === true || detail === undefined ? defaultComponents.show : detail) : undefined,
     options: mergedOptions,
   };
 

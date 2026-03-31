@@ -13,19 +13,19 @@ Each field component is mapped to a corresponding input component for forms. For
 
 When a field is included in a `ResourceSchema`, Strato Admin automatically infers the corresponding form input component. The mapping is:
 
-| Field | Inferred Input | Notes |
-|---|---|---|
-| `TextField` | `TextInput` | |
-| `NumberField` | `NumberInput` | |
-| `CurrencyField` | `NumberInput` | |
-| `ReferenceField` | `ReferenceInput` | |
-| `ArrayField` | `ArrayInput` | Children are recursively mapped |
-| `BooleanField` | `BooleanInput` | Renders a Cloudscape Toggle |
-| `DateField` | *(none)* | Excluded from forms by default |
-| `BadgeField` | *(none)* | Excluded from forms by default |
-| `StatusIndicatorField` | *(none)* | Excluded from forms by default |
-| `IdField` | *(none)* | Excluded from forms by default |
-| `ReferenceManyField` | *(none)* | Excluded from forms by default |
+| Field                  | Inferred Input   | Notes                           |
+| ---------------------- | ---------------- | ------------------------------- |
+| `TextField`            | `TextInput`      |                                 |
+| `NumberField`          | `NumberInput`    |                                 |
+| `CurrencyField`        | `NumberInput`    |                                 |
+| `ReferenceField`       | `ReferenceInput` |                                 |
+| `ArrayField`           | `ArrayInput`     | Children are recursively mapped |
+| `BooleanField`         | `BooleanInput`   | Renders a Cloudscape Toggle     |
+| `DateField`            | _(none)_         | Excluded from forms by default  |
+| `BadgeField`           | _(none)_         | Excluded from forms by default  |
+| `StatusIndicatorField` | _(none)_         | Excluded from forms by default  |
+| `IdField`              | _(none)_         | Excluded from forms by default  |
+| `ReferenceManyField`   | _(none)_         | Excluded from forms by default  |
 
 Fields with no inferred input are omitted from create and edit forms unless you explicitly provide an `input` prop.
 

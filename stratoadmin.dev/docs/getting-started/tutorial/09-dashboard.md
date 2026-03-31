@@ -15,7 +15,7 @@ Create `src/Dashboard.tsx`:
 ```tsx title="src/Dashboard.tsx"
 export const Dashboard = () => {
   return (
-    <div style={{ padding: "2rem" }}>
+    <div style={{ padding: '2rem' }}>
       <h1>StratoShop Overview</h1>
       {/* We'll fill this in below */}
     </div>
@@ -26,7 +26,7 @@ export const Dashboard = () => {
 Register it in `App.tsx`:
 
 ```tsx title="src/App.tsx"
-import { Dashboard } from "./Dashboard";
+import { Dashboard } from './Dashboard';
 
 const App = () => (
   <Admin dataProvider={dataProvider} dashboard={Dashboard}>
@@ -42,14 +42,14 @@ The `useGetList` hook fetches a paginated, sorted, filtered list of records — 
 Let's fetch the 5 most recent orders to display in a summary table:
 
 ```tsx title="src/Dashboard.tsx"
-import { useGetList } from "@strato-admin/admin";
-import Table from "@cloudscape-design/components/table";
-import Box from "@cloudscape-design/components/box";
-import Spinner from "@cloudscape-design/components/spinner";
+import { useGetList } from '@strato-admin/admin';
+import Table from '@cloudscape-design/components/table';
+import Box from '@cloudscape-design/components/box';
+import Spinner from '@cloudscape-design/components/spinner';
 
 export const RecentOrders = () => {
-  const { data: orders, isPending } = useGetList("orders", {
-    sort: { field: "date", order: "DESC" },
+  const { data: orders, isPending } = useGetList('orders', {
+    sort: { field: 'date', order: 'DESC' },
     pagination: { page: 1, perPage: 5 },
   });
 
@@ -58,10 +58,10 @@ export const RecentOrders = () => {
   return (
     <Table
       columnDefinitions={[
-        { id: "id", header: "Order #", cell: (item) => item.id },
-        { id: "customer", header: "Customer", cell: (item) => item.customer_id },
-        { id: "total", header: "Total", cell: (item) => `$${item.total}` },
-        { id: "status", header: "Status", cell: (item) => item.status },
+        { id: 'id', header: 'Order #', cell: (item) => item.id },
+        { id: 'customer', header: 'Customer', cell: (item) => item.customer_id },
+        { id: 'total', header: 'Total', cell: (item) => `$${item.total}` },
+        { id: 'status', header: 'Status', cell: (item) => item.status },
       ]}
       items={orders ?? []}
       header={<Box variant="h2">Recent Orders</Box>}
@@ -75,39 +75,31 @@ export const RecentOrders = () => {
 Cloudscape includes `BarChart` and `LineChart` components. Let's aggregate order totals by month to build a revenue chart.
 
 ```tsx title="src/Dashboard.tsx"
-import { useGetList } from "@strato-admin/admin";
-import BarChart from "@cloudscape-design/components/bar-chart";
-import Box from "@cloudscape-design/components/box";
-import Spinner from "@cloudscape-design/components/spinner";
+import { useGetList } from '@strato-admin/admin';
+import BarChart from '@cloudscape-design/components/bar-chart';
+import Box from '@cloudscape-design/components/box';
+import Spinner from '@cloudscape-design/components/spinner';
 
 const groupByMonth = (orders: any[]) => {
   const totals: Record<string, number> = {};
   for (const order of orders) {
-    const month = new Date(order.date).toLocaleString("en", { month: "short", year: "2-digit" });
+    const month = new Date(order.date).toLocaleString('en', { month: 'short', year: '2-digit' });
     totals[month] = (totals[month] ?? 0) + order.total;
   }
   return Object.entries(totals).map(([x, y]) => ({ x, y }));
 };
 
 export const RevenueChart = () => {
-  const { data: orders, isPending } = useGetList("orders", {
-    sort: { field: "date", order: "ASC" },
+  const { data: orders, isPending } = useGetList('orders', {
+    sort: { field: 'date', order: 'ASC' },
     pagination: { page: 1, perPage: 1000 },
   });
 
   if (isPending) return <Spinner />;
 
-  const series = [{ title: "Revenue", type: "bar" as const, data: groupByMonth(orders ?? []) }];
+  const series = [{ title: 'Revenue', type: 'bar' as const, data: groupByMonth(orders ?? []) }];
 
-  return (
-    <BarChart
-      series={series}
-      xTitle="Month"
-      yTitle="Revenue ($)"
-      height={300}
-      empty={<Box>No data</Box>}
-    />
-  );
+  return <BarChart series={series} xTitle="Month" yTitle="Revenue ($)" height={300} empty={<Box>No data</Box>} />;
 };
 ```
 
@@ -116,18 +108,13 @@ export const RevenueChart = () => {
 Compose both components in your `Dashboard`:
 
 ```tsx title="src/Dashboard.tsx"
-import ContentLayout from "@cloudscape-design/components/content-layout";
-import Grid from "@cloudscape-design/components/grid";
-import Header from "@cloudscape-design/components/header";
+import ContentLayout from '@cloudscape-design/components/content-layout';
+import Grid from '@cloudscape-design/components/grid';
+import Header from '@cloudscape-design/components/header';
 
 export const Dashboard = () => (
   <ContentLayout header={<Header variant="h1">StratoShop Overview</Header>}>
-    <Grid
-      gridDefinition={[
-        { colspan: { default: 12, l: 8 } },
-        { colspan: { default: 12, l: 4 } },
-      ]}
-    >
+    <Grid gridDefinition={[{ colspan: { default: 12, l: 8 } }, { colspan: { default: 12, l: 4 } }]}>
       <RevenueChart />
       <RecentOrders />
     </Grid>
@@ -144,6 +131,7 @@ export const Dashboard = () => (
 ## Summary
 
 In this chapter, we've learned how to:
+
 - Register a custom `dashboard` component with `<Admin>`.
 - Use `useGetList` to fetch data without a standard List view.
 - Transform raw records for use in Cloudscape chart components.

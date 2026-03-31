@@ -1,7 +1,9 @@
 import React, { useMemo } from 'react';
 import { useInput, RecordContextProvider, useResourceContext } from '@strato-admin/ra-core';
 import { useFieldArray, useFormContext } from 'react-hook-form';
-import CloudscapeAttributeEditor, { AttributeEditorProps as CloudscapeAttributeEditorProps } from '@cloudscape-design/components/attribute-editor';
+import CloudscapeAttributeEditor, {
+  AttributeEditorProps as CloudscapeAttributeEditorProps,
+} from '@cloudscape-design/components/attribute-editor';
 import Box from '@cloudscape-design/components/box';
 import { FieldTitle } from './FieldTitle';
 import TextInput from './TextInput';
@@ -154,11 +156,7 @@ export const ArrayInput = (props: ArrayInputProps) => {
             );
           }
 
-          return (
-            <RecordContextProvider value={item}>
-              {content}
-            </RecordContextProvider>
-          );
+          return <RecordContextProvider value={item}>{content}</RecordContextProvider>;
         },
       };
     })?.filter(Boolean) as any[];

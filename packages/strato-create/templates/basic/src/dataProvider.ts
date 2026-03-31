@@ -1,7 +1,7 @@
-import { DataProvider, RaRecord } from '@strato-admin/admin';
+type AnyRecord = { id: string | number; [key: string]: unknown };
 
 // Initial data
-const initialData: Record<string, RaRecord[]> = {
+const initialData: Record<string, AnyRecord[]> = {
   products: [
     { id: '1', name: 'Product 1', description: 'A great product' },
     { id: '2', name: 'Product 2', description: 'Another great product' },
@@ -9,8 +9,9 @@ const initialData: Record<string, RaRecord[]> = {
 };
 
 // Simple in-memory/localStorage data provider
-export const dataProvider: DataProvider = {
-  getList: async (resource) => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const dataProvider: any = {
+  getList: async (resource: string) => {
     const data = JSON.parse(
       localStorage.getItem(`strato-data-${resource}`) || JSON.stringify(initialData[resource] || []),
     );
@@ -19,54 +20,47 @@ export const dataProvider: DataProvider = {
       total: data.length,
     };
   },
-  getOne: async (resource, params) => {
-    const data = JSON.parse(
+  getOne: async (resource: string, params: { id: string | number }) => {
+    const data: AnyRecord[] = JSON.parse(
       localStorage.getItem(`strato-data-${resource}`) || JSON.stringify(initialData[resource] || []),
     );
-    const record = data.find((r: RaRecord) => r.id === params.id);
+    const record = data.find((r) => r.id === params.id);
     if (!record) {
       throw new Error('Record not found');
     }
-    return {
-      data: record as any,
-    };
+    return { data: record };
   },
-  getMany: async (resource, params) => {
-    const data = JSON.parse(
+  getMany: async (resource: string, params: { ids: (string | number)[] }) => {
+    const data: AnyRecord[] = JSON.parse(
       localStorage.getItem(`strato-data-${resource}`) || JSON.stringify(initialData[resource] || []),
     );
-    return {
-      data: data.filter((r: RaRecord) => params.ids.includes(r.id)),
-    };
+    return { data: data.filter((r) => params.ids.includes(r.id)) };
   },
-  getManyReference: async (resource, params) => {
-    const data = JSON.parse(
+  getManyReference: async (resource: string, params: { target: string; id: string | number }) => {
+    const data: AnyRecord[] = JSON.parse(
       localStorage.getItem(`strato-data-${resource}`) || JSON.stringify(initialData[resource] || []),
     );
-    const filteredData = data.filter((r: RaRecord) => r[params.target] === params.id);
-    return {
-      data: filteredData,
-      total: filteredData.length,
-    };
+    const filteredData = data.filter((r) => r[params.target] === params.id);
+    return { data: filteredData, total: filteredData.length };
   },
-  update: async (resource, params) => {
-    const data = JSON.parse(
+  update: async (resource: string, params: { id: string | number; data: Partial<AnyRecord> }) => {
+    const data: AnyRecord[] = JSON.parse(
       localStorage.getItem(`strato-data-${resource}`) || JSON.stringify(initialData[resource] || []),
     );
-    const index = data.findIndex((r: RaRecord) => r.id === params.id);
+    const index = data.findIndex((r) => r.id === params.id);
     if (index === -1) {
       throw new Error('Record not found');
     }
     data[index] = { ...data[index], ...params.data };
     localStorage.setItem(`strato-data-${resource}`, JSON.stringify(data));
-    return { data: data[index] as any };
+    return { data: data[index] };
   },
-  updateMany: async (resource, params) => {
-    const data = JSON.parse(
+  updateMany: async (resource: string, params: { ids: (string | number)[]; data: Partial<AnyRecord> }) => {
+    const data: AnyRecord[] = JSON.parse(
       localStorage.getItem(`strato-data-${resource}`) || JSON.stringify(initialData[resource] || []),
     );
     params.ids.forEach((id) => {
-      const index = data.findIndex((r: RaRecord) => r.id === id);
+      const index = data.findIndex((r) => r.id === id);
       if (index !== -1) {
         data[index] = { ...data[index], ...params.data };
       }
@@ -74,28 +68,28 @@ export const dataProvider: DataProvider = {
     localStorage.setItem(`strato-data-${resource}`, JSON.stringify(data));
     return { data: params.ids };
   },
-  create: async (resource, params) => {
-    const data = JSON.parse(
+  create: async (resource: string, params: { data: Omit<AnyRecord, 'id'> }) => {
+    const data: AnyRecord[] = JSON.parse(
       localStorage.getItem(`strato-data-${resource}`) || JSON.stringify(initialData[resource] || []),
     );
-    const newRecord = { ...params.data, id: Math.random().toString(36).substr(2, 9) };
+    const newRecord: AnyRecord = { ...params.data, id: Math.random().toString(36).substr(2, 9) };
     data.push(newRecord);
     localStorage.setItem(`strato-data-${resource}`, JSON.stringify(data));
-    return { data: newRecord as any };
+    return { data: newRecord };
   },
-  delete: async (resource, params) => {
-    const data = JSON.parse(
+  delete: async (resource: string, params: { id: string | number; previousData: AnyRecord }) => {
+    const data: AnyRecord[] = JSON.parse(
       localStorage.getItem(`strato-data-${resource}`) || JSON.stringify(initialData[resource] || []),
     );
-    const filteredData = data.filter((r: RaRecord) => r.id !== params.id);
+    const filteredData = data.filter((r) => r.id !== params.id);
     localStorage.setItem(`strato-data-${resource}`, JSON.stringify(filteredData));
-    return { data: params.previousData as any };
+    return { data: params.previousData };
   },
-  deleteMany: async (resource, params) => {
-    const data = JSON.parse(
+  deleteMany: async (resource: string, params: { ids: (string | number)[] }) => {
+    const data: AnyRecord[] = JSON.parse(
       localStorage.getItem(`strato-data-${resource}`) || JSON.stringify(initialData[resource] || []),
     );
-    const filteredData = data.filter((r: RaRecord) => !params.ids.includes(r.id));
+    const filteredData = data.filter((r) => !params.ids.includes(r.id));
     localStorage.setItem(`strato-data-${resource}`, JSON.stringify(filteredData));
     return { data: params.ids };
   },

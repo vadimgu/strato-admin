@@ -1,9 +1,4 @@
-import {
-  ResourceSchema,
-  TextField,
-  NumberField,
-  ReferenceManyField,
-} from '@strato-admin/admin';
+import { ResourceSchema, TextField, NumberField, ReferenceManyField } from '@strato-admin/admin';
 
 export const customerRepresentation = (record: any) => `${record.first_name} ${record.last_name}`;
 
@@ -22,7 +17,11 @@ export const customerResource = (
     <TextField source="city" label="City" sortable />
     <NumberField source="nb_commands" label="Orders" sortable />
     <NumberField source="total_spent" label="Total Spent" sortable options={{ style: 'currency', currency: 'USD' }} />
-    <ReferenceManyField reference="orders" target="customer_id" sort={{ field: 'date', order: 'DESC' }} exclude={["customer_id"]} />
+    <ReferenceManyField
+      reference="orders"
+      target="customer_id"
+      sort={{ field: 'date', order: 'DESC' }}
+      exclude={['customer_id']}
+    />
   </ResourceSchema>
 );
-

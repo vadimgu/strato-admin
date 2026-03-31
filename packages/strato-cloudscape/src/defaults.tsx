@@ -22,8 +22,6 @@ export const FRAMEWORK_DEFAULTS: AdminSettings = {
   listPageSize: 25,
   listPageSizes: [10, 25, 50, 100],
   listPageSizeLabel: (pageSize: number) => (
-    <Message vars={{ pageSize }}>
-      {'{pageSize, plural, one {# item} other {# items}}'}
-    </Message>
+    <Message vars={{ pageSize }}>{'{pageSize, plural, one {# item} other {# items}}'}</Message>
   ),
 };

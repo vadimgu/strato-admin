@@ -15,17 +15,13 @@ function filterFields(
   let result = React.Children.toArray(base) as React.ReactElement[];
 
   if (include) {
-    return result.filter(
-      (child) => React.isValidElement(child) && include.includes((child.props as any).source),
-    );
+    return result.filter((child) => React.isValidElement(child) && include.includes((child.props as any).source));
   }
   if (defaultFilter) {
     result = result.filter((child) => React.isValidElement(child) && defaultFilter(child));
   }
   if (exclude) {
-    result = result.filter(
-      (child) => React.isValidElement(child) && !exclude.includes((child.props as any).source),
-    );
+    result = result.filter((child) => React.isValidElement(child) && !exclude.includes((child.props as any).source));
   }
   return result;
 }
@@ -60,8 +56,8 @@ export function useSchemaFields() {
     (children: React.ReactNode, opts: { include?: string[]; exclude?: string[] } = {}) => {
       const hasExplicit = React.Children.count(children) > 0;
       const all = filterFields(children || fieldSchema, {
-        include: hasExplicit ? undefined : (opts.include || detailInclude),
-        exclude: hasExplicit ? undefined : (opts.exclude || detailExclude),
+        include: hasExplicit ? undefined : opts.include || detailInclude,
+        exclude: hasExplicit ? undefined : opts.exclude || detailExclude,
       });
       return {
         scalarFields: all.filter((c) => !(c.type as any).isCollectionField),

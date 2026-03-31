@@ -7,9 +7,7 @@
 ```tsx
 import { BulkDeleteButton } from '@strato-admin/cloudscape';
 
-<List bulkActionButtons={<BulkDeleteButton />}>
-  ...
-</List>
+<List bulkActionButtons={<BulkDeleteButton />}>...</List>;
 ```
 
 ### Custom dialog text
@@ -73,11 +71,11 @@ Controls the Cloudscape button style. Defaults to `normal` because bulk delete i
 
 Determines when the UI updates relative to the server:
 
-| Mode | Behaviour |
-|---|---|
-| `pessimistic` | Waits for the server before updating the list. Safest for destructive actions. |
-| `optimistic` | Updates the list immediately; rolls back silently on error. |
-| `undoable` | Updates the list immediately and shows an undo notification for a short window. |
+| Mode          | Behaviour                                                                       |
+| ------------- | ------------------------------------------------------------------------------- |
+| `pessimistic` | Waits for the server before updating the list. Safest for destructive actions.  |
+| `optimistic`  | Updates the list immediately; rolls back silently on error.                     |
+| `undoable`    | Updates the list immediately and shows an undo notification for a short window. |
 
 ### `dialogTitle`
 
@@ -92,4 +90,3 @@ The confirmation modal heading. The default is automatically pluralised based on
 **Default:** pluralised `"Are you sure you want to delete this item?"` / `"… these N items?"`
 
 The confirmation modal body text. The default is automatically pluralised based on the number of selected records.
-

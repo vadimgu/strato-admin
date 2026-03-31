@@ -31,12 +31,12 @@ The column header or form label for the field. If omitted, it is inferred from `
 
 Wraps the displayed value in a Cloudscape `Link`. Accepts:
 
-| Value | Behavior |
-|---|---|
-| `true` | Links to the record's detail page |
-| `"detail"` | Links to the record's detail page |
-| `"edit"` | Links to the record's edit page |
-| `(record, resource) => string` | Custom URL from a function |
+| Value                          | Behavior                          |
+| ------------------------------ | --------------------------------- |
+| `true`                         | Links to the record's detail page |
+| `"detail"`                     | Links to the record's detail page |
+| `"edit"`                       | Links to the record's edit page   |
+| `(record, resource) => string` | Custom URL from a function        |
 
 ```tsx
 <TextField source="name" link="detail" />
@@ -67,11 +67,11 @@ These props control how the field's auto-inferred form input behaves in create/e
 
 Controls the inferred input component for this field. Accepts:
 
-| Value | Behavior |
-|---|---|
-| Object | Extra props merged into the inferred input |
-| `ReactElement` | Replaces the inferred input entirely |
-| `false` | Excludes the field from all forms |
+| Value          | Behavior                                   |
+| -------------- | ------------------------------------------ |
+| Object         | Extra props merged into the inferred input |
+| `ReactElement` | Replaces the inferred input entirely       |
+| `false`        | Excludes the field from all forms          |
 
 ```tsx
 // Pass extra props to the inferred input

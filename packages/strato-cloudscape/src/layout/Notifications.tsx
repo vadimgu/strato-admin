@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import Flashbar, { FlashbarProps } from '@cloudscape-design/components/flashbar';
 import { useNotificationContext, useTranslate, NotificationPayload } from '@strato-admin/ra-core';
 
@@ -32,7 +32,10 @@ export const Notifications = () => {
       if (timers.current.has(id)) return;
       const ms = notification.notificationOptions?.autoHideDuration ?? DEFAULT_AUTO_HIDE_MS;
       if (ms === null) return;
-      timers.current.set(id, setTimeout(() => dismiss(notification), ms));
+      timers.current.set(
+        id,
+        setTimeout(() => dismiss(notification), ms),
+      );
     });
 
     return () => {
@@ -48,8 +51,7 @@ export const Notifications = () => {
     return {
       id: getStableId(notification),
       type,
-      content:
-        typeof message === 'string' ? translate(message, notificationOptions?.messageArgs) : message,
+      content: typeof message === 'string' ? translate(message, notificationOptions?.messageArgs) : message,
       dismissible: true,
       onDismiss: () => dismiss(notification),
     };

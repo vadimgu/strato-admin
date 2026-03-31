@@ -1,4 +1,4 @@
-import { ResourceSchema, Table, List, Show, KeyValuePairs, TextField } from '@strato-admin/admin';
+import { ResourceSchema, TextField } from '@strato-admin/admin';
 
 export const categoryResource = (
   <ResourceSchema

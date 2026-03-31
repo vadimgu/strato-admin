@@ -33,9 +33,7 @@ export const Resource = (props: ResourceProps) => {
           <Route
             path="/*"
             element={
-              <RestoreScrollPosition storeKey={`${name}.list.scrollPosition`}>
-                {getElement(list)}
-              </RestoreScrollPosition>
+              <RestoreScrollPosition storeKey={`${name}.list.scrollPosition`}>{getElement(list)}</RestoreScrollPosition>
             }
           />
         )}

@@ -17,14 +17,10 @@ const messages = {
   fr: { ...frenchMessages, ...frAppMessages },
 };
 
-const i18nProvider = icuI18nProvider(
-  (locale) => messages[locale as keyof typeof messages],
-  'en',
-  [
-    { locale: 'en', name: 'English' },
-    { locale: 'fr', name: 'Français' },
-  ],
-);
+const i18nProvider = icuI18nProvider((locale) => messages[locale as keyof typeof messages], 'en', [
+  { locale: 'en', name: 'English' },
+  { locale: 'fr', name: 'Français' },
+]);
 
 export default function App() {
   return (
@@ -47,11 +43,11 @@ icuI18nProvider(
 
 ## Parameters
 
-| Parameter | Type | Default | Description |
-| :--- | :--- | :------ | :---------- |
-| `getMessages` | `(locale: string) => MessageMap \| Promise<MessageMap>` | | **Required.** Called with the requested locale; must return the compiled message map (or a Promise of one). The default locale must resolve synchronously. |
-| `initialLocale` | `string` | `'en'` | The locale to activate on startup. |
-| `availableLocales` | `LocaleItem[]` | `[{ locale: 'en', name: 'English' }]` | The list of locales shown in the locale switcher. Each item has a `locale` code and a display `name`. |
+| Parameter          | Type                                                    | Default                               | Description                                                                                                                                                |
+| :----------------- | :------------------------------------------------------ | :------------------------------------ | :--------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `getMessages`      | `(locale: string) => MessageMap \| Promise<MessageMap>` |                                       | **Required.** Called with the requested locale; must return the compiled message map (or a Promise of one). The default locale must resolve synchronously. |
+| `initialLocale`    | `string`                                                | `'en'`                                | The locale to activate on startup.                                                                                                                         |
+| `availableLocales` | `LocaleItem[]`                                          | `[{ locale: 'en', name: 'English' }]` | The list of locales shown in the locale switcher. Each item has a `locale` code and a display `name`.                                                      |
 
 ## How it translates
 

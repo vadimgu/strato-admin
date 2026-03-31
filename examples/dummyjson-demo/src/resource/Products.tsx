@@ -1,11 +1,9 @@
+import { useListContext, ListBase, RecordContextProvider } from '@strato-admin/ra-core';
 import {
   ResourceSchema,
   TextField,
   NumberField,
   ReferenceField,
-  useListContext,
-  ListBase,
-  RecordContextProvider,
   ArrayField,
   Table,
   Show,

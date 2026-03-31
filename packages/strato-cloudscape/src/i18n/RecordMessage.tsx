@@ -1,4 +1,3 @@
-import React from 'react';
 import { useTranslate, useRecordContext } from '@strato-admin/ra-core';
 import { MessageProps } from './types';
 

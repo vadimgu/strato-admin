@@ -60,7 +60,13 @@ export const DeleteButton = ({
 
   return (
     <>
-      <Button variant={variant} onClick={() => setIsOpen(true)} loading={isBusy} disabled={isBusy} data-testid="delete-button">
+      <Button
+        variant={variant}
+        onClick={() => setIsOpen(true)}
+        loading={isBusy}
+        disabled={isBusy}
+        data-testid="delete-button"
+      >
         {label || translate('strato.action.delete', { _: 'Delete' })}
       </Button>
       <Modal

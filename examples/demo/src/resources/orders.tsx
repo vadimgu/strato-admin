@@ -27,11 +27,7 @@ interface Order {
 export const orderRepresentation = (record: any) => record.reference;
 
 export const orderResource = (
-  <ResourceSchema<Order>
-    label="Orders"
-    name="orders"
-    recordRepresentation="reference"
-  >
+  <ResourceSchema<Order> label="Orders" name="orders" recordRepresentation="reference">
     <TextField source="id" label="ID" link="detail" input={false} />
     <TextField source="reference" label="Reference" sortable />
     <DateField source="date" label="Date" input={false} sortable />
@@ -43,15 +39,15 @@ export const orderResource = (
       <StatusIndicatorField.Label value="cancelled" type="error" label="Cancelled" />
       <StatusIndicatorField.Label value="unknown" type="warning" label="Unknown" />
     </StatusIndicatorField>
-    <ArrayField
-      source="items"
-      label="Items"
-      isRequired
-      input={<ArrayInput gridLayout={[{ rows: [[3, 1]] }]} />}
-    >
+    <ArrayField source="items" label="Items" isRequired input={<ArrayInput gridLayout={[{ rows: [[3, 1]] }]} />}>
       <ReferenceField source="product_id" reference="products" label="Product" isRequired />
       <NumberField source="quantity" label="Quantity" isRequired />
-      <NumberField source="unit_price" label="Unit Price" options={{ style: 'currency', currency: 'USD' }} input={false} />
+      <NumberField
+        source="unit_price"
+        label="Unit Price"
+        options={{ style: 'currency', currency: 'USD' }}
+        input={false}
+      />
     </ArrayField>
   </ResourceSchema>
 );

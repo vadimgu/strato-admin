@@ -33,13 +33,7 @@ Pass a child `<Table>` to control which columns are shown.
 ### Filtering and Preferences
 
 ```tsx
-<ReferenceManyField
-  reference="orders"
-  target="customerId"
-  filtering
-  preferences
-  title="Orders"
-/>
+<ReferenceManyField reference="orders" target="customerId" filtering preferences title="Orders" />
 ```
 
 ### Include / Exclude Columns
@@ -47,11 +41,7 @@ Pass a child `<Table>` to control which columns are shown.
 When relying on the auto-generated table from the resource schema, use `include` or `exclude` to control which columns appear.
 
 ```tsx
-<ReferenceManyField
-  reference="reviews"
-  target="productId"
-  exclude={['productId']}
-/>
+<ReferenceManyField reference="reviews" target="productId" exclude={['productId']} />
 ```
 
 ## Props

@@ -10,9 +10,7 @@ For deleting multiple selected records in a list, see [`<BulkDeleteButton>`](./B
 import { DeleteButton } from '@strato-admin/cloudscape';
 
 // Already included in <Edit> headers by default
-<Edit actions={<DeleteButton />}>
-  ...
-</Edit>
+<Edit actions={<DeleteButton />}>...</Edit>;
 ```
 
 ### Custom dialog text
@@ -99,11 +97,11 @@ Controls the Cloudscape button style. Defaults to `normal` because deletion is a
 
 Determines when the UI updates relative to the server:
 
-| Mode | Behaviour |
-|---|---|
+| Mode          | Behaviour                                                                |
+| ------------- | ------------------------------------------------------------------------ |
 | `pessimistic` | Waits for the server before redirecting. Safest for destructive actions. |
-| `optimistic` | Redirects immediately; rolls back silently on error. |
-| `undoable` | Redirects immediately and shows an undo notification for a short window. |
+| `optimistic`  | Redirects immediately; rolls back silently on error.                     |
+| `undoable`    | Redirects immediately and shows an undo notification for a short window. |
 
 ### `redirect`
 

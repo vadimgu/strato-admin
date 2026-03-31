@@ -60,15 +60,11 @@ The `<Admin>` component is the root of your Strato application. It initializes t
 Replace the contents of `src/App.tsx` with the following:
 
 ```tsx title="src/App.tsx" {6-8} showLineNumbers
-import "@cloudscape-design/global-styles/index.css";
-import { Admin } from "@strato-admin/admin";
-import { dataProvider } from "@strato-admin/faker-ecommerce";
+import '@cloudscape-design/global-styles/index.css';
+import { Admin } from '@strato-admin/admin';
+import { dataProvider } from '@strato-admin/faker-ecommerce';
 
-const App = () => (
-  <Admin dataProvider={dataProvider}>
-    {/* Resources will go here */}
-  </Admin>
-);
+const App = () => <Admin dataProvider={dataProvider}>{/* Resources will go here */}</Admin>;
 
 export default App;
 ```

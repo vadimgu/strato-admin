@@ -31,10 +31,7 @@ Pass field components as children to control what is displayed.
 ### Title and description
 
 ```tsx
-<Detail
-  title="Product Details"
-  description="View all product information."
-/>
+<Detail title="Product Details" description="View all product information." />
 ```
 
 The `title` and `description` props also accept a function that receives the current record:

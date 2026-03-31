@@ -1,4 +1,3 @@
-import React from 'react';
 import {
   Box,
   Button,
@@ -10,8 +9,8 @@ import {
   ContentLayout,
   ColumnLayout,
 } from '@cloudscape-design/components';
-import { CodeView } from "@cloudscape-design/code-view";
-import typescriptHighlight from "@cloudscape-design/code-view/highlight/typescript";
+import { CodeView } from '@cloudscape-design/code-view';
+import typescriptHighlight from '@cloudscape-design/code-view/highlight/typescript';
 import { useDefaultTitle } from '@strato-admin/ra-core';
 
 /**
@@ -39,15 +38,12 @@ export const App = () => (
       header={
         <Box padding={{ vertical: 'xxxl' }} textAlign="center">
           <SpaceBetween size="l">
-            <Header
-              variant="h1"
-              description="Your Strato Admin application is properly configured and ready to go."
-            >
+            <Header variant="h1" description="Your Strato Admin application is properly configured and ready to go.">
               Welcome to {appTitle}
             </Header>
             <Box variant="p">
-              Strato Admin uses a <strong>Schema First</strong> approach to build admin interfaces efficiently.
-              Start by defining your resources and let us handle the rest.
+              Strato Admin uses a <strong>Schema First</strong> approach to build admin interfaces efficiently. Start by
+              defining your resources and let us handle the rest.
             </Box>
             <Box margin={{ top: 'm' }}>
               <SpaceBetween direction="horizontal" size="xs">
@@ -59,11 +55,7 @@ export const App = () => (
                 >
                   Get started with the tutorial
                 </Button>
-                <Button
-                  href="https://github.com/vadimgu/strato-admin"
-                  iconName="external"
-                  iconAlign="right"
-                >
+                <Button href="https://github.com/vadimgu/strato-admin" iconName="external" iconAlign="right">
                   View on GitHub
                 </Button>
               </SpaceBetween>
@@ -75,36 +67,28 @@ export const App = () => (
       <SpaceBetween size="xxl">
         {/* Features / Details Section */}
         <SpaceBetween size="l">
-          <Container
-            header={
-              <Header variant="h2">
-                How to add your first resource
-              </Header>
-            }
-          >
+          <Container header={<Header variant="h2">How to add your first resource</Header>}>
             <SpaceBetween size="m">
               <Box variant="p">
-                Add a <code>&lt;ResourceSchema&gt;</code> component as a child of your <code>&lt;Admin&gt;</code> to define your data model.
+                Add a <code>&lt;ResourceSchema&gt;</code> component as a child of your <code>&lt;Admin&gt;</code> to
+                define your data model.
               </Box>
-              <CodeView
-                content={codeSnippet}
-                highlight={typescriptHighlight}
-              />
+              <CodeView content={codeSnippet} highlight={typescriptHighlight} />
             </SpaceBetween>
           </Container>
 
-          <Container
-            header={
-              <Header variant="h2">Next steps</Header>
-            }
-          >
+          <Container header={<Header variant="h2">Next steps</Header>}>
             <ColumnLayout columns={2} variant="text-grid">
               <div>
                 <Box variant="h3" fontWeight="bold">
                   <Icon name="status-info" variant="link" /> Core Concepts
                 </Box>
                 <Box variant="p">
-                  Learn how <Link href="https://strato-admin.dev/docs/core-concepts/schema" external>Schemas</Link> work to automate your UI.
+                  Learn how{' '}
+                  <Link href="https://strato-admin.dev/docs/core-concepts/schema" external>
+                    Schemas
+                  </Link>{' '}
+                  work to automate your UI.
                 </Box>
               </div>
               <div>
@@ -112,7 +96,11 @@ export const App = () => (
                   <Icon name="star" variant="warning" /> Design System
                 </Box>
                 <Box variant="p">
-                  Explore the <Link href="https://cloudscape.design/" external>Cloudscape design system</Link> components.
+                  Explore the{' '}
+                  <Link href="https://cloudscape.design/" external>
+                    Cloudscape design system
+                  </Link>{' '}
+                  components.
                 </Box>
               </div>
             </ColumnLayout>
@@ -121,7 +109,11 @@ export const App = () => (
 
         {/* Footer */}
         <Box textAlign="center" color="text-label" margin={{ top: 'xs' }} padding={{ bottom: 'xxxl' }}>
-          Built with <Link href="https://www.strato-admin.dev" external>Strato Admin</Link>.
+          Built with{' '}
+          <Link href="https://www.strato-admin.dev" external>
+            Strato Admin
+          </Link>
+          .
         </Box>
       </SpaceBetween>
     </ContentLayout>

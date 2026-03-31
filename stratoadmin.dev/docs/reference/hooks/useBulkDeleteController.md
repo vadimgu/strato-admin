@@ -11,7 +11,11 @@ import { useBulkDeleteController } from '@strato-admin/core';
 
 const BulkDeleteButton = () => {
   const { onClick, isPending } = useBulkDeleteController();
-  return <button onClick={onClick} disabled={isPending}>Delete selected</button>;
+  return (
+    <button onClick={onClick} disabled={isPending}>
+      Delete selected
+    </button>
+  );
 };
 ```
 

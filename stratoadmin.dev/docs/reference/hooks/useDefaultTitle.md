@@ -11,7 +11,11 @@ import { useDefaultTitle } from '@strato-admin/core';
 
 const PageTitle = ({ page }: { page: string }) => {
   const appTitle = useDefaultTitle();
-  return <title>{page} | {appTitle}</title>;
+  return (
+    <title>
+      {page} | {appTitle}
+    </title>
+  );
 };
 ```
 

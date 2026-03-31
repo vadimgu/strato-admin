@@ -56,9 +56,11 @@ export interface DefaultResourceComponents {
 export interface SchemaRegistryContextValue {
   registerSchemas: <RecordType extends Record<string, any> = any>(
     resource: string,
-    schemas: ResourceSchemas<RecordType>
+    schemas: ResourceSchemas<RecordType>,
   ) => void;
-  getSchemas: <RecordType extends Record<string, any> = any>(resource: string) => ResourceSchemas<RecordType> | undefined;
+  getSchemas: <RecordType extends Record<string, any> = any>(
+    resource: string,
+  ) => ResourceSchemas<RecordType> | undefined;
   defaultComponents: DefaultResourceComponents;
 }
 
@@ -93,7 +95,7 @@ export const getDefaultInputForField = (fieldComponent: any) => {
  */
 export const registerGlobalSchemas = <RecordType extends Record<string, any> = any>(
   resource: string,
-  schemas: ResourceSchemas<RecordType>
+  schemas: ResourceSchemas<RecordType>,
 ) => {
   if (!resource) return;
 

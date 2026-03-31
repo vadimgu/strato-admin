@@ -32,7 +32,7 @@ export const CreateButton = ({ label, variant = 'primary', ...props }: CreateBut
 
   return (
     <Button variant={variant} href={path} onClick={handleClick} iconName="add-plus" {...props}>
-      {label || translate("strato.action.create", { _: 'Create' })}
+      {label || translate('strato.action.create', { _: 'Create' })}
     </Button>
   );
 };

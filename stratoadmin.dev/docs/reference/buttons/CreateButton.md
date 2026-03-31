@@ -8,9 +8,7 @@
 import { CreateButton } from '@strato-admin/cloudscape';
 
 // Inside a List — resource is inferred from context
-<List actions={<CreateButton />}>
-  ...
-</List>
+<List actions={<CreateButton />}>...</List>;
 ```
 
 The button label defaults to the translated string for `strato.action.create` ("Create"). Pass `label` to override it.
@@ -54,4 +52,3 @@ Override the button label. Useful when a more descriptive call-to-action is need
 **Default:** `'primary'`
 
 Controls the Cloudscape button style. Use `'primary'` when this is the dominant action on the page, `'normal'` when it sits alongside other primary actions.
-

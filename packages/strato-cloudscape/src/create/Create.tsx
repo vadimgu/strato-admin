@@ -1,11 +1,5 @@
 import React from 'react';
-import {
-  CreateBase,
-  type RaRecord,
-  type CreateBaseProps,
-  Identifier,
-  useTranslate,
-} from '@strato-admin/ra-core';
+import { CreateBase, type RaRecord, type CreateBaseProps, Identifier, useTranslate } from '@strato-admin/ra-core';
 import {
   ResourceSchemaProvider,
   useResourceSchema,
@@ -71,9 +65,7 @@ const CreateUI = ({
 
   const finalSaveButtonLabel = saveButtonLabel ? translate(saveButtonLabel) : translate('Create');
 
-  const finalChildren = children || (
-    <Form include={include} exclude={exclude} saveButtonLabel={finalSaveButtonLabel} />
-  );
+  const finalChildren = children || <Form include={include} exclude={exclude} saveButtonLabel={finalSaveButtonLabel} />;
 
   return (
     <Container header={<CreateHeader title={finalTitle} description={finalDescription} actions={actions} />}>

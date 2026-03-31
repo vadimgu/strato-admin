@@ -10,8 +10,10 @@ import { useSchemaFields } from '../hooks/useSchemaFields';
 import KeyValuePairs from '../detail/KeyValuePairs';
 import TableHeader from './TableHeader';
 
-export interface ListCardsProps<T extends RaRecord = any>
-  extends Omit<CardsProps<T>, 'items' | 'cardDefinition' | 'preferences'> {
+export interface ListCardsProps<T extends RaRecord = any> extends Omit<
+  CardsProps<T>,
+  'items' | 'cardDefinition' | 'preferences'
+> {
   renderItem?: (item: T) => React.ReactNode;
   include?: string[];
   exclude?: string[];
@@ -59,17 +61,13 @@ export const ListCards = <T extends RaRecord = any>({
   const translate = useTranslate();
   const { listPageSizes, listPageSizeLabel } = useSettings();
 
-  const resolvedPageSizeOptions = pageSizeOptions ?? (
-    listPageSizes && listPageSizeLabel
+  const resolvedPageSizeOptions =
+    pageSizeOptions ??
+    (listPageSizes && listPageSizeLabel
       ? listPageSizes.map((value) => ({ value, label: listPageSizeLabel(value) }))
-      : undefined
-  );
+      : undefined);
   const translateLabel = useTranslateLabel();
-  const {
-    resource,
-    label: schemaLabel,
-    definition,
-  } = useResourceSchema();
+  const { resource, label: schemaLabel, definition } = useResourceSchema();
 
   const { getListFields } = useSchemaFields();
 
@@ -98,7 +96,7 @@ export const ListCards = <T extends RaRecord = any>({
 
   const { items, paginationProps, collectionProps, filterProps, preferencesProps } = useCollection<T>({
     preferences: {
-      pageSizeOptions: resolvedPageSizeOptions,
+      pageSizeOptions: resolvedPageSizeOptions as any,
       visibleContentOptions: visibleContentOptions.length > 0 ? visibleContentOptions : undefined,
     },
   });
@@ -159,7 +157,7 @@ export const ListCards = <T extends RaRecord = any>({
             pageSizePreference={
               resolvedPageSizeOptions
                 ? {
-                    options: resolvedPageSizeOptions,
+                    options: resolvedPageSizeOptions as any,
                   }
                 : undefined
             }

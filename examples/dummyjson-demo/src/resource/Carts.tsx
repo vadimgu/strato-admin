@@ -7,8 +7,9 @@ import {
   Table,
   Show,
   KeyValuePairs,
-  SpaceBetween,
 } from '@strato-admin/admin';
+
+import { SpaceBetween } from '@cloudscape-design/components';
 
 const required = (value: any) => (value ? undefined : 'Required');
 

@@ -83,18 +83,7 @@ export interface ReferenceManyFieldProps<RecordType extends RaRecord = RaRecord>
 export const ReferenceManyField = <RecordType extends RaRecord = RaRecord>(
   props: ReferenceManyFieldProps<RecordType>,
 ) => {
-  const {
-    children,
-    reference,
-    fieldSchema,
-    include,
-    exclude,
-    display,
-    filtering,
-    preferences,
-    title,
-    ...rest
-  } = props;
+  const { children, reference, fieldSchema, include, exclude, display, filtering, preferences, title, ...rest } = props;
   const { queryOptions } = useResourceSchema(reference);
 
   return (
@@ -137,17 +126,16 @@ const ReferenceManyFieldUI = ({
 }) => {
   const { listComponent: ListComponent = Table } = useResourceSchema(reference);
 
-  const finalChildren =
-    children || (
-      <ListComponent
-        include={include}
-        exclude={exclude}
-        display={display}
-        filtering={filtering}
-        preferences={preferences}
-        title={title}
-      />
-    );
+  const finalChildren = children || (
+    <ListComponent
+      include={include}
+      exclude={exclude}
+      display={display}
+      filtering={filtering}
+      preferences={preferences}
+      title={title}
+    />
+  );
 
   return <>{finalChildren}</>;
 };

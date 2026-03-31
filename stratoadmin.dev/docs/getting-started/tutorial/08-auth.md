@@ -9,45 +9,45 @@ An Auth Provider is a plain object that implements the authentication contract b
 Here is a minimal implementation for a token-based API. Create `src/authProvider.ts`:
 
 ```ts title="src/authProvider.ts"
-import type { AuthProvider } from "@strato-admin/admin";
+import type { AuthProvider } from '@strato-admin/admin';
 
 export const authProvider: AuthProvider = {
   login: async ({ username, password }) => {
-    const response = await fetch("/api/auth/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
+    const response = await fetch('/api/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username, password }),
     });
 
     if (!response.ok) {
-      throw new Error("Invalid credentials");
+      throw new Error('Invalid credentials');
     }
 
     const { token, role } = await response.json();
-    localStorage.setItem("auth_token", token);
-    localStorage.setItem("auth_role", role);
+    localStorage.setItem('auth_token', token);
+    localStorage.setItem('auth_role', role);
   },
 
   logout: async () => {
-    localStorage.removeItem("auth_token");
-    localStorage.removeItem("auth_role");
+    localStorage.removeItem('auth_token');
+    localStorage.removeItem('auth_role');
   },
 
   checkAuth: async () => {
-    if (!localStorage.getItem("auth_token")) {
-      throw new Error("Not authenticated");
+    if (!localStorage.getItem('auth_token')) {
+      throw new Error('Not authenticated');
     }
   },
 
   checkError: async (error) => {
     if (error.status === 401 || error.status === 403) {
-      localStorage.removeItem("auth_token");
+      localStorage.removeItem('auth_token');
       throw error;
     }
   },
 
   getPermissions: async () => {
-    return localStorage.getItem("auth_role") ?? "viewer";
+    return localStorage.getItem('auth_role') ?? 'viewer';
   },
 };
 ```
@@ -55,7 +55,7 @@ export const authProvider: AuthProvider = {
 Wire it into your app:
 
 ```tsx title="src/App.tsx"
-import { authProvider } from "./authProvider";
+import { authProvider } from './authProvider';
 
 const App = () => (
   <Admin dataProvider={dataProvider} authProvider={authProvider}>
@@ -81,18 +81,14 @@ The `getPermissions` method returns whatever your backend uses to represent a us
 Use the `delete` prop on `<ResourceSchema>` to disable delete access. For dynamic control based on the logged-in user's role, read permissions using the `usePermissions` hook in a wrapper component:
 
 ```tsx title="src/resources/products.tsx"
-import { usePermissions, ResourceSchema, TextField, NumberField } from "@strato-admin/admin";
+import { usePermissions, ResourceSchema, TextField, NumberField } from '@strato-admin/admin';
 
 export const ProductResource = () => {
   const { permissions } = usePermissions();
-  const canDelete = permissions === "admin";
+  const canDelete = permissions === 'admin';
 
   return (
-    <ResourceSchema
-      name="products"
-      delete={canDelete}
-      listInclude={["name", "price", "category_id", "status"]}
-    >
+    <ResourceSchema name="products" delete={canDelete} listInclude={['name', 'price', 'category_id', 'status']}>
       <TextField source="id" />
       <TextField source="name" />
       <NumberField source="price" />
@@ -122,16 +118,16 @@ For development or demos, you can use a simple mock that accepts any credentials
 ```ts title="src/authProvider.ts"
 export const authProvider: AuthProvider = {
   login: async ({ username }) => {
-    localStorage.setItem("auth_role", username === "admin" ? "admin" : "editor");
+    localStorage.setItem('auth_role', username === 'admin' ? 'admin' : 'editor');
   },
   logout: async () => localStorage.clear(),
   checkAuth: async () => {
-    if (!localStorage.getItem("auth_role")) throw new Error();
+    if (!localStorage.getItem('auth_role')) throw new Error();
   },
   checkError: async (error) => {
     if (error.status === 401) throw error;
   },
-  getPermissions: async () => localStorage.getItem("auth_role") ?? "viewer",
+  getPermissions: async () => localStorage.getItem('auth_role') ?? 'viewer',
 };
 ```
 
@@ -140,6 +136,7 @@ Log in with username `admin` to get the `admin` role, or any other username for 
 ## Summary
 
 In this chapter, we've learned how to:
+
 - Implement an `AuthProvider` to add login/logout to the dashboard.
 - Use `checkAuth` and `checkError` to protect routes and handle expired sessions.
 - Use `getPermissions` and `usePermissions` to apply role-based access control.

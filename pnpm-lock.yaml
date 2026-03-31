@@ -127,6 +127,9 @@ importers:
       '@strato-admin/admin':
         specifier: workspace:^
         version: link:../../packages/strato-admin
+      '@strato-admin/ra-core':
+        specifier: workspace:^
+        version: link:../../packages/ra-core
       react:
         specifier: ^19.0.0
         version: 19.2.4

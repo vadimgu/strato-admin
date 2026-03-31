@@ -20,20 +20,20 @@ function useGetList<T extends RaRecord>(
     meta?: object;
   },
   options?: UseQueryOptions,
-): UseGetListResult<T>
+): UseGetListResult<T>;
 ```
 
 ## Return value
 
 Extends React Query's `UseQueryResult` with:
 
-| Property | Type | Description |
-|---|---|---|
-| `data` | `T[]` | Fetched records |
-| `total` | `number \| undefined` | Total count of matching records |
-| `isPending` | `boolean` | `true` until first data arrives |
-| `isFetching` | `boolean` | `true` while a request is in flight |
-| `error` | `Error \| null` | Any error from the data provider |
+| Property     | Type                  | Description                         |
+| ------------ | --------------------- | ----------------------------------- |
+| `data`       | `T[]`                 | Fetched records                     |
+| `total`      | `number \| undefined` | Total count of matching records     |
+| `isPending`  | `boolean`             | `true` until first data arrives     |
+| `isFetching` | `boolean`             | `true` while a request is in flight |
+| `error`      | `Error \| null`       | Any error from the data provider    |
 
 ## Example
 
@@ -48,7 +48,13 @@ function FeaturedProducts() {
   });
 
   if (isPending) return <Spinner />;
-  return <ul>{data?.map((p) => <li key={p.id}>{p.name}</li>)}</ul>;
+  return (
+    <ul>
+      {data?.map((p) => (
+        <li key={p.id}>{p.name}</li>
+      ))}
+    </ul>
+  );
 }
 ```
 

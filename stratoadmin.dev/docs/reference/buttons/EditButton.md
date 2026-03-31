@@ -8,17 +8,13 @@
 import { EditButton } from '@strato-admin/cloudscape';
 
 // Inside a Table row — record is inferred from context
-<Table
-  rowActions={(record) => <EditButton record={record} />}
-/>
+<Table rowActions={(record) => <EditButton record={record} />} />;
 ```
 
 In a detail view the record comes from context automatically:
 
 ```tsx
-<Detail actions={<EditButton />}>
-  ...
-</Detail>
+<Detail actions={<EditButton />}>...</Detail>
 ```
 
 ### Custom label
@@ -71,4 +67,3 @@ Override the button label.
 **Default:** `'normal'`
 
 Controls the Cloudscape button style. Defaults to `normal` so it remains a secondary action when placed alongside other buttons (e.g. `DeleteButton` in an edit header). The `<DetailHeader>` passes `variant="primary"` explicitly since `EditButton` is the sole action there.
-

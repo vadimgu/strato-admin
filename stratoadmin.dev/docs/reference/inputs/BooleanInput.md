@@ -9,7 +9,7 @@ import { BooleanInput } from '@strato-admin/admin';
 
 <BooleanInput source="is_published" label="Published">
   Enable publishing
-</BooleanInput>
+</BooleanInput>;
 ```
 
 The text passed as `children` appears as the inline label next to the toggle — distinct from the `label` prop, which renders above the field as the form field label.
@@ -27,11 +27,7 @@ The text passed as `children` appears as the inline label next to the toggle —
 You can also supply it explicitly via the `input` prop:
 
 ```tsx
-<BooleanField
-  source="is_active"
-  label="Active"
-  input={<BooleanInput>Enabled</BooleanInput>}
-/>
+<BooleanField source="is_active" label="Active" input={<BooleanInput>Enabled</BooleanInput>} />
 ```
 
 ## Props

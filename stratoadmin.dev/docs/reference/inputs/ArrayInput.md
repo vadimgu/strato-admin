@@ -11,7 +11,7 @@ import { ArrayInput, TextInput, NumberInput } from '@strato-admin/admin';
   <TextInput source="sku" label="SKU" />
   <TextInput source="color" label="Color" />
   <NumberInput source="stock" label="Stock" />
-</ArrayInput>
+</ArrayInput>;
 ```
 
 Each child input defines one column in the editor. The `source` on each child is relative to the item object (e.g., for an item at index 2, `sku` becomes `variants.2.sku` internally).
@@ -30,11 +30,7 @@ Each child input defines one column in the editor. The `source` on each child is
 With a custom grid layout:
 
 ```tsx
-<ArrayField
-  source="items"
-  label="Items"
-  input={<ArrayInput gridLayout={[{ rows: [[3, 1]] }]} />}
->
+<ArrayField source="items" label="Items" input={<ArrayInput gridLayout={[{ rows: [[3, 1]] }]} />}>
   <ReferenceField source="product_id" reference="products" label="Product" isRequired />
   <NumberField source="quantity" label="Quantity" isRequired />
 </ArrayField>

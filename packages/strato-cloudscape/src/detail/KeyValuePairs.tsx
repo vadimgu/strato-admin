@@ -81,9 +81,7 @@ export const KeyValuePairs = <RecordType extends RaRecord = RaRecord>({
       );
     } else {
       // Filter out fields marked as collection fields by default
-      result = result.filter(
-        (child) => React.isValidElement(child) && !(child.type as any).isCollectionField,
-      );
+      result = result.filter((child) => React.isValidElement(child) && !(child.type as any).isCollectionField);
 
       if (finalExclude) {
         result = result.filter(

@@ -2,40 +2,40 @@
 
 ## Props
 
-| Prop                | Type               | Default       | Description                                                                                         |
-| :------------------ | :----------------- | :------------ | :-------------------------------------------------------------------------------------------------- |
-| `name`              | `string`           |               | **Required**. The unique identifier for the resource (e.g., "products").                            |
-| `children`          | `ReactNode`        |               | Field components (e.g., `<TextField>`) that define the data model.                                  |
-| `list`              | `Component\|false` | `<List>`      | Override the default List View with a custom component or disable it with `false`.                  |
-| `edit`              | `Component\|false` | `<Edit>`      | Override the default Edit Form with a custom component or disable it with `false`.                  |
-| `create`            | `Component\|false` | `<Create>`    | Override the default Create Form with a custom component or disable it with `false`.                |
-| `detail`            | `Component\|false` | `<Detail>`    | Override the default Detail View with a custom component or disable it with `false`.                |
-| `listComponent`     | `Component`        | `<Table>`     | Custom component to use for the List View. Must be schema-aware to utilize the field definitions.   |
-| `detailComponent`   | `Component`        | `<DetailHub>` | Custom component to use for the Detail View. Must be schema-aware to utilize the field definitions. |
-| `listTitle`         | `ReactNode`        |               | Custom title for the **List View**.                                                                 |
-| `listDescription`   | `ReactNode`        |               | Custom description for the **List View**.                                                           |
-| `listInclude`       | `string[]`         |               | Fields to include in the **List View**.                                                             |
-| `listExclude`       | `string[]`         |               | Fields to hide from the **List View**.                                                              |
-| `listDisplay`       | `string[]`         |               | Fields to display by default in the **List View** table.                                            |
-| `defaultSort`       | `SortObject`       |               | The initial sort order for the resource.                                                            |
-| `perPage`           | `number`           |               | Number of items to display per page (default: 10).                                                  |
-| `defaultFilters`    | `any`              |               | Permanent filters applied to all data fetching for this resource.                                   |
-| `detailTitle`       | `ReactNode \| fn`  |               | Custom title for the **Detail View**. String values support ICU variables from the record (e.g. `"Product: {name}"`). |
-| `detailDescription` | `ReactNode \| fn`  |               | Custom description for the **Detail View**. String values support ICU variables from the record.    |
-| `detailInclude`     | `string[]`         |               | Fields to include in the **Detail View**.                                                           |
-| `detailExclude`     | `string[]`         |               | Fields to hide from the **Detail View**.                                                            |
+| Prop                | Type               | Default       | Description                                                                                                               |
+| :------------------ | :----------------- | :------------ | :------------------------------------------------------------------------------------------------------------------------ |
+| `name`              | `string`           |               | **Required**. The unique identifier for the resource (e.g., "products").                                                  |
+| `children`          | `ReactNode`        |               | Field components (e.g., `<TextField>`) that define the data model.                                                        |
+| `list`              | `Component\|false` | `<List>`      | Override the default List View with a custom component or disable it with `false`.                                        |
+| `edit`              | `Component\|false` | `<Edit>`      | Override the default Edit Form with a custom component or disable it with `false`.                                        |
+| `create`            | `Component\|false` | `<Create>`    | Override the default Create Form with a custom component or disable it with `false`.                                      |
+| `detail`            | `Component\|false` | `<Detail>`    | Override the default Detail View with a custom component or disable it with `false`.                                      |
+| `listComponent`     | `Component`        | `<Table>`     | Custom component to use for the List View. Must be schema-aware to utilize the field definitions.                         |
+| `detailComponent`   | `Component`        | `<DetailHub>` | Custom component to use for the Detail View. Must be schema-aware to utilize the field definitions.                       |
+| `listTitle`         | `ReactNode`        |               | Custom title for the **List View**.                                                                                       |
+| `listDescription`   | `ReactNode`        |               | Custom description for the **List View**.                                                                                 |
+| `listInclude`       | `string[]`         |               | Fields to include in the **List View**.                                                                                   |
+| `listExclude`       | `string[]`         |               | Fields to hide from the **List View**.                                                                                    |
+| `listDisplay`       | `string[]`         |               | Fields to display by default in the **List View** table.                                                                  |
+| `defaultSort`       | `SortObject`       |               | The initial sort order for the resource.                                                                                  |
+| `perPage`           | `number`           |               | Number of items to display per page (default: 10).                                                                        |
+| `defaultFilters`    | `any`              |               | Permanent filters applied to all data fetching for this resource.                                                         |
+| `detailTitle`       | `ReactNode \| fn`  |               | Custom title for the **Detail View**. String values support ICU variables from the record (e.g. `"Product: {name}"`).     |
+| `detailDescription` | `ReactNode \| fn`  |               | Custom description for the **Detail View**. String values support ICU variables from the record.                          |
+| `detailInclude`     | `string[]`         |               | Fields to include in the **Detail View**.                                                                                 |
+| `detailExclude`     | `string[]`         |               | Fields to hide from the **Detail View**.                                                                                  |
 | `editTitle`         | `ReactNode \| fn`  |               | Custom title for the **Edit Form**. String values support ICU variables from the record (e.g. `"Edit Product - {name}"`). |
-| `editDescription`   | `ReactNode \| fn`  |               | Custom description for the **Edit Form**. String values support ICU variables from the record.      |
-| `formInclude`       | `string[]`         |               | Fields to include in both **Create** and **Edit Forms** (shared fallback).                          |
-| `formExclude`       | `string[]`         |               | Fields to exclude from both **Create** and **Edit Forms** (shared fallback).                        |
-| `editInclude`       | `string[]`         |               | Fields to include in the **Edit Form** (takes priority over `formInclude`).                         |
-| `editExclude`       | `string[]`         |               | Fields to exclude from the **Edit Form** (takes priority over `formExclude`).                       |
-| `createInclude`     | `string[]`         |               | Fields to include in the **Create Form** (takes priority over `formInclude`).                       |
-| `createExclude`     | `string[]`         |               | Fields to exclude from the **Create Form** (takes priority over `formExclude`).                     |
-| `createTitle`       | `ReactNode`        |               | Custom title for the **Create Form**.                                                               |
-| `createDescription` | `ReactNode`        |               | Custom description for the **Create Form**.                                                         |
-| `delete`            | `boolean`          | `true`        | Set to `false` to disable delete functionality for this resource.                                   |
-| `queryOptions`      | `object`           |               | Options passed to the data provider for all queries (e.g., `meta: { embed: ['category'] }`).        |
+| `editDescription`   | `ReactNode \| fn`  |               | Custom description for the **Edit Form**. String values support ICU variables from the record.                            |
+| `formInclude`       | `string[]`         |               | Fields to include in both **Create** and **Edit Forms** (shared fallback).                                                |
+| `formExclude`       | `string[]`         |               | Fields to exclude from both **Create** and **Edit Forms** (shared fallback).                                              |
+| `editInclude`       | `string[]`         |               | Fields to include in the **Edit Form** (takes priority over `formInclude`).                                               |
+| `editExclude`       | `string[]`         |               | Fields to exclude from the **Edit Form** (takes priority over `formExclude`).                                             |
+| `createInclude`     | `string[]`         |               | Fields to include in the **Create Form** (takes priority over `formInclude`).                                             |
+| `createExclude`     | `string[]`         |               | Fields to exclude from the **Create Form** (takes priority over `formExclude`).                                           |
+| `createTitle`       | `ReactNode`        |               | Custom title for the **Create Form**.                                                                                     |
+| `createDescription` | `ReactNode`        |               | Custom description for the **Create Form**.                                                                               |
+| `delete`            | `boolean`          | `true`        | Set to `false` to disable delete functionality for this resource.                                                         |
+| `queryOptions`      | `object`           |               | Options passed to the data provider for all queries (e.g., `meta: { embed: ['category'] }`).                              |
 
 ---
 

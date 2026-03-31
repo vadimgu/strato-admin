@@ -11,7 +11,11 @@ import { useDeleteController } from '@strato-admin/core';
 
 const DeleteButton = () => {
   const { onClick, isPending } = useDeleteController();
-  return <button onClick={onClick} disabled={isPending}>Delete</button>;
+  return (
+    <button onClick={onClick} disabled={isPending}>
+      Delete
+    </button>
+  );
 };
 ```
 

@@ -32,9 +32,8 @@ export const Form = ({ children, include, exclude, toolbar, saveButtonLabel, ...
   const { getEditFields, getCreateFields } = useSchemaFields();
 
   const finalChildren = React.useMemo(
-    () => isEditMode
-      ? getEditFields(children, { include, exclude })
-      : getCreateFields(children, { include, exclude }),
+    () =>
+      isEditMode ? getEditFields(children, { include, exclude }) : getCreateFields(children, { include, exclude }),
     [isEditMode, getEditFields, getCreateFields, children, include, exclude],
   );
 

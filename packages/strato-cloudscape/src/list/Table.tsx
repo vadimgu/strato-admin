@@ -190,7 +190,6 @@ export interface TableProps<RecordType extends RaRecord = any> extends Partial<
   display?: string[];
 }
 
-
 /**
  * The Table component provides a declarative way to build data tables with Cloudscape components
  * while integrating with React Admin's data fetching and state management.
@@ -223,21 +222,16 @@ export const Table = <RecordType extends RaRecord = any>({
   const translate = useTranslate();
   const { listPageSizes, listPageSizeLabel } = useSettings();
 
-  const resolvedPageSizeOptions = pageSizeOptions ?? (
-    listPageSizes && listPageSizeLabel
+  const resolvedPageSizeOptions =
+    pageSizeOptions ??
+    (listPageSizes && listPageSizeLabel
       ? listPageSizes.map((value) => ({
           value,
           label: listPageSizeLabel(value),
         }))
-      : undefined
-  );
+      : undefined);
   const translateLabel = useTranslateLabel();
-  const {
-    resource,
-    definition,
-    label: schemaLabel,
-    listDisplay,
-  } = useResourceSchema();
+  const { resource, definition, label: schemaLabel, listDisplay } = useResourceSchema();
 
   const { getListFields } = useSchemaFields();
 
@@ -309,10 +303,7 @@ export const Table = <RecordType extends RaRecord = any>({
       return extractedColumns.options
         .filter((opt) => {
           const column = extractedColumns.columns.find((c) => c.id === opt.id);
-          return (
-            finalDisplay.includes(opt.id) ||
-            (column?.sortingField && finalDisplay.includes(column.sortingField))
-          );
+          return finalDisplay.includes(opt.id) || (column?.sortingField && finalDisplay.includes(column.sortingField));
         })
         .map((opt) => opt.id);
     }
@@ -334,7 +325,7 @@ export const Table = <RecordType extends RaRecord = any>({
 
   const { items, paginationProps, collectionProps, filterProps, preferencesProps } = useCollection<RecordType>({
     preferences: {
-      pageSizeOptions: resolvedPageSizeOptions,
+      pageSizeOptions: resolvedPageSizeOptions as any,
       visibleContentOptions: !reorderable && extractedColumns.options.length > 0 ? extractedColumns.options : undefined,
       contentDisplayOptions: reorderable && extractedColumns.options.length > 0 ? extractedColumns.options : undefined,
       visibleContent: defaultVisibleContent,
@@ -370,7 +361,7 @@ export const Table = <RecordType extends RaRecord = any>({
   const finalPreferences = React.useMemo(() => {
     if (preferences === false) return undefined;
     if (React.isValidElement(preferences)) return preferences;
-    
+
     // preferences is true or an object, or we have pageSizeOptions
     if (preferences === true || resolvedPageSizeOptions) {
       return (
@@ -379,29 +370,29 @@ export const Table = <RecordType extends RaRecord = any>({
           pageSizePreference={
             resolvedPageSizeOptions
               ? {
-                options: resolvedPageSizeOptions,
-              }
+                  options: resolvedPageSizeOptions as any,
+                }
               : undefined
           }
           visibleContentPreference={
             !reorderable && extractedColumns.options.length > 0
               ? {
-                title: translate("strato.action.select_columns", { _: 'Select visible columns' }),
-                options: [
-                  {
-                    label: translate("strato.action.select_columns", { _: 'Select visible columns' }),
-                    options: extractedColumns.options,
-                  },
-                ],
-              }
+                  title: translate('strato.action.select_columns', { _: 'Select visible columns' }),
+                  options: [
+                    {
+                      label: translate('strato.action.select_columns', { _: 'Select visible columns' }),
+                      options: extractedColumns.options,
+                    },
+                  ],
+                }
               : undefined
           }
           contentDisplayPreference={
             reorderable && extractedColumns.options.length > 0
               ? {
-                title: translate("strato.action.select_columns", { _: 'Select visible columns' }),
-                options: extractedColumns.options,
-              }
+                  title: translate('strato.action.select_columns', { _: 'Select visible columns' }),
+                  options: extractedColumns.options,
+                }
               : undefined
           }
         />

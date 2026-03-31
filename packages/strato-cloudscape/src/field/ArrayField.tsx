@@ -77,7 +77,7 @@ const ArrayFieldUI = ({ children, title }: { children?: ReactNode; title?: React
 
   // Check if children already contain a Table
   const hasTable = childrenArray.some(
-    (child) => React.isValidElement(child) && (child.type === Table || (child.type as any).displayName === 'Table')
+    (child) => React.isValidElement(child) && (child.type === Table || (child.type as any).displayName === 'Table'),
   );
 
   if (hasTable) {
@@ -87,12 +87,7 @@ const ArrayFieldUI = ({ children, title }: { children?: ReactNode; title?: React
   // If children are provided but no Table, wrap them in a Table.
   // This supports the shorthand <ArrayField><TextField source="foo" /></ArrayField>
   return (
-    <Table
-      variant="embedded"
-      title={title}
-      selectionType={undefined}
-      actions={null}
-    >
+    <Table variant="embedded" title={title} selectionType={undefined} actions={null}>
       {children}
     </Table>
   );

@@ -44,10 +44,7 @@ Use `include` or `exclude` to filter the auto-generated table without writing a 
 ### Title and description
 
 ```tsx
-<List
-  title="All Products"
-  description="Browse and manage the product catalog."
-/>
+<List title="All Products" description="Browse and manage the product catalog." />
 ```
 
 ### Disabling filtering or preferences

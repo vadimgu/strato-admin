@@ -1,4 +1,4 @@
-import { DataProvider, fetchUtils } from '@strato-admin/admin';
+import { DataProvider, fetchUtils } from '@strato-admin/ra-core';
 
 const API_URL = 'https://dummyjson.com';
 

@@ -41,9 +41,7 @@ vi.mock('@cloudscape-design/components/pagination', () => ({
 }));
 
 vi.mock('@cloudscape-design/components/text-filter', () => ({
-  default: vi.fn(({ filteringPlaceholder }: any) => (
-    <div data-testid="text-filter">{filteringPlaceholder}</div>
-  )),
+  default: vi.fn(({ filteringPlaceholder }: any) => <div data-testid="text-filter">{filteringPlaceholder}</div>),
 }));
 
 vi.mock('@cloudscape-design/components/collection-preferences', () => ({
@@ -98,7 +96,7 @@ describe('Cards', () => {
     // Check that KeyValuePairs received only name and price fields
     const keyValuePairsProps = (KeyValuePairs as any).mock.calls[0][0];
     const children = React.Children.toArray(keyValuePairsProps.children);
-    
+
     expect(children).toHaveLength(2);
     expect((children[0] as any).props.source).toBe('name');
     expect((children[1] as any).props.source).toBe('price');
@@ -118,7 +116,7 @@ describe('Cards', () => {
 
     const keyValuePairsProps = (KeyValuePairs as any).mock.calls[0][0];
     const children = React.Children.toArray(keyValuePairsProps.children);
-    
+
     expect(children).toHaveLength(2);
     expect((children[0] as any).props.source).toBe('name');
     expect((children[1] as any).props.source).toBe('price');
@@ -138,7 +136,7 @@ describe('Cards', () => {
 
     const keyValuePairsProps = (KeyValuePairs as any).mock.calls[0][0];
     const children = React.Children.toArray(keyValuePairsProps.children);
-    
+
     expect(children).toHaveLength(2);
     expect((children[0] as any).props.source).toBe('price');
     expect((children[1] as any).props.source).toBe('description');
@@ -146,20 +144,18 @@ describe('Cards', () => {
 
   it('should support declarative children', () => {
     (useResourceSchema as any).mockReturnValue({
-      fieldSchema: [
-        <div key="name" source="name" data-testid="field-name" />,
-      ],
+      fieldSchema: [<div key="name" source="name" data-testid="field-name" />],
     });
 
     render(
       <Cards>
         <div source="custom" data-testid="field-custom" />
-      </Cards>
+      </Cards>,
     );
 
     const keyValuePairsProps = (KeyValuePairs as any).mock.calls[0][0];
     const children = React.Children.toArray(keyValuePairsProps.children);
-    
+
     expect(children).toHaveLength(1);
     expect((children[0] as any).props.source).toBe('custom');
   });
@@ -201,8 +197,8 @@ describe('Cards', () => {
     (useResourceSchema as any).mockReturnValue({
       fieldSchema: [],
       definition: {
-        options: { canDelete: true }
-      }
+        options: { canDelete: true },
+      },
     });
 
     const { getByTestId } = render(<Cards />);
@@ -258,11 +254,13 @@ describe('Cards', () => {
     const pageSizeOptions = [{ value: 5, label: '5 items' }];
     render(<Cards pageSizeOptions={pageSizeOptions} />);
 
-    expect(useCollection).toHaveBeenCalledWith(expect.objectContaining({
-      preferences: expect.objectContaining({
-        pageSizeOptions
-      } as any)
-    }));
+    expect(useCollection).toHaveBeenCalledWith(
+      expect.objectContaining({
+        preferences: expect.objectContaining({
+          pageSizeOptions,
+        } as any),
+      }),
+    );
   });
 
   it('should filter children based on visibleContent preference', () => {
@@ -289,7 +287,7 @@ describe('Cards', () => {
 
     const keyValuePairsProps = (KeyValuePairs as any).mock.calls[0][0];
     const children = React.Children.toArray(keyValuePairsProps.children);
-    
+
     expect(children).toHaveLength(1);
     expect((children[0] as any).props.source).toBe('name');
   });
@@ -316,7 +314,7 @@ describe('Cards', () => {
 
     const keyValuePairsProps = (KeyValuePairs as any).mock.calls[0][0];
     const children = React.Children.toArray(keyValuePairsProps.children);
-    
+
     expect(children).toHaveLength(2);
   });
 });

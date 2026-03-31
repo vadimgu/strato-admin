@@ -35,11 +35,7 @@ export const DetailHub = <RecordType extends RaRecord = RaRecord>(props: DetailH
   const { title, description, children, actions } = props;
   const { record, resource, isLoading } = useShowContext<RecordType>();
   const translate = useTranslate();
-  const {
-    label,
-    detailTitle,
-    detailDescription,
-  } = useResourceSchema();
+  const { label, detailTitle, detailDescription } = useResourceSchema();
 
   const { getDetailFields } = useSchemaFields();
 
@@ -64,10 +60,7 @@ export const DetailHub = <RecordType extends RaRecord = RaRecord>(props: DetailH
     return undefined;
   }, [record, description, detailDescription, translate]);
 
-  const { scalarFields, collectionFields } = useMemo(
-    () => getDetailFields(children),
-    [getDetailFields, children],
-  );
+  const { scalarFields, collectionFields } = useMemo(() => getDetailFields(children), [getDetailFields, children]);
 
   if (isLoading || !record) {
     return null;

@@ -8,14 +8,16 @@
 import { CancelButton } from '@strato-admin/cloudscape';
 
 // Already included by default — use only when customising the toolbar
-<Create toolbar={
-  <SpaceBetween direction="horizontal" size="xs">
-    <CancelButton />
-    <SaveButton />
-  </SpaceBetween>
-}>
+<Create
+  toolbar={
+    <SpaceBetween direction="horizontal" size="xs">
+      <CancelButton />
+      <SaveButton />
+    </SpaceBetween>
+  }
+>
   ...
-</Create>
+</Create>;
 ```
 
 ### Custom label

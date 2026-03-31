@@ -31,7 +31,7 @@ export const EditButton = ({ label, record: recordProp, variant = 'normal', ...p
 
   return (
     <Button variant={variant} href={path} onClick={handleClick} iconName="edit" {...props}>
-      {label || translate("strato.action.edit", { _: 'Edit' })}
+      {label || translate('strato.action.edit', { _: 'Edit' })}
     </Button>
   );
 };

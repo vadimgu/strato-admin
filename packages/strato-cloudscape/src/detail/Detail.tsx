@@ -1,9 +1,5 @@
 import React from 'react';
-import {
-  ShowBaseProps,
-  ShowContextProvider,
-  useShowController,
-} from '@strato-admin/ra-core';
+import { ShowBaseProps, ShowContextProvider, useShowController } from '@strato-admin/ra-core';
 import { useResourceSchema } from '@strato-admin/core';
 import DetailHub from './DetailHub';
 

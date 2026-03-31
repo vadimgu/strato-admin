@@ -28,11 +28,11 @@ const BooleanField = <RecordType extends RaRecord = RaRecord>(props: BooleanFiel
 
   const content = isTrue ? (
     <StatusIndicator type="success" colorOverride="green">
-      {showLabel ? (trueLabel ?? translate("strato.boolean.true", { _: 'Yes' })) : null}
+      {showLabel ? (trueLabel ?? translate('strato.boolean.true', { _: 'Yes' })) : null}
     </StatusIndicator>
   ) : (
     <StatusIndicator type="not-started">
-      {showLabel ? (falseLabel ?? translate("strato.boolean.false", { _: 'No' })) : null}
+      {showLabel ? (falseLabel ?? translate('strato.boolean.false', { _: 'No' })) : null}
     </StatusIndicator>
   );
 

@@ -28,9 +28,7 @@ export const BulkDeleteButton = ({
   const { options } = useResourceDefinition();
   const resolve = useSettingValue();
   const rawDefault = resolve(undefined, 'bulkDeleteSuccessMessage');
-  const resolvedDefault = typeof rawDefault === 'function'
-    ? rawDefault(selectedIds?.length ?? 0)
-    : rawDefault;
+  const resolvedDefault = typeof rawDefault === 'function' ? rawDefault(selectedIds?.length ?? 0) : rawDefault;
   const { handleDelete, isPending, isLoading } = useBulkDeleteController({
     mutationMode: resolve(mutationMode, 'mutationMode'),
     successMessage: successMessage ?? options?.bulkDeleteSuccessMessage ?? resolvedDefault,
@@ -56,12 +54,12 @@ export const BulkDeleteButton = ({
   const handleClose = () => {
     setIsOpen(false);
   };
-  const defaultTitle = translate("strato.message.bulk_delete_title", {
+  const defaultTitle = translate('strato.message.bulk_delete_title', {
     smart_count: selectedIds?.length || 0,
     _: `{smart_count, plural, one {Delete this item} other {Delete these # items}}`,
   });
 
-  const defaultDescription = translate("strato.message.bulk_delete_content", {
+  const defaultDescription = translate('strato.message.bulk_delete_content', {
     smart_count: selectedIds?.length || 0,
     _: `{
       smart_count, plural,
@@ -77,20 +75,20 @@ export const BulkDeleteButton = ({
         loading={isBusy}
         disabled={isBusy || !selectedIds || selectedIds.length === 0}
       >
-        {label || translate("strato.action.delete", { _: 'Delete' })}
+        {label || translate('strato.action.delete', { _: 'Delete' })}
       </Button>
       <Modal
         onDismiss={handleClose}
         visible={isOpen}
-        closeAriaLabel={translate("strato.action.close", { _: 'Close' })}
+        closeAriaLabel={translate('strato.action.close', { _: 'Close' })}
         footer={
           <Box float="right">
             <SpaceBetween direction="horizontal" size="xs">
               <Button variant="link" onClick={handleClose}>
-                {translate("strato.action.cancel", { _: 'Cancel' })}
+                {translate('strato.action.cancel', { _: 'Cancel' })}
               </Button>
               <Button variant="primary" onClick={handleConfirm} loading={isBusy} data-testid="confirm-bulk-delete">
-                {translate("strato.action.confirm", { _: 'Confirm' })}
+                {translate('strato.action.confirm', { _: 'Confirm' })}
               </Button>
             </SpaceBetween>
           </Box>

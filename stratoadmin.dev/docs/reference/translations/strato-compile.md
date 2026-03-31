@@ -10,15 +10,15 @@ strato-compile [options] <pattern>
 
 ## Arguments
 
-| Argument | Description |
-| :--- | :--- |
+| Argument  | Description                                                                                                                                                                                                   |
+| :-------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `pattern` | Glob or directory path matching the translation files to compile. **Default:** `locales` (all `.po` and `.json` files in that directory). Files already ending in `.compiled.json` are automatically skipped. |
 
 ## Options
 
-| Option | Short | Description |
-| :--- | :--- | :--- |
-| `--out-file <path>` | `-o` | Write the compiled output to a specific file instead of deriving the name from the input. Only valid when the pattern matches a single file. |
+| Option              | Short | Description                                                                                                                                  |
+| :------------------ | :---- | :------------------------------------------------------------------------------------------------------------------------------------------- |
+| `--out-file <path>` | `-o`  | Write the compiled output to a specific file instead of deriving the name from the input. Only valid when the pattern matches a single file. |
 
 ## Examples
 

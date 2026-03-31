@@ -14,7 +14,9 @@ const LanguageSwitcher = () => {
   return (
     <select>
       {locales?.map(({ locale, name }) => (
-        <option key={locale} value={locale}>{name}</option>
+        <option key={locale} value={locale}>
+          {name}
+        </option>
       ))}
     </select>
   );

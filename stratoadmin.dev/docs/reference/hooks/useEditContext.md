@@ -11,7 +11,11 @@ import { useEditContext } from '@strato-admin/core';
 
 const EditSidebar = () => {
   const { record, resource, isPending } = useEditContext();
-  return <p>Editing {resource} #{record?.id}</p>;
+  return (
+    <p>
+      Editing {resource} #{record?.id}
+    </p>
+  );
 };
 ```
 

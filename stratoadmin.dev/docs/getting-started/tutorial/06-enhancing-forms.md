@@ -19,56 +19,50 @@ We will also add a `status` field to our products. This is a perfect candidate f
 Update `src/App.tsx` with these enhancements:
 
 ```tsx title="src/App.tsx"
-import { 
-  Admin, 
-  ResourceSchema, 
-  TextField, 
-  NumberField, 
+import {
+  Admin,
+  ResourceSchema,
+  TextField,
+  NumberField,
   ReferenceField,
   TextAreaInput,
   SelectInput,
-} from "@strato-admin/admin";
-import { dataProvider } from "@strato-admin/faker-ecommerce";
+} from '@strato-admin/admin';
+import { dataProvider } from '@strato-admin/faker-ecommerce';
 
 const App = () => (
   <Admin dataProvider={dataProvider}>
-    <ResourceSchema
-      name="products"
-      listInclude={["name", "price", "category_id", "status"]}
-    >
+    <ResourceSchema name="products" listInclude={['name', 'price', 'category_id', 'status']}>
       <TextField source="id" />
       <TextField source="name" />
       <NumberField source="price" />
-      
+
       {/* Customize the description to use a multi-line text area */}
-      <TextField 
-        source="description" 
-        input={<TextAreaInput />} 
-      />
-      
+      <TextField source="description" input={<TextAreaInput />} />
+
       {/* Add a status field with a searchable dropdown select */}
       <TextField
         source="status"
         input={
           <SelectInput
             options={[
-              { label: "Draft", value: "draft" },
-              { label: "Published", value: "published" },
-              { label: "Archived", value: "archived" },
+              { label: 'Draft', value: 'draft' },
+              { label: 'Published', value: 'published' },
+              { label: 'Archived', value: 'archived' },
             ]}
           />
         }
       />
-      
+
       <ReferenceField source="category_id" reference="categories" />
     </ResourceSchema>
 
-    <ResourceSchema 
-      name="categories" 
+    <ResourceSchema
+      name="categories"
       recordRepresentation="name"
-      list={false} 
-      create={false} 
-      edit={false} 
+      list={false}
+      create={false}
+      edit={false}
       delete={false}
     >
       <TextField source="id" />
@@ -87,6 +81,7 @@ const App = () => (
 ## Summary
 
 In this chapter, we've seen how to:
+
 - Override default input components using the `input` prop.
 - Improve the data entry experience with `TextAreaInput` and `SelectInput`.
 - Maintain a single source of truth for both display and form views.

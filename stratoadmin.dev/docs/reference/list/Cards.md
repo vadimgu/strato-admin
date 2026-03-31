@@ -43,12 +43,14 @@ Pass field components as children to control which fields appear on each card.
 Use `renderItem` to fully control each card's content.
 
 ```tsx
-<Cards renderItem={(record) => (
-  <div>
-    <strong>{record.name}</strong>
-    <p>{record.description}</p>
-  </div>
-)} />
+<Cards
+  renderItem={(record) => (
+    <div>
+      <strong>{record.name}</strong>
+      <p>{record.description}</p>
+    </div>
+  )}
+/>
 ```
 
 ### Set as default list component

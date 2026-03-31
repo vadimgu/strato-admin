@@ -51,18 +51,15 @@ describe('Detail Collection Fields', () => {
 
     (useResourceSchema as any).mockReturnValue({
       label: 'Products',
-      fieldSchema: [
-        <ScalarField key="scalar" source="name" />,
-        <CollectionField key="collection" source="items" />
-      ],
+      fieldSchema: [<ScalarField key="scalar" source="name" />, <CollectionField key="collection" source="items" />],
     });
 
     const { getByTestId, queryByTestId } = render(<Detail />);
 
     // Scalar fields should be inside a container (handled by DetailHub -> KeyValuePairs)
-    // In this test, because we don't mock KeyValuePairs, DetailHub renders <KeyValuePairs /> 
+    // In this test, because we don't mock KeyValuePairs, DetailHub renders <KeyValuePairs />
     // which in our mock is just the component itself or handled by schema.
-    
+
     // Collection field should be rendered
     expect(getByTestId('collection-items')).toBeDefined();
   });
@@ -75,10 +72,7 @@ describe('Detail Collection Fields', () => {
 
     (useResourceSchema as any).mockReturnValue({
       label: 'Products',
-      fieldSchema: [
-        <CollectionField1 key="c1" source="items1" />,
-        <CollectionField2 key="c2" source="items2" />
-      ],
+      fieldSchema: [<CollectionField1 key="c1" source="items1" />, <CollectionField2 key="c2" source="items2" />],
       detailInclude: ['items1'],
     });
 
