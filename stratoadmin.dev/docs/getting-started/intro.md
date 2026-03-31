@@ -105,11 +105,8 @@ Strato Admin supports three primary development styles depending on the required
 2.  **Themed Components**: Explicit view definitions using declarative components.
 3.  **Headless Integration**: Direct use of framework hooks with custom UI components.
 
-See the [Architectural documentation](../core-concepts/architecture.md) for more details.
-
 ## Next Steps
 
 - **[Quick Start](./quick-start.md)**: Build your first Strato Admin app in 5 minutes.
-- **[Architectural Approaches](../core-concepts/architecture.md)**: Learn about Schema-First, View-Based, and Headless patterns.
 - **[Field to Input Mapping](../reference/inputs/inputs.md)**: Understand how fields are converted to form inputs.
 - **[Fields Reference](../core-concepts/fields.md)**: Explore the data display components.

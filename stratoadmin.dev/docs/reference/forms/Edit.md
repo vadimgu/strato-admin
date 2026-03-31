@@ -4,7 +4,7 @@ sidebar_position: 1
 
 # `<Edit>`
 
-The page-level component for editing an existing record. It fetches the record by ID, wraps a [`<Form>`](../Form.md) in a Cloudscape `Container` with a header, and submits changes to the data provider's `update` method.
+The page-level component for editing an existing record. It fetches the record by ID, wraps a `<Form>` in a Cloudscape `Container` with a header, and submits changes to the data provider's `update` method.
 
 import PropsTable from '@site/src/components/PropsTable';
 

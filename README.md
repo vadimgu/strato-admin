@@ -144,8 +144,6 @@ Strato Admin supports three primary development styles depending on the required
 2.  **Themed Components**: Explicit view definitions using declarative components.
 3.  **Headless Integration**: Direct use of framework hooks with custom UI components.
 
-See the [Architectural documentation](docs/docs/architecture.md) for more details.
-
 ## Note on Vendoring
 
 Vendoring is an interim architectural choice and not a core requirement of the project. The primary downside is the increased maintenance overhead and the risk of drifting from upstream React-Admin improvements. This decision is not final; as the integration points between React-Admin and Cloudscape stabilize, the project may transition back to using upstream packages to reduce long-term maintenance debt.

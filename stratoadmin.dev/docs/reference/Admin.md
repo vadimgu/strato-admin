@@ -22,26 +22,26 @@ export default function App() {
 
 ## Props
 
-| Prop | Type | Default | Description |
-| :--- | :--- | :------ | :---------- |
-| `dataProvider` | `DataProvider` | | **Required.** Communicates with your API. |
-| `children` | `AdminChildren` | | [`<ResourceSchema>`](./ResourceSchema.md) or [`<Resource>`](./resource.md) definitions, and other routes. |
-| `title` | `string` | | Application title shown in the browser tab and sidebar header. |
-| `authProvider` | `AuthProvider` | | Handles login, logout, permissions, and identity. |
-| `i18nProvider` | `I18nProvider` | English ICU | Handles translations and locale switching. |
-| `store` | `Store` | `localStorageStore()` | Persists user preferences (sidebar state, column widths, etc.). |
-| `layout` | `LayoutComponent` | `<AppLayout>` | Top-level layout wrapper. |
-| `ready` | `ComponentType` | `<Ready>` | Shown when the app has no resources defined yet. |
-| `dashboard` | `DashboardComponent` | | Component rendered at the root `/` route. |
-| `loginPage` | `LoginComponent \| boolean` | | Custom login page. Pass `false` to disable. |
-| `catchAll` | `CatchAllComponent` | | Rendered for unmatched routes (404). |
-| `error` | `ErrorComponent` | | Global error boundary component. |
-| `requireAuth` | `boolean` | `false` | When `true`, all routes require authentication. |
-| `disableTelemetry` | `boolean` | `false` | Opt out of anonymous usage telemetry. |
-| `basename` | `string` | | URL base path when the app is not served from `/`. |
-| `routerProvider` | `RouterProvider` | react-router-dom | Custom router implementation. |
-| `queryClient` | `QueryClient` | | Custom React Query client configuration. |
-| `settings` | `ReactElement<AdminSettings>` | | Admin-level defaults (list/detail components, notification messages). Pass a [`<Settings>`](./Settings.md) element. |
+| Prop               | Type                          | Default               | Description                                                                                                         |
+| :----------------- | :---------------------------- | :-------------------- | :------------------------------------------------------------------------------------------------------------------ |
+| `dataProvider`     | `DataProvider`                |                       | **Required.** Communicates with your API.                                                                           |
+| `children`         | `AdminChildren`               |                       | [`<ResourceSchema>`](./ResourceSchema.md) or [`<Resource>`](./resource.md) definitions, and other routes.           |
+| `title`            | `string`                      |                       | Application title shown in the browser tab and sidebar header.                                                      |
+| `authProvider`     | `AuthProvider`                |                       | Handles login, logout, permissions, and identity.                                                                   |
+| `i18nProvider`     | `I18nProvider`                | English ICU           | Handles translations and locale switching.                                                                          |
+| `store`            | `Store`                       | `localStorageStore()` | Persists user preferences (sidebar state, column widths, etc.).                                                     |
+| `layout`           | `LayoutComponent`             | `<AppLayout>`         | Top-level layout wrapper.                                                                                           |
+| `ready`            | `ComponentType`               | `<Ready>`             | Shown when the app has no resources defined yet.                                                                    |
+| `dashboard`        | `DashboardComponent`          |                       | Component rendered at the root `/` route.                                                                           |
+| `loginPage`        | `LoginComponent \| boolean`   |                       | Custom login page. Pass `false` to disable.                                                                         |
+| `catchAll`         | `CatchAllComponent`           |                       | Rendered for unmatched routes (404).                                                                                |
+| `error`            | `ErrorComponent`              |                       | Global error boundary component.                                                                                    |
+| `requireAuth`      | `boolean`                     | `false`               | When `true`, all routes require authentication.                                                                     |
+| `disableTelemetry` | `boolean`                     | `false`               | Opt out of anonymous usage telemetry.                                                                               |
+| `basename`         | `string`                      |                       | URL base path when the app is not served from `/`.                                                                  |
+| `routerProvider`   | `RouterProvider`              | react-router-dom      | Custom router implementation.                                                                                       |
+| `queryClient`      | `QueryClient`                 |                       | Custom React Query client configuration.                                                                            |
+| `settings`         | `ReactElement<AdminSettings>` |                       | Admin-level defaults (list/detail components, notification messages). Pass a [`<Settings>`](./Settings.md) element. |
 
 ---
 
@@ -54,9 +54,7 @@ import jsonServerProvider from 'ra-data-json-server';
 
 const dataProvider = jsonServerProvider('https://jsonplaceholder.typicode.com');
 
-<Admin dataProvider={dataProvider}>
-  {/* ... */}
-</Admin>
+<Admin dataProvider={dataProvider}>{/* ... */}</Admin>;
 ```
 
 See the [Data Providers](../core-concepts/data-providers.md) guide for details on implementing a custom data provider.
@@ -67,16 +65,26 @@ An object with methods to handle authentication. When provided, Strato Admin wil
 
 ```tsx
 const authProvider = {
-  login: ({ username, password }) => { /* ... */ },
-  logout: () => { /* ... */ },
-  checkAuth: () => { /* ... */ },
-  checkError: (error) => { /* ... */ },
-  getPermissions: () => { /* ... */ },
+  login: ({ username, password }) => {
+    /* ... */
+  },
+  logout: () => {
+    /* ... */
+  },
+  checkAuth: () => {
+    /* ... */
+  },
+  checkError: (error) => {
+    /* ... */
+  },
+  getPermissions: () => {
+    /* ... */
+  },
 };
 
 <Admin dataProvider={dataProvider} authProvider={authProvider}>
   {/* ... */}
-</Admin>
+</Admin>;
 ```
 
 See the [Auth Providers](../core-concepts/auth-providers.md) guide for details.
@@ -105,18 +113,14 @@ const messages = {
   fr: { ...frenchMessages, ...myFrMessages },
 };
 
-const i18nProvider = icuI18nProvider(
-  (locale) => messages[locale],
-  'en',
-  [
-    { locale: 'en', name: 'English' },
-    { locale: 'fr', name: 'Français' },
-  ],
-);
+const i18nProvider = icuI18nProvider((locale) => messages[locale], 'en', [
+  { locale: 'en', name: 'English' },
+  { locale: 'fr', name: 'Français' },
+]);
 
 <Admin dataProvider={dataProvider} i18nProvider={i18nProvider}>
   {/* ... */}
-</Admin>
+</Admin>;
 ```
 
 See the [Translations](../core-concepts/translation.md) guide for details.
@@ -131,7 +135,7 @@ import { memoryStore } from '@strato-admin/admin';
 // Use memory store (preferences reset on page reload — useful for tests)
 <Admin dataProvider={dataProvider} store={memoryStore()}>
   {/* ... */}
-</Admin>
+</Admin>;
 ```
 
 ## `dashboard`
@@ -147,12 +151,12 @@ const Dashboard = () => (
 
 <Admin dataProvider={dataProvider} dashboard={Dashboard}>
   {/* ... */}
-</Admin>
+</Admin>;
 ```
 
 ## `layout`
 
-Overrides the default [`<AppLayout>`](../guides/layout/app-layout.md) wrapper. The layout component receives `children` and is responsible for rendering navigation and the main content area.
+TODO: document layout prop and link to `<AppLayout>` guide
 
 ```tsx
 import { AppLayout } from '@strato-admin/admin';
@@ -161,7 +165,7 @@ const MyLayout = (props) => <AppLayout {...props} navigationWidth={300} />;
 
 <Admin dataProvider={dataProvider} layout={MyLayout}>
   {/* ... */}
-</Admin>
+</Admin>;
 ```
 
 ## `loginPage`
@@ -212,7 +216,7 @@ const queryClient = new QueryClient({
 
 <Admin dataProvider={dataProvider} queryClient={queryClient}>
   {/* ... */}
-</Admin>
+</Admin>;
 ```
 
 ## `settings`
@@ -224,16 +228,10 @@ import { Settings } from '@strato-admin/admin';
 
 <Admin
   dataProvider={dataProvider}
-  settings={
-    <Settings
-      listComponent={MyTable}
-      detailComponent={MyDetailHub}
-      deleteSuccessMessage="Item removed"
-    />
-  }
+  settings={<Settings listComponent={MyTable} detailComponent={MyDetailHub} deleteSuccessMessage="Item removed" />}
 >
   {/* ... */}
-</Admin>
+</Admin>;
 ```
 
 See [`<Settings>`](./Settings.md) for the full list of configurable values.

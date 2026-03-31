@@ -25,7 +25,7 @@ npm run preview
 Your data provider's API base URL should come from an environment variable, not be hardcoded. Vite exposes variables prefixed with `VITE_`:
 
 ```ts title="src/dataProvider.ts"
-const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:3000";
+const API_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:3000';
 ```
 
 Create a `.env.production` file at the project root:
@@ -38,12 +38,12 @@ VITE_API_URL=https://api.stratoshop.example.com
 
 The `dist/` folder is a standard single-page application. It can be deployed to any static hosting service:
 
-| Provider | Command |
-|---|---|
-| **Netlify** | `netlify deploy --prod --dir=dist` |
-| **Vercel** | `vercel --prod` |
-| **AWS S3 + CloudFront** | `aws s3 sync dist/ s3://your-bucket` |
-| **GitHub Pages** | Push `dist/` to the `gh-pages` branch |
+| Provider                | Command                               |
+| ----------------------- | ------------------------------------- |
+| **Netlify**             | `netlify deploy --prod --dir=dist`    |
+| **Vercel**              | `vercel --prod`                       |
+| **AWS S3 + CloudFront** | `aws s3 sync dist/ s3://your-bucket`  |
+| **GitHub Pages**        | Push `dist/` to the `gh-pages` branch |
 
 Because the app uses client-side routing, configure your host to serve `index.html` for all routes (a "SPA fallback" or "404 → index.html" rule).
 
@@ -60,12 +60,12 @@ npx vitest run
 For component tests that render Strato components, wrap the component under test in `<Admin>` with a mock data provider:
 
 ```tsx title="src/MyComponent.test.tsx"
-import { render } from "@testing-library/react";
-import { Admin } from "@strato-admin/admin";
-import { dataProvider } from "@strato-admin/faker-ecommerce";
-import { MyComponent } from "./MyComponent";
+import { render } from '@testing-library/react';
+import { Admin } from '@strato-admin/admin';
+import { dataProvider } from '@strato-admin/faker-ecommerce';
+import { MyComponent } from './MyComponent';
 
-test("renders without error", () => {
+test('renders without error', () => {
   render(
     <Admin dataProvider={dataProvider}>
       <MyComponent />
@@ -89,12 +89,15 @@ npx playwright test
 A typical test navigates to a list page, clicks into a record, and asserts on the rendered content:
 
 ```ts title="e2e/products.spec.ts"
-import { test, expect } from "@playwright/test";
+import { test, expect } from '@playwright/test';
 
-test("can view a product", async ({ page }) => {
-  await page.goto("/products");
-  await page.getByRole("link", { name: /product/i }).first().click();
-  await expect(page.getByRole("heading")).toBeVisible();
+test('can view a product', async ({ page }) => {
+  await page.goto('/products');
+  await page
+    .getByRole('link', { name: /product/i })
+    .first()
+    .click();
+  await expect(page.getByRole('heading')).toBeVisible();
 });
 ```
 
@@ -110,14 +113,17 @@ test("can view a product", async ({ page }) => {
 You've completed the StratoShop tutorial. Here is where to go from here:
 
 **Reference documentation**
-- [Admin](/docs/reference/admin) — all props for the root component
-- [ResourceSchema](/docs/reference/resource-schema) — the full schema API
-- [Fields](/docs/reference/fields) and [Inputs](/docs/reference/inputs) — every built-in component
+
+- [Admin](/docs/reference/Admin) — all props for the root component
+- [ResourceSchema](/docs/reference/ResourceSchema) — the full schema API
+- [Fields](/docs/reference/fields/common-props) and [Inputs](/docs/reference/inputs) — every built-in component
 
 **Core Concepts**
+
 - [Data Providers](/docs/core-concepts/data-providers) — connecting to a real REST or GraphQL API
 - [Auth Providers](/docs/core-concepts/auth-providers) — deeper authentication patterns
 - [Translation](/docs/core-concepts/translation) — advanced ICU MessageFormat usage
 
 **Community**
+
 - [GitHub](https://github.com/stratoadmin/strato-admin) — issues, discussions, and source code

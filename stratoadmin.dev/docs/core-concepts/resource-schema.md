@@ -27,12 +27,12 @@ import { ResourceSchema, TextField, CurrencyField } from '@strato-admin/admin';
 
 A single `<ResourceSchema>` definition produces four views automatically:
 
-| View        | Route                  | Description                              |
-| :---------- | :--------------------- | :--------------------------------------- |
-| List        | `/products`            | Table of all records with pagination     |
-| Detail      | `/products/:id`        | Read-only view of a single record        |
-| Create      | `/products/create`     | Form to create a new record              |
-| Edit        | `/products/:id/edit`   | Form to edit an existing record          |
+| View   | Route                | Description                          |
+| :----- | :------------------- | :----------------------------------- |
+| List   | `/products`          | Table of all records with pagination |
+| Detail | `/products/:id`      | Read-only view of a single record    |
+| Create | `/products/create`   | Form to create a new record          |
+| Edit   | `/products/:id/edit` | Form to edit an existing record      |
 
 All four views derive their field definitions from the same `<ResourceSchema>` children. Change a field label once and it updates everywhere.
 
@@ -78,6 +78,6 @@ The schema is a starting point, not a constraint. There are three levels of cust
 </ResourceSchema>
 ```
 
-**Headless** — drop down to React-Admin hooks and build completely custom UI. See [Ejecting to Headless](/docs/advanced/eject-to-headless).
+**Headless** — drop down to React hooks and build completely custom UI.
 
 For the full list of props, see the [`<ResourceSchema>` Reference](/docs/reference/ResourceSchema).

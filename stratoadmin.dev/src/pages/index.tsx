@@ -34,7 +34,7 @@ function HomepageHeader() {
         </Heading>
         <p className="hero__subtitle">{siteConfig.tagline}</p>
         <div className={styles.buttons}>
-          <Link className="button button--secondary button--lg" to="/tutorial/setup">
+          <Link className="button button--secondary button--lg" to="/docs/getting-started/tutorial/">
             Get Started
           </Link>
           <Link className="button button--outline button--secondary button--lg" to="/docs/getting-started/intro">
@@ -57,7 +57,7 @@ function CodeExample() {
               Define your resources and StratoAdmin generates fully functional list, create, edit,
               and show pages — all powered by AWS Cloudscape components.
             </p>
-            <Link className="button button--primary" to="/tutorial/setup">
+            <Link className="button button--primary" to="/docs/getting-started/tutorial/">
               Follow the tutorial →
             </Link>
           </div>
@@ -118,7 +118,7 @@ export default function Home(): ReactNode {
       <main>
         <CodeExample />
         <HowItWorks />
-<HomepageFeatures />
+        <HomepageFeatures />
       </main>
     </Layout>
   );

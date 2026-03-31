@@ -4,7 +4,7 @@ sidebar_position: 1
 
 # `<Create>`
 
-The page-level component for creating a new record. It wraps a [`<Form>`](../Form.md) in a Cloudscape `Container` with a header, and submits the form data to the data provider's `create` method.
+The page-level component for creating a new record. It wraps a `<Form>` in a Cloudscape `Container` with a header, and submits the form data to the data provider's `create` method.
 
 import PropsTable from '@site/src/components/PropsTable';
 
@@ -40,10 +40,7 @@ Use `include` or `exclude` to filter the auto-generated form without writing a c
 ### Title and description
 
 ```tsx
-<Create
-  title="Add Product"
-  description="Fill in the details to create a new product."
-/>
+<Create title="Add Product" description="Fill in the details to create a new product." />
 ```
 
 ### Custom save button label

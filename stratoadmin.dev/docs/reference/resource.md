@@ -12,7 +12,14 @@ The `<Resource>` component maps a data entity to a set of views. It registers th
 import { Resource } from '@strato-admin/admin';
 import { PostList, PostCreate, PostEdit, PostDetail } from './posts';
 
-<Resource name="posts" list={PostList} create={PostCreate} edit={PostEdit} show={PostDetail} icon="insert_drive_file" />;
+<Resource
+  name="posts"
+  list={PostList}
+  create={PostCreate}
+  edit={PostEdit}
+  show={PostDetail}
+  icon="insert_drive_file"
+/>;
 ```
 
 ## Props
@@ -27,7 +34,7 @@ The only required prop. It defines the endpoint for data fetching and the URL se
 
 ### `list`
 
-A component used to display a list of records for this resource. It typically renders a [`<List>`](../guides/lists/List.md) component.
+A component used to display a list of records for this resource. It typically renders a `<List>` with a list view.
 
 ### `create`
 
@@ -54,4 +61,4 @@ A configuration object for the resource. Common options:
 
 ## `<ResourceSchema>`
 
-If you want to define your data model in a central location, you can use [`<ResourceSchema>`](./resource-schema.md) instead of `<Resource>`. It allows you to define the field and input schemas that will be automatically used by views.
+If you want to define your data model in a central location, you can use [`<ResourceSchema>`](./ResourceSchema) instead of `<Resource>`. It allows you to define the field and input schemas that will be automatically used by views.

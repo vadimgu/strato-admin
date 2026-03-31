@@ -25,6 +25,7 @@ export interface EditProps<RecordType extends RaRecord = RaRecord, ErrorType = E
   include?: string[];
   exclude?: string[];
   saveButtonLabel?: string;
+  redirect?: false | 'list' | 'detail';
 }
 
 const EditUI = ({
@@ -115,7 +116,7 @@ export const Edit = <RecordType extends RaRecord = any>({
 }: EditProps<RecordType>) => {
   const { queryOptions } = useResourceSchema(props.resource);
   const resolve = useSettingValue();
-  const resolvedRedirect = redirect !== undefined ? redirect : resolve(undefined, 'editRedirect');
+  const resolvedRedirect = resolve(redirect, 'editRedirect');
 
   return (
     <EditBase redirect={resolvedRedirect} queryOptions={queryOptions} {...props}>
