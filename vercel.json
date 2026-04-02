@@ -1,0 +1,5 @@
+{
+  "buildCommand": "pnpm --filter '@strato-admin/*' build && cd examples/demo && pnpm build && cd ../../stratoadmin.dev && pnpm build",
+  "outputDirectory": "stratoadmin.dev/build",
+  "installCommand": "pnpm install"
+}
