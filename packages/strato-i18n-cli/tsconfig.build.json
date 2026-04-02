@@ -4,8 +4,7 @@
     "module": "CommonJS",
     "moduleResolution": "Node",
     "outDir": "dist",
-    "declaration": true,
-    "paths": {}
+    "declaration": true
   },
   "exclude": ["**/*.test.ts"]
 }

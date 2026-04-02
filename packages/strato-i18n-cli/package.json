@@ -5,8 +5,8 @@
   "main": "dist/cli/extract.js",
   "types": "dist/cli/extract.d.ts",
   "bin": {
-    "strato-extract": "./dist/extract.js",
-    "strato-compile": "./dist/compile.js"
+    "strato-extract": "./dist/cli/extract.js",
+    "strato-compile": "./dist/cli/compile.js"
   },
   "files": [
     "dist",
@@ -18,7 +18,8 @@
     "access": "public"
   },
   "scripts": {
-    "build": "tsc -p tsconfig.build.json"
+    "build": "tsc -p tsconfig.build.json",
+    "prepare": "tsc -p tsconfig.build.json"
   },
   "keywords": [
     "strato",
