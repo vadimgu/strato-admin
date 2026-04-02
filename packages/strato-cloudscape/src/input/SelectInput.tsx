@@ -6,7 +6,8 @@ import { FormFieldContext, useFormFieldContext } from './FormFieldContext';
 import { InputProps } from './types';
 
 export interface SelectInputProps
-  extends Omit<CloudscapeSelectProps, 'onChange' | 'selectedOption' | 'options' | 'onBlur'>, InputProps {
+  extends InputProps,
+    Pick<CloudscapeSelectProps, 'filteringType' | 'placeholder' | 'disabled' | 'readOnly'> {
   choices?: Array<{ id: string | number; [key: string]: any }>;
   /**
    * The text to display for the empty option when isRequired is false.
@@ -16,7 +17,7 @@ export interface SelectInputProps
 }
 
 export const SelectInput = (props: SelectInputProps) => {
-  const { label, source, defaultValue, validate, choices: choicesProp, emptyText = '-', ...rest } = props;
+  const { label, source, defaultValue, validate, choices: choicesProp, emptyText = '-', filteringType, placeholder, disabled, readOnly, ...rest } = props;
   const resource = useResourceContext();
   const { allChoices, isPending } = useChoicesContext(props);
   const getRecordRepresentation = useGetRecordRepresentation(resource);
@@ -56,8 +57,11 @@ export const SelectInput = (props: SelectInputProps) => {
 
   const inner = (
     <CloudscapeSelect
-      {...rest}
       id={id}
+      filteringType={filteringType}
+      placeholder={placeholder}
+      disabled={disabled}
+      readOnly={readOnly}
       options={options}
       selectedOption={selectedOption}
       statusType={isPending ? 'loading' : 'finished'}

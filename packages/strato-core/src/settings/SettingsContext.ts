@@ -9,6 +9,7 @@ export interface AdminSettings {
   listPageSize?: number;
   listPageSizes?: number[];
   listPageSizeLabel?: (pageSize: number) => ReactNode;
+  editSuccessMessage?: string | ReactNode;
   mutationMode?: 'pessimistic' | 'optimistic' | 'undoable';
   createRedirect?: 'list' | 'detail' | 'edit' | false;
   editRedirect?: 'list' | 'detail' | false;

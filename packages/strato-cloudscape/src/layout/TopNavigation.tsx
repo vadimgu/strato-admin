@@ -1,8 +1,9 @@
 import CloudscapeTopNavigation, { TopNavigationProps } from '@cloudscape-design/components/top-navigation';
 import { useLocale, useSetLocale, useLocales, useTranslate, useAuthProvider, useStore } from '@strato-admin/ra-core';
 
-export interface MyTopNavigationProps extends Omit<TopNavigationProps, 'identity'> {
+export interface MyTopNavigationProps {
   identity?: TopNavigationProps.Identity;
+  utilities?: ReadonlyArray<TopNavigationProps.Utility>;
 }
 
 const LightModeIcon = (
@@ -19,7 +20,7 @@ const DarkModeIcon = (
   </svg>
 );
 
-export const TopNavigation = ({ utilities: providedUtilities, identity, ...props }: MyTopNavigationProps) => {
+export const TopNavigation = ({ utilities: providedUtilities, identity }: MyTopNavigationProps) => {
   const locale = useLocale();
   const setLocale = useSetLocale();
   const locales = useLocales();
@@ -75,7 +76,6 @@ export const TopNavigation = ({ utilities: providedUtilities, identity, ...props
       <CloudscapeTopNavigation
         identity={identity || { title: 'Strato Admin', href: '/' }}
         utilities={utilities}
-        {...props}
       />
     </div>
   );

@@ -4,10 +4,12 @@ import { FormField } from './FormField';
 import { FormFieldContext, useFormFieldContext } from './FormFieldContext';
 import { InputProps } from './types';
 
-export interface BooleanInputProps extends Omit<ToggleProps, 'onChange' | 'checked' | 'onBlur'>, InputProps {}
+export interface BooleanInputProps
+  extends InputProps,
+    Pick<ToggleProps, 'disabled' | 'readOnly' | 'children' | 'ariaLabel'> {}
 
 export const BooleanInput = (props: BooleanInputProps) => {
-  const { label, source, defaultValue, validate, ...rest } = props;
+  const { label, source, defaultValue, validate, disabled, readOnly, children, ariaLabel, ...rest } = props;
   const context = useFormFieldContext();
   const inputState =
     context ??
@@ -21,8 +23,8 @@ export const BooleanInput = (props: BooleanInputProps) => {
   const { field } = inputState;
 
   const inner = (
-    <Toggle {...rest} checked={!!field.value} onChange={(event) => field.onChange(event.detail.checked)}>
-      {props.children}
+    <Toggle disabled={disabled} readOnly={readOnly} ariaLabel={ariaLabel} checked={!!field.value} onChange={(event) => field.onChange(event.detail.checked)}>
+      {children}
     </Toggle>
   );
 

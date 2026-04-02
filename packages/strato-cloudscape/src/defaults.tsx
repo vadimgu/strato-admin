@@ -10,6 +10,7 @@ import { DetailHub } from './detail';
 export const FRAMEWORK_DEFAULTS: AdminSettings = {
   listComponent: Table,
   detailComponent: DetailHub,
+  editSuccessMessage: <Message>Element updated</Message>,
   deleteSuccessMessage: <Message>Element deleted</Message>,
   bulkDeleteSuccessMessage: (countDeleted: number) => (
     <Message vars={{ countDeleted }}>

@@ -14,6 +14,7 @@ const sidebars: SidebarsConfig = {
         'core-concepts/data-providers',
         'core-concepts/auth-providers',
         'core-concepts/translation',
+        'core-concepts/theming',
         {
           type: 'category',
           label: 'Tutorial: Building a complete Admin',

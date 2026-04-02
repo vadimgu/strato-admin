@@ -34,7 +34,12 @@ describe('useCreatePath', () => {
 
   it('creates links for show views', () => {
     render(<UseCreatePath resource="posts" type="show" id="1234" />);
-    screen.getByText('/posts/1234/show');
+    screen.getByText('/posts/1234');
+  });
+
+  it('creates links for detail views', () => {
+    render(<UseCreatePath resource="posts" type="detail" id="1234" />);
+    screen.getByText('/posts/1234');
   });
 
   it('removes double slashes', () => {

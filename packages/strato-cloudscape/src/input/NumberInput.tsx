@@ -5,12 +5,13 @@ import { FormFieldContext, useFormFieldContext } from './FormFieldContext';
 import { InputProps } from './types';
 
 export interface NumberInputProps
-  extends Omit<CloudscapeInputProps, 'onChange' | 'value' | 'onBlur' | 'type'>, InputProps {
+  extends InputProps,
+    Pick<CloudscapeInputProps, 'placeholder' | 'disabled' | 'readOnly' | 'autoFocus' | 'step'> {
   type?: CloudscapeInputProps['type'];
 }
 
 export const NumberInput = (props: NumberInputProps) => {
-  const { label, source, defaultValue, validate, type = 'number', ...rest } = props;
+  const { label, source, defaultValue, validate, type = 'number', placeholder, disabled, readOnly, autoFocus, step, ...rest } = props;
   const context = useFormFieldContext();
   const inputState =
     context ??
@@ -30,10 +31,14 @@ export const NumberInput = (props: NumberInputProps) => {
 
   const inner = (
     <CloudscapeInput
-      {...rest}
       {...field}
       id={id}
       type={type}
+      placeholder={placeholder}
+      disabled={disabled}
+      readOnly={readOnly}
+      autoFocus={autoFocus}
+      step={step}
       value={field.value?.toString() || ''}
       onChange={(event) => handleChange(event.detail.value)}
       onBlur={() => field.onBlur()}

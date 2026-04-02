@@ -40,6 +40,9 @@ function HomepageHeader() {
           <Link className="button button--outline button--secondary button--lg" to="/docs/getting-started/intro">
             View Docs
           </Link>
+          <a className="button button--outline button--secondary button--lg" href="https://stratoadmin.dev/demo/">
+            Try Live Demo
+          </a>
         </div>
       </div>
     </header>

@@ -3,6 +3,11 @@ import react from '@vitejs/plugin-react';
 import path from 'path';
 
 export default defineConfig({
+  base: '/demo/',
+  build: {
+    outDir: '../../stratoadmin.dev/static/demo',
+    emptyOutDir: true,
+  },
   plugins: [react()],
   resolve: {
     alias: {

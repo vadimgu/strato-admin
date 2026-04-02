@@ -4,9 +4,9 @@ import SpaceBetween from '@cloudscape-design/components/space-between';
 import { useShowContext, useTranslate } from '@strato-admin/ra-core';
 import { EditButton } from '../button/EditButton';
 
-export interface DetailHeaderProps extends Omit<HeaderProps, 'children'> {
+export interface DetailHeaderProps
+  extends Pick<HeaderProps, 'variant' | 'counter' | 'actions' | 'description' | 'info' | 'headingTagOverride'> {
   title?: React.ReactNode;
-  description?: React.ReactNode;
 }
 
 /** @deprecated Use DetailHeader instead */
@@ -15,7 +15,7 @@ export type ShowHeaderProps = DetailHeaderProps;
 /** @deprecated Use DetailHeader instead */
 export const ShowHeader = (props: DetailHeaderProps) => <DetailHeader {...props} />;
 
-export const DetailHeader = ({ title, actions, ...props }: DetailHeaderProps) => {
+export const DetailHeader = ({ title, actions, description, counter, info, variant = 'h2', headingTagOverride }: DetailHeaderProps) => {
   const translate = useTranslate();
   const { record, defaultTitle } = useShowContext();
 
@@ -33,7 +33,7 @@ export const DetailHeader = ({ title, actions, ...props }: DetailHeaderProps) =>
   );
 
   return (
-    <Header variant="h2" {...props} actions={headerActions}>
+    <Header variant={variant} actions={headerActions} description={description} counter={counter} info={info} headingTagOverride={headingTagOverride}>
       {headerTitle}
     </Header>
   );

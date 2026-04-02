@@ -11,7 +11,7 @@ export const CancelButton = ({ label, variant = 'link', ...props }: CancelButton
   const navigate = useNavigate();
 
   return (
-    <Button variant={variant} onClick={() => navigate(-1)} {...props}>
+    <Button variant={variant} formAction="none" onClick={() => navigate(-1)} {...props}>
       {label || translate('strato.action.cancel', { _: 'Cancel' })}
     </Button>
   );

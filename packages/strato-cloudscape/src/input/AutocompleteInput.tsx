@@ -8,12 +8,13 @@ import { FormFieldContext, useFormFieldContext } from './FormFieldContext';
 import { InputProps } from './types';
 
 export interface AutocompleteInputProps
-  extends Omit<CloudscapeAutosuggestProps, 'onChange' | 'value' | 'options' | 'onBlur'>, InputProps {
+  extends InputProps,
+    Pick<CloudscapeAutosuggestProps, 'placeholder' | 'disabled' | 'readOnly' | 'enteredTextLabel'> {
   choices?: Array<{ id: string | number; [key: string]: any }>;
 }
 
 export const AutocompleteInput = (props: AutocompleteInputProps) => {
-  const { label, source, defaultValue, validate, choices: choicesProp, ...rest } = props;
+  const { label, source, defaultValue, validate, choices: choicesProp, placeholder, disabled, readOnly, enteredTextLabel, ...rest } = props;
   const resource = useResourceContext();
   const { allChoices, isPending, setFilters } = useChoicesContext(props);
   const getRecordRepresentation = useGetRecordRepresentation(resource);
@@ -84,8 +85,11 @@ export const AutocompleteInput = (props: AutocompleteInputProps) => {
 
   const inner = (
     <CloudscapeAutosuggest
-      {...rest}
       id={id}
+      placeholder={placeholder}
+      disabled={disabled}
+      readOnly={readOnly}
+      enteredTextLabel={enteredTextLabel}
       options={options}
       value={filterValue}
       statusType={isPending ? 'loading' : 'finished'}

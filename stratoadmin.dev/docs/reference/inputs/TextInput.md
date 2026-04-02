@@ -1,3 +1,7 @@
+---
+sidebar_position: 4
+---
+
 # `<TextInput>`
 
 The `<TextInput>` component provides a single-line text input field, wrapping Cloudscape's `Input` component.

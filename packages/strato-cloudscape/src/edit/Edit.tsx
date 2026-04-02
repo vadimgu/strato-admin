@@ -1,5 +1,5 @@
 import React from 'react';
-import { EditBase, useEditContext, type RaRecord, type EditBaseProps, useTranslate } from '@strato-admin/ra-core';
+import { EditBase, useEditContext, type RaRecord, type EditBaseProps, useNotify, useRedirect } from '@strato-admin/ra-core';
 import {
   ResourceSchemaProvider,
   useResourceSchema,
@@ -43,41 +43,46 @@ const EditUI = ({
 }) => {
   const { record, isLoading } = useEditContext();
   const { label, editTitle, editDescription } = useResourceSchema();
-  const translate = useTranslate();
   const constructedTitle = useConstructedPageTitle('edit', label);
 
   const finalTitle = React.useMemo(() => {
-    if (isLoading || !record) return '';
-    if (typeof title === 'function') return title(record);
-    if (React.isValidElement(title)) return title;
-    if (title) return translate(title as string, record);
-    if (typeof editTitle === 'function') return editTitle(record);
-    if (React.isValidElement(editTitle)) return editTitle;
-    if (editTitle) return translate(editTitle as string, record);
-    return constructedTitle;
-  }, [isLoading, record, title, editTitle, translate, constructedTitle]);
+    if (isLoading || !record) {
+      return '';
+    }
+    const resolvedTitle = title ?? editTitle ?? constructedTitle;
+    if (typeof resolvedTitle === 'function') {
+      return resolvedTitle(record);
+    }
+    return resolvedTitle;
+  }, [isLoading, record, title, editTitle, constructedTitle]);
 
   const finalDescription = React.useMemo(() => {
-    if (isLoading || !record) return undefined;
-    if (typeof description === 'function') return description(record);
-    if (React.isValidElement(description)) return description;
-    if (description) return translate(description as string, record);
-    if (typeof editDescription === 'function') return editDescription(record);
-    if (React.isValidElement(editDescription)) return editDescription;
-    if (editDescription) return translate(editDescription as string, record);
-    return undefined;
-  }, [isLoading, record, description, editDescription, translate]);
+    if (isLoading || !record) {
+      return '';
+    }
+    const resolvedDescription = description ?? editDescription;
+    if (typeof resolvedDescription === 'function') {
+      return resolvedDescription(record);
+    }
+    return resolvedDescription;
+  }, [isLoading, record, description, editDescription]);
 
   if (isLoading || !record) {
     return null;
   }
-
-  const finalSaveButtonLabel = saveButtonLabel ? translate(saveButtonLabel) : translate('Save');
-
+  const finalSaveButtonLabel = saveButtonLabel // || <Message>Save</Message>
   const finalChildren = children || <Form include={include} exclude={exclude} saveButtonLabel={finalSaveButtonLabel} />;
 
   return (
-    <Container header={<EditHeader title={finalTitle} description={finalDescription} actions={actions} />}>
+    <Container
+      header={
+        <EditHeader
+          title={finalTitle}
+          description={finalDescription}
+          actions={actions}
+        />
+      }
+    >
       {finalChildren}
     </Container>
   );
@@ -108,15 +113,29 @@ export const Edit = <RecordType extends RaRecord = any>({
   saveButtonLabel,
   ...props
 }: EditProps<RecordType>) => {
-  const { queryOptions } = useResourceSchema(props.resource);
+  const { queryOptions, editTitle } = useResourceSchema(props.resource);
   const resolve = useSettingValue();
   const resolvedRedirect = resolve(redirect, 'editRedirect');
+  const editSuccessMessage = resolve(undefined, 'editSuccessMessage');
+  const notify = useNotify();
+  const redirectFn = useRedirect();
+
+  const mutationOptions = React.useMemo(() => {
+    if (!editSuccessMessage || props.mutationOptions?.onSuccess) return props.mutationOptions;
+    return {
+      ...props.mutationOptions,
+      onSuccess: (data: RecordType) => {
+        notify(editSuccessMessage, { type: 'info' });
+        redirectFn(resolvedRedirect ?? 'detail', props.resource ?? '', data.id, data);
+      },
+    };
+  }, [editSuccessMessage, props.mutationOptions, props.resource, notify, redirectFn, resolvedRedirect]);
 
   return (
-    <EditBase redirect={resolvedRedirect} queryOptions={queryOptions} {...props}>
+    <EditBase redirect={resolvedRedirect} queryOptions={queryOptions} {...props} mutationOptions={mutationOptions}>
       <ResourceSchemaProvider resource={props.resource}>
         <EditUI
-          title={title}
+          title={title ?? editTitle ?? undefined}
           actions={actions}
           description={description}
           include={include}

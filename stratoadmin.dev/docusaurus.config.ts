@@ -36,9 +36,15 @@ const config: Config = {
         global: false,
         tsconfigPath: '../packages/strato-cloudscape/tsconfig.json',
         parserOptions: {
-          propFilter: (prop) => {
+          propFilter: (prop, component: { name: string }) => {
             if (prop.parent) {
-              return !prop.parent.fileName.includes('@types/react');
+              const fileName = prop.parent.fileName;
+              if (fileName.includes('@types/react')) return false;
+              if (component.name !== 'CommonInputProps') {
+                if (fileName.includes('input/types')) return false;
+                if (fileName.includes('ra-core')) return false;
+                if (fileName.includes('@cloudscape-design/components/form-field')) return false;
+              }
             }
             return true;
           },
@@ -137,6 +143,7 @@ const config: Config = {
           label: 'Docs',
         },
         // { to: '/blog', label: 'Blog', position: 'left' },
+        { href: 'https://stratoadmin.dev/demo/', label: 'Demo', position: 'left' },
         {
           href: 'https://github.com/vadimgu/strato-admin',
           label: 'GitHub',

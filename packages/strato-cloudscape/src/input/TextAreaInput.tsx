@@ -5,10 +5,11 @@ import { FormFieldContext, useFormFieldContext } from './FormFieldContext';
 import { InputProps } from './types';
 
 export interface TextAreaInputProps
-  extends Omit<CloudscapeTextareaProps, 'onChange' | 'value' | 'onBlur'>, InputProps {}
+  extends InputProps,
+    Pick<CloudscapeTextareaProps, 'placeholder' | 'disabled' | 'readOnly' | 'rows' | 'autoFocus' | 'spellcheck'> {}
 
 export const TextAreaInput = (props: TextAreaInputProps) => {
-  const { label, source, defaultValue, validate, ...rest } = props;
+  const { label, source, defaultValue, validate, placeholder, disabled, readOnly, rows, autoFocus, spellcheck, ...rest } = props;
   const context = useFormFieldContext();
   const inputState =
     context ??
@@ -23,9 +24,14 @@ export const TextAreaInput = (props: TextAreaInputProps) => {
 
   const inner = (
     <CloudscapeTextarea
-      {...rest}
       {...field}
       id={id}
+      placeholder={placeholder}
+      disabled={disabled}
+      readOnly={readOnly}
+      rows={rows}
+      autoFocus={autoFocus}
+      spellcheck={spellcheck}
       value={field.value || ''}
       onChange={(event) => field.onChange(event.detail.value)}
       onBlur={() => field.onBlur()}

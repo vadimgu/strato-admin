@@ -62,6 +62,10 @@ Light/dark mode switching is built in. The theme toggle button in the top naviga
 
 If you want to force a specific mode as the default, you can initialize the store value in your app:
 
+:::tip Custom brand colors
+Want to apply your brand's colors? See [Theming](/docs/core-concepts/theming) for how to override Cloudscape design tokens.
+:::
+
 ```tsx title="src/App.tsx"
 import { localStorageStore } from '@strato-admin/admin';
 

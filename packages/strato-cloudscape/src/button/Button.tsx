@@ -1,6 +1,36 @@
+import React from 'react';
 import CloudscapeButton, { ButtonProps as CloudscapeButtonProps } from '@cloudscape-design/components/button';
 
-export interface ButtonProps extends CloudscapeButtonProps {
+export interface ButtonProps
+  extends Pick<
+    CloudscapeButtonProps,
+    | 'variant'
+    | 'iconName'
+    | 'iconSvg'
+    | 'iconAlign'
+    | 'iconAlt'
+    | 'href'
+    | 'target'
+    | 'rel'
+    | 'download'
+    | 'onClick'
+    | 'onFollow'
+    | 'loading'
+    | 'loadingText'
+    | 'disabled'
+    | 'disabledReason'
+    | 'ariaLabel'
+    | 'ariaDescribedby'
+    | 'ariaExpanded'
+    | 'ariaControls'
+    | 'formAction'
+    | 'form'
+    | 'nativeButtonAttributes'
+    | 'nativeAnchorAttributes'
+    | 'wrapText'
+    | 'fullWidth'
+    | 'external'
+  > {
   children: React.ReactNode;
 }
 
