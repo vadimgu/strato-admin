@@ -4,6 +4,7 @@ import { useLocale, useSetLocale, useLocales, useTranslate, useAuthProvider, use
 export interface MyTopNavigationProps {
   identity?: TopNavigationProps.Identity;
   utilities?: ReadonlyArray<TopNavigationProps.Utility>;
+  extraUtilities?: ReadonlyArray<TopNavigationProps.Utility>;
 }
 
 const LightModeIcon = (
@@ -20,7 +21,7 @@ const DarkModeIcon = (
   </svg>
 );
 
-export const TopNavigation = ({ utilities: providedUtilities, identity }: MyTopNavigationProps) => {
+export const TopNavigation = ({ utilities: providedUtilities, identity, extraUtilities }: MyTopNavigationProps) => {
   const locale = useLocale();
   const setLocale = useSetLocale();
   const locales = useLocales();
@@ -68,7 +69,7 @@ export const TopNavigation = ({ utilities: providedUtilities, identity }: MyTopN
         ],
       });
     }
-    utilities = autoUtilities;
+    utilities = extraUtilities ? [...autoUtilities, ...extraUtilities] : autoUtilities;
   }
 
   return (
