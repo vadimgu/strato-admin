@@ -4,7 +4,8 @@ sidebar_position: 2
 
 # Validation
 
-All input components accept a `validate` prop. Pass a single validator function or an array of validators; errors are displayed automatically below the input.
+All input components accept a `validate` prop. Pass a single validator function
+or an array of validators; errors are displayed automatically below the input.
 
 ```tsx
 import { TextInput, required, minLength } from '@strato-admin/admin';
