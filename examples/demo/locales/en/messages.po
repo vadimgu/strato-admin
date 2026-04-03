@@ -3,184 +3,179 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Language: en\n"
 
-#: src/resources/reviews.tsx:14
+#: src/resources/reviews.tsx:7
 #. id: 1fc6u0m
 msgid "Reviews"
 msgstr ""
 
-#: src/resources/reviews.tsx:21
-#: src/resources/products.tsx:37
-#: src/resources/orders.tsx:35
-#: src/resources/customers.tsx:18
+#: src/resources/reviews.tsx:14
+#: src/resources/products.tsx:38
+#: src/resources/orders.tsx:31
+#: src/resources/customers.tsx:13
 #: src/resources/categories.tsx:12
 #. id: o4495s
 msgid "ID"
 msgstr ""
 
-#: src/resources/reviews.tsx:22
-#: src/resources/orders.tsx:37
+#: src/resources/reviews.tsx:15
+#: src/resources/orders.tsx:33
 #. id: ggjuyh
 msgid "Date"
 msgstr ""
 
-#: src/resources/reviews.tsx:23
-#: src/resources/orders.tsx:38
-#: src/resources/customers.tsx:15
+#: src/resources/reviews.tsx:16
+#: src/resources/orders.tsx:34
+#: src/resources/customers.tsx:10
 #. id: 2reqex
 msgid "Customer"
 msgstr ""
 
-#: src/resources/reviews.tsx:24
-#: src/resources/products.tsx:31
-#: src/resources/products.tsx:33
-#: src/resources/orders.tsx:52
+#: src/resources/reviews.tsx:17
+#: src/resources/products.tsx:32
+#: src/resources/orders.tsx:43
 #. id: mx6d3g
 msgid "Product"
 msgstr ""
 
-#: src/resources/reviews.tsx:27
+#: src/resources/reviews.tsx:20
 #. id: i9emhs
 msgid "Accepted"
 msgstr ""
 
-#: src/resources/reviews.tsx:28
+#: src/resources/reviews.tsx:21
 #. id: e8nfto
 msgid "Pending"
 msgstr ""
 
-#: src/resources/reviews.tsx:29
+#: src/resources/reviews.tsx:22
 #. id: 1uofzaf
 msgid "Rejected"
 msgstr ""
 
-#: src/resources/reviews.tsx:31
+#: src/resources/reviews.tsx:24
 #. id: 169e4n2
 msgid "Comment"
 msgstr ""
 
 #: src/resources/products.tsx:29
+#: src/resources/products.tsx:30
 #. id: 1kdfstp
 msgid "Products"
 msgstr ""
 
-#: src/resources/products.tsx:32
-#. id: 10kmuai
-msgid "Edit Product - {name}"
+#: src/resources/products.tsx:34
+#. id: 1gbs3ve
+msgid "Edit Product"
 msgstr ""
 
-#: src/resources/products.tsx:38
+#: src/resources/products.tsx:33
+#. id: 12dphhe
+msgid "Edit Product - {repr}"
+msgstr ""
+
+#: src/resources/products.tsx:39
 #. id: 4el6o6
 msgid "Name"
 msgstr ""
 
-#: src/resources/products.tsx:39
-#: src/resources/orders.tsx:36
+#: src/resources/products.tsx:40
+#: src/resources/orders.tsx:32
 #. id: 1c7vrcq
 msgid "Reference"
 msgstr ""
 
-#: src/resources/products.tsx:40
+#: src/resources/products.tsx:41
 #. id: 1cr1mz5
 msgid "Category"
 msgstr ""
 
-#: src/resources/products.tsx:43
-#. id: 1pdyg96
-msgid "Price"
-msgstr ""
-
-#: src/resources/products.tsx:47
-#. id: i6nh7j
-msgid "Unit price including all taxes."
-msgstr ""
-
-#: src/resources/products.tsx:49
+#: src/resources/products.tsx:52
 #. id: ssn1v9
 msgid "Stock"
 msgstr ""
 
-#: src/resources/products.tsx:50
+#: src/resources/products.tsx:53
 #. id: czo7yv
 msgid "Sales"
 msgstr ""
 
-#: src/resources/products.tsx:52
+#: src/resources/products.tsx:54
 #. id: sjj37t
 msgid "Description"
 msgstr ""
 
-#: src/resources/orders.tsx:31
-#: src/resources/customers.tsx:23
+#: src/resources/orders.tsx:30
+#: src/resources/customers.tsx:18
 #. id: xf3i18
 msgid "Orders"
 msgstr ""
 
-#: src/resources/orders.tsx:39
+#: src/resources/orders.tsx:35
 #. id: 1c0as9p
 msgid "Total"
 msgstr ""
 
-#: src/resources/orders.tsx:41
+#: src/resources/orders.tsx:37
 #. id: 6krmuu
 msgid "Ordered"
 msgstr ""
 
-#: src/resources/orders.tsx:42
+#: src/resources/orders.tsx:38
 #. id: 1sgaj73
 msgid "Delivered"
 msgstr ""
 
-#: src/resources/orders.tsx:43
+#: src/resources/orders.tsx:39
 #. id: 1a3t1vg
 msgid "Cancelled"
 msgstr ""
 
-#: src/resources/orders.tsx:44
+#: src/resources/orders.tsx:40
 #. id: 1kmy72x
 msgid "Unknown"
 msgstr ""
 
-#: src/resources/orders.tsx:48
+#: src/resources/orders.tsx:42
 #. id: 1q7l7hr
 msgid "Items"
 msgstr ""
 
-#: src/resources/orders.tsx:53
+#: src/resources/orders.tsx:44
 #. id: c75rso
 msgid "Quantity"
 msgstr ""
 
-#: src/resources/orders.tsx:54
+#: src/resources/orders.tsx:47
 #. id: ha4he2
 msgid "Unit Price"
 msgstr ""
 
-#: src/resources/customers.tsx:12
+#: src/resources/customers.tsx:7
 #. id: 1vweyym
 msgid "Customers"
 msgstr ""
 
-#: src/resources/customers.tsx:19
+#: src/resources/customers.tsx:14
 #. id: 6yjm7s
 msgid "First Name"
 msgstr ""
 
-#: src/resources/customers.tsx:20
+#: src/resources/customers.tsx:15
 #. id: 16p3u1s
 msgid "Last Name"
 msgstr ""
 
-#: src/resources/customers.tsx:21
+#: src/resources/customers.tsx:16
 #. id: inbfc7
 msgid "Email"
 msgstr ""
 
-#: src/resources/customers.tsx:22
+#: src/resources/customers.tsx:17
 #. id: 142k4ma
 msgid "City"
 msgstr ""
 
-#: src/resources/customers.tsx:24
+#: src/resources/customers.tsx:19
 #. id: 115ed55
 msgid "Total Spent"
 msgstr ""
@@ -193,6 +188,18 @@ msgstr ""
 #: src/resources/categories.tsx:13
 #. id: izdfpk
 msgid "Category Name"
+msgstr ""
+
+#. id: 1pdyg96
+msgid "Price"
+msgstr ""
+
+#. id: i6nh7j
+msgid "Unit price including all taxes."
+msgstr ""
+
+#. id: 10kmuai
+msgid "Edit Product - {name}"
 msgstr ""
 
 #. id: 3iz6df
@@ -213,10 +220,6 @@ msgstr ""
 
 #. id: 2laa7q
 msgid "Create Product"
-msgstr ""
-
-#. id: 1gbs3ve
-msgid "Edit Product"
 msgstr ""
 
 #. id: yz0hud

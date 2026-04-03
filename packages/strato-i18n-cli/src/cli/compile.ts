@@ -25,6 +25,49 @@ function parseArgs() {
   return { pattern, outFile };
 }
 
+export function parsePoContent(content: Buffer): Record<string, { defaultMessage: string; translation: string }> {
+  const parsed = gettextParser.po.parse(content);
+  const translations: Record<string, { defaultMessage: string; translation: string }> = {};
+
+  Object.entries(parsed.translations).forEach(([context, entries]) => {
+    Object.entries(entries).forEach(([msgid, data]: [string, any]) => {
+      if (msgid === '') return; // skip header
+
+      // Find the hash: #. id: comment is authoritative (covers explicit ids and
+      // context-mangled hashes); fall back to msgctxt, then raw msgid.
+      const commentHash = data.comments?.extracted?.match(/id: (\S+)/)?.[1];
+      const hash = commentHash || context || msgid;
+
+      translations[hash] = {
+        defaultMessage: data.msgid || data.comments?.extracted || '',
+        translation: data.msgstr[0] || '',
+      };
+    });
+  });
+
+  return translations;
+}
+
+export function buildCompiledMapping(translations: Record<string, any>): Record<string, string> {
+  const compiledMapping: Record<string, string> = {};
+  const sortedKeys = Object.keys(translations).sort();
+
+  sortedKeys.forEach((hash) => {
+    const data = translations[hash];
+    // Support both strato-i18n-cli format and formatjs format (with translation or defaultMessage as translation)
+    if (typeof data === 'string') {
+      compiledMapping[hash] = normalizeMessage(data);
+    } else if (data.translation && data.translation.trim() !== '') {
+      compiledMapping[hash] = normalizeMessage(data.translation);
+    } else {
+      // Fallback to defaultMessage
+      compiledMapping[hash] = normalizeMessage(data.defaultMessage || '');
+    }
+  });
+
+  return compiledMapping;
+}
+
 function main() {
   const { pattern, outFile: explicitOutFile } = parseArgs();
 
@@ -65,23 +108,7 @@ function main() {
 
     try {
       if (filePath.endsWith('.po')) {
-        const parsed = gettextParser.po.parse(fs.readFileSync(filePath));
-
-        Object.entries(parsed.translations).forEach(([context, entries]) => {
-          Object.entries(entries).forEach(([msgid, data]: [string, any]) => {
-            if (msgid === '') return; // skip header
-
-            // Find the hash: #. id: comment is authoritative (covers explicit ids and
-            // context-mangled hashes); fall back to msgctxt, then raw msgid.
-            const commentHash = data.comments?.extracted?.match(/id: (\S+)/)?.[1];
-            const hash = commentHash || context || msgid;
-
-            translations[hash] = {
-              defaultMessage: data.msgid || data.comments?.extracted || '',
-              translation: data.msgstr[0] || '',
-            };
-          });
-        });
+        translations = parsePoContent(fs.readFileSync(filePath));
       } else {
         translations = JSON.parse(fs.readFileSync(filePath, 'utf8'));
       }
@@ -90,21 +117,7 @@ function main() {
       return;
     }
 
-    const compiledMapping: Record<string, string> = {};
-    const sortedKeys = Object.keys(translations).sort();
-
-    sortedKeys.forEach((hash) => {
-      const data = translations[hash];
-      // Support both strato-i18n-cli format and formatjs format (with translation or defaultMessage as translation)
-      if (typeof data === 'string') {
-        compiledMapping[hash] = normalizeMessage(data);
-      } else if (data.translation && data.translation.trim() !== '') {
-        compiledMapping[hash] = normalizeMessage(data.translation);
-      } else {
-        // Fallback to defaultMessage
-        compiledMapping[hash] = normalizeMessage(data.defaultMessage || '');
-      }
-    });
+    const compiledMapping = buildCompiledMapping(translations);
 
     const parentDir = path.dirname(compiledFilePath);
     if (!fs.existsSync(parentDir)) {
@@ -121,4 +134,7 @@ function main() {
   console.log(`Successfully compiled ${processedCount} files.`);
 }
 
-main();
+const scriptName = path.basename(process.argv[1] ?? '');
+if (scriptName === 'compile.js' || scriptName === 'compile.ts') {
+  main();
+}

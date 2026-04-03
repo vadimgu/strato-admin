@@ -20,6 +20,10 @@ export const EditHeader = ({ title, actions, description, counter, info, variant
     return defaultTitle;
   }, [title, defaultTitle, translate]);
 
+  const headerDescription = React.useMemo(() => {
+    return typeof description === 'string' ? translate(description, { _: description }) : description;
+  }, [description, translate]);
+
   const headerActions = actions || (
     <SpaceBetween direction="horizontal" size="xs">
       <DeleteButton />
@@ -27,7 +31,7 @@ export const EditHeader = ({ title, actions, description, counter, info, variant
   );
 
   return (
-    <Header variant={variant} actions={headerActions} description={description} counter={counter} info={info} headingTagOverride={headingTagOverride}>
+    <Header variant={variant} actions={headerActions} description={headerDescription} counter={counter} info={info} headingTagOverride={headingTagOverride}>
       {headerTitle}
     </Header>
   );

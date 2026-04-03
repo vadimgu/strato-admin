@@ -26,6 +26,10 @@ export const DetailHeader = ({ title, actions, description, counter, info, varia
     return defaultTitle;
   }, [title, defaultTitle, translate]);
 
+  const headerDescription = React.useMemo(() => {
+    return typeof description === 'string' ? translate(description, { _: description }) : description;
+  }, [description, translate]);
+
   const headerActions = actions || (
     <SpaceBetween direction="horizontal" size="xs">
       <EditButton record={record} variant="primary" />
@@ -33,7 +37,7 @@ export const DetailHeader = ({ title, actions, description, counter, info, varia
   );
 
   return (
-    <Header variant={variant} actions={headerActions} description={description} counter={counter} info={info} headingTagOverride={headingTagOverride}>
+    <Header variant={variant} actions={headerActions} description={headerDescription} counter={counter} info={info} headingTagOverride={headingTagOverride}>
       {headerTitle}
     </Header>
   );

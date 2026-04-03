@@ -57,13 +57,9 @@ const EditUI = ({
   }, [isLoading, record, title, editTitle, constructedTitle]);
 
   const finalDescription = React.useMemo(() => {
-    if (isLoading || !record) {
-      return '';
-    }
+    if (isLoading || !record) return undefined;
     const resolvedDescription = description ?? editDescription;
-    if (typeof resolvedDescription === 'function') {
-      return resolvedDescription(record);
-    }
+    if (typeof resolvedDescription === 'function') return resolvedDescription(record);
     return resolvedDescription;
   }, [isLoading, record, description, editDescription]);
 

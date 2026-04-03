@@ -1,6 +1,6 @@
 import { IntlMessageFormat } from 'intl-messageformat';
 import type { I18nProvider } from '@strato-admin/ra-core';
-import { generateMessageId } from './hash';
+import { generateMessageId } from './hash.js';
 
 export const icuI18nProvider = (
   getMessages: (locale: string) => any | Promise<any>,

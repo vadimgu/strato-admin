@@ -1,8 +1,11 @@
 {
+  "10cb01m": "Élément supprimé",
   "152c2aj": "Catalogue de produits",
   "16gte2l": "Créer",
+  "1f3qhmo": "Élément mis à jour",
+  "1fdl4h6": "{pageSize, plural, one {# élément} other {# éléments} }",
+  "9xo9pi": "{countDeleted, plural, one {# élément supprimé} other {# éléments supprimés} }",
   "kgw9o9": "facultatif",
-  "lewgh4": "Enregistrer",
   "strato.action.cancel": "Annuler",
   "strato.action.close": "Fermer",
   "strato.action.confirm": "Confirmer",
@@ -11,6 +14,7 @@
   "strato.action.edit": "Modifier",
   "strato.action.save": "Enregistrer",
   "strato.action.select_columns": "Sélectionner les colonnes visibles",
+  "strato.action.select_sections": "Sélectionner les sections visibles",
   "strato.action.toggle_theme": "Changer le thème",
   "strato.auth.logout": "Déconnexion",
   "strato.auth.profile": "Profil",
@@ -18,5 +22,7 @@
   "strato.boolean.false": "Non",
   "strato.boolean.true": "Oui",
   "strato.message.bulk_delete_content": "{ smart_count, plural, one {Êtes-vous sûr de vouloir supprimer cet élément ?} other {Êtes-vous sûr de vouloir supprimer ces # éléments ?} }",
-  "strato.message.bulk_delete_title": "{ smart_count, plural, one {Supprimer cet élément} other {Supprimer ces # éléments} }"
+  "strato.message.bulk_delete_title": "{ smart_count, plural, one {Supprimer cet élément} other {Supprimer ces # éléments} }",
+  "strato.message.delete_content": "Êtes-vous sûr de vouloir supprimer cet élément ?",
+  "strato.message.delete_title": "Supprimer cet élément"
 }

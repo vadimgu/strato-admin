@@ -5,6 +5,4 @@
 ### Minor Changes
 
 - Add global settings
-  Add documentation
-
-## 0.1.1
+- Add documentation

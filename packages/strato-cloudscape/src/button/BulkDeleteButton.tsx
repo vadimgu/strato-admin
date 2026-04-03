@@ -27,11 +27,11 @@ export const BulkDeleteButton = ({
   const { selectedIds } = useListContext();
   const { options } = useResourceDefinition();
   const resolve = useSettingValue();
-  const rawDefault = resolve(undefined, 'bulkDeleteSuccessMessage');
-  const resolvedDefault = typeof rawDefault === 'function' ? rawDefault(selectedIds?.length ?? 0) : rawDefault;
+  const resolvedSuccessMessage = resolve(successMessage, 'bulkDeleteSuccessMessage', 'bulkDeleteSuccessMessage');
+  const evaluatedSuccessMessage = typeof resolvedSuccessMessage === 'function' ? resolvedSuccessMessage(selectedIds?.length ?? 0) : resolvedSuccessMessage;
   const { handleDelete, isPending, isLoading } = useBulkDeleteController({
     mutationMode: resolve(mutationMode, 'mutationMode'),
-    successMessage: successMessage ?? options?.bulkDeleteSuccessMessage ?? resolvedDefault,
+    successMessage: evaluatedSuccessMessage,
   });
 
   const [isOpen, setIsOpen] = useState(false);

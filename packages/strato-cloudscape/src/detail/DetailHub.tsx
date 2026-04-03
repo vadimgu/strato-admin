@@ -55,10 +55,8 @@ export const DetailHub = <RecordType extends RaRecord = RaRecord>(props: DetailH
   const finalDescription = useMemo(() => {
     if (description) return description;
     if (typeof detailDescription === 'function') return detailDescription(record);
-    if (isValidElement(detailDescription)) return detailDescription;
-    if (detailDescription) return translate(detailDescription as string, record);
-    return undefined;
-  }, [record, description, detailDescription, translate]);
+    return detailDescription;
+  }, [record, description, detailDescription]);
 
   const { scalarFields, collectionFields } = useMemo(() => getDetailFields(children), [getDetailFields, children]);
 

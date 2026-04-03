@@ -8,7 +8,7 @@ import {
   isPoundElement,
 } from '@formatjs/icu-messageformat-parser';
 import { printAST } from '@formatjs/icu-messageformat-parser/printer.js';
-import { normalizeMessage } from './hash';
+import { normalizeMessage } from './hash.js';
 
 /**
  * Pretty-prints an ICU message for better readability in translation files.

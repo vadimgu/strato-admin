@@ -100,7 +100,7 @@ function loadConfig(configPath?: string): { components: Set<string>; translatabl
   return { components, translatableProps };
 }
 
-function getJSXElementName(node: t.JSXOpeningElement['name']): string {
+export function getJSXElementName(node: t.JSXOpeningElement['name']): string {
   if (t.isJSXIdentifier(node)) {
     return node.name;
   }
@@ -177,13 +177,195 @@ function parseArgs() {
   return { srcPattern, outDir, localeArgs, format, config, outFile, ignorePatterns, locale };
 }
 
-interface ExtractedMessage {
+export interface ExtractedMessage {
   msgid: string;
   msgctxt?: string;
   /** Pre-computed hash or explicit id, written to `#. id:` and used as the compiled JSON key. */
   precomputedHash?: string;
   locations: Set<string>;
   translatorComment?: string;
+}
+
+export function extractMessagesFromSource(
+  content: string,
+  relativeFile: string,
+  config: { components: Set<string>; translatableProps: Set<string> },
+): Map<string, ExtractedMessage> {
+  const { components, translatableProps } = config;
+  const extractedMessages = new Map<string, ExtractedMessage>();
+
+  const addExtractedMessage = (
+    msgid: string,
+    msgctxt: string | undefined,
+    location: string,
+    translatorComment?: string,
+    precomputedHash?: string,
+  ) => {
+    const normalizedMsgid = normalizeMessage(msgid);
+    const prettyMsgid = prettyPrintICU(msgid);
+    const key = precomputedHash ? `hash:${precomputedHash}` : msgctxt ? `ctx:${msgctxt}` : `msg:${normalizedMsgid}`;
+
+    if (!extractedMessages.has(key)) {
+      extractedMessages.set(key, {
+        msgid: prettyMsgid,
+        msgctxt,
+        precomputedHash,
+        locations: new Set(),
+        translatorComment,
+      });
+    }
+    extractedMessages.get(key)!.locations.add(location);
+  };
+
+  try {
+    const ast = parse(content, {
+      sourceType: 'module',
+      plugins: ['typescript', 'jsx', 'decorators-legacy'],
+    });
+
+    traverse(ast, {
+      CallExpression(p) {
+        const { callee, arguments: args } = p.node;
+        if (
+          t.isIdentifier(callee) &&
+          (callee.name === 'translate' || callee.name === 'translateLabel') &&
+          args.length > 0
+        ) {
+          const firstArg = args[0];
+          let firstArgValue: string | null = null;
+          if (t.isStringLiteral(firstArg)) {
+            firstArgValue = firstArg.value;
+          } else if (t.isTemplateLiteral(firstArg) && firstArg.quasis.length === 1) {
+            firstArgValue = firstArg.quasis[0].value.cooked || firstArg.quasis[0].value.raw;
+          }
+
+          if (firstArgValue) {
+            let msgid = firstArgValue;
+            let msgctxt: string | undefined = undefined;
+
+            // Check for second argument { _: "Default Text" }
+            if (args.length > 1) {
+              const secondArg = args[1];
+              if (t.isObjectExpression(secondArg)) {
+                const defaultProp = secondArg.properties.find((prop) => {
+                  const isMatch = t.isObjectProperty(prop) && t.isIdentifier(prop.key) && prop.key.name === '_';
+                  return isMatch;
+                });
+                if (defaultProp && t.isObjectProperty(defaultProp)) {
+                  if (t.isStringLiteral(defaultProp.value)) {
+                    msgid = defaultProp.value.value;
+                    msgctxt = firstArgValue; // The first arg is the explicit ID
+                  } else if (t.isTemplateLiteral(defaultProp.value) && defaultProp.value.quasis.length === 1) {
+                    msgid = defaultProp.value.quasis[0].value.cooked || defaultProp.value.quasis[0].value.raw;
+                    msgctxt = firstArgValue;
+                  }
+                }
+              }
+            }
+
+            const line = p.node.loc?.start.line || 0;
+            const location = `${relativeFile}:${line}`;
+            addExtractedMessage(msgid, msgctxt, location);
+          }
+        }
+      },
+      JSXOpeningElement(p) {
+        const tagName = getJSXElementName(p.node.name);
+
+        const baseNameMatch =
+          components.has(tagName) || Array.from(components).some((c) => tagName.startsWith(c + '.') || tagName === c);
+
+        if (baseNameMatch) {
+          p.node.attributes.forEach((attr) => {
+            if (t.isJSXAttribute(attr) && t.isJSXIdentifier(attr.name) && translatableProps.has(attr.name.name)) {
+              let textValue: string | null = null;
+
+              if (attr.value) {
+                if (t.isStringLiteral(attr.value)) {
+                  textValue = attr.value.value;
+                } else if (t.isJSXExpressionContainer(attr.value)) {
+                  const expr = attr.value.expression;
+                  if (t.isStringLiteral(expr) || t.isTemplateLiteral(expr)) {
+                    if (t.isStringLiteral(expr)) {
+                      textValue = expr.value;
+                    } else if (expr.quasis.length === 1) {
+                      textValue = expr.quasis[0].value.cooked || expr.quasis[0].value.raw;
+                    }
+                  }
+                }
+              }
+
+              if (textValue && textValue.trim() !== '') {
+                const line = attr.loc?.start.line || 0;
+                const location = `${relativeFile}:${line}`;
+                addExtractedMessage(textValue, undefined, location);
+              }
+            }
+          });
+        }
+      },
+      JSXElement(p) {
+        const tagName = getJSXElementName(p.node.openingElement.name);
+        if (!CHILDREN_AS_KEY_COMPONENTS.has(tagName)) return;
+
+        // Extract text from children: JSXText or StringLiteral in JSXExpressionContainer
+        let textValue: string | null = null;
+        for (const child of p.node.children) {
+          if (t.isJSXText(child) && child.value.trim()) {
+            textValue = child.value.trim();
+            break;
+          }
+          if (t.isJSXExpressionContainer(child)) {
+            const expr = child.expression;
+            if (t.isStringLiteral(expr)) {
+              textValue = expr.value;
+              break;
+            } else if (t.isTemplateLiteral(expr) && expr.quasis.length === 1) {
+              textValue = expr.quasis[0].value.cooked || expr.quasis[0].value.raw;
+              break;
+            }
+          }
+        }
+        if (!textValue) return;
+
+        // Extract id, context, and comment from opening element attributes
+        let explicitId: string | undefined;
+        let msgctxt: string | undefined;
+        let translatorComment: string | undefined;
+        for (const attr of p.node.openingElement.attributes) {
+          if (!t.isJSXAttribute(attr) || !t.isJSXIdentifier(attr.name)) continue;
+          const val = t.isStringLiteral(attr.value)
+            ? attr.value.value
+            : t.isJSXExpressionContainer(attr.value) && t.isStringLiteral(attr.value.expression)
+              ? attr.value.expression.value
+              : undefined;
+          if (val === undefined) continue;
+          if (attr.name.name === 'id') explicitId = val;
+          if (attr.name.name === 'context') msgctxt = val;
+          if (attr.name.name === 'comment') translatorComment = val;
+        }
+
+        // Compute the hash written to `#. id:` and used as the compiled JSON key:
+        //   id present   → literal id (e.g. "action.archive"), no msgctxt
+        //   context only → hash(context + \x04 + message), msgctxt = context
+        //   neither      → hash(message), no msgctxt
+        let precomputedHash: string | undefined;
+        if (explicitId) {
+          precomputedHash = explicitId;
+          msgctxt = undefined; // id supersedes context; no msgctxt in PO
+        } else if (msgctxt) {
+          precomputedHash = generateMessageId(`${msgctxt}\x04${normalizeMessage(textValue)}`);
+        }
+
+        const line = p.node.loc?.start.line || 0;
+        addExtractedMessage(textValue, msgctxt, `${relativeFile}:${line}`, translatorComment, precomputedHash);
+      },
+    });
+  } catch (e: any) {
+    console.error(`Failed to parse ${relativeFile}:`, e.message);
+  }
+
+  return extractedMessages;
 }
 
 function main() {
@@ -223,170 +405,17 @@ function main() {
 
   const extractedMessages = new Map<string, ExtractedMessage>();
 
-  const addExtractedMessage = (
-    msgid: string,
-    msgctxt: string | undefined,
-    location: string,
-    translatorComment?: string,
-    precomputedHash?: string,
-  ) => {
-    const normalizedMsgid = normalizeMessage(msgid);
-    const prettyMsgid = prettyPrintICU(msgid);
-    const key = precomputedHash ? `hash:${precomputedHash}` : msgctxt ? `ctx:${msgctxt}` : `msg:${normalizedMsgid}`;
-
-    if (!extractedMessages.has(key)) {
-      extractedMessages.set(key, {
-        msgid: prettyMsgid,
-        msgctxt,
-        precomputedHash,
-        locations: new Set(),
-        translatorComment,
-      });
-    }
-    extractedMessages.get(key)!.locations.add(location);
-  };
-
   files.forEach((file) => {
     try {
       const content = fs.readFileSync(file, 'utf8');
-      const ast = parse(content, {
-        sourceType: 'module',
-        plugins: ['typescript', 'jsx', 'decorators-legacy'],
-      });
-
       const relativeFile = path.relative(process.cwd(), file);
-
-      traverse(ast, {
-        CallExpression(p) {
-          const { callee, arguments: args } = p.node;
-          if (
-            t.isIdentifier(callee) &&
-            (callee.name === 'translate' || callee.name === 'translateLabel') &&
-            args.length > 0
-          ) {
-            const firstArg = args[0];
-            let firstArgValue: string | null = null;
-            if (t.isStringLiteral(firstArg)) {
-              firstArgValue = firstArg.value;
-            } else if (t.isTemplateLiteral(firstArg) && firstArg.quasis.length === 1) {
-              firstArgValue = firstArg.quasis[0].value.cooked || firstArg.quasis[0].value.raw;
-            }
-
-            if (firstArgValue) {
-              let msgid = firstArgValue;
-              let msgctxt: string | undefined = undefined;
-
-              // Check for second argument { _: "Default Text" }
-              if (args.length > 1) {
-                const secondArg = args[1];
-                if (t.isObjectExpression(secondArg)) {
-                  const defaultProp = secondArg.properties.find((prop) => {
-                    const isMatch = t.isObjectProperty(prop) && t.isIdentifier(prop.key) && prop.key.name === '_';
-                    return isMatch;
-                  });
-                  if (defaultProp && t.isObjectProperty(defaultProp)) {
-                    if (t.isStringLiteral(defaultProp.value)) {
-                      msgid = defaultProp.value.value;
-                      msgctxt = firstArgValue; // The first arg is the explicit ID
-                    } else if (t.isTemplateLiteral(defaultProp.value) && defaultProp.value.quasis.length === 1) {
-                      msgid = defaultProp.value.quasis[0].value.cooked || defaultProp.value.quasis[0].value.raw;
-                      msgctxt = firstArgValue;
-                    }
-                  }
-                }
-              }
-
-              const line = p.node.loc?.start.line || 0;
-              const location = `${relativeFile}:${line}`;
-              addExtractedMessage(msgid, msgctxt, location);
-            }
-          }
-        },
-        JSXOpeningElement(p) {
-          const tagName = getJSXElementName(p.node.name);
-
-          const baseNameMatch =
-            components.has(tagName) || Array.from(components).some((c) => tagName.startsWith(c + '.') || tagName === c);
-
-          if (baseNameMatch) {
-            p.node.attributes.forEach((attr) => {
-              if (t.isJSXAttribute(attr) && t.isJSXIdentifier(attr.name) && translatableProps.has(attr.name.name)) {
-                let textValue: string | null = null;
-
-                if (attr.value) {
-                  if (t.isStringLiteral(attr.value)) {
-                    textValue = attr.value.value;
-                  } else if (t.isJSXExpressionContainer(attr.value)) {
-                    const expr = attr.value.expression;
-                    if (t.isStringLiteral(expr) || t.isTemplateLiteral(expr)) {
-                      if (t.isStringLiteral(expr)) {
-                        textValue = expr.value;
-                      } else if (expr.quasis.length === 1) {
-                        textValue = expr.quasis[0].value.cooked || expr.quasis[0].value.raw;
-                      }
-                    }
-                  }
-                }
-
-                if (textValue && textValue.trim() !== '') {
-                  const line = attr.loc?.start.line || 0;
-                  const location = `${relativeFile}:${line}`;
-                  addExtractedMessage(textValue, undefined, location);
-                }
-              }
-            });
-          }
-        },
-        JSXElement(p) {
-          const tagName = getJSXElementName(p.node.openingElement.name);
-          if (!CHILDREN_AS_KEY_COMPONENTS.has(tagName)) return;
-
-          // Extract text from children: JSXText or StringLiteral in JSXExpressionContainer
-          let textValue: string | null = null;
-          for (const child of p.node.children) {
-            if (t.isJSXText(child) && child.value.trim()) {
-              textValue = child.value.trim();
-              break;
-            }
-            if (t.isJSXExpressionContainer(child) && t.isStringLiteral(child.expression)) {
-              textValue = child.expression.value;
-              break;
-            }
-          }
-          if (!textValue) return;
-
-          // Extract id, context, and comment from opening element attributes
-          let explicitId: string | undefined;
-          let msgctxt: string | undefined;
-          let translatorComment: string | undefined;
-          for (const attr of p.node.openingElement.attributes) {
-            if (!t.isJSXAttribute(attr) || !t.isJSXIdentifier(attr.name)) continue;
-            const val = t.isStringLiteral(attr.value)
-              ? attr.value.value
-              : t.isJSXExpressionContainer(attr.value) && t.isStringLiteral(attr.value.expression)
-                ? attr.value.expression.value
-                : undefined;
-            if (val === undefined) continue;
-            if (attr.name.name === 'id') explicitId = val;
-            if (attr.name.name === 'context') msgctxt = val;
-            if (attr.name.name === 'comment') translatorComment = val;
-          }
-
-          // Compute the hash written to `#. id:` and used as the compiled JSON key:
-          //   id present   → literal id (e.g. "action.archive"), no msgctxt
-          //   context only → hash(context + \x04 + message), msgctxt = context
-          //   neither      → hash(message), no msgctxt
-          let precomputedHash: string | undefined;
-          if (explicitId) {
-            precomputedHash = explicitId;
-            msgctxt = undefined; // id supersedes context; no msgctxt in PO
-          } else if (msgctxt) {
-            precomputedHash = generateMessageId(`${msgctxt}\x04${normalizeMessage(textValue)}`);
-          }
-
-          const line = p.node.loc?.start.line || 0;
-          addExtractedMessage(textValue, msgctxt, `${relativeFile}:${line}`, translatorComment, precomputedHash);
-        },
+      const fileMessages = extractMessagesFromSource(content, relativeFile, { components, translatableProps });
+      fileMessages.forEach((data, key) => {
+        if (!extractedMessages.has(key)) {
+          extractedMessages.set(key, data);
+        } else {
+          data.locations.forEach((loc) => extractedMessages.get(key)!.locations.add(loc));
+        }
       });
     } catch (e: any) {
       console.error(`Failed to parse ${file}:`, e.message);
@@ -580,4 +609,7 @@ function main() {
   });
 }
 
-main();
+const scriptName = path.basename(process.argv[1] ?? '');
+if (scriptName === 'extract.js' || scriptName === 'extract.ts') {
+  main();
+}

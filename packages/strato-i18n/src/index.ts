@@ -1,3 +1,3 @@
-export * from './icuI18nProvider';
-export * from './hash';
-export * from './formatter';
+export * from './icuI18nProvider.js';
+export * from './hash.js';
+export * from './formatter.js';
