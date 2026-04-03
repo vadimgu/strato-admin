@@ -1,5 +1,10 @@
 import { useEffect, useRef } from 'react';
-import { useQuery, UseQueryOptions, UseQueryResult, useQueryClient } from '@tanstack/react-query';
+import {
+    useQuery,
+    UseQueryOptions,
+    UseQueryResult,
+    useQueryClient,
+} from '@tanstack/react-query';
 
 import { RaRecord, GetManyParams } from '../types';
 import { useDataProvider } from './useDataProvider';
@@ -45,106 +50,145 @@ import { useEvent } from '../util';
  *     )}</ul>;
  * };
  */
-export const useGetMany = <RecordType extends RaRecord = any, ErrorType = Error>(
-  resource: string,
-  params: Partial<GetManyParams<RecordType>>,
-  options: UseGetManyOptions<RecordType, ErrorType> = {},
+export const useGetMany = <
+    RecordType extends RaRecord = any,
+    ErrorType = Error,
+>(
+    resource: string,
+    params: Partial<GetManyParams<RecordType>>,
+    options: UseGetManyOptions<RecordType, ErrorType> = {}
 ): UseGetManyHookValue<RecordType, ErrorType> => {
-  const { ids, meta } = params;
-  const dataProvider = useDataProvider();
-  const queryClient = useQueryClient();
-  const { onError = noop, onSuccess = noop, onSettled = noop, enabled, ...queryOptions } = options;
-  const onSuccessEvent = useEvent(onSuccess);
-  const onErrorEvent = useEvent(onError);
-  const onSettledEvent = useEvent(onSettled);
+    const { ids, meta } = params;
+    const dataProvider = useDataProvider();
+    const queryClient = useQueryClient();
+    const {
+        onError = noop,
+        onSuccess = noop,
+        onSettled = noop,
+        enabled,
+        ...queryOptions
+    } = options;
+    const onSuccessEvent = useEvent(onSuccess);
+    const onErrorEvent = useEvent(onError);
+    const onSettledEvent = useEvent(onSettled);
 
-  const result = useQuery<RecordType[], ErrorType, RecordType[]>({
-    queryKey: [
-      resource,
-      'getMany',
-      {
-        ids: !ids || ids.length === 0 ? [] : ids.map((id) => String(id)),
-        meta,
-      },
-    ],
-    queryFn: (queryParams) => {
-      if (!ids || ids.length === 0) {
-        // no need to call the dataProvider
-        return Promise.resolve([]);
-      }
-      return dataProvider
-        .getMany<RecordType>(resource, {
-          ids,
-          meta,
-          signal: dataProvider.supportAbortSignal === true ? queryParams.signal : undefined,
-        })
-        .then(({ data }) => data);
-    },
-    placeholderData: () => {
-      const records =
-        !ids || ids.length === 0
-          ? []
-          : ids.map((id) => queryClient.getQueryData<RecordType>([resource, 'getOne', { id: String(id), meta }]));
-      if (records.some((record) => record === undefined)) {
-        return undefined;
-      } else {
-        return records as RecordType[];
-      }
-    },
-    retry: false,
-    enabled: enabled ?? ids != null,
-    ...queryOptions,
-  });
-
-  const metaValue = useRef(meta);
-  const resourceValue = useRef(resource);
-
-  useEffect(() => {
-    metaValue.current = meta;
-  }, [meta]);
-
-  useEffect(() => {
-    resourceValue.current = resource;
-  }, [resource]);
-
-  useEffect(() => {
-    if (result.data === undefined || result.error != null || result.isFetching) return;
-    // optimistically populate the getOne cache
-    result.data.forEach((record) => {
-      queryClient.setQueryData(
-        [resourceValue.current, 'getOne', { id: String(record.id), meta: metaValue.current }],
-        (oldRecord) => oldRecord ?? record,
-      );
+    const result = useQuery<RecordType[], ErrorType, RecordType[]>({
+        queryKey: [
+            resource,
+            'getMany',
+            {
+                ids: !ids || ids.length === 0 ? [] : ids.map(id => String(id)),
+                meta,
+            },
+        ],
+        queryFn: queryParams => {
+            if (!ids || ids.length === 0) {
+                // no need to call the dataProvider
+                return Promise.resolve([]);
+            }
+            return dataProvider
+                .getMany<RecordType>(resource, {
+                    ids,
+                    meta,
+                    signal:
+                        dataProvider.supportAbortSignal === true
+                            ? queryParams.signal
+                            : undefined,
+                })
+                .then(({ data }) => data);
+        },
+        placeholderData: () => {
+            const records =
+                !ids || ids.length === 0
+                    ? []
+                    : ids.map(id =>
+                          queryClient.getQueryData<RecordType>([
+                              resource,
+                              'getOne',
+                              { id: String(id), meta },
+                          ])
+                      );
+            if (records.some(record => record === undefined)) {
+                return undefined;
+            } else {
+                return records as RecordType[];
+            }
+        },
+        retry: false,
+        enabled: enabled ?? ids != null,
+        ...queryOptions,
     });
 
-    onSuccessEvent(result.data);
-  }, [queryClient, onSuccessEvent, result.data, result.error, result.isFetching]);
+    const metaValue = useRef(meta);
+    const resourceValue = useRef(resource);
 
-  useEffect(() => {
-    if (result.error == null || result.isFetching) return;
-    onErrorEvent(result.error);
-  }, [onErrorEvent, result.error, result.isFetching]);
+    useEffect(() => {
+        metaValue.current = meta;
+    }, [meta]);
 
-  useEffect(() => {
-    if (result.status === 'pending' || result.isFetching) return;
-    onSettledEvent(result.data, result.error);
-  }, [onSettledEvent, result.data, result.error, result.status, result.isFetching]);
+    useEffect(() => {
+        resourceValue.current = resource;
+    }, [resource]);
 
-  return result;
+    useEffect(() => {
+        if (
+            result.data === undefined ||
+            result.error != null ||
+            result.isFetching
+        )
+            return;
+        // optimistically populate the getOne cache
+        result.data.forEach(record => {
+            queryClient.setQueryData(
+                [
+                    resourceValue.current,
+                    'getOne',
+                    { id: String(record.id), meta: metaValue.current },
+                ],
+                oldRecord => oldRecord ?? record
+            );
+        });
+
+        onSuccessEvent(result.data);
+    }, [
+        queryClient,
+        onSuccessEvent,
+        result.data,
+        result.error,
+        result.isFetching,
+    ]);
+
+    useEffect(() => {
+        if (result.error == null || result.isFetching) return;
+        onErrorEvent(result.error);
+    }, [onErrorEvent, result.error, result.isFetching]);
+
+    useEffect(() => {
+        if (result.status === 'pending' || result.isFetching) return;
+        onSettledEvent(result.data, result.error);
+    }, [
+        onSettledEvent,
+        result.data,
+        result.error,
+        result.status,
+        result.isFetching,
+    ]);
+
+    return result;
 };
 
 const noop = () => undefined;
 
-export type UseGetManyOptions<RecordType extends RaRecord = any, ErrorType = Error> = Omit<
-  UseQueryOptions<RecordType[], ErrorType>,
-  'queryKey' | 'queryFn'
-> & {
-  onSuccess?: (data: RecordType[]) => void;
-  onError?: (error: ErrorType) => void;
-  onSettled?: (data?: RecordType[], error?: ErrorType | null) => void;
+export type UseGetManyOptions<
+    RecordType extends RaRecord = any,
+    ErrorType = Error,
+> = Omit<UseQueryOptions<RecordType[], ErrorType>, 'queryKey' | 'queryFn'> & {
+    onSuccess?: (data: RecordType[]) => void;
+    onError?: (error: ErrorType) => void;
+    onSettled?: (data?: RecordType[], error?: ErrorType | null) => void;
 };
 
-export type UseGetManyHookValue<RecordType extends RaRecord = any, ErrorType = Error> = UseQueryResult<
-  RecordType[],
-  ErrorType
->;
+export type UseGetManyHookValue<
+    RecordType extends RaRecord = any,
+    ErrorType = Error,
+> = UseQueryResult<RecordType[], ErrorType>;

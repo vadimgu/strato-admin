@@ -26,8 +26,16 @@ import { ShowControllerResult } from './useShowController';
  * @see ShowContext
  * @see RecordContext
  */
-export const ShowContextProvider = ({ children, value }: { children: ReactNode; value: ShowControllerResult }) => (
-  <ShowContext.Provider value={value}>
-    <RecordContextProvider<Partial<RaRecord>> value={value && value.record}>{children}</RecordContextProvider>
-  </ShowContext.Provider>
+export const ShowContextProvider = ({
+    children,
+    value,
+}: {
+    children: ReactNode;
+    value: ShowControllerResult;
+}) => (
+    <ShowContext.Provider value={value}>
+        <RecordContextProvider<Partial<RaRecord>> value={value && value.record}>
+            {children}
+        </RecordContextProvider>
+    </ShowContext.Provider>
 );

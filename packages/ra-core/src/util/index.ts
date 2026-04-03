@@ -12,7 +12,16 @@ export * from './useEvent';
 export * from './useDebouncedEvent';
 export * from './useFieldValue';
 
-export { escapePath, FieldTitle, Ready, removeEmpty, removeKey, warning, useWhyDidYouUpdate, getMutationMode };
+export {
+    escapePath,
+    FieldTitle,
+    Ready,
+    removeEmpty,
+    removeKey,
+    warning,
+    useWhyDidYouUpdate,
+    getMutationMode,
+};
 
 export type { FieldTitleProps };
 export * from './asyncDebounce';

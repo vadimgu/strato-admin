@@ -11,13 +11,15 @@ import { useRecordSelection } from './useRecordSelection';
  * unselectAll();
  */
 export const useUnselectAll = (resource?: string, storeKey?: string) => {
-  const [, { clearSelection }] = useRecordSelection(
-    resource ? { resource, storeKey } : { disableSyncWithStore: true, storeKey },
-  );
-  return useCallback(
-    (fromAllStoreKeys?: boolean) => {
-      clearSelection(fromAllStoreKeys);
-    },
-    [clearSelection],
-  );
+    const [, { clearSelection }] = useRecordSelection(
+        resource
+            ? { resource, storeKey }
+            : { disableSyncWithStore: true, storeKey }
+    );
+    return useCallback(
+        (fromAllStoreKeys?: boolean) => {
+            clearSelection(fromAllStoreKeys);
+        },
+        [clearSelection]
+    );
 };

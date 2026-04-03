@@ -9,10 +9,13 @@ import { useRecordContext } from './useRecordContext';
  * @param {string} props.resource The resource name
  * @param {RaRecord} props.record The record to render
  */
-export const RecordRepresentation = (props: { record?: RaRecord; resource?: string }) => {
-  const record = useRecordContext(props);
-  const resource = useResourceContext(props);
-  const getRecordRepresentation = useGetRecordRepresentation(resource);
+export const RecordRepresentation = (props: {
+    record?: RaRecord;
+    resource?: string;
+}) => {
+    const record = useRecordContext(props);
+    const resource = useResourceContext(props);
+    const getRecordRepresentation = useGetRecordRepresentation(resource);
 
-  return <>{getRecordRepresentation(record)}</>;
+    return <>{getRecordRepresentation(record)}</>;
 };

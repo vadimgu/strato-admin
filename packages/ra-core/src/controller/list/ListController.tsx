@@ -1,6 +1,10 @@
 import { ReactNode } from 'react';
 import { RaRecord } from '../../types';
-import { useListController, ListControllerProps, ListControllerResult } from './useListController';
+import {
+    useListController,
+    ListControllerProps,
+    ListControllerResult,
+} from './useListController';
 
 /**
  * Render prop version of the useListController hook.
@@ -15,12 +19,17 @@ import { useListController, ListControllerProps, ListControllerResult } from './
  *     </ListController>
  * )
  */
-export const ListController = <RecordType extends RaRecord = any, ErrorType = Error>({
-  children,
-  ...props
+export const ListController = <
+    RecordType extends RaRecord = any,
+    ErrorType = Error,
+>({
+    children,
+    ...props
 }: {
-  children: (params: ListControllerResult<RecordType, ErrorType>) => ReactNode;
+    children: (
+        params: ListControllerResult<RecordType, ErrorType>
+    ) => ReactNode;
 } & ListControllerProps<RecordType, ErrorType>) => {
-  const controllerProps = useListController<RecordType, ErrorType>(props);
-  return children(controllerProps);
+    const controllerProps = useListController<RecordType, ErrorType>(props);
+    return children(controllerProps);
 };

@@ -14,45 +14,45 @@ import { useBasename, Navigate } from '../routing';
  * @param options.error An optional element to render if an error occur while checking users access rights. Redirect users to `/authentication-error` by default.
  */
 export const CanAccess = <
-  RecordType extends RaRecord | Omit<RaRecord, 'id'> = RaRecord,
-  ErrorType extends Error = Error,
+    RecordType extends RaRecord | Omit<RaRecord, 'id'> = RaRecord,
+    ErrorType extends Error = Error,
 >({
-  children,
-  loading = null,
-  accessDenied = null,
-  error: errorElement = DEFAULT_ERROR,
-  ...props
+    children,
+    loading = null,
+    accessDenied = null,
+    error: errorElement = DEFAULT_ERROR,
+    ...props
 }: CanAccessProps<RecordType, ErrorType>) => {
-  const { canAccess, error, isPending } = useCanAccess(props);
+    const { canAccess, error, isPending } = useCanAccess(props);
 
-  if (isPending) {
-    return loading;
-  }
+    if (isPending) {
+        return loading;
+    }
 
-  if (error) {
-    return errorElement;
-  }
+    if (error) {
+        return errorElement;
+    }
 
-  if (canAccess === false) {
-    return accessDenied;
-  }
+    if (canAccess === false) {
+        return accessDenied;
+    }
 
-  return children;
+    return children;
 };
 
 export interface CanAccessProps<
-  RecordType extends RaRecord | Omit<RaRecord, 'id'> = RaRecord,
-  ErrorType extends Error = Error,
+    RecordType extends RaRecord | Omit<RaRecord, 'id'> = RaRecord,
+    ErrorType extends Error = Error,
 > extends UseCanAccessOptions<RecordType, ErrorType> {
-  children: React.ReactNode;
-  loading?: React.ReactNode;
-  accessDenied?: React.ReactNode;
-  error?: React.ReactNode;
+    children: React.ReactNode;
+    loading?: React.ReactNode;
+    accessDenied?: React.ReactNode;
+    error?: React.ReactNode;
 }
 
 const CanAccessDefaultError = () => {
-  const basename = useBasename();
-  return <Navigate to={`${basename}/authentication-error`} />;
+    const basename = useBasename();
+    return <Navigate to={`${basename}/authentication-error`} />;
 };
 
 const DEFAULT_ERROR = <CanAccessDefaultError />;

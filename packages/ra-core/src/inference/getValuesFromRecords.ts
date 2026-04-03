@@ -25,15 +25,17 @@
  * // }
  */
 export default (records: any[]) =>
-  records.reduce((values, record) => {
-    Object.keys(record).forEach((fieldName) => {
-      if (!values[fieldName]) {
-        values[fieldName] = [];
-      }
-      if (record[fieldName] != null) {
-        const value = Array.isArray(record[fieldName]) ? [record[fieldName]] : record[fieldName];
-        values[fieldName] = values[fieldName].concat(value);
-      }
-    });
-    return values;
-  }, {});
+    records.reduce((values, record) => {
+        Object.keys(record).forEach(fieldName => {
+            if (!values[fieldName]) {
+                values[fieldName] = [];
+            }
+            if (record[fieldName] != null) {
+                const value = Array.isArray(record[fieldName])
+                    ? [record[fieldName]]
+                    : record[fieldName];
+                values[fieldName] = values[fieldName].concat(value);
+            }
+        });
+        return values;
+    }, {});

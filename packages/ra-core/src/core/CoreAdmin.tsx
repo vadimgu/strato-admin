@@ -83,56 +83,56 @@ import { CoreAdminUI, CoreAdminUIProps } from './CoreAdminUI';
  * };
  */
 export const CoreAdmin = (props: CoreAdminProps) => {
-  const {
-    accessDenied,
-    authenticationError,
-    authProvider,
-    basename,
-    catchAll,
-    children,
-    dashboard,
-    dataProvider,
-    disableTelemetry,
-    error,
-    i18nProvider,
-    layout,
-    loading,
-    loginPage,
-    queryClient,
-    ready,
-    requireAuth,
-    routerProvider,
-    store,
-    title = 'React Admin',
-  } = props;
-  return (
-    <CoreAdminContext
-      authProvider={authProvider}
-      basename={basename}
-      dataProvider={dataProvider}
-      i18nProvider={i18nProvider}
-      queryClient={queryClient}
-      routerProvider={routerProvider}
-      store={store}
-    >
-      <CoreAdminUI
-        accessDenied={accessDenied}
-        authenticationError={authenticationError}
-        catchAll={catchAll}
-        dashboard={dashboard}
-        disableTelemetry={disableTelemetry}
-        error={error}
-        layout={layout}
-        loading={loading}
-        loginPage={loginPage}
-        ready={ready}
-        requireAuth={requireAuth}
-        title={title}
-      >
-        {children}
-      </CoreAdminUI>
-    </CoreAdminContext>
-  );
+    const {
+        accessDenied,
+        authenticationError,
+        authProvider,
+        basename,
+        catchAll,
+        children,
+        dashboard,
+        dataProvider,
+        disableTelemetry,
+        error,
+        i18nProvider,
+        layout,
+        loading,
+        loginPage,
+        queryClient,
+        ready,
+        requireAuth,
+        routerProvider,
+        store,
+        title = 'React Admin',
+    } = props;
+    return (
+        <CoreAdminContext
+            authProvider={authProvider}
+            basename={basename}
+            dataProvider={dataProvider}
+            i18nProvider={i18nProvider}
+            queryClient={queryClient}
+            routerProvider={routerProvider}
+            store={store}
+        >
+            <CoreAdminUI
+                accessDenied={accessDenied}
+                authenticationError={authenticationError}
+                catchAll={catchAll}
+                dashboard={dashboard}
+                disableTelemetry={disableTelemetry}
+                error={error}
+                layout={layout}
+                loading={loading}
+                loginPage={loginPage}
+                ready={ready}
+                requireAuth={requireAuth}
+                title={title}
+            >
+                {children}
+            </CoreAdminUI>
+        </CoreAdminContext>
+    );
 };
 
 export type CoreAdminProps = CoreAdminContextProps & CoreAdminUIProps;

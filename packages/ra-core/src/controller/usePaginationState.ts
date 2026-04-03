@@ -11,24 +11,27 @@ import { PaginationPayload } from '../types';
  * @property {Function} setPagination: Set page and perPage pagination numbers
  */
 export interface PaginationHookResult {
-  page: number;
-  perPage: number;
-  pagination: PaginationPayload;
-  setPage: (page: number) => void;
-  setPerPage: (perPage: number) => void;
-  setPagination: (pagination: PaginationPayload) => void;
+    page: number;
+    perPage: number;
+    pagination: PaginationPayload;
+    setPage: (page: number) => void;
+    setPerPage: (perPage: number) => void;
+    setPagination: (pagination: PaginationPayload) => void;
 }
 
-const paginationReducer = (prevState: PaginationPayload, nextState: Partial<PaginationPayload>): PaginationPayload => {
-  return {
-    ...prevState,
-    ...nextState,
-  };
+const paginationReducer = (
+    prevState: PaginationPayload,
+    nextState: Partial<PaginationPayload>
+): PaginationPayload => {
+    return {
+        ...prevState,
+        ...nextState,
+    };
 };
 
 const defaultPagination = {
-  page: 1,
-  perPage: 25,
+    page: 1,
+    perPage: 25,
 };
 
 /**
@@ -41,30 +44,35 @@ const defaultPagination = {
  * @param {number} initialPagination the initial value per page
  * @returns {PaginationHookResult} The pagination props
  */
-export default (initialPagination: { perPage?: number; page?: number } = {}): PaginationHookResult => {
-  const [pagination, setPagination] = useReducer(paginationReducer, {
-    ...defaultPagination,
-    ...initialPagination,
-  });
-  const isFirstRender = useRef(true);
+export default (
+    initialPagination: { perPage?: number; page?: number } = {}
+): PaginationHookResult => {
+    const [pagination, setPagination] = useReducer(paginationReducer, {
+        ...defaultPagination,
+        ...initialPagination,
+    });
+    const isFirstRender = useRef(true);
 
-  const setPerPage = useCallback((perPage) => setPagination({ perPage, page: 1 }), []);
-  const setPage = useCallback((page) => setPagination({ page }), []);
+    const setPerPage = useCallback(
+        perPage => setPagination({ perPage, page: 1 }),
+        []
+    );
+    const setPage = useCallback(page => setPagination({ page }), []);
 
-  useEffect(() => {
-    if (isFirstRender.current) {
-      isFirstRender.current = false;
-      return;
-    }
-    setPerPage(initialPagination.perPage || 25);
-  }, [initialPagination.perPage, setPerPage]);
+    useEffect(() => {
+        if (isFirstRender.current) {
+            isFirstRender.current = false;
+            return;
+        }
+        setPerPage(initialPagination.perPage || 25);
+    }, [initialPagination.perPage, setPerPage]);
 
-  return {
-    page: pagination.page,
-    perPage: pagination.perPage,
-    pagination,
-    setPage,
-    setPerPage,
-    setPagination,
-  };
+    return {
+        page: pagination.page,
+        perPage: pagination.perPage,
+        pagination,
+        setPage,
+        setPerPage,
+        setPagination,
+    };
 };

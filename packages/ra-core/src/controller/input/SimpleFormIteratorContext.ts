@@ -6,13 +6,15 @@ import { createContext } from 'react';
  * @see {SimpleFormIterator}
  * @see {ArrayInput}
  */
-export const SimpleFormIteratorContext = createContext<SimpleFormIteratorContextValue | undefined>(undefined);
+export const SimpleFormIteratorContext = createContext<
+    SimpleFormIteratorContextValue | undefined
+>(undefined);
 
 export type SimpleFormIteratorContextValue = {
-  add: (item?: any) => void;
-  clear: () => void;
-  remove: (index: number) => void;
-  reOrder: (index: number, newIndex: number) => void;
-  source: string;
-  total: number;
+    add: (item?: any) => void;
+    clear: () => void;
+    remove: (index: number) => void;
+    reOrder: (index: number, newIndex: number) => void;
+    source: string;
+    total: number;
 };

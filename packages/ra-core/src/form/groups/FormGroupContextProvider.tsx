@@ -47,22 +47,36 @@ import { useFormGroups } from './useFormGroups';
  * @param {ReactNode} props.children The form group content
  * @param {String} props.name The form group name
  */
-export const FormGroupContextProvider = ({ children, name }: { children: ReactNode; name: string }) => {
-  const formGroups = useFormGroups();
+export const FormGroupContextProvider = ({
+    children,
+    name,
+}: {
+    children: ReactNode;
+    name: string;
+}) => {
+    const formGroups = useFormGroups();
 
-  useEffect(() => {
-    if (!formGroups || !formGroups.registerGroup || !formGroups.unregisterGroup) {
-      console.warn(
-        `The FormGroupContextProvider can only be used inside a FormContext such as provided by the SimpleForm and TabbedForm components`,
-      );
-      return;
-    }
-    formGroups.registerGroup(name);
+    useEffect(() => {
+        if (
+            !formGroups ||
+            !formGroups.registerGroup ||
+            !formGroups.unregisterGroup
+        ) {
+            console.warn(
+                `The FormGroupContextProvider can only be used inside a FormContext such as provided by the SimpleForm and TabbedForm components`
+            );
+            return;
+        }
+        formGroups.registerGroup(name);
 
-    return () => {
-      formGroups.unregisterGroup(name);
-    };
-  }, [formGroups, name]);
+        return () => {
+            formGroups.unregisterGroup(name);
+        };
+    }, [formGroups, name]);
 
-  return <FormGroupContext.Provider value={name}>{children}</FormGroupContext.Provider>;
+    return (
+        <FormGroupContext.Provider value={name}>
+            {children}
+        </FormGroupContext.Provider>
+    );
 };

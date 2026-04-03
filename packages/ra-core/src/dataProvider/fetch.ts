@@ -2,32 +2,33 @@ import HttpError from './HttpError';
 import { stringify } from 'query-string';
 
 export interface Options extends RequestInit {
-  user?: {
-    authenticated?: boolean;
-    token?: string;
-  };
+    user?: {
+        authenticated?: boolean;
+        token?: string;
+    };
 }
 
 export const createHeadersFromOptions = (options: Options): Headers => {
-  const requestHeaders = (options.headers ||
-    new Headers({
-      Accept: 'application/json',
-    })) as Headers;
-  const hasBody = options && options.body;
-  const isContentTypeSet = requestHeaders.has('Content-Type');
-  const isGetMethod = !options?.method || options?.method === 'GET';
-  const isFormData = options?.body instanceof FormData;
+    const requestHeaders = (options.headers ||
+        new Headers({
+            Accept: 'application/json',
+        })) as Headers;
+    const hasBody = options && options.body;
+    const isContentTypeSet = requestHeaders.has('Content-Type');
+    const isGetMethod = !options?.method || options?.method === 'GET';
+    const isFormData = options?.body instanceof FormData;
 
-  const shouldSetContentType = hasBody && !isContentTypeSet && !isGetMethod && !isFormData;
-  if (shouldSetContentType) {
-    requestHeaders.set('Content-Type', 'application/json');
-  }
+    const shouldSetContentType =
+        hasBody && !isContentTypeSet && !isGetMethod && !isFormData;
+    if (shouldSetContentType) {
+        requestHeaders.set('Content-Type', 'application/json');
+    }
 
-  if (options.user && options.user.authenticated && options.user.token) {
-    requestHeaders.set('Authorization', options.user.token);
-  }
+    if (options.user && options.user.authenticated && options.user.token) {
+        requestHeaders.set('Authorization', options.user.token);
+    }
 
-  return requestHeaders;
+    return requestHeaders;
 };
 
 /**
@@ -47,50 +48,62 @@ export const createHeadersFromOptions = (options: Options): Headers => {
  * - json: the response body parsed as JSON
  */
 export const fetchJson = (url, options: Options = {}) => {
-  const requestHeaders = createHeadersFromOptions(options);
+    const requestHeaders = createHeadersFromOptions(options);
 
-  return fetch(url, { ...options, headers: requestHeaders })
-    .then((response) =>
-      response.text().then((text) => ({
-        status: response.status,
-        statusText: response.statusText,
-        headers: response.headers,
-        body: text,
-      })),
-    )
-    .then(({ status, statusText, headers, body }) => {
-      let json;
-      try {
-        json = JSON.parse(body);
-      } catch (e) {
-        // not json, no big deal
-      }
-      if (status < 200 || status >= 300) {
-        return Promise.reject(new HttpError((json && json.message) || statusText, status, json));
-      }
-      return Promise.resolve({ status, headers, body, json });
-    });
+    return fetch(url, { ...options, headers: requestHeaders })
+        .then(response =>
+            response.text().then(text => ({
+                status: response.status,
+                statusText: response.statusText,
+                headers: response.headers,
+                body: text,
+            }))
+        )
+        .then(({ status, statusText, headers, body }) => {
+            let json;
+            try {
+                json = JSON.parse(body);
+            } catch (e) {
+                // not json, no big deal
+            }
+            if (status < 200 || status >= 300) {
+                return Promise.reject(
+                    new HttpError(
+                        (json && json.message) || statusText,
+                        status,
+                        json
+                    )
+                );
+            }
+            return Promise.resolve({ status, headers, body, json });
+        });
 };
 
 export const queryParameters = stringify;
 
-const isValidObject = (value) => {
-  if (!value) {
-    return false;
-  }
+const isValidObject = value => {
+    if (!value) {
+        return false;
+    }
 
-  const isArray = Array.isArray(value);
-  const isBuffer = typeof Buffer !== 'undefined' && Buffer.isBuffer(value);
-  const isObject = Object.prototype.toString.call(value) === '[object Object]';
-  const hasKeys = !!Object.keys(value).length;
+    const isArray = Array.isArray(value);
+    const isBuffer = typeof Buffer !== 'undefined' && Buffer.isBuffer(value);
+    const isObject =
+        Object.prototype.toString.call(value) === '[object Object]';
+    const hasKeys = !!Object.keys(value).length;
 
-  return !isArray && !isBuffer && isObject && hasKeys;
+    return !isArray && !isBuffer && isObject && hasKeys;
 };
 
 export const flattenObject = (value: any, path: string[] = []) => {
-  if (isValidObject(value)) {
-    return Object.assign({}, ...Object.keys(value).map((key) => flattenObject(value[key], path.concat([key]))));
-  } else {
-    return path.length ? { [path.join('.')]: value } : value;
-  }
+    if (isValidObject(value)) {
+        return Object.assign(
+            {},
+            ...Object.keys(value).map(key =>
+                flattenObject(value[key], path.concat([key]))
+            )
+        );
+    } else {
+        return path.length ? { [path.join('.')]: value } : value;
+    }
 };

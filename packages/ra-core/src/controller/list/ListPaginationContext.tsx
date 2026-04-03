@@ -41,49 +41,53 @@ import { ListControllerResult } from './useListController';
  *     );
  * };
  */
-export const ListPaginationContext = createContext<ListPaginationContextValue | undefined>(undefined);
+export const ListPaginationContext = createContext<
+    ListPaginationContextValue | undefined
+>(undefined);
 
 ListPaginationContext.displayName = 'ListPaginationContext';
 
 export type ListPaginationContextValue = Pick<
-  ListControllerResult,
-  | 'isLoading'
-  | 'isPending'
-  | 'hasPreviousPage'
-  | 'hasNextPage'
-  | 'page'
-  | 'perPage'
-  | 'setPage'
-  | 'setPerPage'
-  | 'total'
-  | 'resource'
+    ListControllerResult,
+    | 'isLoading'
+    | 'isPending'
+    | 'hasPreviousPage'
+    | 'hasNextPage'
+    | 'page'
+    | 'perPage'
+    | 'setPage'
+    | 'setPerPage'
+    | 'total'
+    | 'resource'
 >;
 
-export const usePickPaginationContext = (context: ListControllerResult): ListPaginationContextValue =>
-  useMemo(
-    () =>
-      pick(context, [
-        'isLoading',
-        'isPending',
-        'hasPreviousPage',
-        'hasNextPage',
-        'page',
-        'perPage',
-        'setPage',
-        'setPerPage',
-        'total',
-        'resource',
-      ]),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [
-      context.isLoading,
-      context.isPending,
-      context.hasPreviousPage,
-      context.hasNextPage,
-      context.page,
-      context.perPage,
-      context.setPage,
-      context.setPerPage,
-      context.total,
-    ],
-  );
+export const usePickPaginationContext = (
+    context: ListControllerResult
+): ListPaginationContextValue =>
+    useMemo(
+        () =>
+            pick(context, [
+                'isLoading',
+                'isPending',
+                'hasPreviousPage',
+                'hasNextPage',
+                'page',
+                'perPage',
+                'setPage',
+                'setPerPage',
+                'total',
+                'resource',
+            ]),
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        [
+            context.isLoading,
+            context.isPending,
+            context.hasPreviousPage,
+            context.hasNextPage,
+            context.page,
+            context.perPage,
+            context.setPage,
+            context.setPerPage,
+            context.total,
+        ]
+    );

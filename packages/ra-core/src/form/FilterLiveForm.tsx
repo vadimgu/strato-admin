@@ -6,7 +6,11 @@ import mergeWith from 'lodash/mergeWith.js';
 import set from 'lodash/set.js';
 import { ReactNode, useEffect } from 'react';
 import { FormProvider, useForm, UseFormProps } from 'react-hook-form';
-import { SourceContextProvider, SourceContextValue, useResourceContext } from '../core';
+import {
+    SourceContextProvider,
+    SourceContextValue,
+    useResourceContext,
+} from '../core';
 import { FormGroupsProvider } from './groups/FormGroupsProvider';
 import { getSimpleValidationResolver, type ValidateForm } from './validation';
 import { useDebouncedEvent } from '../util';
@@ -49,107 +53,127 @@ import { useListContext } from '../controller/list/useListContext';
  * );
  */
 export const FilterLiveForm = (props: FilterLiveFormProps) => {
-  const { filterValues, setFilters } = useListContext();
-  const resource = useResourceContext(props);
+    const { filterValues, setFilters } = useListContext();
+    const resource = useResourceContext(props);
 
-  const { debounce = 500, resolver, validate, children, formComponent: Component = HTMLForm, ...rest } = props;
+    const {
+        debounce = 500,
+        resolver,
+        validate,
+        children,
+        formComponent: Component = HTMLForm,
+        ...rest
+    } = props;
 
-  const finalResolver = resolver ? resolver : validate ? getSimpleValidationResolver(validate) : undefined;
+    const finalResolver = resolver
+        ? resolver
+        : validate
+          ? getSimpleValidationResolver(validate)
+          : undefined;
 
-  const formContext = useForm({
-    mode: 'onChange',
-    resolver: finalResolver,
-    ...rest,
-  });
-  const { handleSubmit, getValues, reset, watch, formState } = formContext;
-  const { isValid } = formState;
-
-  const hasJustBeenModifiedByUser = React.useRef(false);
-
-  // Reapply filterValues when they change externally
-  useEffect(() => {
-    // Unless users has just modified the form themselves in which case we want to avoid overriding it with
-    // a previous value which was applied with a delay (debounce in List)
-    if (hasJustBeenModifiedByUser.current) {
-      hasJustBeenModifiedByUser.current = false;
-      return;
-    }
-    const newValues = getFilterFormValues(getValues(), filterValues);
-    const previousValues = getValues();
-    if (!isEqual(newValues, previousValues)) {
-      reset(newValues);
-    }
-    // The reference to the filterValues object is not updated when it changes,
-    // so we must stringify it to compare it by value.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [JSON.stringify(filterValues), getValues, reset]);
-
-  const onSubmit = (values: any): void => {
-    // Do not call setFilters if the form is invalid
-    if (!isValid) {
-      return;
-    }
-    setFilters(mergeObjNotArray(filterValues, values));
-  };
-  const debouncedOnSubmit = useDebouncedEvent(onSubmit, debounce || 0);
-
-  // Submit the form on values change
-  useEffect(() => {
-    const { unsubscribe } = watch((values, { name }) => {
-      // Check that the name is present to avoid setting filters when
-      // watch was triggered by a reset
-      if (name) {
-        if (get(values, name) === '') {
-          const newValues = cloneDeep(values);
-          set(newValues, name, '');
-          hasJustBeenModifiedByUser.current = true;
-          debouncedOnSubmit(newValues);
-        } else {
-          hasJustBeenModifiedByUser.current = true;
-          debouncedOnSubmit(values);
-        }
-      }
+    const formContext = useForm({
+        mode: 'onChange',
+        resolver: finalResolver,
+        ...rest,
     });
-    return () => unsubscribe();
-  }, [watch, debouncedOnSubmit]);
+    const { handleSubmit, getValues, reset, watch, formState } = formContext;
+    const { isValid } = formState;
 
-  const sourceContext = React.useMemo<SourceContextValue>(
-    () => ({
-      getSource: (source: string) => source,
-      getLabel: (source: string) => `resources.${resource}.fields.${source}`,
-    }),
-    [resource],
-  );
+    const hasJustBeenModifiedByUser = React.useRef(false);
 
-  return (
-    <FormProvider {...formContext}>
-      <FormGroupsProvider>
-        <SourceContextProvider value={sourceContext}>
-          <Component onSubmit={handleSubmit(onSubmit)}>{children}</Component>
-        </SourceContextProvider>
-      </FormGroupsProvider>
-    </FormProvider>
-  );
+    // Reapply filterValues when they change externally
+    useEffect(() => {
+        // Unless users has just modified the form themselves in which case we want to avoid overriding it with
+        // a previous value which was applied with a delay (debounce in List)
+        if (hasJustBeenModifiedByUser.current) {
+            hasJustBeenModifiedByUser.current = false;
+            return;
+        }
+        const newValues = getFilterFormValues(getValues(), filterValues);
+        const previousValues = getValues();
+        if (!isEqual(newValues, previousValues)) {
+            reset(newValues);
+        }
+        // The reference to the filterValues object is not updated when it changes,
+        // so we must stringify it to compare it by value.
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [JSON.stringify(filterValues), getValues, reset]);
+
+    const onSubmit = (values: any): void => {
+        // Do not call setFilters if the form is invalid
+        if (!isValid) {
+            return;
+        }
+        setFilters(mergeObjNotArray(filterValues, values));
+    };
+    const debouncedOnSubmit = useDebouncedEvent(onSubmit, debounce || 0);
+
+    // Submit the form on values change
+    useEffect(() => {
+        const { unsubscribe } = watch((values, { name }) => {
+            // Check that the name is present to avoid setting filters when
+            // watch was triggered by a reset
+            if (name) {
+                if (get(values, name) === '') {
+                    const newValues = cloneDeep(values);
+                    set(newValues, name, '');
+                    hasJustBeenModifiedByUser.current = true;
+                    debouncedOnSubmit(newValues);
+                } else {
+                    hasJustBeenModifiedByUser.current = true;
+                    debouncedOnSubmit(values);
+                }
+            }
+        });
+        return () => unsubscribe();
+    }, [watch, debouncedOnSubmit]);
+
+    const sourceContext = React.useMemo<SourceContextValue>(
+        () => ({
+            getSource: (source: string) => source,
+            getLabel: (source: string) =>
+                `resources.${resource}.fields.${source}`,
+        }),
+        [resource]
+    );
+
+    return (
+        <FormProvider {...formContext}>
+            <FormGroupsProvider>
+                <SourceContextProvider value={sourceContext}>
+                    <Component onSubmit={handleSubmit(onSubmit)}>
+                        {children}
+                    </Component>
+                </SourceContextProvider>
+            </FormGroupsProvider>
+        </FormProvider>
+    );
 };
 
-const HTMLForm = (props: React.HTMLAttributes<HTMLFormElement>) => <form {...props} />;
+const HTMLForm = (props: React.HTMLAttributes<HTMLFormElement>) => (
+    <form {...props} />
+);
 
-export interface FilterLiveFormProps extends Omit<UseFormProps, 'onSubmit' | 'defaultValues'> {
-  children: ReactNode;
-  validate?: ValidateForm;
-  debounce?: number | false;
-  resource?: string;
-  formComponent?: React.ComponentType<Pick<React.HTMLAttributes<HTMLFormElement>, 'onSubmit'>>;
+export interface FilterLiveFormProps
+    extends Omit<UseFormProps, 'onSubmit' | 'defaultValues'> {
+    children: ReactNode;
+    validate?: ValidateForm;
+    debounce?: number | false;
+    resource?: string;
+    formComponent?: React.ComponentType<
+        Pick<React.HTMLAttributes<HTMLFormElement>, 'onSubmit'>
+    >;
 }
 
 // Lodash merge customizer to merge objects but not arrays
 const mergeCustomizer = (objValue: any, srcValue: any) => {
-  if (Array.isArray(srcValue)) {
-    return srcValue;
-  }
+    if (Array.isArray(srcValue)) {
+        return srcValue;
+    }
 };
 
-const mergeObjNotArray = (a: any, b: any) => mergeWith(cloneDeep(a), b, mergeCustomizer);
+const mergeObjNotArray = (a: any, b: any) =>
+    mergeWith(cloneDeep(a), b, mergeCustomizer);
 
 /**
  * Because we are using controlled inputs with react-hook-form, we must provide a default value
@@ -158,31 +182,45 @@ const mergeObjNotArray = (a: any, b: any) => mergeWith(cloneDeep(a), b, mergeCus
  * and due to the dynamic nature of the filter form, we rebuild the filter form values from its current
  * values and make sure to pass at least an empty string for each input.
  */
-export const getFilterFormValues = (formValues: Record<string, any>, filterValues: Record<string, any>) => {
-  return Object.keys(formValues).reduce((acc, key) => {
-    acc[key] = getInputValue(formValues, key, filterValues);
-    return acc;
-  }, {});
+export const getFilterFormValues = (
+    formValues: Record<string, any>,
+    filterValues: Record<string, any>
+) => {
+    return Object.keys(formValues).reduce((acc, key) => {
+        acc[key] = getInputValue(formValues, key, filterValues);
+        return acc;
+    }, {});
 };
 
-const getInputValue = (formValues: Record<string, any>, key: string, filterValues: Record<string, any>) => {
-  if (formValues[key] === undefined || formValues[key] === null) {
+const getInputValue = (
+    formValues: Record<string, any>,
+    key: string,
+    filterValues: Record<string, any>
+) => {
+    if (formValues[key] === undefined || formValues[key] === null) {
+        return get(filterValues, key, '');
+    }
+    if (Array.isArray(formValues[key])) {
+        return get(filterValues, key, '');
+    }
+    if (formValues[key] instanceof Date) {
+        return get(filterValues, key, '');
+    }
+    if (typeof formValues[key] === 'object') {
+        const inputValues = Object.keys(formValues[key]).reduce(
+            (acc, innerKey) => {
+                const nestedInputValue = getInputValue(
+                    formValues[key],
+                    innerKey,
+                    (filterValues || {})[key] ?? {}
+                );
+                acc[innerKey] = nestedInputValue;
+                return acc;
+            },
+            {}
+        );
+        if (!Object.keys(inputValues).length) return '';
+        return inputValues;
+    }
     return get(filterValues, key, '');
-  }
-  if (Array.isArray(formValues[key])) {
-    return get(filterValues, key, '');
-  }
-  if (formValues[key] instanceof Date) {
-    return get(filterValues, key, '');
-  }
-  if (typeof formValues[key] === 'object') {
-    const inputValues = Object.keys(formValues[key]).reduce((acc, innerKey) => {
-      const nestedInputValue = getInputValue(formValues[key], innerKey, (filterValues || {})[key] ?? {});
-      acc[innerKey] = nestedInputValue;
-      return acc;
-    }, {});
-    if (!Object.keys(inputValues).length) return '';
-    return inputValues;
-  }
-  return get(filterValues, key, '');
 };

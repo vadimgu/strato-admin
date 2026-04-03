@@ -39,78 +39,93 @@ let timer;
  * }
  */
 const useLogoutIfAccessDenied = (): LogoutIfAccessDenied => {
-  const authProvider = useAuthProvider();
-  const logout = useLogout();
-  const notify = useNotify();
-  const navigate = useNavigate();
+    const authProvider = useAuthProvider();
+    const logout = useLogout();
+    const notify = useNotify();
+    const navigate = useNavigate();
 
-  const handleRedirect = useCallback(
-    (url: string) => {
-      if (url.startsWith('http')) {
-        window.location.href = url;
-      } else {
-        navigate(url);
-      }
-    },
-    [navigate],
-  );
-
-  const logoutIfAccessDenied = useCallback<LogoutIfAccessDenied>(
-    async (errorFromCheckAuth?: any) => {
-      if (!authProvider) {
-        return logoutIfAccessDeniedWithoutProvider();
-      }
-      try {
-        await authProvider.checkError(errorFromCheckAuth);
-        return false;
-      } catch (errorFromCheckError: any) {
-        const logoutUser = errorFromCheckError?.logoutUser ?? true;
-        // manual debounce
-        if (timer) {
-          return true; // side effects already triggered in this tick, exit
-        }
-        timer = setTimeout(() => {
-          timer = undefined;
-        }, 0);
-
-        const redirectTo =
-          errorFromCheckError && errorFromCheckError.redirectTo != null
-            ? errorFromCheckError.redirectTo
-            : errorFromCheckAuth && errorFromCheckAuth.redirectTo
-              ? errorFromCheckAuth.redirectTo
-              : undefined;
-
-        const shouldNotify = !(
-          (errorFromCheckError && errorFromCheckError.message === false) ||
-          (errorFromCheckAuth && errorFromCheckAuth.message === false) ||
-          redirectTo?.startsWith('http')
-        );
-        if (shouldNotify) {
-          try {
-            // notify only if not yet logged out
-            await authProvider.checkAuth({});
-            if (logoutUser) {
-              notify(getErrorMessage(errorFromCheckError, 'ra.notification.logged_out'), { type: 'error' });
+    const handleRedirect = useCallback(
+        (url: string) => {
+            if (url.startsWith('http')) {
+                window.location.href = url;
             } else {
-              notify(getErrorMessage(errorFromCheckError, 'ra.notification.not_authorized'), { type: 'error' });
+                navigate(url);
             }
-          } catch {
-            // ignore
-          }
-        }
+        },
+        [navigate]
+    );
 
-        if (logoutUser) {
-          logout({}, redirectTo);
-        } else if (redirectTo) {
-          handleRedirect(redirectTo);
-        }
+    const logoutIfAccessDenied = useCallback<LogoutIfAccessDenied>(
+        async (errorFromCheckAuth?: any) => {
+            if (!authProvider) {
+                return logoutIfAccessDeniedWithoutProvider();
+            }
+            try {
+                await authProvider.checkError(errorFromCheckAuth);
+                return false;
+            } catch (errorFromCheckError: any) {
+                const logoutUser = errorFromCheckError?.logoutUser ?? true;
+                // manual debounce
+                if (timer) {
+                    return true; // side effects already triggered in this tick, exit
+                }
+                timer = setTimeout(() => {
+                    timer = undefined;
+                }, 0);
 
-        return true;
-      }
-    },
-    [authProvider, logout, notify, handleRedirect],
-  );
-  return logoutIfAccessDenied;
+                const redirectTo =
+                    errorFromCheckError &&
+                    errorFromCheckError.redirectTo != null
+                        ? errorFromCheckError.redirectTo
+                        : errorFromCheckAuth && errorFromCheckAuth.redirectTo
+                          ? errorFromCheckAuth.redirectTo
+                          : undefined;
+
+                const shouldNotify = !(
+                    (errorFromCheckError &&
+                        errorFromCheckError.message === false) ||
+                    (errorFromCheckAuth &&
+                        errorFromCheckAuth.message === false) ||
+                    redirectTo?.startsWith('http')
+                );
+                if (shouldNotify) {
+                    try {
+                        // notify only if not yet logged out
+                        await authProvider.checkAuth({});
+                        if (logoutUser) {
+                            notify(
+                                getErrorMessage(
+                                    errorFromCheckError,
+                                    'ra.notification.logged_out'
+                                ),
+                                { type: 'error' }
+                            );
+                        } else {
+                            notify(
+                                getErrorMessage(
+                                    errorFromCheckError,
+                                    'ra.notification.not_authorized'
+                                ),
+                                { type: 'error' }
+                            );
+                        }
+                    } catch {
+                        // ignore
+                    }
+                }
+
+                if (logoutUser) {
+                    logout({}, redirectTo);
+                } else if (redirectTo) {
+                    handleRedirect(redirectTo);
+                }
+
+                return true;
+            }
+        },
+        [authProvider, logout, notify, handleRedirect]
+    );
+    return logoutIfAccessDenied;
 };
 
 const logoutIfAccessDeniedWithoutProvider = async () => false;
@@ -126,6 +141,10 @@ const logoutIfAccessDeniedWithoutProvider = async () => false;
 type LogoutIfAccessDenied = (error?: any) => Promise<boolean>;
 
 const getErrorMessage = (error, defaultMessage) =>
-  typeof error === 'string' ? error : typeof error === 'undefined' || !error.message ? defaultMessage : error.message;
+    typeof error === 'string'
+        ? error
+        : typeof error === 'undefined' || !error.message
+          ? defaultMessage
+          : error.message;
 
 export default useLogoutIfAccessDenied;

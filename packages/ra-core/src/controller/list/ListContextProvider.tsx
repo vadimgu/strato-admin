@@ -2,7 +2,10 @@ import * as React from 'react';
 import { ListContext } from './ListContext';
 import { ListFilterContext, usePickFilterContext } from './ListFilterContext';
 import { ListSortContext, usePickSortContext } from './ListSortContext';
-import { ListPaginationContext, usePickPaginationContext } from './ListPaginationContext';
+import {
+    ListPaginationContext,
+    usePickPaginationContext,
+} from './ListPaginationContext';
 import { ListControllerResult } from './useListController';
 
 /**
@@ -33,19 +36,21 @@ import { ListControllerResult } from './useListController';
  * @see ListFilterContext
  */
 export const ListContextProvider = ({
-  value,
-  children,
+    value,
+    children,
 }: {
-  value: ListControllerResult;
-  children: React.ReactNode;
+    value: ListControllerResult;
+    children: React.ReactNode;
 }) => (
-  <ListContext.Provider value={value}>
-    <ListFilterContext.Provider value={usePickFilterContext(value)}>
-      <ListSortContext.Provider value={usePickSortContext(value)}>
-        <ListPaginationContext.Provider value={usePickPaginationContext(value)}>
-          {children}
-        </ListPaginationContext.Provider>
-      </ListSortContext.Provider>
-    </ListFilterContext.Provider>
-  </ListContext.Provider>
+    <ListContext.Provider value={value}>
+        <ListFilterContext.Provider value={usePickFilterContext(value)}>
+            <ListSortContext.Provider value={usePickSortContext(value)}>
+                <ListPaginationContext.Provider
+                    value={usePickPaginationContext(value)}
+                >
+                    {children}
+                </ListPaginationContext.Provider>
+            </ListSortContext.Provider>
+        </ListFilterContext.Provider>
+    </ListContext.Provider>
 );

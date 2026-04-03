@@ -34,15 +34,22 @@ import { ListControllerResult } from './useListController';
  *     );
  * };
  */
-export const ListSortContext = createContext<ListSortContextValue | undefined>(undefined);
+export const ListSortContext = createContext<ListSortContextValue | undefined>(
+    undefined
+);
 
-export type ListSortContextValue = Pick<ListControllerResult, 'sort' | 'setSort' | 'resource'>;
+export type ListSortContextValue = Pick<
+    ListControllerResult,
+    'sort' | 'setSort' | 'resource'
+>;
 
-export const usePickSortContext = (context: ListControllerResult): ListSortContextValue =>
-  useMemo(
-    () => pick(context, ['sort', 'setSort', 'resource']),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [context.sort, context.setSort],
-  );
+export const usePickSortContext = (
+    context: ListControllerResult
+): ListSortContextValue =>
+    useMemo(
+        () => pick(context, ['sort', 'setSort', 'resource']),
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        [context.sort, context.setSort]
+    );
 
 ListSortContext.displayName = 'ListSortContext';

@@ -9,9 +9,9 @@ import useLogout from './useLogout';
  * @see CoreAdminRoutes
  */
 export const LogoutOnMount = () => {
-  const logout = useLogout();
-  useEffect(() => {
-    logout();
-  }, [logout]);
-  return null;
+    const logout = useLogout();
+    useEffect(() => {
+        logout();
+    }, [logout]);
+    return null;
 };

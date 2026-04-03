@@ -1,5 +1,9 @@
 import { ReactNode } from 'react';
-import { useEditController, EditControllerProps, EditControllerResult } from './useEditController';
+import {
+    useEditController,
+    EditControllerProps,
+    EditControllerResult,
+} from './useEditController';
 import { RaRecord } from '../../types';
 
 /**
@@ -15,12 +19,17 @@ import { RaRecord } from '../../types';
  *     </EditController>
  * );
  */
-export const EditController = <RecordType extends RaRecord = any, ErrorType = Error>({
-  children,
-  ...props
+export const EditController = <
+    RecordType extends RaRecord = any,
+    ErrorType = Error,
+>({
+    children,
+    ...props
 }: {
-  children: (params: EditControllerResult<RecordType, ErrorType>) => ReactNode;
+    children: (
+        params: EditControllerResult<RecordType, ErrorType>
+    ) => ReactNode;
 } & EditControllerProps<RecordType, ErrorType>) => {
-  const controllerProps = useEditController<RecordType, ErrorType>(props);
-  return children(controllerProps);
+    const controllerProps = useEditController<RecordType, ErrorType>(props);
+    return children(controllerProps);
 };

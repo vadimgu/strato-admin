@@ -8,7 +8,12 @@ import { useRouterProvider } from './RouterProviderContext';
  * const params = useParams<{ id: string }>();
  * console.log(params.id);
  */
-export const useParams = <T extends Record<string, string | undefined> = Record<string, string | undefined>>(): T => {
-  const provider = useRouterProvider();
-  return provider.useParams<T>();
+export const useParams = <
+    T extends Record<string, string | undefined> = Record<
+        string,
+        string | undefined
+    >,
+>(): T => {
+    const provider = useRouterProvider();
+    return provider.useParams<T>();
 };

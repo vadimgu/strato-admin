@@ -22,12 +22,15 @@ import { RaRecord, Identifier } from '../types';
  * @param {Object[]} records An array of records
  * @param {string} field the identifier of the record field to use
  */
-export const getRelatedIds = (records: RaRecord[], field: string): Identifier[] =>
-  Array.from(
-    new Set(
-      records
-        .filter((record) => record[field] != null)
-        .map((record) => record[field])
-        .reduce((ids, value) => ids.concat(value), []),
-    ),
-  );
+export const getRelatedIds = (
+    records: RaRecord[],
+    field: string
+): Identifier[] =>
+    Array.from(
+        new Set(
+            records
+                .filter(record => record[field] != null)
+                .map(record => record[field])
+                .reduce((ids, value) => ids.concat(value), [])
+        )
+    );

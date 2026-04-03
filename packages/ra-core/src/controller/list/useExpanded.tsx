@@ -17,30 +17,37 @@ import { Identifier } from '../../types';
  * const expandIcon = expanded ? ExpandLess : ExpandMore;
  * const onExpandClick = () => toggleExpanded();
  */
-export const useExpanded = (resource: string, id: Identifier, single: boolean = false): [boolean, () => void] => {
-  const [expandedIds, setExpandedIds] = useStore<Identifier[]>(`${resource}.datagrid.expanded`, emptyArray);
-  const expanded = Array.isArray(expandedIds)
-    ? // eslint-disable-next-line eqeqeq
-      expandedIds.map((el) => el == id).indexOf(true) !== -1
-    : false;
+export const useExpanded = (
+    resource: string,
+    id: Identifier,
+    single: boolean = false
+): [boolean, () => void] => {
+    const [expandedIds, setExpandedIds] = useStore<Identifier[]>(
+        `${resource}.datagrid.expanded`,
+        emptyArray
+    );
+    const expanded = Array.isArray(expandedIds)
+        ? // eslint-disable-next-line eqeqeq
+          expandedIds.map(el => el == id).indexOf(true) !== -1
+        : false;
 
-  const toggleExpanded = useCallback(() => {
-    setExpandedIds((ids) => {
-      if (!Array.isArray(ids)) {
-        return [id];
-      }
-      const index = ids.findIndex((el) => el == id); // eslint-disable-line eqeqeq
-      return index > -1
-        ? single
-          ? []
-          : [...ids.slice(0, index), ...ids.slice(index + 1)]
-        : single
-          ? [id]
-          : [...ids, id];
-    });
-  }, [setExpandedIds, id, single]);
+    const toggleExpanded = useCallback(() => {
+        setExpandedIds(ids => {
+            if (!Array.isArray(ids)) {
+                return [id];
+            }
+            const index = ids.findIndex(el => el == id); // eslint-disable-line eqeqeq
+            return index > -1
+                ? single
+                    ? []
+                    : [...ids.slice(0, index), ...ids.slice(index + 1)]
+                : single
+                  ? [id]
+                  : [...ids, id];
+        });
+    }, [setExpandedIds, id, single]);
 
-  return [expanded, toggleExpanded];
+    return [expanded, toggleExpanded];
 };
 
 const emptyArray: Identifier[] = [];
@@ -59,21 +66,31 @@ const emptyArray: Identifier[] = [];
  * const expandIcon = expanded ? ExpandLess : ExpandMore;
  * const onExpandClick = () => toggleExpanded();
  */
-export const useExpandAll = (resource: string, ids: Identifier[]): [boolean, () => void] => {
-  const [expandedIds, setExpandedIds] = useStore<Identifier[]>(`${resource}.datagrid.expanded`, []);
-
-  const isExpanded = Array.isArray(expandedIds)
-    ? // eslint-disable-next-line eqeqeq
-      expandedIds.some((id) => ids.some((id2) => id2 == id))
-    : false;
-
-  const toggleExpandedAll = useCallback(() => {
-    const unaffectedExpandedIds = expandedIds.filter(
-      // eslint-disable-next-line eqeqeq
-      (expanded_id) => !ids.some((id) => id == expanded_id),
+export const useExpandAll = (
+    resource: string,
+    ids: Identifier[]
+): [boolean, () => void] => {
+    const [expandedIds, setExpandedIds] = useStore<Identifier[]>(
+        `${resource}.datagrid.expanded`,
+        []
     );
-    setExpandedIds(isExpanded ? unaffectedExpandedIds : unaffectedExpandedIds.concat(ids));
-  }, [expandedIds, setExpandedIds, isExpanded, ids]);
 
-  return [isExpanded, toggleExpandedAll];
+    const isExpanded = Array.isArray(expandedIds)
+        ? // eslint-disable-next-line eqeqeq
+          expandedIds.some(id => ids.some(id2 => id2 == id))
+        : false;
+
+    const toggleExpandedAll = useCallback(() => {
+        const unaffectedExpandedIds = expandedIds.filter(
+            // eslint-disable-next-line eqeqeq
+            expanded_id => !ids.some(id => id == expanded_id)
+        );
+        setExpandedIds(
+            isExpanded
+                ? unaffectedExpandedIds
+                : unaffectedExpandedIds.concat(ids)
+        );
+    }, [expandedIds, setExpandedIds, isExpanded, ids]);
+
+    return [isExpanded, toggleExpandedAll];
 };

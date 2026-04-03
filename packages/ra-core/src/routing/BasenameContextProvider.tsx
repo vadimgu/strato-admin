@@ -10,5 +10,7 @@ import { BasenameContext } from './BasenameContext';
  * @see useBasename
  */
 export const BasenameContextProvider = ({ children, basename }) => (
-  <BasenameContext.Provider value={basename}>{children}</BasenameContext.Provider>
+    <BasenameContext.Provider value={basename}>
+        {children}
+    </BasenameContext.Provider>
 );

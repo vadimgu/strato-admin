@@ -7,23 +7,25 @@ import { useAuthenticated } from './useAuthenticated';
 import usePermissions from './usePermissions';
 
 export interface WithPermissionsChildrenParams {
-  permissions: any;
+    permissions: any;
 }
 
-type WithPermissionsChildren = (params: WithPermissionsChildrenParams) => React.ReactNode;
+type WithPermissionsChildren = (
+    params: WithPermissionsChildrenParams
+) => React.ReactNode;
 
 export interface WithPermissionsProps {
-  authParams?: object;
-  children?: WithPermissionsChildren;
-  component?: ComponentType<any>;
-  loading?: ComponentType<any>;
-  location?: RouterLocation;
-  render?: WithPermissionsChildren;
-  staticContext?: object;
-  [key: string]: any;
+    authParams?: object;
+    children?: WithPermissionsChildren;
+    component?: ComponentType<any>;
+    loading?: ComponentType<any>;
+    location?: RouterLocation;
+    render?: WithPermissionsChildren;
+    staticContext?: object;
+    [key: string]: any;
 }
 
-const isEmptyChildren = (children) => Children.count(children) === 0;
+const isEmptyChildren = children => Children.count(children) === 0;
 
 /**
  * After checking that the user is authenticated,
@@ -60,34 +62,45 @@ const isEmptyChildren = (children) => Children.count(children) === 0;
  *     );
  */
 const WithPermissions = (props: WithPermissionsProps) => {
-  const { authParams, children, render, component, loading: Loading = null, staticContext, ...rest } = props;
-  warning(
-    (render && children && !isEmptyChildren(children)) ||
-      (render && component) ||
-      (component && children && !isEmptyChildren(children)),
-    'You should only use one of the `component`, `render` and `children` props in <WithPermissions>',
-  );
+    const {
+        authParams,
+        children,
+        render,
+        component,
+        loading: Loading = null,
+        staticContext,
+        ...rest
+    } = props;
+    warning(
+        (render && children && !isEmptyChildren(children)) ||
+            (render && component) ||
+            (component && children && !isEmptyChildren(children)),
+        'You should only use one of the `component`, `render` and `children` props in <WithPermissions>'
+    );
 
-  const { isPending: isAuthenticationPending } = useAuthenticated(authParams);
-  const { permissions, isPending: isPendingPermissions } = usePermissions(authParams, {
-    enabled: !isAuthenticationPending,
-  });
-  // We must check both pending states here as if the authProvider does not implement getPermissions, isPendingPermissions will always be false
-  if (isAuthenticationPending || isPendingPermissions) {
-    return Loading ? <Loading /> : null;
-  }
+    const { isPending: isAuthenticationPending } = useAuthenticated(authParams);
+    const { permissions, isPending: isPendingPermissions } = usePermissions(
+        authParams,
+        {
+            enabled: !isAuthenticationPending,
+        }
+    );
+    // We must check both pending states here as if the authProvider does not implement getPermissions, isPendingPermissions will always be false
+    if (isAuthenticationPending || isPendingPermissions) {
+        return Loading ? <Loading /> : null;
+    }
 
-  if (component) {
-    return createElement(component, { permissions, ...rest });
-  }
-  // @deprecated
-  if (render) {
-    return render({ permissions, ...rest });
-  }
-  // @deprecated
-  if (children) {
-    return children({ permissions, ...rest });
-  }
+    if (component) {
+        return createElement(component, { permissions, ...rest });
+    }
+    // @deprecated
+    if (render) {
+        return render({ permissions, ...rest });
+    }
+    // @deprecated
+    if (children) {
+        return children({ permissions, ...rest });
+    }
 };
 
 export default WithPermissions as ComponentType<WithPermissionsProps>;

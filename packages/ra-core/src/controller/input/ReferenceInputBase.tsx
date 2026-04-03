@@ -3,7 +3,10 @@ import React, { type ReactNode } from 'react';
 import { ResourceContextProvider } from '../../core';
 import type { InputProps } from '../../form/useInput';
 import { ChoicesContextProvider } from '../../form/choices/ChoicesContextProvider';
-import { type UseReferenceInputControllerParams, useReferenceInputController } from './useReferenceInputController';
+import {
+    type UseReferenceInputControllerParams,
+    useReferenceInputController,
+} from './useReferenceInputController';
 
 /**
  * An Input component for choosing a reference record. Useful for foreign keys.
@@ -63,30 +66,39 @@ import { type UseReferenceInputControllerParams, useReferenceInputController } f
  * a `setFilters` function. You can call this function to filter the results.
  */
 export const ReferenceInputBase = (props: ReferenceInputBaseProps) => {
-  const { children, filter = {}, offline, reference, sort = { field: 'id', order: 'DESC' } } = props;
+    const {
+        children,
+        filter = {},
+        offline,
+        reference,
+        sort = { field: 'id', order: 'DESC' },
+    } = props;
 
-  const controllerProps = useReferenceInputController({
-    ...props,
-    sort,
-    filter,
-  });
+    const controllerProps = useReferenceInputController({
+        ...props,
+        sort,
+        filter,
+    });
 
-  const { isPaused, isPending } = controllerProps;
-  // isPending is true: there's no cached data and no query attempt was finished yet
-  // isPaused is true: the query was paused (e.g. due to a network issue)
-  // Both true: we're offline and have no data to show
-  const shouldRenderOffline = isPaused && isPending && offline !== undefined && offline !== false;
+    const { isPaused, isPending } = controllerProps;
+    // isPending is true: there's no cached data and no query attempt was finished yet
+    // isPaused is true: the query was paused (e.g. due to a network issue)
+    // Both true: we're offline and have no data to show
+    const shouldRenderOffline =
+        isPaused && isPending && offline !== undefined && offline !== false;
 
-  return (
-    <ResourceContextProvider value={reference}>
-      <ChoicesContextProvider value={controllerProps}>
-        {shouldRenderOffline ? offline : children}
-      </ChoicesContextProvider>
-    </ResourceContextProvider>
-  );
+    return (
+        <ResourceContextProvider value={reference}>
+            <ChoicesContextProvider value={controllerProps}>
+                {shouldRenderOffline ? offline : children}
+            </ChoicesContextProvider>
+        </ResourceContextProvider>
+    );
 };
 
-export interface ReferenceInputBaseProps extends InputProps, UseReferenceInputControllerParams {
-  children?: ReactNode;
-  offline?: ReactNode;
+export interface ReferenceInputBaseProps
+    extends InputProps,
+        UseReferenceInputControllerParams {
+    children?: ReactNode;
+    offline?: ReactNode;
 }

@@ -77,71 +77,89 @@ import { populateQueryCache } from './populateQueryCache';
 
 const arrayReturnTypes = ['getList', 'getMany', 'getManyReference'];
 
-export const useDataProvider = <TDataProvider extends DataProvider = DataProvider>(): TDataProvider => {
-  const dataProvider = (useContext(DataProviderContext) || defaultDataProvider) as unknown as TDataProvider;
-  const queryClient = useQueryClient();
+export const useDataProvider = <
+    TDataProvider extends DataProvider = DataProvider,
+>(): TDataProvider => {
+    const dataProvider = (useContext(DataProviderContext) ||
+        defaultDataProvider) as unknown as TDataProvider;
+    const queryClient = useQueryClient();
 
-  const logoutIfAccessDenied = useLogoutIfAccessDenied();
+    const logoutIfAccessDenied = useLogoutIfAccessDenied();
 
-  const dataProviderProxy = useMemo(() => {
-    return new Proxy(dataProvider, {
-      get: (_, name) => {
-        if (typeof name === 'symbol' || name === 'then') {
-          return;
-        }
-        if (name === 'supportAbortSignal') {
-          return dataProvider.supportAbortSignal;
-        }
-        return (...args) => {
-          const type = name.toString();
-
-          if (typeof dataProvider[type] !== 'function') {
-            throw new Error(`Unknown dataProvider function: ${type}`);
-          }
-
-          try {
-            return dataProvider[type]
-              .apply(dataProvider, args)
-              .then((response) => {
-                if (process.env.NODE_ENV === 'development' && reactAdminFetchActions.includes(type)) {
-                  validateResponseFormat(response, type);
+    const dataProviderProxy = useMemo(() => {
+        return new Proxy(dataProvider, {
+            get: (_, name) => {
+                if (typeof name === 'symbol' || name === 'then') {
+                    return;
                 }
-                if (response?.meta?.prefetched) {
-                  populateQueryCache({
-                    data: response?.meta.prefetched,
-                    queryClient,
-                  });
+                if (name === 'supportAbortSignal') {
+                    return dataProvider.supportAbortSignal;
                 }
-                return response;
-              })
-              .catch((error) => {
-                if (
-                  process.env.NODE_ENV !== 'production' &&
-                  // do not log AbortErrors
-                  !isAbortError(error)
-                ) {
-                  console.error(error);
-                }
-                return logoutIfAccessDenied(error).then((loggedOut) => {
-                  if (loggedOut)
-                    return {
-                      data: arrayReturnTypes.includes(type) ? [] : {},
-                    };
-                  throw error;
-                });
-              });
-          } catch (e) {
-            if (process.env.NODE_ENV !== 'production') {
-              console.error(e);
-            }
-            throw new Error('The dataProvider threw an error. It should return a rejected Promise instead.');
-          }
-        };
-      },
-    });
-  }, [dataProvider, logoutIfAccessDenied, queryClient]);
+                return (...args) => {
+                    const type = name.toString();
 
-  return dataProviderProxy;
+                    if (typeof dataProvider[type] !== 'function') {
+                        throw new Error(
+                            `Unknown dataProvider function: ${type}`
+                        );
+                    }
+
+                    try {
+                        return dataProvider[type]
+                            .apply(dataProvider, args)
+                            .then(response => {
+                                if (
+                                    process.env.NODE_ENV === 'development' &&
+                                    reactAdminFetchActions.includes(type)
+                                ) {
+                                    validateResponseFormat(response, type);
+                                }
+                                if (response?.meta?.prefetched) {
+                                    populateQueryCache({
+                                        data: response?.meta.prefetched,
+                                        queryClient,
+                                    });
+                                }
+                                return response;
+                            })
+                            .catch(error => {
+                                if (
+                                    process.env.NODE_ENV !== 'production' &&
+                                    // do not log AbortErrors
+                                    !isAbortError(error)
+                                ) {
+                                    console.error(error);
+                                }
+                                return logoutIfAccessDenied(error).then(
+                                    loggedOut => {
+                                        if (loggedOut)
+                                            return {
+                                                data: arrayReturnTypes.includes(
+                                                    type
+                                                )
+                                                    ? []
+                                                    : {},
+                                            };
+                                        throw error;
+                                    }
+                                );
+                            });
+                    } catch (e) {
+                        if (process.env.NODE_ENV !== 'production') {
+                            console.error(e);
+                        }
+                        throw new Error(
+                            'The dataProvider threw an error. It should return a rejected Promise instead.'
+                        );
+                    }
+                };
+            },
+        });
+    }, [dataProvider, logoutIfAccessDenied, queryClient]);
+
+    return dataProviderProxy;
 };
 
-const isAbortError = (error) => error instanceof DOMException && (error as DOMException).name === 'AbortError';
+const isAbortError = error =>
+    error instanceof DOMException &&
+    (error as DOMException).name === 'AbortError';

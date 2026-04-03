@@ -1,18 +1,23 @@
 import * as React from 'react';
 import {
-  Children,
-  Dispatch,
-  Fragment,
-  ReactElement,
-  ReactNode,
-  SetStateAction,
-  useCallback,
-  useEffect,
-  useState,
+    Children,
+    Dispatch,
+    Fragment,
+    ReactElement,
+    ReactNode,
+    SetStateAction,
+    useCallback,
+    useEffect,
+    useState,
 } from 'react';
 import useLogout from '../auth/useLogout';
 import usePermissions from '../auth/usePermissions';
-import { AdminChildren, RenderResourcesFunction, ResourceDefinition, ResourceProps } from '../types';
+import {
+    AdminChildren,
+    RenderResourcesFunction,
+    ResourceDefinition,
+    ResourceProps,
+} from '../types';
 import { CustomRoutesProps } from './CustomRoutes';
 import { useResourceDefinitionContext } from './useResourceDefinitionContext';
 
@@ -36,22 +41,26 @@ import { useResourceDefinitionContext } from './useResourceDefinitionContext';
  * } = useConfigureAdminRouterFromChildren(children);
  */
 export const useConfigureAdminRouterFromChildren = (
-  children: AdminChildren,
+    children: AdminChildren
 ): RoutesAndResources & { status: AdminRouterStatus } => {
-  const { permissions, isPending } = usePermissions();
+    const { permissions, isPending } = usePermissions();
 
-  // Whenever children are updated, update our custom routes and resources
-  const [routesAndResources, status] = useRoutesAndResourcesFromChildren(children, permissions, isPending);
+    // Whenever children are updated, update our custom routes and resources
+    const [routesAndResources, status] = useRoutesAndResourcesFromChildren(
+        children,
+        permissions,
+        isPending
+    );
 
-  // Whenever the resources change, we must ensure they're all registered
-  useRegisterResources(routesAndResources.resources, permissions);
+    // Whenever the resources change, we must ensure they're all registered
+    useRegisterResources(routesAndResources.resources, permissions);
 
-  return {
-    customRoutesWithLayout: routesAndResources.customRoutesWithLayout,
-    customRoutesWithoutLayout: routesAndResources.customRoutesWithoutLayout,
-    status,
-    resources: routesAndResources.resources,
-  };
+    return {
+        customRoutesWithLayout: routesAndResources.customRoutesWithLayout,
+        customRoutesWithoutLayout: routesAndResources.customRoutesWithoutLayout,
+        status,
+        resources: routesAndResources.resources,
+    };
 };
 
 /**
@@ -61,72 +70,92 @@ export const useConfigureAdminRouterFromChildren = (
  * @param permissions The permissions
  */
 const useRoutesAndResourcesFromChildren = (
-  children: AdminChildren,
-  permissions: any,
-  isLoading: boolean,
+    children: AdminChildren,
+    permissions: any,
+    isLoading: boolean
 ): [RoutesAndResources, AdminRouterStatus] => {
-  // Gather custom routes and resources that were declared as direct children of CoreAdminRouter
-  // e.g. Not returned from the child function (if any)
-  // We need to know right away whether some resources were declared to correctly
-  // initialize the status at the next stop
-  const doLogout = useLogout();
-  const [routesAndResources, setRoutesAndResources, mergeRoutesAndResources] = useRoutesAndResourcesState(
-    getRoutesAndResourceFromNodes(children),
-  );
+    // Gather custom routes and resources that were declared as direct children of CoreAdminRouter
+    // e.g. Not returned from the child function (if any)
+    // We need to know right away whether some resources were declared to correctly
+    // initialize the status at the next stop
+    const doLogout = useLogout();
+    const [routesAndResources, setRoutesAndResources, mergeRoutesAndResources] =
+        useRoutesAndResourcesState(getRoutesAndResourceFromNodes(children));
 
-  const [status, setStatus] = useState<AdminRouterStatus>(() =>
-    getStatus({
-      children,
-      ...routesAndResources,
-    }),
-  );
-  if (!status) {
-    throw new Error('Status should be defined');
-  }
-
-  useEffect(() => {
-    const resolveChildFunction = async (childFunc: RenderResourcesFunction) => {
-      try {
-        const childrenFuncResult = childFunc(permissions);
-        if ((childrenFuncResult as Promise<ReactNode>)?.then) {
-          (childrenFuncResult as Promise<ReactNode>).then((resolvedChildren) => {
-            mergeRoutesAndResources(getRoutesAndResourceFromNodes(resolvedChildren));
-            setStatus('ready');
-          });
-        } else {
-          mergeRoutesAndResources(getRoutesAndResourceFromNodes(childrenFuncResult as ReactNode));
-          setStatus('ready');
-        }
-      } catch (error) {
-        console.error(error);
-        doLogout();
-      }
-    };
-
-    const updateFromChildren = async () => {
-      const functionChild = getSingleChildFunction(children);
-      const newRoutesAndResources = getRoutesAndResourceFromNodes(children);
-      setRoutesAndResources(newRoutesAndResources);
-      setStatus(
-        functionChild
-          ? 'loading'
-          : newRoutesAndResources.resources.length > 0 ||
-              newRoutesAndResources.customRoutesWithLayout.length > 0 ||
-              newRoutesAndResources.customRoutesWithoutLayout.length > 0
-            ? 'ready'
-            : 'empty',
-      );
-
-      if (functionChild) {
-        resolveChildFunction(functionChild);
-      }
-    };
-    if (!isLoading) {
-      updateFromChildren();
+    const [status, setStatus] = useState<AdminRouterStatus>(() =>
+        getStatus({
+            children,
+            ...routesAndResources,
+        })
+    );
+    if (!status) {
+        throw new Error('Status should be defined');
     }
-  }, [children, doLogout, isLoading, mergeRoutesAndResources, permissions, setRoutesAndResources, setStatus]);
 
-  return [routesAndResources, status];
+    useEffect(() => {
+        const resolveChildFunction = async (
+            childFunc: RenderResourcesFunction
+        ) => {
+            try {
+                const childrenFuncResult = childFunc(permissions);
+                if ((childrenFuncResult as Promise<ReactNode>)?.then) {
+                    (childrenFuncResult as Promise<ReactNode>).then(
+                        resolvedChildren => {
+                            mergeRoutesAndResources(
+                                getRoutesAndResourceFromNodes(resolvedChildren)
+                            );
+                            setStatus('ready');
+                        }
+                    );
+                } else {
+                    mergeRoutesAndResources(
+                        getRoutesAndResourceFromNodes(
+                            childrenFuncResult as ReactNode
+                        )
+                    );
+                    setStatus('ready');
+                }
+            } catch (error) {
+                console.error(error);
+                doLogout();
+            }
+        };
+
+        const updateFromChildren = async () => {
+            const functionChild = getSingleChildFunction(children);
+            const newRoutesAndResources =
+                getRoutesAndResourceFromNodes(children);
+            setRoutesAndResources(newRoutesAndResources);
+            setStatus(
+                functionChild
+                    ? 'loading'
+                    : newRoutesAndResources.resources.length > 0 ||
+                        newRoutesAndResources.customRoutesWithLayout.length >
+                            0 ||
+                        newRoutesAndResources.customRoutesWithoutLayout.length >
+                            0
+                      ? 'ready'
+                      : 'empty'
+            );
+
+            if (functionChild) {
+                resolveChildFunction(functionChild);
+            }
+        };
+        if (!isLoading) {
+            updateFromChildren();
+        }
+    }, [
+        children,
+        doLogout,
+        isLoading,
+        mergeRoutesAndResources,
+        permissions,
+        setRoutesAndResources,
+        setStatus,
+    ]);
+
+    return [routesAndResources, status];
 };
 
 /*
@@ -134,25 +163,33 @@ const useRoutesAndResourcesFromChildren = (
  * to merge new routes and resources with the existing ones.
  */
 const useRoutesAndResourcesState = (
-  initialState: RoutesAndResources,
+    initialState: RoutesAndResources
 ): [
-  RoutesAndResources,
-  Dispatch<SetStateAction<RoutesAndResources>>,
-  (newRoutesAndResources: RoutesAndResources) => void,
+    RoutesAndResources,
+    Dispatch<SetStateAction<RoutesAndResources>>,
+    (newRoutesAndResources: RoutesAndResources) => void,
 ] => {
-  const [routesAndResources, setRoutesAndResources] = useState(initialState);
+    const [routesAndResources, setRoutesAndResources] = useState(initialState);
 
-  const mergeRoutesAndResources = useCallback((newRoutesAndResources: RoutesAndResources) => {
-    setRoutesAndResources((previous) => ({
-      customRoutesWithLayout: previous.customRoutesWithLayout.concat(newRoutesAndResources.customRoutesWithLayout),
-      customRoutesWithoutLayout: previous.customRoutesWithoutLayout.concat(
-        newRoutesAndResources.customRoutesWithoutLayout,
-      ),
-      resources: previous.resources.concat(newRoutesAndResources.resources),
-    }));
-  }, []);
+    const mergeRoutesAndResources = useCallback(
+        (newRoutesAndResources: RoutesAndResources) => {
+            setRoutesAndResources(previous => ({
+                customRoutesWithLayout: previous.customRoutesWithLayout.concat(
+                    newRoutesAndResources.customRoutesWithLayout
+                ),
+                customRoutesWithoutLayout:
+                    previous.customRoutesWithoutLayout.concat(
+                        newRoutesAndResources.customRoutesWithoutLayout
+                    ),
+                resources: previous.resources.concat(
+                    newRoutesAndResources.resources
+                ),
+            }));
+        },
+        []
+    );
 
-  return [routesAndResources, setRoutesAndResources, mergeRoutesAndResources];
+    return [routesAndResources, setRoutesAndResources, mergeRoutesAndResources];
 };
 
 /**
@@ -160,57 +197,68 @@ const useRoutesAndResourcesState = (
  * @param resources: An array of Resource elements
  * @param permissions: The permissions
  */
-const useRegisterResources = (resources: (ReactElement & ResourceWithRegisterFunction)[], permissions: any) => {
-  const { register, unregister } = useResourceDefinitionContext();
+const useRegisterResources = (
+    resources: (ReactElement & ResourceWithRegisterFunction)[],
+    permissions: any
+) => {
+    const { register, unregister } = useResourceDefinitionContext();
 
-  useEffect(() => {
-    resources.forEach((resource) => {
-      if (typeof (resource.type as unknown as ResourceWithRegisterFunction).registerResource === 'function') {
-        const definition = (resource.type as unknown as ResourceWithRegisterFunction).registerResource(
-          resource.props as any,
-          permissions,
-        );
-        register(definition);
-      } else {
-        throw new Error(
-          'When using a custom Resource element, it must have a static registerResource method accepting its props and returning a ResourceDefinition',
-        );
-      }
-    });
-    return () => {
-      resources.forEach((resource) => {
-        if (typeof (resource.type as unknown as ResourceWithRegisterFunction).registerResource === 'function') {
-          const definition = (resource.type as unknown as ResourceWithRegisterFunction).registerResource(
-            resource.props as any,
-            permissions,
-          );
-          unregister(definition);
-        } else {
-          throw new Error(
-            'When using a custom Resource element, it must have a static registerResource method accepting its props and returning a ResourceDefinition',
-          );
-        }
-      });
-    };
-  }, [permissions, register, resources, unregister]);
+    useEffect(() => {
+        resources.forEach(resource => {
+            if (
+                typeof (
+                    resource.type as unknown as ResourceWithRegisterFunction
+                ).registerResource === 'function'
+            ) {
+                const definition = (
+                    resource.type as unknown as ResourceWithRegisterFunction
+                ).registerResource(resource.props as any, permissions);
+                register(definition);
+            } else {
+                throw new Error(
+                    'When using a custom Resource element, it must have a static registerResource method accepting its props and returning a ResourceDefinition'
+                );
+            }
+        });
+        return () => {
+            resources.forEach(resource => {
+                if (
+                    typeof (
+                        resource.type as unknown as ResourceWithRegisterFunction
+                    ).registerResource === 'function'
+                ) {
+                    const definition = (
+                        resource.type as unknown as ResourceWithRegisterFunction
+                    ).registerResource(resource.props as any, permissions);
+                    unregister(definition);
+                } else {
+                    throw new Error(
+                        'When using a custom Resource element, it must have a static registerResource method accepting its props and returning a ResourceDefinition'
+                    );
+                }
+            });
+        };
+    }, [permissions, register, resources, unregister]);
 };
 
 const getStatus = ({
-  children,
-  resources,
-  customRoutesWithLayout,
-  customRoutesWithoutLayout,
+    children,
+    resources,
+    customRoutesWithLayout,
+    customRoutesWithoutLayout,
 }: {
-  children: AdminChildren;
-  resources: ReactNode[];
-  customRoutesWithLayout: ReactNode[];
-  customRoutesWithoutLayout: ReactNode[];
+    children: AdminChildren;
+    resources: ReactNode[];
+    customRoutesWithLayout: ReactNode[];
+    customRoutesWithoutLayout: ReactNode[];
 }): AdminRouterStatus => {
-  return getSingleChildFunction(children)
-    ? 'loading'
-    : resources.length > 0 || customRoutesWithLayout.length > 0 || customRoutesWithoutLayout.length > 0
-      ? 'ready'
-      : 'empty';
+    return getSingleChildFunction(children)
+        ? 'loading'
+        : resources.length > 0 ||
+            customRoutesWithLayout.length > 0 ||
+            customRoutesWithoutLayout.length > 0
+          ? 'ready'
+          : 'empty';
 };
 
 /**
@@ -218,20 +266,26 @@ const getStatus = ({
  * Throws an error if there are more than one function child.
  * Returns the function child if one was provided, or null otherwise.
  */
-const getSingleChildFunction = (children: AdminChildren): RenderResourcesFunction | null => {
-  const childrenArray = Array.isArray(children) ? children : [children];
+const getSingleChildFunction = (
+    children: AdminChildren
+): RenderResourcesFunction | null => {
+    const childrenArray = Array.isArray(children) ? children : [children];
 
-  const functionChildren = childrenArray.filter((child) => typeof child === 'function');
+    const functionChildren = childrenArray.filter(
+        child => typeof child === 'function'
+    );
 
-  if (functionChildren.length > 1) {
-    throw new Error('You can only provide one function child to AdminRouter');
-  }
+    if (functionChildren.length > 1) {
+        throw new Error(
+            'You can only provide one function child to AdminRouter'
+        );
+    }
 
-  if (functionChildren.length === 0) {
-    return null;
-  }
+    if (functionChildren.length === 0) {
+        return null;
+    }
 
-  return functionChildren[0] as RenderResourcesFunction;
+    return functionChildren[0] as RenderResourcesFunction;
 };
 
 /**
@@ -240,60 +294,76 @@ const getSingleChildFunction = (children: AdminChildren): RenderResourcesFunctio
  * - customRoutesWithoutLayout: an array of custom routes to render outside the layout
  * - resources: an array of resources elements
  */
-const getRoutesAndResourceFromNodes = (children: AdminChildren): RoutesAndResources => {
-  const customRoutesWithLayout: ReactNode[] = [];
-  const customRoutesWithoutLayout: ReactNode[] = [];
-  const resources: (ReactElement & ResourceWithRegisterFunction)[] = [];
+const getRoutesAndResourceFromNodes = (
+    children: AdminChildren
+): RoutesAndResources => {
+    const customRoutesWithLayout: ReactNode[] = [];
+    const customRoutesWithoutLayout: ReactNode[] = [];
+    const resources: (ReactElement & ResourceWithRegisterFunction)[] = [];
 
-  if (typeof children === 'function') {
+    if (typeof children === 'function') {
+        return {
+            customRoutesWithLayout: [],
+            customRoutesWithoutLayout: [],
+            resources: [],
+        };
+    }
+    // @ts-ignore
+    Children.forEach(children, element => {
+        if (!React.isValidElement(element)) {
+            // Ignore non-elements. This allows people to more easily inline
+            // conditionals in their route config.
+            return;
+        }
+        if (element.type === Fragment) {
+            const customRoutesFromFragment = getRoutesAndResourceFromNodes(
+                (element.props as any).children
+            );
+            customRoutesWithLayout.push(
+                ...customRoutesFromFragment.customRoutesWithLayout
+            );
+            customRoutesWithoutLayout.push(
+                ...customRoutesFromFragment.customRoutesWithoutLayout
+            );
+            resources.push(...customRoutesFromFragment.resources);
+        }
+
+        if ((element.type as any).raName === 'CustomRoutes') {
+            const customRoutesElement =
+                element as ReactElement<CustomRoutesProps>;
+
+            if (customRoutesElement.props.noLayout) {
+                customRoutesWithoutLayout.push(
+                    customRoutesElement.props.children
+                );
+            } else {
+                customRoutesWithLayout.push(customRoutesElement.props.children);
+            }
+        } else if ((element.type as any).raName === 'Resource') {
+            resources.push(
+                element as ReactElement & ResourceWithRegisterFunction
+            );
+        }
+    });
+
     return {
-      customRoutesWithLayout: [],
-      customRoutesWithoutLayout: [],
-      resources: [],
+        customRoutesWithLayout,
+        customRoutesWithoutLayout,
+        resources,
     };
-  }
-  // @ts-ignore
-  Children.forEach(children, (element) => {
-    if (!React.isValidElement(element)) {
-      // Ignore non-elements. This allows people to more easily inline
-      // conditionals in their route config.
-      return;
-    }
-    if (element.type === Fragment) {
-      const customRoutesFromFragment = getRoutesAndResourceFromNodes((element.props as any).children);
-      customRoutesWithLayout.push(...customRoutesFromFragment.customRoutesWithLayout);
-      customRoutesWithoutLayout.push(...customRoutesFromFragment.customRoutesWithoutLayout);
-      resources.push(...customRoutesFromFragment.resources);
-    }
-
-    if ((element.type as any).raName === 'CustomRoutes') {
-      const customRoutesElement = element as ReactElement<CustomRoutesProps>;
-
-      if (customRoutesElement.props.noLayout) {
-        customRoutesWithoutLayout.push(customRoutesElement.props.children);
-      } else {
-        customRoutesWithLayout.push(customRoutesElement.props.children);
-      }
-    } else if ((element.type as any).raName === 'Resource') {
-      resources.push(element as ReactElement & ResourceWithRegisterFunction);
-    }
-  });
-
-  return {
-    customRoutesWithLayout,
-    customRoutesWithoutLayout,
-    resources,
-  };
 };
 
 type RoutesAndResources = {
-  customRoutesWithLayout: ReactNode[];
-  customRoutesWithoutLayout: ReactNode[];
-  resources: (ReactElement & ResourceWithRegisterFunction)[];
+    customRoutesWithLayout: ReactNode[];
+    customRoutesWithoutLayout: ReactNode[];
+    resources: (ReactElement & ResourceWithRegisterFunction)[];
 };
 
 type ResourceWithRegisterFunction = {
-  registerResource: (props: ResourceProps, permissions: any) => ResourceDefinition;
+    registerResource: (
+        props: ResourceProps,
+        permissions: any
+    ) => ResourceDefinition;
 };
 
 type AdminRouterStatus = 'loading' | 'empty' | 'ready';

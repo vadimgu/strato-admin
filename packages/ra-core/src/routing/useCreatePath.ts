@@ -37,47 +37,58 @@ import { useBasename } from './useBasename';
  * };
  */
 export const useCreatePath = () => {
-  const basename = useBasename();
-  return useCallback(
-    ({ resource, id, type }: CreatePathParams): string => {
-      if (['list', 'create', 'edit', 'show', 'detail'].includes(type) && !resource) {
-        throw new Error('Cannot create a link without a resource. You must provide the resource name.');
-      }
-      switch (type) {
-        case 'list':
-          return removeDoubleSlashes(`${basename}/${resource}`);
-        case 'create':
-          return removeDoubleSlashes(`${basename}/${resource}/create`);
-        case 'edit': {
-          if (id == null) {
-            // maybe the id isn't defined yet
-            // instead of throwing an error, fallback to list link
-            return removeDoubleSlashes(`${basename}/${resource}`);
-          }
-          return removeDoubleSlashes(`${basename}/${resource}/${encodeURIComponent(id)}`);
-        }
-        case 'detail':
-        case 'show': {
-          if (id == null) {
-            // maybe the id isn't defined yet
-            // instead of throwing an error, fallback to list link
-            return removeDoubleSlashes(`${basename}/${resource}`);
-          }
-          return removeDoubleSlashes(`${basename}/${resource}/${encodeURIComponent(id)}`);
-        }
-        default:
-          return type;
-      }
-    },
-    [basename],
-  );
+    const basename = useBasename();
+    return useCallback(
+        ({ resource, id, type }: CreatePathParams): string => {
+            if (
+                ['list', 'create', 'edit', 'show', 'detail'].includes(type) &&
+                !resource
+            ) {
+                throw new Error(
+                    'Cannot create a link without a resource. You must provide the resource name.'
+                );
+            }
+            switch (type) {
+                case 'list':
+                    return removeDoubleSlashes(`${basename}/${resource}`);
+                case 'create':
+                    return removeDoubleSlashes(
+                        `${basename}/${resource}/create`
+                    );
+                case 'edit': {
+                    if (id == null) {
+                        // maybe the id isn't defined yet
+                        // instead of throwing an error, fallback to list link
+                        return removeDoubleSlashes(`${basename}/${resource}`);
+                    }
+                    return removeDoubleSlashes(
+                        `${basename}/${resource}/${encodeURIComponent(id)}`
+                    );
+                }
+                case 'detail':
+                case 'show': {
+                    if (id == null) {
+                        // maybe the id isn't defined yet
+                        // instead of throwing an error, fallback to list link
+                        return removeDoubleSlashes(`${basename}/${resource}`);
+                    }
+                    return removeDoubleSlashes(
+                        `${basename}/${resource}/${encodeURIComponent(id)}`
+                    );
+                }
+                default:
+                    return type;
+            }
+        },
+        [basename]
+    );
 };
 
 export type CreatePathType = HintedString<'list' | 'edit' | 'show' | 'create'>;
 export interface CreatePathParams {
-  type: CreatePathType;
-  resource?: string;
-  id?: Identifier;
+    type: CreatePathType;
+    resource?: string;
+    id?: Identifier;
 }
 
 export const removeDoubleSlashes = (path: string) => path.replace('//', '/');

@@ -1,5 +1,8 @@
 import { useContext } from 'react';
-import { TranslatableContext, TranslatableContextValue } from './TranslatableContext';
+import {
+    TranslatableContext,
+    TranslatableContextValue,
+} from './TranslatableContext';
 
 /**
  * Gives access to the current TranslatableContext.
@@ -31,11 +34,13 @@ import { TranslatableContext, TranslatableContextValue } from './TranslatableCon
  * }
  */
 export const useTranslatableContext = (): TranslatableContextValue => {
-  const context = useContext(TranslatableContext);
+    const context = useContext(TranslatableContext);
 
-  if (!context) {
-    throw new Error('useTranslatableContext must be used inside a TranslatableContextProvider');
-  }
+    if (!context) {
+        throw new Error(
+            'useTranslatableContext must be used inside a TranslatableContextProvider'
+        );
+    }
 
-  return context;
+    return context;
 };

@@ -1,6 +1,9 @@
 import { useContext } from 'react';
 
-import { InfinitePaginationContext, InfinitePaginationContextValue } from './InfinitePaginationContext';
+import {
+    InfinitePaginationContext,
+    InfinitePaginationContextValue,
+} from './InfinitePaginationContext';
 
 /**
  * Hook to read the infinite pagination callbacks from the InfinitePaginationContext.
@@ -16,4 +19,5 @@ import { InfinitePaginationContext, InfinitePaginationContextValue } from './Inf
  *
  * @see useInfiniteListController for how the callbacks are built
  */
-export const useInfinitePaginationContext = (): InfinitePaginationContextValue => useContext(InfinitePaginationContext);
+export const useInfinitePaginationContext =
+    (): InfinitePaginationContextValue => useContext(InfinitePaginationContext);

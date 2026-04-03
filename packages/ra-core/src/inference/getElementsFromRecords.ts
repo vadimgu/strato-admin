@@ -35,11 +35,18 @@ import InferredElement from './InferredElement';
  * // ];
  */
 export default (records: any[], types: InferredTypeMap) => {
-  const fieldValues = getValuesFromRecords(records);
-  return Object.keys(fieldValues)
-    .reduce(
-      (fields, fieldName) => fields.concat(inferElementFromValues(fieldName, fieldValues[fieldName], types)),
-      [] as InferredElement[],
-    )
-    .filter((inferredElement) => inferredElement.isDefined());
+    const fieldValues = getValuesFromRecords(records);
+    return Object.keys(fieldValues)
+        .reduce(
+            (fields, fieldName) =>
+                fields.concat(
+                    inferElementFromValues(
+                        fieldName,
+                        fieldValues[fieldName],
+                        types
+                    )
+                ),
+            [] as InferredElement[]
+        )
+        .filter(inferredElement => inferredElement.isDefined());
 };

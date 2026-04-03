@@ -17,6 +17,6 @@ import { useStoreContext } from './useStoreContext';
  * }
  */
 export const useResetStore = () => {
-  const { reset } = useStoreContext();
-  return reset;
+    const { reset } = useStoreContext();
+    return reset;
 };

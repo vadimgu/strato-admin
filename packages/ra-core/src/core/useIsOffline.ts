@@ -8,14 +8,14 @@ import { onlineManager } from '@tanstack/react-query';
  * @returns {boolean} - True if offline, false if online.
  */
 export const useIsOffline = () => {
-  const [isOnline, setIsOnline] = React.useState(onlineManager.isOnline());
+    const [isOnline, setIsOnline] = React.useState(onlineManager.isOnline());
 
-  React.useEffect(() => {
-    const handleChange = () => {
-      setIsOnline(onlineManager.isOnline());
-    };
-    return onlineManager.subscribe(handleChange);
-  }, []);
+    React.useEffect(() => {
+        const handleChange = () => {
+            setIsOnline(onlineManager.isOnline());
+        };
+        return onlineManager.subscribe(handleChange);
+    }, []);
 
-  return !isOnline;
+    return !isOnline;
 };

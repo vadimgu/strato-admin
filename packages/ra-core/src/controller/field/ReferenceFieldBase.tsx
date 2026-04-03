@@ -3,7 +3,10 @@ import { ReactNode } from 'react';
 import { UseQueryOptions } from '@tanstack/react-query';
 import { ReferenceFieldContextProvider } from './ReferenceFieldContext';
 import { RaRecord } from '../../types';
-import { useReferenceFieldController, UseReferenceFieldControllerResult } from './useReferenceFieldController';
+import {
+    useReferenceFieldController,
+    UseReferenceFieldControllerResult,
+} from './useReferenceFieldController';
 import { ResourceContextProvider } from '../../core';
 import { RecordContextProvider } from '../record';
 import { useFieldValue } from '../../util';
@@ -39,63 +42,87 @@ import { useFieldValue } from '../../util';
  * In previous versions of React-Admin, the prop `linkType` was used. It is now deprecated and replaced with `link`. However
  * backward-compatibility is still kept
  */
-export const ReferenceFieldBase = <ReferenceRecordType extends RaRecord = RaRecord>(
-  props: ReferenceFieldBaseProps<ReferenceRecordType>,
+export const ReferenceFieldBase = <
+    ReferenceRecordType extends RaRecord = RaRecord,
+>(
+    props: ReferenceFieldBaseProps<ReferenceRecordType>
 ) => {
-  const { children, render, loading, error, empty, offline } = props;
-  const id = useFieldValue(props);
+    const { children, render, loading, error, empty, offline } = props;
+    const id = useFieldValue(props);
 
-  const controllerProps = useReferenceFieldController<ReferenceRecordType>(props);
+    const controllerProps =
+        useReferenceFieldController<ReferenceRecordType>(props);
 
-  if (!render && !children) {
-    throw new Error("<ReferenceFieldBase> requires either a 'render' prop or 'children' prop");
-  }
+    if (!render && !children) {
+        throw new Error(
+            "<ReferenceFieldBase> requires either a 'render' prop or 'children' prop"
+        );
+    }
 
-  const { error: controllerError, isPending, isPaused, referenceRecord } = controllerProps;
-  const shouldRenderLoading = id != null && !isPaused && isPending && loading !== false && loading !== undefined;
-  const shouldRenderOffline = isPaused && isPending && offline !== false && offline !== undefined;
-  const shouldRenderError = !!controllerError && error !== false && error !== undefined;
-  const shouldRenderEmpty =
-    !isPaused &&
-    (id == null || (!referenceRecord && !controllerError && !isPending && empty !== false && empty !== undefined));
-  return (
-    <ResourceContextProvider value={props.reference}>
-      <ReferenceFieldContextProvider value={controllerProps}>
-        <RecordContextProvider value={referenceRecord}>
-          {shouldRenderLoading
-            ? loading
-            : shouldRenderOffline
-              ? offline
-              : shouldRenderError
-                ? error
-                : shouldRenderEmpty
-                  ? empty
-                  : render
-                    ? render(controllerProps)
-                    : children}
-        </RecordContextProvider>
-      </ReferenceFieldContextProvider>
-    </ResourceContextProvider>
-  );
+    const {
+        error: controllerError,
+        isPending,
+        isPaused,
+        referenceRecord,
+    } = controllerProps;
+    const shouldRenderLoading =
+        id != null &&
+        !isPaused &&
+        isPending &&
+        loading !== false &&
+        loading !== undefined;
+    const shouldRenderOffline =
+        isPaused && isPending && offline !== false && offline !== undefined;
+    const shouldRenderError =
+        !!controllerError && error !== false && error !== undefined;
+    const shouldRenderEmpty =
+        !isPaused &&
+        (id == null ||
+            (!referenceRecord &&
+                !controllerError &&
+                !isPending &&
+                empty !== false &&
+                empty !== undefined));
+    return (
+        <ResourceContextProvider value={props.reference}>
+            <ReferenceFieldContextProvider value={controllerProps}>
+                <RecordContextProvider value={referenceRecord}>
+                    {shouldRenderLoading
+                        ? loading
+                        : shouldRenderOffline
+                          ? offline
+                          : shouldRenderError
+                            ? error
+                            : shouldRenderEmpty
+                              ? empty
+                              : render
+                                ? render(controllerProps)
+                                : children}
+                </RecordContextProvider>
+            </ReferenceFieldContextProvider>
+        </ResourceContextProvider>
+    );
 };
 
 export interface ReferenceFieldBaseProps<
-  ReferenceRecordType extends RaRecord = RaRecord,
-  RecordType extends Record<string, any> = Record<string, any>,
+    ReferenceRecordType extends RaRecord = RaRecord,
+    RecordType extends Record<string, any> = Record<string, any>,
 > {
-  children?: ReactNode;
-  render?: (props: UseReferenceFieldControllerResult<ReferenceRecordType>) => ReactNode;
-  className?: string;
-  empty?: ReactNode;
-  error?: ReactNode;
-  loading?: ReactNode;
-  offline?: ReactNode;
-  queryOptions?: Partial<
-    UseQueryOptions<ReferenceRecordType[], Error> & {
-      meta?: any;
-    }
-  >;
-  reference: string;
-  record?: RecordType;
-  source: string;
+    children?: ReactNode;
+    render?: (
+        props: UseReferenceFieldControllerResult<ReferenceRecordType>
+    ) => ReactNode;
+    className?: string;
+    empty?: ReactNode;
+    error?: ReactNode;
+    loading?: ReactNode;
+    offline?: ReactNode;
+    queryOptions?: Partial<
+        UseQueryOptions<ReferenceRecordType[], Error> & {
+            meta?: any;
+        }
+    >;
+    reference: string;
+    record?: RecordType;
+    source: string;
 }

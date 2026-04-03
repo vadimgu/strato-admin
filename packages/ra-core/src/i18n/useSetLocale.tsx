@@ -25,6 +25,6 @@ import { useLocaleState } from './useLocaleState';
  * }
  */
 export const useSetLocale = () => {
-  const [, setLocale] = useLocaleState();
-  return setLocale;
+    const [, setLocale] = useLocaleState();
+    return setLocale;
 };

@@ -6,7 +6,8 @@ import { reactRouterProvider } from './adapters/reactRouterProvider';
  * Context for providing the router provider throughout the application.
  * Defaults to react-router provider, so existing apps work without changes.
  */
-export const RouterProviderContext = createContext<RouterProvider>(reactRouterProvider);
+export const RouterProviderContext =
+    createContext<RouterProvider>(reactRouterProvider);
 
 RouterProviderContext.displayName = 'RouterProviderContext';
 
@@ -19,5 +20,5 @@ RouterProviderContext.displayName = 'RouterProviderContext';
  * const location = provider.useLocation();
  */
 export const useRouterProvider = (): RouterProvider => {
-  return useContext(RouterProviderContext);
+    return useContext(RouterProviderContext);
 };

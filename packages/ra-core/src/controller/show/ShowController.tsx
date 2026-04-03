@@ -1,6 +1,10 @@
 import { ReactNode } from 'react';
 import { RaRecord } from '../../types';
-import { useShowController, ShowControllerProps, ShowControllerResult } from './useShowController';
+import {
+    useShowController,
+    ShowControllerProps,
+    ShowControllerResult,
+} from './useShowController';
 
 /**
  * Render prop version of the useShowController hook
@@ -15,12 +19,17 @@ import { useShowController, ShowControllerProps, ShowControllerResult } from './
  *     </ShowController>
  * );
  */
-export const ShowController = <RecordType extends RaRecord = any, ErrorType = Error>({
-  children,
-  ...props
+export const ShowController = <
+    RecordType extends RaRecord = any,
+    ErrorType = Error,
+>({
+    children,
+    ...props
 }: {
-  children: (params: ShowControllerResult<RecordType, ErrorType>) => ReactNode;
+    children: (
+        params: ShowControllerResult<RecordType, ErrorType>
+    ) => ReactNode;
 } & ShowControllerProps<RecordType, ErrorType>) => {
-  const controllerProps = useShowController<RecordType, ErrorType>(props);
-  return children(controllerProps);
+    const controllerProps = useShowController<RecordType, ErrorType>(props);
+    return children(controllerProps);
 };

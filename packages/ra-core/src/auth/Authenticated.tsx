@@ -32,24 +32,24 @@ import { useAuthenticated } from './useAuthenticated';
  * );
  */
 export const Authenticated = (props: AuthenticatedProps) => {
-  const { authParams, loading = null, children } = props;
+    const { authParams, loading = null, children } = props;
 
-  // this hook will redirect to login if the user is not authenticated
-  const { isPending, isError } = useAuthenticated({ params: authParams });
+    // this hook will redirect to login if the user is not authenticated
+    const { isPending, isError } = useAuthenticated({ params: authParams });
 
-  if (isPending || isError) {
-    return loading;
-  }
+    if (isPending || isError) {
+        return loading;
+    }
 
-  return <>{children}</>;
+    return <>{children}</>;
 };
 
 export interface AuthenticatedProps {
-  children: ReactNode;
-  authParams?: object;
-  loading?: ReactNode;
-  /**
-   * @deprecated Authenticated now never renders children when not authenticated.
-   */
-  requireAuth?: boolean;
+    children: ReactNode;
+    authParams?: object;
+    loading?: ReactNode;
+    /**
+     * @deprecated Authenticated now never renders children when not authenticated.
+     */
+    requireAuth?: boolean;
 }

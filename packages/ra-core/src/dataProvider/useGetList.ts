@@ -1,5 +1,10 @@
 import { useEffect, useMemo, useRef } from 'react';
-import { useQuery, UseQueryOptions, UseQueryResult, useQueryClient } from '@tanstack/react-query';
+import {
+    useQuery,
+    UseQueryOptions,
+    UseQueryResult,
+    useQueryClient,
+} from '@tanstack/react-query';
 
 import { RaRecord, GetListParams, GetListResult } from '../types';
 import { useDataProvider } from './useDataProvider';
@@ -49,110 +54,161 @@ const MAX_DATA_LENGTH_TO_CACHE = 100;
  *     )}</ul>;
  * };
  */
-export const useGetList = <RecordType extends RaRecord = any, ErrorType = Error>(
-  resource: string,
-  params: Partial<GetListParams> = {},
-  options: UseGetListOptions<RecordType, ErrorType> = {},
+export const useGetList = <
+    RecordType extends RaRecord = any,
+    ErrorType = Error,
+>(
+    resource: string,
+    params: Partial<GetListParams> = {},
+    options: UseGetListOptions<RecordType, ErrorType> = {}
 ): UseGetListHookValue<RecordType> => {
-  const { pagination = { page: 1, perPage: 25 }, sort = { field: 'id', order: 'DESC' }, filter = {}, meta } = params;
-  const dataProvider = useDataProvider();
-  const queryClient = useQueryClient();
-  const { onError = noop, onSuccess = noop, onSettled = noop, ...queryOptions } = options;
-  const onSuccessEvent = useEvent(onSuccess);
-  const onErrorEvent = useEvent(onError);
-  const onSettledEvent = useEvent(onSettled);
+    const {
+        pagination = { page: 1, perPage: 25 },
+        sort = { field: 'id', order: 'DESC' },
+        filter = {},
+        meta,
+    } = params;
+    const dataProvider = useDataProvider();
+    const queryClient = useQueryClient();
+    const {
+        onError = noop,
+        onSuccess = noop,
+        onSettled = noop,
+        ...queryOptions
+    } = options;
+    const onSuccessEvent = useEvent(onSuccess);
+    const onErrorEvent = useEvent(onError);
+    const onSettledEvent = useEvent(onSettled);
 
-  const result = useQuery<GetListResult<RecordType>, ErrorType, GetListResult<RecordType>>({
-    queryKey: [resource, 'getList', { pagination, sort, filter, meta }],
-    queryFn: (queryParams) =>
-      dataProvider
-        .getList<RecordType>(resource, {
-          pagination,
-          sort,
-          filter,
-          meta,
-          signal: dataProvider.supportAbortSignal === true ? queryParams.signal : undefined,
-        })
-        .then(({ data, total, pageInfo, meta }) => ({
-          data,
-          total,
-          pageInfo,
-          meta,
-        })),
-    ...queryOptions,
-  });
+    const result = useQuery<
+        GetListResult<RecordType>,
+        ErrorType,
+        GetListResult<RecordType>
+    >({
+        queryKey: [resource, 'getList', { pagination, sort, filter, meta }],
+        queryFn: queryParams =>
+            dataProvider
+                .getList<RecordType>(resource, {
+                    pagination,
+                    sort,
+                    filter,
+                    meta,
+                    signal:
+                        dataProvider.supportAbortSignal === true
+                            ? queryParams.signal
+                            : undefined,
+                })
+                .then(({ data, total, pageInfo, meta }) => ({
+                    data,
+                    total,
+                    pageInfo,
+                    meta,
+                })),
+        ...queryOptions,
+    });
 
-  const metaValue = useRef(meta);
-  const resourceValue = useRef(resource);
+    const metaValue = useRef(meta);
+    const resourceValue = useRef(resource);
 
-  useEffect(() => {
-    metaValue.current = meta;
-  }, [meta]);
+    useEffect(() => {
+        metaValue.current = meta;
+    }, [meta]);
 
-  useEffect(() => {
-    resourceValue.current = resource;
-  }, [resource]);
+    useEffect(() => {
+        resourceValue.current = resource;
+    }, [resource]);
 
-  useEffect(() => {
-    if (result.data === undefined || result.error != null || result.isFetching) return;
+    useEffect(() => {
+        if (
+            result.data === undefined ||
+            result.error != null ||
+            result.isFetching
+        )
+            return;
 
-    // optimistically populate the getOne cache
-    if (result.data?.data && result.data.data.length <= MAX_DATA_LENGTH_TO_CACHE) {
-      result.data.data.forEach((record) => {
-        queryClient.setQueryData(
-          [resourceValue.current, 'getOne', { id: String(record.id), meta: metaValue.current }],
-          (oldRecord) => oldRecord ?? record,
-        );
-      });
-    }
-    onSuccessEvent(result.data);
-  }, [onSuccessEvent, queryClient, result.data, result.error, result.isFetching]);
+        // optimistically populate the getOne cache
+        if (
+            result.data?.data &&
+            result.data.data.length <= MAX_DATA_LENGTH_TO_CACHE
+        ) {
+            result.data.data.forEach(record => {
+                queryClient.setQueryData(
+                    [
+                        resourceValue.current,
+                        'getOne',
+                        { id: String(record.id), meta: metaValue.current },
+                    ],
+                    oldRecord => oldRecord ?? record
+                );
+            });
+        }
+        onSuccessEvent(result.data);
+    }, [
+        onSuccessEvent,
+        queryClient,
+        result.data,
+        result.error,
+        result.isFetching,
+    ]);
 
-  useEffect(() => {
-    if (result.error == null || result.isFetching) return;
-    onErrorEvent(result.error);
-  }, [onErrorEvent, result.error, result.isFetching]);
+    useEffect(() => {
+        if (result.error == null || result.isFetching) return;
+        onErrorEvent(result.error);
+    }, [onErrorEvent, result.error, result.isFetching]);
 
-  useEffect(() => {
-    if (result.status === 'pending' || result.isFetching) return;
-    onSettledEvent(result.data, result.error);
-  }, [onSettledEvent, result.data, result.error, result.status, result.isFetching]);
+    useEffect(() => {
+        if (result.status === 'pending' || result.isFetching) return;
+        onSettledEvent(result.data, result.error);
+    }, [
+        onSettledEvent,
+        result.data,
+        result.error,
+        result.status,
+        result.isFetching,
+    ]);
 
-  return useMemo(
-    () =>
-      result.data
-        ? {
-            ...result,
-            ...result.data,
-          }
-        : result,
-    [result],
-  ) as unknown as UseQueryResult<RecordType[], Error> & {
-    total?: number;
-    pageInfo?: {
-      hasNextPage?: boolean;
-      hasPreviousPage?: boolean;
+    return useMemo(
+        () =>
+            result.data
+                ? {
+                      ...result,
+                      ...result.data,
+                  }
+                : result,
+        [result]
+    ) as unknown as UseQueryResult<RecordType[], Error> & {
+        total?: number;
+        pageInfo?: {
+            hasNextPage?: boolean;
+            hasPreviousPage?: boolean;
+        };
+        meta?: any;
     };
-    meta?: any;
-  };
 };
 
 const noop = () => undefined;
 
-export type UseGetListOptions<RecordType extends RaRecord = any, ErrorType = Error> = Omit<
-  UseQueryOptions<GetListResult<RecordType>, ErrorType>,
-  'queryKey' | 'queryFn'
+export type UseGetListOptions<
+    RecordType extends RaRecord = any,
+    ErrorType = Error,
+> = Omit<
+    UseQueryOptions<GetListResult<RecordType>, ErrorType>,
+    'queryKey' | 'queryFn'
 > & {
-  onSuccess?: (value: GetListResult<RecordType>) => void;
-  onError?: (error: ErrorType) => void;
-  onSettled?: (data?: GetListResult<RecordType>, error?: ErrorType | null) => void;
+    onSuccess?: (value: GetListResult<RecordType>) => void;
+    onError?: (error: ErrorType) => void;
+    onSettled?: (
+        data?: GetListResult<RecordType>,
+        error?: ErrorType | null
+    ) => void;
 };
 
-export type UseGetListHookValue<RecordType extends RaRecord = any> = UseQueryResult<RecordType[], Error> & {
-  total?: number;
-  pageInfo?: {
-    hasNextPage?: boolean;
-    hasPreviousPage?: boolean;
-  };
-  meta?: any;
-};
+export type UseGetListHookValue<RecordType extends RaRecord = any> =
+    UseQueryResult<RecordType[], Error> & {
+        total?: number;
+        pageInfo?: {
+            hasNextPage?: boolean;
+            hasPreviousPage?: boolean;
+        };
+        meta?: any;
+    };

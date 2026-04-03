@@ -14,9 +14,12 @@ import { useParams } from './useParams';
  * https://github.com/remix-run/react-router/issues/11052#issuecomment-1828470203
  */
 export const useSplatPathBase = () => {
-  const location = useLocation();
-  const params = useParams();
-  const splatPathRelativePart = params['*'];
-  const splatPathBase = location.pathname.replace(new RegExp(`/${splatPathRelativePart}$`), '');
-  return splatPathBase;
+    const location = useLocation();
+    const params = useParams();
+    const splatPathRelativePart = params['*'];
+    const splatPathBase = location.pathname.replace(
+        new RegExp(`/${splatPathRelativePart}$`),
+        ''
+    );
+    return splatPathBase;
 };

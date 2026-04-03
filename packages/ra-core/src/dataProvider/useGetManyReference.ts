@@ -1,7 +1,16 @@
 import { useEffect, useMemo } from 'react';
-import { useQuery, UseQueryOptions, UseQueryResult, useQueryClient } from '@tanstack/react-query';
+import {
+    useQuery,
+    UseQueryOptions,
+    UseQueryResult,
+    useQueryClient,
+} from '@tanstack/react-query';
 
-import { RaRecord, GetManyReferenceParams, GetManyReferenceResult } from '../types';
+import {
+    RaRecord,
+    GetManyReferenceParams,
+    GetManyReferenceResult,
+} from '../types';
 import { useDataProvider } from './useDataProvider';
 import { useEvent } from '../util';
 
@@ -51,115 +60,136 @@ import { useEvent } from '../util';
  *     )}</ul>;
  * };
  */
-export const useGetManyReference = <RecordType extends RaRecord = any, ErrorType = Error>(
-  resource: string,
-  params: Partial<GetManyReferenceParams> = {},
-  options: UseGetManyReferenceHookOptions<RecordType, ErrorType> = {},
+export const useGetManyReference = <
+    RecordType extends RaRecord = any,
+    ErrorType = Error,
+>(
+    resource: string,
+    params: Partial<GetManyReferenceParams> = {},
+    options: UseGetManyReferenceHookOptions<RecordType, ErrorType> = {}
 ): UseGetManyReferenceHookValue<RecordType, ErrorType> => {
-  const {
-    target,
-    id,
-    pagination = { page: 1, perPage: 25 },
-    sort = { field: 'id', order: 'DESC' },
-    filter = {},
-    meta,
-  } = params;
-  const dataProvider = useDataProvider();
-  const queryClient = useQueryClient();
-  const { onError = noop, onSuccess = noop, onSettled = noop, ...queryOptions } = options;
-  const onSuccessEvent = useEvent(onSuccess);
-  const onErrorEvent = useEvent(onError);
-  const onSettledEvent = useEvent(onSettled);
+    const {
+        target,
+        id,
+        pagination = { page: 1, perPage: 25 },
+        sort = { field: 'id', order: 'DESC' },
+        filter = {},
+        meta,
+    } = params;
+    const dataProvider = useDataProvider();
+    const queryClient = useQueryClient();
+    const {
+        onError = noop,
+        onSuccess = noop,
+        onSettled = noop,
+        ...queryOptions
+    } = options;
+    const onSuccessEvent = useEvent(onSuccess);
+    const onErrorEvent = useEvent(onError);
+    const onSettledEvent = useEvent(onSettled);
 
-  const result = useQuery<GetManyReferenceResult<RecordType>, ErrorType>({
-    queryKey: [resource, 'getManyReference', { target, id, pagination, sort, filter, meta }],
-    queryFn: (queryParams) => {
-      if (!target || id == null) {
-        // check at runtime to support partial parameters with the enabled option
-        return Promise.reject(new Error('target and id are required'));
-      }
+    const result = useQuery<GetManyReferenceResult<RecordType>, ErrorType>({
+        queryKey: [
+            resource,
+            'getManyReference',
+            { target, id, pagination, sort, filter, meta },
+        ],
+        queryFn: queryParams => {
+            if (!target || id == null) {
+                // check at runtime to support partial parameters with the enabled option
+                return Promise.reject(new Error('target and id are required'));
+            }
 
-      return dataProvider
-        .getManyReference<RecordType>(resource, {
-          target,
-          id,
-          pagination,
-          sort,
-          filter,
-          meta,
-          signal: dataProvider.supportAbortSignal === true ? queryParams.signal : undefined,
-        })
-        .then(({ data, total, pageInfo, meta }) => ({
-          data,
-          total,
-          pageInfo,
-          meta,
-        }));
-    },
-    ...queryOptions,
-  });
-
-  useEffect(() => {
-    if (result.data === undefined) return;
-    // optimistically populate the getOne cache
-    result.data?.data?.forEach((record) => {
-      queryClient.setQueryData(
-        [resource, 'getOne', { id: String(record.id), meta }],
-        (oldRecord) => oldRecord ?? record,
-      );
+            return dataProvider
+                .getManyReference<RecordType>(resource, {
+                    target,
+                    id,
+                    pagination,
+                    sort,
+                    filter,
+                    meta,
+                    signal:
+                        dataProvider.supportAbortSignal === true
+                            ? queryParams.signal
+                            : undefined,
+                })
+                .then(({ data, total, pageInfo, meta }) => ({
+                    data,
+                    total,
+                    pageInfo,
+                    meta,
+                }));
+        },
+        ...queryOptions,
     });
 
-    onSuccessEvent(result.data);
-  }, [queryClient, meta, onSuccessEvent, resource, result.data]);
+    useEffect(() => {
+        if (result.data === undefined) return;
+        // optimistically populate the getOne cache
+        result.data?.data?.forEach(record => {
+            queryClient.setQueryData(
+                [resource, 'getOne', { id: String(record.id), meta }],
+                oldRecord => oldRecord ?? record
+            );
+        });
 
-  useEffect(() => {
-    if (result.error == null) return;
-    onErrorEvent(result.error);
-  }, [onErrorEvent, result.error]);
+        onSuccessEvent(result.data);
+    }, [queryClient, meta, onSuccessEvent, resource, result.data]);
 
-  useEffect(() => {
-    if (result.status === 'pending') return;
-    onSettledEvent(result.data, result.error);
-  }, [onSettledEvent, result.data, result.error, result.status]);
+    useEffect(() => {
+        if (result.error == null) return;
+        onErrorEvent(result.error);
+    }, [onErrorEvent, result.error]);
 
-  return useMemo(
-    () =>
-      result.data
-        ? {
-            ...result,
-            ...result.data,
-          }
-        : result,
-    [result],
-  ) as unknown as UseQueryResult<RecordType[], ErrorType> & {
+    useEffect(() => {
+        if (result.status === 'pending') return;
+        onSettledEvent(result.data, result.error);
+    }, [onSettledEvent, result.data, result.error, result.status]);
+
+    return useMemo(
+        () =>
+            result.data
+                ? {
+                      ...result,
+                      ...result.data,
+                  }
+                : result,
+        [result]
+    ) as unknown as UseQueryResult<RecordType[], ErrorType> & {
+        total?: number;
+        pageInfo?: {
+            hasNextPage?: boolean;
+            hasPreviousPage?: boolean;
+        };
+        meta?: any;
+    };
+};
+
+export type UseGetManyReferenceHookOptions<
+    RecordType extends RaRecord = any,
+    ErrorType = Error,
+> = Omit<
+    UseQueryOptions<GetManyReferenceResult<RecordType>, ErrorType>,
+    'queryKey' | 'queryFn'
+> & {
+    onSuccess?: (data: GetManyReferenceResult<RecordType>) => void;
+    onError?: (error: ErrorType) => void;
+    onSettled?: (
+        data?: GetManyReferenceResult<RecordType>,
+        error?: ErrorType | null
+    ) => void;
+};
+
+export type UseGetManyReferenceHookValue<
+    RecordType extends RaRecord = any,
+    ErrorType = Error,
+> = UseQueryResult<RecordType[], ErrorType> & {
     total?: number;
     pageInfo?: {
-      hasNextPage?: boolean;
-      hasPreviousPage?: boolean;
+        hasNextPage?: boolean;
+        hasPreviousPage?: boolean;
     };
     meta?: any;
-  };
-};
-
-export type UseGetManyReferenceHookOptions<RecordType extends RaRecord = any, ErrorType = Error> = Omit<
-  UseQueryOptions<GetManyReferenceResult<RecordType>, ErrorType>,
-  'queryKey' | 'queryFn'
-> & {
-  onSuccess?: (data: GetManyReferenceResult<RecordType>) => void;
-  onError?: (error: ErrorType) => void;
-  onSettled?: (data?: GetManyReferenceResult<RecordType>, error?: ErrorType | null) => void;
-};
-
-export type UseGetManyReferenceHookValue<RecordType extends RaRecord = any, ErrorType = Error> = UseQueryResult<
-  RecordType[],
-  ErrorType
-> & {
-  total?: number;
-  pageInfo?: {
-    hasNextPage?: boolean;
-    hasPreviousPage?: boolean;
-  };
-  meta?: any;
 };
 
 const noop = () => undefined;

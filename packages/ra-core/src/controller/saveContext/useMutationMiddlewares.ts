@@ -33,67 +33,82 @@ import { useCallback, useMemo, useRef } from 'react';
  * }
  */
 export const useMutationMiddlewares = <
-  MutateFunc extends (...args: any[]) => any = (...args: any[]) => any,
+    MutateFunc extends (...args: any[]) => any = (...args: any[]) => any,
 >(): UseMutationMiddlewaresResult<MutateFunc> => {
-  const callbacks = useRef<Middleware<MutateFunc>[]>([]);
+    const callbacks = useRef<Middleware<MutateFunc>[]>([]);
 
-  const registerMutationMiddleware = useCallback((callback: Middleware<MutateFunc>) => {
-    callbacks.current.push(callback);
-  }, []);
+    const registerMutationMiddleware = useCallback(
+        (callback: Middleware<MutateFunc>) => {
+            callbacks.current.push(callback);
+        },
+        []
+    );
 
-  const unregisterMutationMiddleware = useCallback((callback: Middleware<MutateFunc>) => {
-    callbacks.current = callbacks.current.filter((cb) => cb !== callback);
-  }, []);
+    const unregisterMutationMiddleware = useCallback(
+        (callback: Middleware<MutateFunc>) => {
+            callbacks.current = callbacks.current.filter(cb => cb !== callback);
+        },
+        []
+    );
 
-  const getMutateWithMiddlewares = useCallback((fn: MutateFunc) => {
-    // Stores the current callbacks in a closure to avoid losing them if the calling component is unmounted
-    const currentCallbacks = [...callbacks.current];
-    return (...args: Parameters<MutateFunc>): ReturnType<MutateFunc> => {
-      let index = currentCallbacks.length - 1;
+    const getMutateWithMiddlewares = useCallback((fn: MutateFunc) => {
+        // Stores the current callbacks in a closure to avoid losing them if the calling component is unmounted
+        const currentCallbacks = [...callbacks.current];
+        return (...args: Parameters<MutateFunc>): ReturnType<MutateFunc> => {
+            let index = currentCallbacks.length - 1;
 
-      // Called by middlewares to call the next middleware function
-      // Should take the same arguments as the original mutation function
-      const next = (...newArgs: any) => {
-        // Decrement the middlewares counter so that when next is called again, we
-        // call the next middleware
-        index--;
+            // Called by middlewares to call the next middleware function
+            // Should take the same arguments as the original mutation function
+            const next = (...newArgs: any) => {
+                // Decrement the middlewares counter so that when next is called again, we
+                // call the next middleware
+                index--;
 
-        // If there are no more middlewares, we call the original mutation function
-        if (index >= 0) {
-          return currentCallbacks[index](...newArgs, next);
-        } else {
-          return fn(...newArgs);
-        }
-      };
+                // If there are no more middlewares, we call the original mutation function
+                if (index >= 0) {
+                    return currentCallbacks[index](...newArgs, next);
+                } else {
+                    return fn(...newArgs);
+                }
+            };
 
-      if (currentCallbacks.length > 0) {
-        // Call the first middleware with the same args as the original mutation function
-        // with an additional next function
-        return currentCallbacks[index](...args, next);
-      }
+            if (currentCallbacks.length > 0) {
+                // Call the first middleware with the same args as the original mutation function
+                // with an additional next function
+                return currentCallbacks[index](...args, next);
+            }
 
-      return fn(...args);
-    };
-  }, []);
+            return fn(...args);
+        };
+    }, []);
 
-  const functions = useMemo<UseMutationMiddlewaresResult<MutateFunc>>(
-    () => ({
-      registerMutationMiddleware,
-      getMutateWithMiddlewares,
-      unregisterMutationMiddleware,
-    }),
-    [registerMutationMiddleware, getMutateWithMiddlewares, unregisterMutationMiddleware],
-  );
+    const functions = useMemo<UseMutationMiddlewaresResult<MutateFunc>>(
+        () => ({
+            registerMutationMiddleware,
+            getMutateWithMiddlewares,
+            unregisterMutationMiddleware,
+        }),
+        [
+            registerMutationMiddleware,
+            getMutateWithMiddlewares,
+            unregisterMutationMiddleware,
+        ]
+    );
 
-  return functions;
+    return functions;
 };
 
-export interface UseMutationMiddlewaresResult<MutateFunc extends (...args: any[]) => any = (...args: any[]) => any> {
-  registerMutationMiddleware: (callback: Middleware<MutateFunc>) => void;
-  getMutateWithMiddlewares: (mutate: MutateFunc) => (...args: Parameters<MutateFunc>) => ReturnType<MutateFunc>;
-  unregisterMutationMiddleware: (callback: Middleware<MutateFunc>) => void;
+export interface UseMutationMiddlewaresResult<
+    MutateFunc extends (...args: any[]) => any = (...args: any[]) => any,
+> {
+    registerMutationMiddleware: (callback: Middleware<MutateFunc>) => void;
+    getMutateWithMiddlewares: (
+        mutate: MutateFunc
+    ) => (...args: Parameters<MutateFunc>) => ReturnType<MutateFunc>;
+    unregisterMutationMiddleware: (callback: Middleware<MutateFunc>) => void;
 }
 
-export type Middleware<MutateFunc = (...args: any[]) => any> = MutateFunc extends (...a: any[]) => infer R
-  ? (...a: [...U: Parameters<MutateFunc>, next: MutateFunc]) => R
-  : never;
+export type Middleware<MutateFunc = (...args: any[]) => any> =
+    MutateFunc extends (...a: any[]) => infer R
+        ? (...a: [...U: Parameters<MutateFunc>, next: MutateFunc]) => R
+        : never;

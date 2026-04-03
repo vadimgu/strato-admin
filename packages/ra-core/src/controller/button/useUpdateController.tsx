@@ -58,79 +58,108 @@ import { useTranslate } from '../../i18n/useTranslate';
  *     );
  * };
  */
-export const useUpdateController = <RecordType extends RaRecord = any, ErrorType = Error>(
-  props: UseUpdateControllerParams<RecordType, ErrorType>,
+export const useUpdateController = <
+    RecordType extends RaRecord = any,
+    ErrorType = Error,
+>(
+    props: UseUpdateControllerParams<RecordType, ErrorType>
 ): UseUpdateControllerReturn<RecordType> => {
-  const { redirect: redirectTo = false, mutationMode = 'undoable', mutationOptions = {}, successMessage } = props;
-  const { meta: mutationMeta, ...otherMutationOptions } = mutationOptions;
-  const record = useRecordContext(props);
-  const resource = useResourceContext(props);
-  const notify = useNotify();
-  const redirect = useRedirect();
-  const translate = useTranslate();
+    const {
+        redirect: redirectTo = false,
+        mutationMode = 'undoable',
+        mutationOptions = {},
+        successMessage,
+    } = props;
+    const { meta: mutationMeta, ...otherMutationOptions } = mutationOptions;
+    const record = useRecordContext(props);
+    const resource = useResourceContext(props);
+    const notify = useNotify();
+    const redirect = useRedirect();
+    const translate = useTranslate();
 
-  const [updateOne, { isPending }] = useUpdate<RecordType, ErrorType>(resource, undefined, {
-    onSuccess: () => {
-      notify(successMessage ?? `resources.${resource}.notifications.updated`, {
-        type: 'info',
-        messageArgs: {
-          smart_count: 1,
-          _: translate('ra.notification.updated', {
-            smart_count: 1,
-          }),
+    const [updateOne, { isPending }] = useUpdate<RecordType, ErrorType>(
+        resource,
+        undefined,
+        {
+            onSuccess: () => {
+                notify(
+                    successMessage ??
+                        `resources.${resource}.notifications.updated`,
+                    {
+                        type: 'info',
+                        messageArgs: {
+                            smart_count: 1,
+                            _: translate('ra.notification.updated', {
+                                smart_count: 1,
+                            }),
+                        },
+                        undoable: mutationMode === 'undoable',
+                    }
+                );
+                redirect(redirectTo, resource);
+            },
+            onError: (error: any) => {
+                notify(
+                    typeof error === 'string'
+                        ? error
+                        : error?.message || 'ra.notification.http_error',
+                    {
+                        type: 'error',
+                        messageArgs: {
+                            _:
+                                typeof error === 'string'
+                                    ? error
+                                    : (error as Error)?.message,
+                        },
+                    }
+                );
+            },
+            mutationMode,
+            ...otherMutationOptions,
+        }
+    );
+
+    const handleUpdate = useCallback(
+        (data: Partial<RecordType>) => {
+            if (!record) {
+                throw new Error(
+                    'The record cannot be updated because no record has been passed'
+                );
+            }
+            updateOne(resource, {
+                id: record.id,
+                data,
+                previousData: record,
+                meta: mutationMeta,
+            });
         },
-        undoable: mutationMode === 'undoable',
-      });
-      redirect(redirectTo, resource);
-    },
-    onError: (error: any) => {
-      notify(typeof error === 'string' ? error : error?.message || 'ra.notification.http_error', {
-        type: 'error',
-        messageArgs: {
-          _: typeof error === 'string' ? error : (error as Error)?.message,
-        },
-      });
-    },
-    mutationMode,
-    ...otherMutationOptions,
-  });
+        [updateOne, mutationMeta, record, resource]
+    );
 
-  const handleUpdate = useCallback(
-    (data: Partial<RecordType>) => {
-      if (!record) {
-        throw new Error('The record cannot be updated because no record has been passed');
-      }
-      updateOne(resource, {
-        id: record.id,
-        data,
-        previousData: record,
-        meta: mutationMeta,
-      });
-    },
-    [updateOne, mutationMeta, record, resource],
-  );
-
-  return useMemo(
-    () => ({
-      isPending,
-      isLoading: isPending,
-      handleUpdate,
-    }),
-    [isPending, handleUpdate],
-  );
+    return useMemo(
+        () => ({
+            isPending,
+            isLoading: isPending,
+            handleUpdate,
+        }),
+        [isPending, handleUpdate]
+    );
 };
 
-export interface UseUpdateControllerParams<RecordType extends RaRecord = any, MutationOptionsError = unknown> {
-  mutationMode?: MutationMode;
-  mutationOptions?: UseUpdateOptions<RecordType, MutationOptionsError>;
-  record?: RecordType;
-  redirect?: RedirectionSideEffect;
-  resource?: string;
-  successMessage?: string;
+export interface UseUpdateControllerParams<
+    RecordType extends RaRecord = any,
+    MutationOptionsError = unknown,
+> {
+    mutationMode?: MutationMode;
+    mutationOptions?: UseUpdateOptions<RecordType, MutationOptionsError>;
+    record?: RecordType;
+    redirect?: RedirectionSideEffect;
+    resource?: string;
+    successMessage?: string;
 }
 
 export interface UseUpdateControllerReturn<RecordType extends RaRecord = any> {
-  isLoading: boolean;
-  isPending: boolean;
-  handleUpdate: (data: Partial<RecordType>) => void;
+    isLoading: boolean;
+    isPending: boolean;
+    handleUpdate: (data: Partial<RecordType>) => void;
 }

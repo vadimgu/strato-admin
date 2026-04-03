@@ -4,7 +4,8 @@ import debounce from 'lodash/debounce.js';
 import { useEvent } from './useEvent';
 
 // allow the hook to work in SSR
-const useLayoutEffect = typeof window !== 'undefined' ? React.useLayoutEffect : React.useEffect;
+const useLayoutEffect =
+    typeof window !== 'undefined' ? React.useLayoutEffect : React.useEffect;
 
 /**
  * Hook somewhat equivalent to useEvent, but with a debounce
@@ -14,23 +15,28 @@ const useLayoutEffect = typeof window !== 'undefined' ? React.useLayoutEffect : 
  * @see https://github.com/facebook/react/issues/14099#issuecomment-440013892
  */
 export const useDebouncedEvent = <Args extends unknown[], Return>(
-  callback: (...args: Args) => Return,
-  delay: number,
+    callback: (...args: Args) => Return,
+    delay: number
 ) => {
-  // Create a ref that stores the debounced callback
-  const debouncedCallbackRef = useRef<(...args: Args) => Return | undefined>(() => {
-    throw new Error('Cannot call an event handler while rendering.');
-  });
+    // Create a ref that stores the debounced callback
+    const debouncedCallbackRef = useRef<(...args: Args) => Return | undefined>(
+        () => {
+            throw new Error('Cannot call an event handler while rendering.');
+        }
+    );
 
-  // Keep a stable ref to the callback (in case it's an inline function for instance)
-  const stableCallback = useEvent(callback);
+    // Keep a stable ref to the callback (in case it's an inline function for instance)
+    const stableCallback = useEvent(callback);
 
-  // Whenever callback or delay changes, we need to update the debounced callback
-  useLayoutEffect(() => {
-    debouncedCallbackRef.current = debounce(stableCallback, delay);
-  }, [stableCallback, delay]);
+    // Whenever callback or delay changes, we need to update the debounced callback
+    useLayoutEffect(() => {
+        debouncedCallbackRef.current = debounce(stableCallback, delay);
+    }, [stableCallback, delay]);
 
-  // The function returned by useCallback will invoke the debounced callback
-  // Its dependencies array is empty, so it never changes across re-renders
-  return useCallback((...args: Args) => debouncedCallbackRef.current(...args), []);
+    // The function returned by useCallback will invoke the debounced callback
+    // Its dependencies array is empty, so it never changes across re-renders
+    return useCallback(
+        (...args: Args) => debouncedCallbackRef.current(...args),
+        []
+    );
 };

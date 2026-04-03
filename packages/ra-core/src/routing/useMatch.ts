@@ -11,7 +11,10 @@ import type { RouterMatch } from './RouterProvider';
  *   console.log(match.params.id);
  * }
  */
-export const useMatch = (pattern: { path: string; end?: boolean }): RouterMatch | null => {
-  const provider = useRouterProvider();
-  return provider.useMatch(pattern);
+export const useMatch = (pattern: {
+    path: string;
+    end?: boolean;
+}): RouterMatch | null => {
+    const provider = useRouterProvider();
+    return provider.useMatch(pattern);
 };

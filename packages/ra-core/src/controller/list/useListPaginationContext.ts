@@ -1,6 +1,9 @@
 import { useContext } from 'react';
 
-import { ListPaginationContext, ListPaginationContextValue } from './ListPaginationContext';
+import {
+    ListPaginationContext,
+    ListPaginationContextValue,
+} from './ListPaginationContext';
 
 /**
  * Hook to read the list pagination controller props from the ListPaginationContext.
@@ -13,9 +16,11 @@ import { ListPaginationContext, ListPaginationContextValue } from './ListPaginat
  * @see useListController for how it is filled
  */
 export const useListPaginationContext = (): ListPaginationContextValue => {
-  const context = useContext(ListPaginationContext);
-  if (!context) {
-    throw new Error('useListPaginationContext must be used inside a ListPaginationContextProvider');
-  }
-  return context;
+    const context = useContext(ListPaginationContext);
+    if (!context) {
+        throw new Error(
+            'useListPaginationContext must be used inside a ListPaginationContextProvider'
+        );
+    }
+    return context;
 };

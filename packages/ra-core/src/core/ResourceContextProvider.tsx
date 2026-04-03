@@ -21,5 +21,17 @@ import { ResourceContext, ResourceContextValue } from './ResourceContext';
  *   </ResourceContextProvider>
  * );
  */
-export const ResourceContextProvider = ({ children, value }: { children: ReactNode; value?: ResourceContextValue }) =>
-  value ? <ResourceContext.Provider value={value}>{children}</ResourceContext.Provider> : children;
+export const ResourceContextProvider = ({
+    children,
+    value,
+}: {
+    children: ReactNode;
+    value?: ResourceContextValue;
+}) =>
+    value ? (
+        <ResourceContext.Provider value={value}>
+            {children}
+        </ResourceContext.Provider>
+    ) : (
+        children
+    );

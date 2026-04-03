@@ -56,82 +56,118 @@ import { useTranslate } from '../../i18n/useTranslate';
  *     );
  * };
  */
-export const useDeleteController = <RecordType extends RaRecord = any, ErrorType = Error>(
-  props: UseDeleteControllerParams<RecordType, ErrorType>,
+export const useDeleteController = <
+    RecordType extends RaRecord = any,
+    ErrorType = Error,
+>(
+    props: UseDeleteControllerParams<RecordType, ErrorType>
 ): UseDeleteControllerReturn => {
-  const { redirect: redirectTo = 'list', mutationMode = 'undoable', mutationOptions = {}, successMessage } = props;
-  const { meta: mutationMeta, ...otherMutationOptions } = mutationOptions;
-  const record = useRecordContext(props);
-  const resource = useResourceContext(props);
-  const notify = useNotify();
-  const unselect = useUnselect(resource);
-  const redirect = useRedirect();
-  const translate = useTranslate();
+    const {
+        redirect: redirectTo = 'list',
+        mutationMode = 'undoable',
+        mutationOptions = {},
+        successMessage,
+    } = props;
+    const { meta: mutationMeta, ...otherMutationOptions } = mutationOptions;
+    const record = useRecordContext(props);
+    const resource = useResourceContext(props);
+    const notify = useNotify();
+    const unselect = useUnselect(resource);
+    const redirect = useRedirect();
+    const translate = useTranslate();
 
-  const [deleteOne, { isPending }] = useDelete<RecordType, ErrorType>(resource, undefined, {
-    onSuccess: () => {
-      notify(successMessage ?? `resources.${resource}.notifications.deleted`, {
-        type: 'info',
-        messageArgs: {
-          smart_count: 1,
-          _: translate('ra.notification.deleted', {
-            smart_count: 1,
-          }),
-        },
-        undoable: mutationMode === 'undoable',
-      });
-      record && unselect([record.id], true);
-      redirect(redirectTo, resource);
-    },
-    onError: (error: any) => {
-      notify(typeof error === 'string' ? error : error?.message || 'ra.notification.http_error', {
-        type: 'error',
-        messageArgs: {
-          _: typeof error === 'string' ? error : error?.message,
-        },
-      });
-    },
-  });
-
-  const handleDelete = useCallback(() => {
-    if (!record) {
-      throw new Error('The record cannot be deleted because no record has been passed');
-    }
-    deleteOne(
-      resource,
-      {
-        id: record.id,
-        previousData: record,
-        meta: mutationMeta,
-      },
-      {
-        mutationMode,
-        ...otherMutationOptions,
-      },
+    const [deleteOne, { isPending }] = useDelete<RecordType, ErrorType>(
+        resource,
+        undefined,
+        {
+            onSuccess: () => {
+                notify(
+                    successMessage ??
+                        `resources.${resource}.notifications.deleted`,
+                    {
+                        type: 'info',
+                        messageArgs: {
+                            smart_count: 1,
+                            _: translate('ra.notification.deleted', {
+                                smart_count: 1,
+                            }),
+                        },
+                        undoable: mutationMode === 'undoable',
+                    }
+                );
+                record && unselect([record.id], true);
+                redirect(redirectTo, resource);
+            },
+            onError: (error: any) => {
+                notify(
+                    typeof error === 'string'
+                        ? error
+                        : error?.message || 'ra.notification.http_error',
+                    {
+                        type: 'error',
+                        messageArgs: {
+                            _:
+                                typeof error === 'string'
+                                    ? error
+                                    : error?.message,
+                        },
+                    }
+                );
+            },
+        }
     );
-  }, [deleteOne, mutationMeta, mutationMode, otherMutationOptions, record, resource]);
 
-  return useMemo(
-    () => ({
-      isPending,
-      isLoading: isPending,
-      handleDelete,
-    }),
-    [isPending, handleDelete],
-  );
+    const handleDelete = useCallback(() => {
+        if (!record) {
+            throw new Error(
+                'The record cannot be deleted because no record has been passed'
+            );
+        }
+        deleteOne(
+            resource,
+            {
+                id: record.id,
+                previousData: record,
+                meta: mutationMeta,
+            },
+            {
+                mutationMode,
+                ...otherMutationOptions,
+            }
+        );
+    }, [
+        deleteOne,
+        mutationMeta,
+        mutationMode,
+        otherMutationOptions,
+        record,
+        resource,
+    ]);
+
+    return useMemo(
+        () => ({
+            isPending,
+            isLoading: isPending,
+            handleDelete,
+        }),
+        [isPending, handleDelete]
+    );
 };
 
-export interface UseDeleteControllerParams<RecordType extends RaRecord = any, MutationOptionsError = unknown> {
-  mutationMode?: MutationMode;
-  mutationOptions?: UseDeleteOptions<RecordType, MutationOptionsError>;
-  record?: RecordType;
-  redirect?: RedirectionSideEffect;
-  resource?: string;
-  successMessage?: string | ReactNode;
+export interface UseDeleteControllerParams<
+    RecordType extends RaRecord = any,
+    MutationOptionsError = unknown,
+> {
+    mutationMode?: MutationMode;
+    mutationOptions?: UseDeleteOptions<RecordType, MutationOptionsError>;
+    record?: RecordType;
+    redirect?: RedirectionSideEffect;
+    resource?: string;
+    successMessage?: string | ReactNode;
 }
 
 export interface UseDeleteControllerReturn {
-  isLoading: boolean;
-  isPending: boolean;
-  handleDelete: () => void;
+    isLoading: boolean;
+    isPending: boolean;
+    handleDelete: () => void;
 }

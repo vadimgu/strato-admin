@@ -37,18 +37,41 @@ import { ListControllerResult } from './useListController';
  *     );
  * };
  */
-export const ListFilterContext = createContext<ListFilterContextValue | undefined>(undefined);
+export const ListFilterContext = createContext<
+    ListFilterContextValue | undefined
+>(undefined);
 
 export type ListFilterContextValue = Pick<
-  ListControllerResult,
-  'displayedFilters' | 'filterValues' | 'hideFilter' | 'setFilters' | 'showFilter' | 'resource'
+    ListControllerResult,
+    | 'displayedFilters'
+    | 'filterValues'
+    | 'hideFilter'
+    | 'setFilters'
+    | 'showFilter'
+    | 'resource'
 >;
 
-export const usePickFilterContext = (context: ListControllerResult): ListFilterContextValue =>
-  useMemo(
-    () => pick(context, ['displayedFilters', 'filterValues', 'hideFilter', 'setFilters', 'showFilter', 'resource']),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [context.displayedFilters, context.filterValues, context.hideFilter, context.setFilters, context.showFilter],
-  );
+export const usePickFilterContext = (
+    context: ListControllerResult
+): ListFilterContextValue =>
+    useMemo(
+        () =>
+            pick(context, [
+                'displayedFilters',
+                'filterValues',
+                'hideFilter',
+                'setFilters',
+                'showFilter',
+                'resource',
+            ]),
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        [
+            context.displayedFilters,
+            context.filterValues,
+            context.hideFilter,
+            context.setFilters,
+            context.showFilter,
+        ]
+    );
 
 ListFilterContext.displayName = 'ListFilterContext';

@@ -1,5 +1,9 @@
 import { ReactNode } from 'react';
-import { useCreateController, CreateControllerProps, CreateControllerResult } from './useCreateController';
+import {
+    useCreateController,
+    CreateControllerProps,
+    CreateControllerResult,
+} from './useCreateController';
 import { RaRecord } from '../../types';
 
 /**
@@ -15,12 +19,18 @@ import { RaRecord } from '../../types';
  *     </CreateController>
  * );
  */
-export const CreateController = <RecordType extends Omit<RaRecord, 'id'> = any, MutationOptionsError = Error>({
-  children,
-  ...props
+export const CreateController = <
+    RecordType extends Omit<RaRecord, 'id'> = any,
+    MutationOptionsError = Error,
+>({
+    children,
+    ...props
 }: {
-  children: (params: CreateControllerResult<RecordType>) => ReactNode;
+    children: (params: CreateControllerResult<RecordType>) => ReactNode;
 } & CreateControllerProps<RecordType, MutationOptionsError>) => {
-  const controllerProps = useCreateController<RecordType, MutationOptionsError>(props);
-  return children(controllerProps);
+    const controllerProps = useCreateController<
+        RecordType,
+        MutationOptionsError
+    >(props);
+    return children(controllerProps);
 };

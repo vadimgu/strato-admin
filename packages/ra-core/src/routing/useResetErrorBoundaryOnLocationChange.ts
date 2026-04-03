@@ -7,13 +7,15 @@ import { useLocation } from './useLocation';
  * the location changes
  * @param {Function} resetErrorBoundary
  */
-export const useResetErrorBoundaryOnLocationChange = (resetErrorBoundary: () => void) => {
-  const { pathname } = useLocation();
-  const originalPathname = useRef(pathname);
+export const useResetErrorBoundaryOnLocationChange = (
+    resetErrorBoundary: () => void
+) => {
+    const { pathname } = useLocation();
+    const originalPathname = useRef(pathname);
 
-  useEffect(() => {
-    if (pathname !== originalPathname.current) {
-      resetErrorBoundary();
-    }
-  }, [pathname, resetErrorBoundary]);
+    useEffect(() => {
+        if (pathname !== originalPathname.current) {
+            resetErrorBoundary();
+        }
+    }, [pathname, resetErrorBoundary]);
 };

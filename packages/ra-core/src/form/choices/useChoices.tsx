@@ -7,29 +7,29 @@ import { RaRecord } from '../../types';
 import { RecordContextProvider } from '../../controller';
 
 export type OptionTextElement = ReactElement<{
-  record: RaRecord;
+    record: RaRecord;
 }>;
 export type OptionTextFunc = (choice: any) => React.ReactNode;
 export type OptionText = OptionTextElement | OptionTextFunc | string;
 
 export interface ChoicesProps {
-  choices?: any[];
-  isFetching?: boolean;
-  isLoading?: boolean;
-  isPending?: boolean;
-  optionValue?: string;
-  optionText?: OptionText;
-  translateChoice?: boolean;
-  disableValue?: string;
+    choices?: any[];
+    isFetching?: boolean;
+    isLoading?: boolean;
+    isPending?: boolean;
+    optionValue?: string;
+    optionText?: OptionText;
+    translateChoice?: boolean;
+    disableValue?: string;
 }
 
 export interface UseChoicesOptions {
-  optionValue?: string;
-  optionText?: OptionText;
-  disableValue?: string;
-  translateChoice?: boolean;
-  createValue?: string;
-  createHintValue?: string;
+    optionValue?: string;
+    optionText?: OptionText;
+    disableValue?: string;
+    translateChoice?: boolean;
+    createValue?: string;
+    createHintValue?: string;
 }
 
 /*
@@ -44,42 +44,58 @@ export interface UseChoicesOptions {
  * - getChoiceValue: Returns the choice value
  */
 export const useChoices = ({
-  optionText = 'name',
-  optionValue = 'id',
-  disableValue = 'disabled',
-  translateChoice = true,
-  createValue = '@@ra-create',
-  createHintValue = '@@ra-create-hint',
+    optionText = 'name',
+    optionValue = 'id',
+    disableValue = 'disabled',
+    translateChoice = true,
+    createValue = '@@ra-create',
+    createHintValue = '@@ra-create-hint',
 }: UseChoicesOptions) => {
-  const translate = useTranslate();
+    const translate = useTranslate();
 
-  const getChoiceText = useCallback(
-    (choice) => {
-      if (choice?.id === createValue || choice?.id === createHintValue) {
-        return get(choice, typeof optionText === 'string' ? optionText : 'name');
-      }
+    const getChoiceText = useCallback(
+        choice => {
+            if (choice?.id === createValue || choice?.id === createHintValue) {
+                return get(
+                    choice,
+                    typeof optionText === 'string' ? optionText : 'name'
+                );
+            }
 
-      if (isValidElement<{ record: any }>(optionText)) {
-        return <RecordContextProvider value={choice}>{optionText}</RecordContextProvider>;
-      }
-      const choiceName = typeof optionText === 'function' ? optionText(choice) : get(choice, optionText);
+            if (isValidElement<{ record: any }>(optionText)) {
+                return (
+                    <RecordContextProvider value={choice}>
+                        {optionText}
+                    </RecordContextProvider>
+                );
+            }
+            const choiceName =
+                typeof optionText === 'function'
+                    ? optionText(choice)
+                    : get(choice, optionText);
 
-      return isValidElement(choiceName)
-        ? choiceName
-        : translateChoice
-          ? translate(String(choiceName), { _: choiceName })
-          : String(choiceName);
-    },
-    [createHintValue, createValue, optionText, translate, translateChoice],
-  );
+            return isValidElement(choiceName)
+                ? choiceName
+                : translateChoice
+                  ? translate(String(choiceName), { _: choiceName })
+                  : String(choiceName);
+        },
+        [createHintValue, createValue, optionText, translate, translateChoice]
+    );
 
-  const getChoiceValue = useCallback((choice) => get(choice, optionValue, get(choice, 'id')), [optionValue]);
+    const getChoiceValue = useCallback(
+        choice => get(choice, optionValue, get(choice, 'id')),
+        [optionValue]
+    );
 
-  const getDisableValue = useCallback((choice) => get(choice, disableValue), [disableValue]);
+    const getDisableValue = useCallback(
+        choice => get(choice, disableValue),
+        [disableValue]
+    );
 
-  return {
-    getChoiceText,
-    getChoiceValue,
-    getDisableValue,
-  };
+    return {
+        getChoiceText,
+        getChoiceValue,
+        getDisableValue,
+    };
 };

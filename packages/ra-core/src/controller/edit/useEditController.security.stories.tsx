@@ -12,233 +12,251 @@ import { EditControllerProps, useEditController } from './useEditController';
 import { useAuthState } from '../..';
 
 export default {
-  title: '@strato-admin/ra-core/controller/useEditController',
+    title: '@strato-admin/ra-core/controller/useEditController',
 };
 
 const styles = {
-  mainContainer: {
-    margin: '20px 10px',
-  },
+    mainContainer: {
+        margin: '20px 10px',
+    },
 };
 
 const defaultDataProvider = fakeDataProvider(
-  {
-    posts: [
-      { id: 1, title: 'Post #1', votes: 90 },
-      { id: 2, title: 'Post #2', votes: 20 },
-      { id: 3, title: 'Post #3', votes: 30 },
-      { id: 4, title: 'Post #4', votes: 40 },
-      { id: 5, title: 'Post #5', votes: 50 },
-      { id: 6, title: 'Post #6', votes: 60 },
-      { id: 7, title: 'Post #7', votes: 70 },
-    ],
-  },
-  process.env.NODE_ENV === 'development',
+    {
+        posts: [
+            { id: 1, title: 'Post #1', votes: 90 },
+            { id: 2, title: 'Post #2', votes: 20 },
+            { id: 3, title: 'Post #3', votes: 30 },
+            { id: 4, title: 'Post #4', votes: 40 },
+            { id: 5, title: 'Post #5', votes: 50 },
+            { id: 6, title: 'Post #6', votes: 60 },
+            { id: 7, title: 'Post #7', votes: 70 },
+        ],
+    },
+    process.env.NODE_ENV === 'development'
 );
 
 const PostList = () => {
-  useAuthState();
-  return (
-    <div style={styles.mainContainer}>
-      <div>List view</div>
-      <LinkBase to="/posts/1">Edit</LinkBase>
-    </div>
-  );
+    useAuthState();
+    return (
+        <div style={styles.mainContainer}>
+            <div>List view</div>
+            <LinkBase to="/posts/1">Edit</LinkBase>
+        </div>
+    );
 };
 
 const Post = (props: Partial<EditControllerProps>) => {
-  const params = useEditController({
-    id: 1,
-    resource: 'posts',
-    ...props,
-  });
-  return (
-    <div style={styles.mainContainer}>
-      {params.isPending ? (
-        <p>Loading...</p>
-      ) : (
-        <div>
-          {params.record.title} - {params.record.votes} votes
+    const params = useEditController({
+        id: 1,
+        resource: 'posts',
+        ...props,
+    });
+    return (
+        <div style={styles.mainContainer}>
+            {params.isPending ? (
+                <p>Loading...</p>
+            ) : (
+                <div>
+                    {params.record.title} - {params.record.votes} votes
+                </div>
+            )}
+            <LinkBase to="/posts">List</LinkBase>
         </div>
-      )}
-      <LinkBase to="/posts">List</LinkBase>
-    </div>
-  );
+    );
 };
 
 const defaultAuthProvider: AuthProvider = {
-  checkAuth: () => new Promise((resolve) => setTimeout(resolve, 500)),
-  login: () => Promise.resolve(),
-  logout: () => Promise.resolve(),
-  checkError: () => Promise.resolve(),
-  getPermissions: () => Promise.resolve(),
+    checkAuth: () => new Promise(resolve => setTimeout(resolve, 500)),
+    login: () => Promise.resolve(),
+    logout: () => Promise.resolve(),
+    checkError: () => Promise.resolve(),
+    getPermissions: () => Promise.resolve(),
 };
 
 export const Authenticated = ({
-  authProvider = defaultAuthProvider,
-  dataProvider = defaultDataProvider,
+    authProvider = defaultAuthProvider,
+    dataProvider = defaultDataProvider,
 }: {
-  authProvider?: AuthProvider;
-  dataProvider?: DataProvider;
+    authProvider?: AuthProvider;
+    dataProvider?: DataProvider;
 }) => {
-  return (
-    <TestMemoryRouter initialEntries={['/posts/1']}>
-      <CoreAdminContext dataProvider={dataProvider} authProvider={authProvider}>
-        <CoreAdminUI>
-          <Resource name="posts" edit={Post} />
-        </CoreAdminUI>
-      </CoreAdminContext>
-    </TestMemoryRouter>
-  );
+    return (
+        <TestMemoryRouter initialEntries={['/posts/1']}>
+            <CoreAdminContext
+                dataProvider={dataProvider}
+                authProvider={authProvider}
+            >
+                <CoreAdminUI>
+                    <Resource name="posts" edit={Post} />
+                </CoreAdminUI>
+            </CoreAdminContext>
+        </TestMemoryRouter>
+    );
 };
 
 export const DisableAuthentication = ({
-  authProvider = defaultAuthProvider,
-  dataProvider = defaultDataProvider,
+    authProvider = defaultAuthProvider,
+    dataProvider = defaultDataProvider,
 }: {
-  authProvider?: AuthProvider;
-  dataProvider?: DataProvider;
+    authProvider?: AuthProvider;
+    dataProvider?: DataProvider;
 }) => {
-  return (
-    <TestMemoryRouter initialEntries={['/posts/1']}>
-      <CoreAdminContext dataProvider={dataProvider} authProvider={authProvider}>
-        <CoreAdminUI accessDenied={AccessDenied}>
-          <Resource name="posts" list={<PostList />} edit={<Post disableAuthentication />} />
-        </CoreAdminUI>
-      </CoreAdminContext>
-    </TestMemoryRouter>
-  );
+    return (
+        <TestMemoryRouter initialEntries={['/posts/1']}>
+            <CoreAdminContext
+                dataProvider={dataProvider}
+                authProvider={authProvider}
+            >
+                <CoreAdminUI accessDenied={AccessDenied}>
+                    <Resource
+                        name="posts"
+                        list={<PostList />}
+                        edit={<Post disableAuthentication />}
+                    />
+                </CoreAdminUI>
+            </CoreAdminContext>
+        </TestMemoryRouter>
+    );
 };
 DisableAuthentication.args = {
-  authProvider: undefined,
+    authProvider: undefined,
 };
 DisableAuthentication.argTypes = {
-  authProvider: {
-    options: ['default', 'canAccess'],
-    mapping: {
-      default: undefined,
-      canAccess: {
-        ...defaultAuthProvider,
-        canAccess: () => Promise.resolve(false),
-      },
+    authProvider: {
+        options: ['default', 'canAccess'],
+        mapping: {
+            default: undefined,
+            canAccess: {
+                ...defaultAuthProvider,
+                canAccess: () => Promise.resolve(false),
+            },
+        },
+        control: { type: 'inline-radio' },
     },
-    control: { type: 'inline-radio' },
-  },
 };
 
-export const CanAccess = ({ authProviderDelay = 300 }: { authProviderDelay?: number }) => {
-  return (
-    <TestMemoryRouter initialEntries={['/posts']}>
-      <AccessControlAdmin authProviderDelay={authProviderDelay} queryClient={new QueryClient()} />
-    </TestMemoryRouter>
-  );
+export const CanAccess = ({
+    authProviderDelay = 300,
+}: {
+    authProviderDelay?: number;
+}) => {
+    return (
+        <TestMemoryRouter initialEntries={['/posts']}>
+            <AccessControlAdmin
+                authProviderDelay={authProviderDelay}
+                queryClient={new QueryClient()}
+            />
+        </TestMemoryRouter>
+    );
 };
 
 const AccessControlAdmin = ({
-  authProviderDelay,
-  queryClient,
+    authProviderDelay,
+    queryClient,
 }: {
-  authProviderDelay?: number;
-  queryClient: QueryClient;
+    authProviderDelay?: number;
+    queryClient: QueryClient;
 }) => {
-  const [authorizedResources, setAuthorizedResources] = React.useState({
-    'posts.list': true,
-    'posts.edit': true,
-  });
+    const [authorizedResources, setAuthorizedResources] = React.useState({
+        'posts.list': true,
+        'posts.edit': true,
+    });
 
-  const authProvider: AuthProvider = {
-    login: () => Promise.reject(new Error('Not implemented')),
-    logout: () => Promise.reject(new Error('Not implemented')),
-    checkAuth: () => Promise.resolve(),
-    checkError: () => Promise.reject(new Error('Not implemented')),
-    getPermissions: () => Promise.resolve(undefined),
-    canAccess: ({ action, resource }) =>
-      new Promise((resolve) => {
-        setTimeout(() => {
-          resolve(authorizedResources[`${resource}.${action}`]);
-        }, authProviderDelay);
-      }),
-  };
-  return (
-    <AccessControlUI
-      queryClient={queryClient}
-      authorizedResources={authorizedResources}
-      setAuthorizedResources={setAuthorizedResources}
-    >
-      <CoreAdmin
-        authProvider={authProvider}
-        dataProvider={defaultDataProvider}
-        queryClient={queryClient}
-        accessDenied={AccessDenied}
-        loading={Loading}
-        authenticationError={AuthenticationError}
-      >
-        <Resource
-          name="posts"
-          list={
-            <div>
-              <div>List</div>
-              <LinkBase to="/posts/1">Edit</LinkBase>
-            </div>
-          }
-          edit={<Post />}
-        />
-      </CoreAdmin>
-    </AccessControlUI>
-  );
+    const authProvider: AuthProvider = {
+        login: () => Promise.reject(new Error('Not implemented')),
+        logout: () => Promise.reject(new Error('Not implemented')),
+        checkAuth: () => Promise.resolve(),
+        checkError: () => Promise.reject(new Error('Not implemented')),
+        getPermissions: () => Promise.resolve(undefined),
+        canAccess: ({ action, resource }) =>
+            new Promise(resolve => {
+                setTimeout(() => {
+                    resolve(authorizedResources[`${resource}.${action}`]);
+                }, authProviderDelay);
+            }),
+    };
+    return (
+        <AccessControlUI
+            queryClient={queryClient}
+            authorizedResources={authorizedResources}
+            setAuthorizedResources={setAuthorizedResources}
+        >
+            <CoreAdmin
+                authProvider={authProvider}
+                dataProvider={defaultDataProvider}
+                queryClient={queryClient}
+                accessDenied={AccessDenied}
+                loading={Loading}
+                authenticationError={AuthenticationError}
+            >
+                <Resource
+                    name="posts"
+                    list={
+                        <div>
+                            <div>List</div>
+                            <LinkBase to="/posts/1">Edit</LinkBase>
+                        </div>
+                    }
+                    edit={<Post />}
+                />
+            </CoreAdmin>
+        </AccessControlUI>
+    );
 };
 
 const AccessControlUI = ({
-  children,
-  setAuthorizedResources,
-  authorizedResources,
-  queryClient,
+    children,
+    setAuthorizedResources,
+    authorizedResources,
+    queryClient,
 }: {
-  children: React.ReactNode;
-  setAuthorizedResources: Function;
-  authorizedResources: {
-    'posts.list': boolean;
-    'posts.edit': boolean;
-  };
-  queryClient: QueryClient;
+    children: React.ReactNode;
+    setAuthorizedResources: Function;
+    authorizedResources: {
+        'posts.list': boolean;
+        'posts.edit': boolean;
+    };
+    queryClient: QueryClient;
 }) => {
-  return (
-    <div>
-      <div>
-        <label>
-          <input
-            type="checkbox"
-            checked={authorizedResources['posts.edit']}
-            onChange={() => {
-              setAuthorizedResources((state) => ({
-                ...state,
-                'posts.edit': !authorizedResources['posts.edit'],
-              }));
+    return (
+        <div>
+            <div>
+                <label>
+                    <input
+                        type="checkbox"
+                        checked={authorizedResources['posts.edit']}
+                        onChange={() => {
+                            setAuthorizedResources(state => ({
+                                ...state,
+                                'posts.edit':
+                                    !authorizedResources['posts.edit'],
+                            }));
 
-              queryClient.clear();
-            }}
-          />
-          posts.edit access
-        </label>
-      </div>
-      <Browser>{children}</Browser>
-    </div>
-  );
+                            queryClient.clear();
+                        }}
+                    />
+                    posts.edit access
+                </label>
+            </div>
+            <Browser>{children}</Browser>
+        </div>
+    );
 };
 
 const AccessDenied = () => {
-  return (
-    <div>
-      <div>Access denied</div>
-    </div>
-  );
+    return (
+        <div>
+            <div>Access denied</div>
+        </div>
+    );
 };
 const AuthenticationError = () => {
-  return (
-    <div>
-      <div>AuthenticationError</div>
-    </div>
-  );
+    return (
+        <div>
+            <div>AuthenticationError</div>
+        </div>
+    );
 };
 
 const Loading = () => <div>Loading...</div>;

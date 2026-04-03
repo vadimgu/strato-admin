@@ -9,24 +9,31 @@ import { useNotify } from '../../notification';
  * as the form state may not have been updated yet when onSubmit validation mode is enabled
  * or when the form hasn't been touched at all.
  */
-export const useNotifyIsFormInvalid = (control?: Control, enabled: boolean = true) => {
-  const { submitCount, errors } = useFormState(control ? { control } : undefined);
-  const submitCountRef = useRef(submitCount);
-  const notify = useNotify();
+export const useNotifyIsFormInvalid = (
+    control?: Control,
+    enabled: boolean = true
+) => {
+    const { submitCount, errors } = useFormState(
+        control ? { control } : undefined
+    );
+    const submitCountRef = useRef(submitCount);
+    const notify = useNotify();
 
-  useEffect(() => {
-    // Checking the submit count allows us to only display the notification after users
-    // tried to submit
-    if (submitCount > submitCountRef.current && enabled) {
-      submitCountRef.current = submitCount;
+    useEffect(() => {
+        // Checking the submit count allows us to only display the notification after users
+        // tried to submit
+        if (submitCount > submitCountRef.current && enabled) {
+            submitCountRef.current = submitCount;
 
-      if (Object.keys(errors).length > 0) {
-        const serverError =
-          typeof errors.root?.serverError?.message === 'string' ? errors.root.serverError.message : undefined;
-        notify(serverError || 'ra.message.invalid_form', {
-          type: 'error',
-        });
-      }
-    }
-  }, [errors, submitCount, notify, enabled]);
+            if (Object.keys(errors).length > 0) {
+                const serverError =
+                    typeof errors.root?.serverError?.message === 'string'
+                        ? errors.root.serverError.message
+                        : undefined;
+                notify(serverError || 'ra.message.invalid_form', {
+                    type: 'error',
+                });
+            }
+        }
+    }, [errors, submitCount, notify, enabled]);
 };

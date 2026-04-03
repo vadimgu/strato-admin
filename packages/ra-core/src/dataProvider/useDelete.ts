@@ -1,22 +1,25 @@
 import {
-  useQueryClient,
-  type UseMutationOptions,
-  type UseMutationResult,
-  type MutateOptions,
-  type UseInfiniteQueryResult,
-  type InfiniteData,
+    useQueryClient,
+    type UseMutationOptions,
+    type UseMutationResult,
+    type MutateOptions,
+    type UseInfiniteQueryResult,
+    type InfiniteData,
 } from '@tanstack/react-query';
 
 import { useDataProvider } from './useDataProvider';
 import type {
-  RaRecord,
-  DeleteParams,
-  MutationMode,
-  GetListResult as OriginalGetListResult,
-  GetInfiniteListResult,
-  DeleteResult,
+    RaRecord,
+    DeleteParams,
+    MutationMode,
+    GetListResult as OriginalGetListResult,
+    GetInfiniteListResult,
+    DeleteResult,
 } from '../types';
-import { type Snapshot, useMutationWithMutationMode } from './useMutationWithMutationMode';
+import {
+    type Snapshot,
+    useMutationWithMutationMode,
+} from './useMutationWithMutationMode';
 import { useEvent } from '../util';
 
 /**
@@ -77,205 +80,237 @@ import { useEvent } from '../util';
  * const [delete, { data }] = useDelete<Product>('products', { id, previousData: product });
  *                    \-- data is Product
  */
-export const useDelete = <RecordType extends RaRecord = any, MutationError = unknown>(
-  resource?: string,
-  params: Partial<DeleteParams<RecordType>> = {},
-  options: UseDeleteOptions<RecordType, MutationError> = {},
+export const useDelete = <
+    RecordType extends RaRecord = any,
+    MutationError = unknown,
+>(
+    resource?: string,
+    params: Partial<DeleteParams<RecordType>> = {},
+    options: UseDeleteOptions<RecordType, MutationError> = {}
 ): UseDeleteResult<RecordType, MutationError> => {
-  const dataProvider = useDataProvider();
-  const queryClient = useQueryClient();
-  const { mutationMode = 'pessimistic', onSettled, ...mutationOptions } = options;
+    const dataProvider = useDataProvider();
+    const queryClient = useQueryClient();
+    const {
+        mutationMode = 'pessimistic',
+        onSettled,
+        ...mutationOptions
+    } = options;
 
-  const [mutate, mutationResult] = useMutationWithMutationMode<
-    MutationError,
-    DeleteResult<RecordType>,
-    UseDeleteMutateParams<RecordType>
-  >(
-    { resource, ...params },
-    {
-      ...mutationOptions,
-      mutationKey: [resource, 'delete', params],
-      mutationMode,
-      mutationFn: ({ resource, ...params }) => {
-        if (resource == null) {
-          throw new Error('useDelete mutation requires a resource');
-        }
-        if (params.id == null) {
-          throw new Error('useDelete mutation requires a non-empty id');
-        }
-        return dataProvider.delete<RecordType>(resource, params as DeleteParams<RecordType>);
-      },
-      updateCache: ({ resource, ...params }, { mutationMode }) => {
-        // hack: only way to tell react-query not to fetch this query for the next 5 seconds
-        // because setQueryData doesn't accept a stale time option
-        const now = Date.now();
-        const updatedAt = mutationMode === 'undoable' ? now + 5 * 1000 : now;
-
-        const updateColl = (old: RecordType[]) => {
-          if (!old) return old;
-          const index = old.findIndex(
-            // eslint-disable-next-line eqeqeq
-            (record) => record.id == params.id,
-          );
-          if (index === -1) {
-            return old;
-          }
-          return [...old.slice(0, index), ...old.slice(index + 1)];
-        };
-
-        type GetListResult = Omit<OriginalGetListResult, 'data'> & {
-          data?: RecordType[];
-        };
-
-        queryClient.setQueriesData(
-          { queryKey: [resource, 'getList'] },
-          (res: GetListResult) => {
-            if (!res || !res.data) return res;
-            const newCollection = updateColl(res.data);
-            const recordWasFound = newCollection.length < res.data.length;
-            return recordWasFound
-              ? {
-                  data: newCollection,
-                  total: res.total ? res.total - 1 : undefined,
-                  pageInfo: res.pageInfo,
-                }
-              : res;
-          },
-          { updatedAt },
-        );
-        queryClient.setQueriesData(
-          { queryKey: [resource, 'getInfiniteList'] },
-          (res: UseInfiniteQueryResult<InfiniteData<GetInfiniteListResult>>['data']) => {
-            if (!res || !res.pages) return res;
-            return {
-              ...res,
-              pages: res.pages.map((page) => {
-                const newCollection = updateColl(page.data);
-                const recordWasFound = newCollection.length < page.data.length;
-                return recordWasFound
-                  ? {
-                      ...page,
-                      data: newCollection,
-                      total: page.total ? page.total - 1 : undefined,
-                      pageInfo: page.pageInfo,
-                    }
-                  : page;
-              }),
-            };
-          },
-          { updatedAt },
-        );
-        queryClient.setQueriesData(
-          { queryKey: [resource, 'getMany'] },
-          (coll: RecordType[]) => (coll && coll.length > 0 ? updateColl(coll) : coll),
-          { updatedAt },
-        );
-        queryClient.setQueriesData(
-          { queryKey: [resource, 'getManyReference'] },
-          (res: GetListResult) => {
-            if (!res || !res.data) return res;
-            const newCollection = updateColl(res.data);
-            const recordWasFound = newCollection.length < res.data.length;
-            return recordWasFound
-              ? {
-                  ...res,
-                  data: newCollection,
-                  total: res.total! - 1,
-                }
-              : res;
-          },
-          { updatedAt },
-        );
-
-        return params.previousData;
-      },
-      getQueryKeys: ({ resource }) => {
-        const queryKeys = [
-          [resource, 'getList'],
-          [resource, 'getInfiniteList'],
-          [resource, 'getMany'],
-          [resource, 'getManyReference'],
-        ];
-        return queryKeys;
-      },
-      onSettled: (...args) => {
-        const [, , , mutateResult] = args;
-
-        // For deletion, we always refetch after error or success:
-        (mutateResult as { snapshot: Snapshot }).snapshot.forEach(([queryKey]) => {
-          queryClient.invalidateQueries({ queryKey });
-        });
-
-        onSettled?.(...args);
-      },
-    },
-  );
-
-  const deleteOne = useEvent(
-    (
-      callTimeResource: string | undefined = resource,
-      callTimeParams: Partial<DeleteParams<RecordType>> = {},
-      callTimeOptions: MutateOptions<
-        RecordType | undefined,
+    const [mutate, mutationResult] = useMutationWithMutationMode<
         MutationError,
-        Partial<UseDeleteMutateParams<RecordType>>,
-        unknown
-      > & {
-        mutationMode?: MutationMode;
-        returnPromise?: boolean;
-      } = {},
-    ) => {
-      return mutate(
+        DeleteResult<RecordType>,
+        UseDeleteMutateParams<RecordType>
+    >(
+        { resource, ...params },
         {
-          resource: callTimeResource,
-          ...callTimeParams,
-        },
-        callTimeOptions,
-      );
-    },
-  );
+            ...mutationOptions,
+            mutationKey: [resource, 'delete', params],
+            mutationMode,
+            mutationFn: ({ resource, ...params }) => {
+                if (resource == null) {
+                    throw new Error('useDelete mutation requires a resource');
+                }
+                if (params.id == null) {
+                    throw new Error(
+                        'useDelete mutation requires a non-empty id'
+                    );
+                }
+                return dataProvider.delete<RecordType>(
+                    resource,
+                    params as DeleteParams<RecordType>
+                );
+            },
+            updateCache: ({ resource, ...params }, { mutationMode }) => {
+                // hack: only way to tell react-query not to fetch this query for the next 5 seconds
+                // because setQueryData doesn't accept a stale time option
+                const now = Date.now();
+                const updatedAt =
+                    mutationMode === 'undoable' ? now + 5 * 1000 : now;
 
-  return [deleteOne, mutationResult];
+                const updateColl = (old: RecordType[]) => {
+                    if (!old) return old;
+                    const index = old.findIndex(
+                        // eslint-disable-next-line eqeqeq
+                        record => record.id == params.id
+                    );
+                    if (index === -1) {
+                        return old;
+                    }
+                    return [...old.slice(0, index), ...old.slice(index + 1)];
+                };
+
+                type GetListResult = Omit<OriginalGetListResult, 'data'> & {
+                    data?: RecordType[];
+                };
+
+                queryClient.setQueriesData(
+                    { queryKey: [resource, 'getList'] },
+                    (res: GetListResult) => {
+                        if (!res || !res.data) return res;
+                        const newCollection = updateColl(res.data);
+                        const recordWasFound =
+                            newCollection.length < res.data.length;
+                        return recordWasFound
+                            ? {
+                                  data: newCollection,
+                                  total: res.total ? res.total - 1 : undefined,
+                                  pageInfo: res.pageInfo,
+                              }
+                            : res;
+                    },
+                    { updatedAt }
+                );
+                queryClient.setQueriesData(
+                    { queryKey: [resource, 'getInfiniteList'] },
+                    (
+                        res: UseInfiniteQueryResult<
+                            InfiniteData<GetInfiniteListResult>
+                        >['data']
+                    ) => {
+                        if (!res || !res.pages) return res;
+                        return {
+                            ...res,
+                            pages: res.pages.map(page => {
+                                const newCollection = updateColl(page.data);
+                                const recordWasFound =
+                                    newCollection.length < page.data.length;
+                                return recordWasFound
+                                    ? {
+                                          ...page,
+                                          data: newCollection,
+                                          total: page.total
+                                              ? page.total - 1
+                                              : undefined,
+                                          pageInfo: page.pageInfo,
+                                      }
+                                    : page;
+                            }),
+                        };
+                    },
+                    { updatedAt }
+                );
+                queryClient.setQueriesData(
+                    { queryKey: [resource, 'getMany'] },
+                    (coll: RecordType[]) =>
+                        coll && coll.length > 0 ? updateColl(coll) : coll,
+                    { updatedAt }
+                );
+                queryClient.setQueriesData(
+                    { queryKey: [resource, 'getManyReference'] },
+                    (res: GetListResult) => {
+                        if (!res || !res.data) return res;
+                        const newCollection = updateColl(res.data);
+                        const recordWasFound =
+                            newCollection.length < res.data.length;
+                        return recordWasFound
+                            ? {
+                                  ...res,
+                                  data: newCollection,
+                                  total: res.total! - 1,
+                              }
+                            : res;
+                    },
+                    { updatedAt }
+                );
+
+                return params.previousData;
+            },
+            getQueryKeys: ({ resource }) => {
+                const queryKeys = [
+                    [resource, 'getList'],
+                    [resource, 'getInfiniteList'],
+                    [resource, 'getMany'],
+                    [resource, 'getManyReference'],
+                ];
+                return queryKeys;
+            },
+            onSettled: (...args) => {
+                const [, , , mutateResult] = args;
+
+                // For deletion, we always refetch after error or success:
+                (mutateResult as { snapshot: Snapshot }).snapshot.forEach(
+                    ([queryKey]) => {
+                        queryClient.invalidateQueries({ queryKey });
+                    }
+                );
+
+                onSettled?.(...args);
+            },
+        }
+    );
+
+    const deleteOne = useEvent(
+        (
+            callTimeResource: string | undefined = resource,
+            callTimeParams: Partial<DeleteParams<RecordType>> = {},
+            callTimeOptions: MutateOptions<
+                RecordType | undefined,
+                MutationError,
+                Partial<UseDeleteMutateParams<RecordType>>,
+                unknown
+            > & {
+                mutationMode?: MutationMode;
+                returnPromise?: boolean;
+            } = {}
+        ) => {
+            return mutate(
+                {
+                    resource: callTimeResource,
+                    ...callTimeParams,
+                },
+                callTimeOptions
+            );
+        }
+    );
+
+    return [deleteOne, mutationResult];
 };
 
 export interface UseDeleteMutateParams<RecordType extends RaRecord = any> {
-  resource?: string;
-  id?: RecordType['id'];
-  data?: Partial<RecordType>;
-  previousData?: any;
-  meta?: any;
+    resource?: string;
+    id?: RecordType['id'];
+    data?: Partial<RecordType>;
+    previousData?: any;
+    meta?: any;
 }
 
-export type UseDeleteOptions<RecordType extends RaRecord = any, MutationError = unknown> = Omit<
-  UseMutationOptions<RecordType, MutationError, Partial<UseDeleteMutateParams<RecordType>>>,
-  'mutationFn'
+export type UseDeleteOptions<
+    RecordType extends RaRecord = any,
+    MutationError = unknown,
+> = Omit<
+    UseMutationOptions<
+        RecordType,
+        MutationError,
+        Partial<UseDeleteMutateParams<RecordType>>
+    >,
+    'mutationFn'
 > & {
-  mutationMode?: MutationMode;
-  returnPromise?: boolean;
+    mutationMode?: MutationMode;
+    returnPromise?: boolean;
 };
 
 export type UseDeleteResult<
-  RecordType extends RaRecord = any,
-  MutationError = unknown,
-  TReturnPromise extends boolean = boolean,
+    RecordType extends RaRecord = any,
+    MutationError = unknown,
+    TReturnPromise extends boolean = boolean,
 > = [
-  (
-    resource?: string,
-    params?: Partial<DeleteParams<RecordType>>,
-    options?: MutateOptions<
-      RecordType | undefined,
-      MutationError,
-      Partial<UseDeleteMutateParams<RecordType>>,
-      unknown
-    > & {
-      mutationMode?: MutationMode;
-      returnPromise?: TReturnPromise;
-    },
-  ) => Promise<TReturnPromise extends true ? RecordType | undefined : void>,
-  UseMutationResult<
-    RecordType | undefined,
-    MutationError,
-    Partial<DeleteParams<RecordType> & { resource?: string }>,
-    unknown
-  > & { isLoading: boolean },
+    (
+        resource?: string,
+        params?: Partial<DeleteParams<RecordType>>,
+        options?: MutateOptions<
+            RecordType | undefined,
+            MutationError,
+            Partial<UseDeleteMutateParams<RecordType>>,
+            unknown
+        > & {
+            mutationMode?: MutationMode;
+            returnPromise?: TReturnPromise;
+        }
+    ) => Promise<TReturnPromise extends true ? RecordType | undefined : void>,
+    UseMutationResult<
+        RecordType | undefined,
+        MutationError,
+        Partial<DeleteParams<RecordType> & { resource?: string }>,
+        unknown
+    > & { isLoading: boolean },
 ];

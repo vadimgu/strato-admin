@@ -42,83 +42,91 @@ import { useWrappedSource } from '../core';
  *     </Edit>
  * );
  */
-export const FormDataConsumer = <TFieldValues extends FieldValues = FieldValues>(
-  props: ConnectedProps<TFieldValues>,
+export const FormDataConsumer = <
+    TFieldValues extends FieldValues = FieldValues,
+>(
+    props: ConnectedProps<TFieldValues>
 ) => {
-  const form = useFormContext<TFieldValues>();
-  const {
-    formState: {
-      // Don't know exactly why, but this is needed for the form values to be updated
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      isDirty,
-    },
-  } = form;
-  const formData = useFormValues<TFieldValues>();
-  return <FormDataConsumerView<TFieldValues> formData={formData} {...props} />;
+    const form = useFormContext<TFieldValues>();
+    const {
+        formState: {
+            // Don't know exactly why, but this is needed for the form values to be updated
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            isDirty,
+        },
+    } = form;
+    const formData = useFormValues<TFieldValues>();
+    return (
+        <FormDataConsumerView<TFieldValues> formData={formData} {...props} />
+    );
 };
 
-export const FormDataConsumerView = <TFieldValues extends FieldValues = FieldValues>(props: Props<TFieldValues>) => {
-  const { children, formData, source } = props;
-  let result;
+export const FormDataConsumerView = <
+    TFieldValues extends FieldValues = FieldValues,
+>(
+    props: Props<TFieldValues>
+) => {
+    const { children, formData, source } = props;
+    let result;
 
-  const finalSource = useWrappedSource(source || '');
+    const finalSource = useWrappedSource(source || '');
 
-  // Passes an empty string here as we don't have the children sources and we just want to know if we are in an iterator
-  const matches = ArraySourceRegex.exec(finalSource);
+    // Passes an empty string here as we don't have the children sources and we just want to know if we are in an iterator
+    const matches = ArraySourceRegex.exec(finalSource);
 
-  // If we have an index, we are in an iterator like component (such as the SimpleFormIterator)
-  if (matches) {
-    const scopedFormData = get(formData, matches[0]);
-    result = children({ formData, scopedFormData });
-  } else {
-    result = children({ formData });
-  }
+    // If we have an index, we are in an iterator like component (such as the SimpleFormIterator)
+    if (matches) {
+        const scopedFormData = get(formData, matches[0]);
+        result = children({ formData, scopedFormData });
+    } else {
+        result = children({ formData });
+    }
 
-  return result === undefined ? null : result;
+    return result === undefined ? null : result;
 };
 
 const ArraySourceRegex = new RegExp(/.+\.\d+$/);
 
 export interface FormDataConsumerRenderParams<
-  TFieldValues extends FieldValues = FieldValues,
-  TScopedFieldValues extends FieldValues = TFieldValues,
+    TFieldValues extends FieldValues = FieldValues,
+    TScopedFieldValues extends FieldValues = TFieldValues,
 > {
-  formData: TFieldValues;
-  scopedFormData?: TScopedFieldValues;
+    formData: TFieldValues;
+    scopedFormData?: TScopedFieldValues;
 }
 
-export type FormDataConsumerRender<TFieldValues extends FieldValues = FieldValues> = (
-  params: FormDataConsumerRenderParams<TFieldValues>,
-) => ReactNode;
+export type FormDataConsumerRender<
+    TFieldValues extends FieldValues = FieldValues,
+> = (params: FormDataConsumerRenderParams<TFieldValues>) => ReactNode;
 
 interface ConnectedProps<TFieldValues extends FieldValues = FieldValues> {
-  children: FormDataConsumerRender<TFieldValues>;
-  /**
-   * @deprecated This prop will be removed in a future major release.
-   */
-  form?: string;
+    children: FormDataConsumerRender<TFieldValues>;
+    /**
+     * @deprecated This prop will be removed in a future major release.
+     */
+    form?: string;
 
-  /**
-   * @deprecated This prop will be removed in a future major release.
-   */
-  record?: any;
+    /**
+     * @deprecated This prop will be removed in a future major release.
+     */
+    record?: any;
 
-  /**
-   * @deprecated This prop will be removed in a future major release.
-   */
-  source?: string;
+    /**
+     * @deprecated This prop will be removed in a future major release.
+     */
+    source?: string;
 
-  /**
-   * @deprecated This prop will be removed in a future major release.
-   */
-  [key: string]: any;
+    /**
+     * @deprecated This prop will be removed in a future major release.
+     */
+    [key: string]: any;
 }
 
 interface Props<TFieldValues extends FieldValues> extends ConnectedProps {
-  formData: TFieldValues;
+    formData: TFieldValues;
 
-  /**
-   * @deprecated This prop will be removed in a future major release.
-   */
-  index?: number;
+    /**
+     * @deprecated This prop will be removed in a future major release.
+     */
+    index?: number;
 }

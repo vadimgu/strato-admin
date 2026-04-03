@@ -1,6 +1,10 @@
 import * as React from 'react';
 import { ReactNode } from 'react';
-import { useCreateController, CreateControllerProps, CreateControllerResult } from './useCreateController';
+import {
+    useCreateController,
+    CreateControllerProps,
+    CreateControllerResult,
+} from './useCreateController';
 import { CreateContextProvider } from './CreateContextProvider';
 import { Identifier, RaRecord } from '../../types';
 import { OptionalResourceContextProvider } from '../../core';
@@ -36,50 +40,67 @@ import { useIsAuthPending } from '../../auth';
  * );
  */
 export const CreateBase = <
-  RecordType extends Omit<RaRecord, 'id'> = any,
-  ResultRecordType extends RaRecord = RecordType & { id: Identifier },
-  MutationOptionsError = Error,
+    RecordType extends Omit<RaRecord, 'id'> = any,
+    ResultRecordType extends RaRecord = RecordType & { id: Identifier },
+    MutationOptionsError = Error,
 >({
-  children,
-  render,
-  loading,
-  authLoading = loading,
-  ...props
+    children,
+    render,
+    loading,
+    authLoading = loading,
+    ...props
 }: CreateBaseProps<RecordType, ResultRecordType, MutationOptionsError>) => {
-  const controllerProps = useCreateController<RecordType, MutationOptionsError, ResultRecordType>(props);
+    const controllerProps = useCreateController<
+        RecordType,
+        MutationOptionsError,
+        ResultRecordType
+    >(props);
 
-  const isAuthPending = useIsAuthPending({
-    resource: controllerProps.resource,
-    action: 'create',
-  });
+    const isAuthPending = useIsAuthPending({
+        resource: controllerProps.resource,
+        action: 'create',
+    });
 
-  if (!render && !children) {
-    throw new Error('<CreateBase> requires either a `render` prop or `children` prop');
-  }
+    if (!render && !children) {
+        throw new Error(
+            '<CreateBase> requires either a `render` prop or `children` prop'
+        );
+    }
 
-  const showAuthLoading =
-    isAuthPending && !props.disableAuthentication && authLoading !== false && authLoading !== undefined;
+    const showAuthLoading =
+        isAuthPending &&
+        !props.disableAuthentication &&
+        authLoading !== false &&
+        authLoading !== undefined;
 
-  return (
-    // We pass props.resource here as we don't need to create a new ResourceContext if the props is not provided
-    <OptionalResourceContextProvider value={props.resource}>
-      <CreateContextProvider value={controllerProps}>
-        {showAuthLoading ? authLoading : render ? render(controllerProps) : children}
-      </CreateContextProvider>
-    </OptionalResourceContextProvider>
-  );
+    return (
+        // We pass props.resource here as we don't need to create a new ResourceContext if the props is not provided
+        <OptionalResourceContextProvider value={props.resource}>
+            <CreateContextProvider value={controllerProps}>
+                {showAuthLoading
+                    ? authLoading
+                    : render
+                      ? render(controllerProps)
+                      : children}
+            </CreateContextProvider>
+        </OptionalResourceContextProvider>
+    );
 };
 
 export interface CreateBaseProps<
-  RecordType extends Omit<RaRecord, 'id'> = any,
-  ResultRecordType extends RaRecord = RecordType & { id: Identifier },
-  MutationOptionsError = Error,
-> extends CreateControllerProps<RecordType, MutationOptionsError, ResultRecordType> {
-  children?: ReactNode;
-  render?: (props: CreateControllerResult<RecordType>) => ReactNode;
-  authLoading?: ReactNode;
-  /**
-   * @deprecated use authLoading instead
-   */
-  loading?: ReactNode;
+    RecordType extends Omit<RaRecord, 'id'> = any,
+    ResultRecordType extends RaRecord = RecordType & { id: Identifier },
+    MutationOptionsError = Error,
+> extends CreateControllerProps<
+        RecordType,
+        MutationOptionsError,
+        ResultRecordType
+    > {
+    children?: ReactNode;
+    render?: (props: CreateControllerResult<RecordType>) => ReactNode;
+    authLoading?: ReactNode;
+    /**
+     * @deprecated use authLoading instead
+     */
+    loading?: ReactNode;
 }

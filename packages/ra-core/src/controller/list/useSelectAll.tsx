@@ -40,84 +40,94 @@ import type { FilterPayload, RaRecord, SortPayload } from '../../types';
  *     </List>
  * );
  */
-export const useSelectAll = (params: UseSelectAllParams): UseSelectAllResult => {
-  const { sort, filter, storeKey, disableSyncWithStore } = params;
-  const resource = useResourceContext(params);
-  if (!resource) {
-    throw new Error('useSelectAll should be used inside a ResourceContextProvider or passed a resource prop');
-  }
-  const dataProvider = useDataProvider();
-  const queryClient = useQueryClient();
-  const [, { select }] = useRecordSelection({
-    resource,
-    storeKey,
-    disableSyncWithStore,
-  });
-  const notify = useNotify();
-
-  const handleSelectAll = useEvent(async ({ queryOptions = {}, limit = 250 }: HandleSelectAllParams = {}) => {
-    const { meta, onSuccess, onError, ...otherQueryOptions } = queryOptions;
-    try {
-      const results = await queryClient.fetchQuery({
-        queryKey: [
-          resource,
-          'getList',
-          {
-            pagination: { page: 1, perPage: limit },
-            sort,
-            filter,
-            meta,
-          },
-        ],
-        queryFn: () =>
-          dataProvider.getList(resource, {
-            pagination: {
-              page: 1,
-              perPage: limit,
-            },
-            sort,
-            filter,
-            meta,
-          }),
-        ...otherQueryOptions,
-      });
-
-      const allIds = results.data?.map(({ id }) => id) || [];
-      select(allIds);
-      if (allIds.length === limit) {
-        notify('ra.message.select_all_limit_reached', {
-          messageArgs: { max: limit },
-          type: 'warning',
-        });
-      }
-
-      if (onSuccess) {
-        onSuccess(results);
-      }
-
-      return results.data;
-    } catch (error) {
-      if (onError) {
-        onError(error);
-      } else {
-        notify('ra.notification.http_error', { type: 'warning' });
-      }
+export const useSelectAll = (
+    params: UseSelectAllParams
+): UseSelectAllResult => {
+    const { sort, filter, storeKey, disableSyncWithStore } = params;
+    const resource = useResourceContext(params);
+    if (!resource) {
+        throw new Error(
+            'useSelectAll should be used inside a ResourceContextProvider or passed a resource prop'
+        );
     }
-  });
-  return handleSelectAll;
+    const dataProvider = useDataProvider();
+    const queryClient = useQueryClient();
+    const [, { select }] = useRecordSelection({
+        resource,
+        storeKey,
+        disableSyncWithStore,
+    });
+    const notify = useNotify();
+
+    const handleSelectAll = useEvent(
+        async ({
+            queryOptions = {},
+            limit = 250,
+        }: HandleSelectAllParams = {}) => {
+            const { meta, onSuccess, onError, ...otherQueryOptions } =
+                queryOptions;
+            try {
+                const results = await queryClient.fetchQuery({
+                    queryKey: [
+                        resource,
+                        'getList',
+                        {
+                            pagination: { page: 1, perPage: limit },
+                            sort,
+                            filter,
+                            meta,
+                        },
+                    ],
+                    queryFn: () =>
+                        dataProvider.getList(resource, {
+                            pagination: {
+                                page: 1,
+                                perPage: limit,
+                            },
+                            sort,
+                            filter,
+                            meta,
+                        }),
+                    ...otherQueryOptions,
+                });
+
+                const allIds = results.data?.map(({ id }) => id) || [];
+                select(allIds);
+                if (allIds.length === limit) {
+                    notify('ra.message.select_all_limit_reached', {
+                        messageArgs: { max: limit },
+                        type: 'warning',
+                    });
+                }
+
+                if (onSuccess) {
+                    onSuccess(results);
+                }
+
+                return results.data;
+            } catch (error) {
+                if (onError) {
+                    onError(error);
+                } else {
+                    notify('ra.notification.http_error', { type: 'warning' });
+                }
+            }
+        }
+    );
+    return handleSelectAll;
 };
 
 export interface UseSelectAllParams {
-  resource?: string;
-  sort?: SortPayload;
-  filter?: FilterPayload;
-  storeKey?: string;
-  disableSyncWithStore?: boolean;
+    resource?: string;
+    sort?: SortPayload;
+    filter?: FilterPayload;
+    storeKey?: string;
+    disableSyncWithStore?: boolean;
 }
 
 export interface HandleSelectAllParams<RecordType extends RaRecord = any> {
-  limit?: number;
-  queryOptions?: UseGetListOptions<RecordType>;
+    limit?: number;
+    queryOptions?: UseGetListOptions<RecordType>;
 }
 
 export type UseSelectAllResult = (options?: HandleSelectAllParams) => void;

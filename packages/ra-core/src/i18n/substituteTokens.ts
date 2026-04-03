@@ -6,14 +6,21 @@
  * @returns {string} The interpolated string, e.g. 'Hello, John'
  */
 export const substituteTokens = (template, data) =>
-  template && data
-    ? String.prototype.replace.call(template, defaultTokenRegex, function (expression, argument) {
-        if (!data.hasOwnProperty(argument) || data[argument] == null) {
-          return expression;
-        }
-        return data[argument];
-      })
-    : template;
+    template && data
+        ? String.prototype.replace.call(
+              template,
+              defaultTokenRegex,
+              function (expression, argument) {
+                  if (
+                      !data.hasOwnProperty(argument) ||
+                      data[argument] == null
+                  ) {
+                      return expression;
+                  }
+                  return data[argument];
+              }
+          )
+        : template;
 
 // tokens are like 'Hello, %{name}'
 const defaultTokenRegex = /%\{(.*?)\}/g;

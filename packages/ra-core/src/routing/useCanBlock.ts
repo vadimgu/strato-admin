@@ -7,6 +7,6 @@ import { useRouterProvider } from './RouterProviderContext';
  * @returns {boolean} Whether blocking is supported
  */
 export const useCanBlock = (): boolean => {
-  const provider = useRouterProvider();
-  return provider.useCanBlock();
+    const provider = useRouterProvider();
+    return provider.useCanBlock();
 };

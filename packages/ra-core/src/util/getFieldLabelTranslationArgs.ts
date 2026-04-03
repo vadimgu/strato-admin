@@ -1,11 +1,11 @@
 import { transform } from 'inflection';
 
 interface Args {
-  label?: string;
-  defaultLabel?: string;
-  resource?: string;
-  resourceFromContext?: string;
-  source?: string;
+    label?: string;
+    defaultLabel?: string;
+    resource?: string;
+    resourceFromContext?: string;
+    source?: string;
 }
 
 type TranslationArguments = [string, any?];
@@ -21,35 +21,48 @@ type TranslationArguments = [string, any?];
  *
  * @see useTranslateLabel for a ready-to-use hook
  */
-export const getFieldLabelTranslationArgs = (options?: Args): TranslationArguments => {
-  if (!options) return [''];
-  const { label, defaultLabel, resource, resourceFromContext, source } = options;
+export const getFieldLabelTranslationArgs = (
+    options?: Args
+): TranslationArguments => {
+    if (!options) return [''];
+    const { label, defaultLabel, resource, resourceFromContext, source } =
+        options;
 
-  if (typeof label !== 'undefined') return [label, { _: label }];
+    if (typeof label !== 'undefined') return [label, { _: label }];
 
-  if (typeof source === 'undefined') return [''];
+    if (typeof source === 'undefined') return [''];
 
-  const { sourceWithoutDigits, sourceSuffix } = getSourceParts(source);
+    const { sourceWithoutDigits, sourceSuffix } = getSourceParts(source);
 
-  const defaultLabelTranslation = transform(sourceSuffix.replace(/\./g, ' '), ['underscore', 'humanize']);
+    const defaultLabelTranslation = transform(
+        sourceSuffix.replace(/\./g, ' '),
+        ['underscore', 'humanize']
+    );
 
-  if (resource) {
-    return [getResourceFieldLabelKey(resource, sourceWithoutDigits), { _: defaultLabelTranslation }];
-  }
+    if (resource) {
+        return [
+            getResourceFieldLabelKey(resource, sourceWithoutDigits),
+            { _: defaultLabelTranslation },
+        ];
+    }
 
-  if (defaultLabel) {
-    return [defaultLabel, { _: defaultLabelTranslation }];
-  }
+    if (defaultLabel) {
+        return [defaultLabel, { _: defaultLabelTranslation }];
+    }
 
-  return [
-    getResourceFieldLabelKey(resourceFromContext || 'undefined', sourceWithoutDigits),
-    { _: defaultLabelTranslation },
-  ];
+    return [
+        getResourceFieldLabelKey(
+            resourceFromContext || 'undefined',
+            sourceWithoutDigits
+        ),
+        { _: defaultLabelTranslation },
+    ];
 };
 
 export default getFieldLabelTranslationArgs;
 
-export const getResourceFieldLabelKey = (resource: string, source: string) => `resources.${resource}.fields.${source}`;
+export const getResourceFieldLabelKey = (resource: string, source: string) =>
+    `resources.${resource}.fields.${source}`;
 
 /**
  * Uses the source string to guess a translation message and a default label.
@@ -61,27 +74,30 @@ export const getResourceFieldLabelKey = (resource: string, source: string) => `r
  * getSourceParts('pictures.12.urls.5.protocol') // { sourceWithoutDigits: 'pictures.urls.protocol', sourceSuffix: 'protocol' }
  */
 const getSourceParts = (source: string) => {
-  // remove digits, e.g. 'book.authors.2.categories.3.identifier.name' => 'book.authors.categories.identifier.name'
-  const sourceWithoutDigits = source.replace(/\.\d+\./g, '.');
-  // get final part, e.g. 'book.authors.2.categories.3.identifier.name' => 'identifier.name'
-  // we're not using a regexp here to avoid code scanning alert "Polynomial regular expression used on uncontrolled data"
-  const parts = source.split('.');
-  let lastPartWithDigits;
-  parts.forEach((part, index) => {
-    if (onlyDigits(part)) {
-      lastPartWithDigits = index;
-    }
-  });
-  const sourceSuffix = lastPartWithDigits != null ? parts.slice(lastPartWithDigits + 1).join('.') : source;
+    // remove digits, e.g. 'book.authors.2.categories.3.identifier.name' => 'book.authors.categories.identifier.name'
+    const sourceWithoutDigits = source.replace(/\.\d+\./g, '.');
+    // get final part, e.g. 'book.authors.2.categories.3.identifier.name' => 'identifier.name'
+    // we're not using a regexp here to avoid code scanning alert "Polynomial regular expression used on uncontrolled data"
+    const parts = source.split('.');
+    let lastPartWithDigits;
+    parts.forEach((part, index) => {
+        if (onlyDigits(part)) {
+            lastPartWithDigits = index;
+        }
+    });
+    const sourceSuffix =
+        lastPartWithDigits != null
+            ? parts.slice(lastPartWithDigits + 1).join('.')
+            : source;
 
-  return { sourceWithoutDigits, sourceSuffix };
+    return { sourceWithoutDigits, sourceSuffix };
 };
 
 // 48 and 57 are the char codes for "0" and "9", respectively
-const onlyDigits = (s) => {
-  for (let i = s.length - 1; i >= 0; i--) {
-    const d = s.charCodeAt(i);
-    if (d < 48 || d > 57) return false;
-  }
-  return true;
+const onlyDigits = s => {
+    for (let i = s.length - 1; i >= 0; i--) {
+        const d = s.charCodeAt(i);
+        if (d < 48 || d > 57) return false;
+    }
+    return true;
 };
