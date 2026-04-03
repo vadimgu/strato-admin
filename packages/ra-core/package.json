@@ -1,6 +1,6 @@
 {
     "name": "@strato-admin/ra-core",
-    "version": "0.1.1",
+    "version": "0.3.0",
     "description": "Core components of react-admin, a frontend Framework for building admin applications on top of REST services, using ES6, React",
     "files": [
         "*.md",

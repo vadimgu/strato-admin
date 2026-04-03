@@ -1,7 +1,8 @@
 # @strato-admin/language-en
 
-## 0.1.1
+## 0.3.0
 
-### Patch Changes
+### Minor Changes
 
-- f565c8b: add confirmation dialog to <BulkDeleteButton>
+- Add global settings
+- Add documentation

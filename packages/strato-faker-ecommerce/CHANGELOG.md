@@ -1,7 +1,8 @@
 # @strato-admin/faker-ecommerce
 
-## 0.1.1
+## 0.3.0
 
-### Patch Changes
+### Minor Changes
 
-- @strato-admin/ra-core@0.1.1
+- Add global settings
+- Add documentation

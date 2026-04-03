@@ -1,6 +1,6 @@
 {
   "name": "@strato-admin/create",
-  "version": "0.1.0",
+  "version": "0.3.0",
   "description": "Create a new Strato Admin project",
   "type": "module",
   "main": "dist/index.js",
