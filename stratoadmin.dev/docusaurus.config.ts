@@ -1,6 +1,9 @@
 import { themes as prismThemes } from 'prism-react-renderer';
 import type { Config } from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
+const { version } = require('./package.json') as { version: string };
 
 // This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
 
@@ -135,6 +138,11 @@ const config: Config = {
           href: 'https://github.com/vadimgu/strato-admin',
           label: 'GitHub',
           position: 'right',
+        },
+        {
+          type: 'html',
+          position: 'right',
+          value: `<span class="navbar__version">v${version}</span>`,
         },
       ],
     },
