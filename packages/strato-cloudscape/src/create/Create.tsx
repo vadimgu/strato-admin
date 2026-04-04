@@ -1,11 +1,6 @@
 import React from 'react';
-import { CreateBase, type RaRecord, type CreateBaseProps, Identifier, useTranslate } from '@strato-admin/ra-core';
-import {
-  ResourceSchemaProvider,
-  useResourceSchema,
-  useConstructedPageTitle,
-  useSettingValue,
-} from '@strato-admin/core';
+import { CreateBase, type RaRecord, type CreateBaseProps, Identifier } from '@strato-admin/ra-core';
+import { ResourceSchemaProvider, useCreateMeta, useResourceSchema, useSettings } from '@strato-admin/core';
 import Container from '@cloudscape-design/components/container';
 import { CreateHeader } from './CreateHeader';
 import Form from '../form/Form';
@@ -41,34 +36,12 @@ const CreateUI = ({
   exclude?: string[];
   saveButtonLabel?: string;
 }) => {
-  const { label, createTitle, createDescription } = useResourceSchema();
-  const translate = useTranslate();
-  const constructedTitle = useConstructedPageTitle('create', label);
+  const { title: resolvedTitle, description: resolvedDescription } = useCreateMeta({ title, description });
 
-  const finalTitle = React.useMemo(() => {
-    if (typeof title === 'function') return title({});
-    if (React.isValidElement(title)) return title;
-    if (title) return translate(title as string);
-    if (React.isValidElement(createTitle)) return createTitle;
-    if (createTitle) return translate(createTitle as string);
-    return constructedTitle;
-  }, [title, createTitle, translate, constructedTitle]);
-
-  const finalDescription = React.useMemo(() => {
-    if (typeof description === 'function') return description({});
-    if (React.isValidElement(description)) return description;
-    if (description) return translate(description as string);
-    if (React.isValidElement(createDescription)) return createDescription;
-    if (createDescription) return translate(createDescription as string);
-    return undefined;
-  }, [description, createDescription, translate]);
-
-  const finalSaveButtonLabel = saveButtonLabel ? translate(saveButtonLabel) : translate('Create');
-
-  const finalChildren = children || <Form include={include} exclude={exclude} saveButtonLabel={finalSaveButtonLabel} />;
+  const finalChildren = children || <Form include={include} exclude={exclude} saveButtonLabel={saveButtonLabel} />;
 
   return (
-    <Container header={<CreateHeader title={finalTitle} description={finalDescription} actions={actions} />}>
+    <Container header={<CreateHeader title={resolvedTitle} description={resolvedDescription} actions={actions} />}>
       {finalChildren}
     </Container>
   );
@@ -99,8 +72,10 @@ export const Create = <RecordType extends RaRecord = RaRecord>({
   saveButtonLabel,
   ...props
 }: CreateProps<RecordType>) => {
-  const resolve = useSettingValue();
-  const resolvedRedirect = redirect !== undefined ? redirect : resolve(undefined, 'createRedirect');
+  const { createRedirect } = useResourceSchema(props.resource);
+  const settings = useSettings();
+  const resolvedRedirect =
+    redirect !== undefined ? redirect : createRedirect !== undefined ? createRedirect : settings.createRedirect;
   return (
     <CreateBase redirect={resolvedRedirect} {...props}>
       <ResourceSchemaProvider resource={props.resource}>

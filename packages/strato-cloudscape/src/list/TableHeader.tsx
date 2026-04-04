@@ -5,12 +5,22 @@ import { useListContext, useTranslate, useLocale } from '@strato-admin/ra-core';
 import { BulkDeleteButton } from '../button/BulkDeleteButton';
 import { CreateButton } from '../button/CreateButton';
 
-export interface TableHeaderProps
-  extends Pick<HeaderProps, 'variant' | 'counter' | 'actions' | 'description' | 'info' | 'headingTagOverride'> {
+export interface TableHeaderProps extends Pick<
+  HeaderProps,
+  'variant' | 'counter' | 'actions' | 'description' | 'info' | 'headingTagOverride'
+> {
   title?: React.ReactNode;
 }
 
-export const TableHeader = ({ title, actions, description, counter, info, variant = 'h2', headingTagOverride }: TableHeaderProps) => {
+export const TableHeader = ({
+  title,
+  actions,
+  description,
+  counter,
+  info,
+  variant = 'h2',
+  headingTagOverride,
+}: TableHeaderProps) => {
   const translate = useTranslate();
   const locale = useLocale();
   const { defaultTitle } = useListContext();
@@ -33,7 +43,14 @@ export const TableHeader = ({ title, actions, description, counter, info, varian
     );
 
   return (
-    <Header variant={variant} actions={headerActions} counter={counter} description={description} info={info} headingTagOverride={headingTagOverride}>
+    <Header
+      variant={variant}
+      actions={headerActions}
+      counter={counter}
+      description={description}
+      info={info}
+      headingTagOverride={headingTagOverride}
+    >
       {headerTitle}
     </Header>
   );

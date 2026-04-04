@@ -5,8 +5,12 @@ import { FormFieldContext, useFormFieldContext } from './FormFieldContext';
 import { InputProps } from './types';
 
 export interface TextInputProps
-  extends InputProps,
-  Pick<CloudscapeInputProps, 'placeholder' | 'disabled' | 'readOnly' | 'autoFocus' | 'autoComplete' | 'spellcheck' | 'inputMode'> {
+  extends
+    InputProps,
+    Pick<
+      CloudscapeInputProps,
+      'placeholder' | 'disabled' | 'readOnly' | 'autoFocus' | 'autoComplete' | 'spellcheck' | 'inputMode'
+    > {
   type?: CloudscapeInputProps['type'];
 }
 
@@ -28,7 +32,6 @@ export const TextInput = (props: TextInputProps) => {
     autoComplete,
     spellcheck,
     inputMode,
-
   } = props;
   const context = useFormFieldContext();
   const inputState = context ?? useInput({ source, defaultValue, validate });
@@ -56,7 +59,14 @@ export const TextInput = (props: TextInputProps) => {
 
   return (
     <FormFieldContext.Provider value={inputState}>
-      <FormField source={source} label={label} description={description} constraintText={constraintText} info={info} secondaryControl={secondaryControl}>
+      <FormField
+        source={source}
+        label={label}
+        description={description}
+        constraintText={constraintText}
+        info={info}
+        secondaryControl={secondaryControl}
+      >
         {inner}
       </FormField>
     </FormFieldContext.Provider>

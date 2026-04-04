@@ -110,6 +110,51 @@ export interface ResourceSchemaProps<RecordType extends Record<string, any> = an
    * @example "{smart_count, plural, =1 {Product deleted} other {# products deleted}}"
    */
   bulkDeleteSuccessMessage?: string;
+  /**
+   * Title for the bulk delete confirmation dialog.
+   * Accepts a plain string or an ICU message with {smart_count} for the count.
+   */
+  bulkDeleteTitle?: string;
+  /**
+   * Description for the bulk delete confirmation dialog.
+   * Accepts a plain string or an ICU message with {smart_count} for the count.
+   */
+  bulkDeleteDescription?: string;
+  /**
+   * Title for the single-record delete confirmation dialog.
+   * Accepts a plain string or an ICU message.
+   */
+  deleteTitle?: string;
+  /**
+   * Description for the single-record delete confirmation dialog.
+   * Accepts a plain string or an ICU message.
+   */
+  deleteDescription?: string;
+  /**
+   * Success message shown after creating a record.
+   * Accepts a plain string or an ICU message.
+   */
+  createSuccessMessage?: string;
+  /**
+   * Success message shown after editing a record.
+   * Accepts a plain string or an ICU message.
+   */
+  editSuccessMessage?: string;
+  /**
+   * Mutation mode for delete and edit operations on this resource.
+   * Overrides the global mutationMode setting.
+   */
+  mutationMode?: 'pessimistic' | 'optimistic' | 'undoable';
+  /**
+   * Where to redirect after creating a record.
+   * Overrides the global createRedirect setting.
+   */
+  createRedirect?: 'list' | 'detail' | 'edit' | false;
+  /**
+   * Where to redirect after editing a record.
+   * Overrides the global editRedirect setting.
+   */
+  editRedirect?: 'list' | 'detail' | false;
 
   /**
    * List of field to include in the list view (Table/Cards).
@@ -209,6 +254,15 @@ export const ResourceSchema = <RecordType extends Record<string, any> = any>({
   delete: deleteProp,
   deleteSuccessMessage,
   bulkDeleteSuccessMessage,
+  bulkDeleteTitle,
+  bulkDeleteDescription,
+  deleteTitle,
+  deleteDescription,
+  createSuccessMessage,
+  editSuccessMessage,
+  mutationMode,
+  createRedirect,
+  editRedirect,
   listInclude,
   listExclude,
   listDisplay,
@@ -266,8 +320,18 @@ export const ResourceSchema = <RecordType extends Record<string, any> = any>({
     listComponent,
     detailComponent,
     queryOptions,
+    perPage,
     deleteSuccessMessage,
     bulkDeleteSuccessMessage,
+    bulkDeleteTitle,
+    bulkDeleteDescription,
+    deleteTitle,
+    deleteDescription,
+    createSuccessMessage,
+    editSuccessMessage,
+    mutationMode,
+    createRedirect,
+    editRedirect,
   };
 
   const getListComponent = () => {
@@ -330,6 +394,15 @@ ResourceSchema.registerResource = <RecordType extends Record<string, any> = any>
     delete: deleteProp,
     deleteSuccessMessage,
     bulkDeleteSuccessMessage,
+    bulkDeleteTitle,
+    bulkDeleteDescription,
+    deleteTitle,
+    deleteDescription,
+    createSuccessMessage,
+    editSuccessMessage,
+    mutationMode,
+    createRedirect,
+    editRedirect,
     listInclude,
     listExclude,
     listDisplay,
@@ -385,6 +458,18 @@ ResourceSchema.registerResource = <RecordType extends Record<string, any> = any>
       listComponent,
       detailComponent,
       queryOptions,
+      perPage,
+      deleteSuccessMessage,
+      bulkDeleteSuccessMessage,
+      bulkDeleteTitle,
+      bulkDeleteDescription,
+      deleteTitle,
+      deleteDescription,
+      createSuccessMessage,
+      editSuccessMessage,
+      mutationMode,
+      createRedirect,
+      editRedirect,
     });
   }
 
@@ -419,8 +504,18 @@ ResourceSchema.registerResource = <RecordType extends Record<string, any> = any>
     listComponent,
     detailComponent,
     queryOptions,
+    perPage,
     deleteSuccessMessage,
     bulkDeleteSuccessMessage,
+    bulkDeleteTitle,
+    bulkDeleteDescription,
+    deleteTitle,
+    deleteDescription,
+    createSuccessMessage,
+    editSuccessMessage,
+    mutationMode,
+    createRedirect,
+    editRedirect,
   };
 
   const getListComponent = () => {

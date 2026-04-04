@@ -5,12 +5,41 @@ import { FormFieldContext, useFormFieldContext } from './FormFieldContext';
 import { InputProps } from './types';
 
 export interface SliderInputProps
-  extends InputProps,
+  extends
+    InputProps,
     Partial<Pick<CloudscapeSliderProps, 'min' | 'max'>>,
-    Pick<CloudscapeSliderProps, 'step' | 'disabled' | 'readOnly' | 'valueFormatter' | 'tickMarks' | 'referenceValues' | 'hideFillLine' | 'ariaLabel' | 'ariaDescription'> {}
+    Pick<
+      CloudscapeSliderProps,
+      | 'step'
+      | 'disabled'
+      | 'readOnly'
+      | 'valueFormatter'
+      | 'tickMarks'
+      | 'referenceValues'
+      | 'hideFillLine'
+      | 'ariaLabel'
+      | 'ariaDescription'
+    > {}
 
 export const SliderInput = (props: SliderInputProps) => {
-  const { label, source, defaultValue, validate, min, max, step, disabled, readOnly, valueFormatter, tickMarks, referenceValues, hideFillLine, ariaLabel, ariaDescription, ...rest } = props;
+  const {
+    label,
+    source,
+    defaultValue,
+    validate,
+    min,
+    max,
+    step,
+    disabled,
+    readOnly,
+    valueFormatter,
+    tickMarks,
+    referenceValues,
+    hideFillLine,
+    ariaLabel,
+    ariaDescription,
+    ...rest
+  } = props;
   const context = useFormFieldContext();
   const inputState =
     context ??

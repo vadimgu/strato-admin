@@ -74,10 +74,7 @@ export const TopNavigation = ({ utilities: providedUtilities, identity, extraUti
 
   return (
     <div id="header">
-      <CloudscapeTopNavigation
-        identity={identity || { title: 'Strato Admin', href: '/' }}
-        utilities={utilities}
-      />
+      <CloudscapeTopNavigation identity={identity || { title: 'Strato Admin', href: '/' }} utilities={utilities} />
     </div>
   );
 };

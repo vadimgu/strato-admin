@@ -1,6 +1,6 @@
 import React from 'react';
-import { ListBase, type RaRecord, type ListBaseProps, useTranslate } from '@strato-admin/ra-core';
-import { ResourceSchemaProvider, useResourceSchema, useConstructedPageTitle, useSettings } from '@strato-admin/core';
+import { ListBase, type RaRecord, type ListBaseProps } from '@strato-admin/ra-core';
+import { ResourceSchemaProvider, useResourceSchema, useListMeta, useSettings } from '@strato-admin/core';
 import Table from './Table';
 
 export interface ListProps<RecordType extends RaRecord = any> extends ListBaseProps<RecordType> {
@@ -47,27 +47,11 @@ const ListUI = ({
   preferences?: boolean | React.ReactNode;
   display?: string[];
 }) => {
-  const { label, listTitle, listDescription, listComponent: ListComponent = Table } = useResourceSchema();
-  const translate = useTranslate();
-  const constructedTitle = useConstructedPageTitle('list', label);
-
-  const finalTitle = React.useMemo(() => {
-    if (typeof title === 'function') return title();
-    if (React.isValidElement(title)) return title;
-    if (title) return translate(title as string);
-    if (React.isValidElement(listTitle)) return listTitle;
-    if (listTitle) return translate(listTitle as string);
-    return constructedTitle;
-  }, [title, listTitle, translate, constructedTitle]);
-
-  const finalDescription = React.useMemo(() => {
-    if (typeof description === 'function') return description();
-    if (React.isValidElement(description)) return description;
-    if (description) return translate(description as string);
-    if (React.isValidElement(listDescription)) return listDescription;
-    if (listDescription) return translate(listDescription as string);
-    return undefined;
-  }, [description, listDescription, translate]);
+  const {
+    title: finalTitle,
+    description: finalDescription,
+    component: ListComponent = Table,
+  } = useListMeta({ title, description });
 
   const finalChildren = children || (
     <ListComponent
@@ -111,11 +95,11 @@ export const List = <RecordType extends RaRecord = any>({
   display,
   ...props
 }: ListProps<RecordType>) => {
-  const { queryOptions } = useResourceSchema(props.resource);
+  const { queryOptions, perPage: schemaPerPage } = useResourceSchema(props.resource);
   const { listPageSize } = useSettings();
 
   return (
-    <ListBase queryOptions={queryOptions} {...props} perPage={props.perPage ?? listPageSize}>
+    <ListBase queryOptions={queryOptions} {...props} perPage={props.perPage ?? schemaPerPage ?? listPageSize}>
       <ResourceSchemaProvider resource={props.resource}>
         <ListUI
           title={title}

@@ -44,6 +44,18 @@ export interface ResourceSchemas<RecordType extends Record<string, any> = any> {
   listComponent?: ComponentType<any>;
   detailComponent?: ComponentType<any>;
   queryOptions?: any;
+  perPage?: number;
+  deleteSuccessMessage?: string;
+  bulkDeleteSuccessMessage?: string;
+  bulkDeleteTitle?: string;
+  bulkDeleteDescription?: string;
+  deleteTitle?: string;
+  deleteDescription?: string;
+  createSuccessMessage?: string;
+  editSuccessMessage?: string;
+  mutationMode?: 'pessimistic' | 'optimistic' | 'undoable';
+  createRedirect?: 'list' | 'detail' | 'edit' | false;
+  editRedirect?: 'list' | 'detail' | false;
 }
 
 export interface DefaultResourceComponents {
@@ -126,7 +138,19 @@ export const registerGlobalSchemas = <RecordType extends Record<string, any> = a
     schemas.createExclude ||
     schemas.listComponent ||
     schemas.detailComponent ||
-    schemas.queryOptions
+    schemas.queryOptions ||
+    schemas.perPage !== undefined ||
+    schemas.deleteSuccessMessage ||
+    schemas.bulkDeleteSuccessMessage ||
+    schemas.bulkDeleteTitle ||
+    schemas.bulkDeleteDescription ||
+    schemas.deleteTitle ||
+    schemas.deleteDescription ||
+    schemas.createSuccessMessage ||
+    schemas.editSuccessMessage ||
+    schemas.mutationMode !== undefined ||
+    schemas.createRedirect !== undefined ||
+    schemas.editRedirect !== undefined
   ) {
     globalSchemaRegistry[resource] = {
       ...existing,
@@ -352,6 +376,19 @@ export const useResourceSchema = <RecordType extends Record<string, any> = any>(
     let listComponent = (definition as any)?.options?.listComponent;
     let detailComponent = (definition as any)?.options?.detailComponent;
     let queryOptions = (definition as any)?.options?.queryOptions;
+    let perPage: number | undefined = (definition as any)?.options?.perPage;
+    let deleteSuccessMessage = (definition as any)?.options?.deleteSuccessMessage;
+    let bulkDeleteSuccessMessage = (definition as any)?.options?.bulkDeleteSuccessMessage;
+    let bulkDeleteTitle = (definition as any)?.options?.bulkDeleteTitle;
+    let bulkDeleteDescription = (definition as any)?.options?.bulkDeleteDescription;
+    let deleteTitle = (definition as any)?.options?.deleteTitle;
+    let deleteDescription = (definition as any)?.options?.deleteDescription;
+    let createSuccessMessage = (definition as any)?.options?.createSuccessMessage;
+    let editSuccessMessage = (definition as any)?.options?.editSuccessMessage;
+    let mutationMode: 'pessimistic' | 'optimistic' | 'undoable' | undefined = (definition as any)?.options
+      ?.mutationMode;
+    let createRedirect: 'list' | 'detail' | 'edit' | false | undefined = (definition as any)?.options?.createRedirect;
+    let editRedirect: 'list' | 'detail' | false | undefined = (definition as any)?.options?.editRedirect;
 
     // Use registry if we are looking for a different resource,
     // or if the current context has empty schemas (fallback).
@@ -386,6 +423,18 @@ export const useResourceSchema = <RecordType extends Record<string, any> = any>(
         listComponent = listComponent || registrySchemas.listComponent;
         detailComponent = detailComponent || registrySchemas.detailComponent;
         queryOptions = queryOptions || registrySchemas.queryOptions;
+        perPage = perPage ?? registrySchemas.perPage;
+        deleteSuccessMessage = deleteSuccessMessage || registrySchemas.deleteSuccessMessage;
+        bulkDeleteSuccessMessage = bulkDeleteSuccessMessage || registrySchemas.bulkDeleteSuccessMessage;
+        bulkDeleteTitle = bulkDeleteTitle || registrySchemas.bulkDeleteTitle;
+        bulkDeleteDescription = bulkDeleteDescription || registrySchemas.bulkDeleteDescription;
+        deleteTitle = deleteTitle || registrySchemas.deleteTitle;
+        deleteDescription = deleteDescription || registrySchemas.deleteDescription;
+        createSuccessMessage = createSuccessMessage || registrySchemas.createSuccessMessage;
+        editSuccessMessage = editSuccessMessage || registrySchemas.editSuccessMessage;
+        mutationMode = mutationMode !== undefined ? mutationMode : registrySchemas.mutationMode;
+        createRedirect = createRedirect !== undefined ? createRedirect : registrySchemas.createRedirect;
+        editRedirect = editRedirect !== undefined ? editRedirect : registrySchemas.editRedirect;
       }
     }
 
@@ -418,6 +467,18 @@ export const useResourceSchema = <RecordType extends Record<string, any> = any>(
       listComponent,
       detailComponent,
       queryOptions,
+      perPage,
+      deleteSuccessMessage,
+      bulkDeleteSuccessMessage,
+      bulkDeleteTitle,
+      bulkDeleteDescription,
+      deleteTitle,
+      deleteDescription,
+      createSuccessMessage,
+      editSuccessMessage,
+      mutationMode,
+      createRedirect,
+      editRedirect,
       definition,
       label: resource ? getResourceLabel(resource, 2) : undefined, // TODO: stop hardcoding pluralization - translation issues in some languages.
       getField: (source: string) =>

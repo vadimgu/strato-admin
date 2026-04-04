@@ -30,7 +30,9 @@ export const productResource = (
     listTitle="Products"
     detailTitle={<RecordRepresentation />}
     detailDescription="Product"
-    editTitle={(record) => <Message vars={{ repr: <RecordRepresentation record={record} /> }}>{`Edit Product - {repr}`}</Message>}
+    editTitle={(record) => (
+      <Message vars={{ repr: <RecordRepresentation record={record} /> }}>{`Edit Product - {repr}`}</Message>
+    )}
     editDescription="Edit Product"
     listExclude={['description']}
     recordRepresentation="name"

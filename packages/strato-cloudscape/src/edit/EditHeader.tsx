@@ -4,12 +4,22 @@ import SpaceBetween from '@cloudscape-design/components/space-between';
 import { useEditContext, useTranslate } from '@strato-admin/ra-core';
 import { DeleteButton } from '../button/DeleteButton';
 
-export interface EditHeaderProps
-  extends Pick<HeaderProps, 'variant' | 'counter' | 'actions' | 'description' | 'info' | 'headingTagOverride'> {
+export interface EditHeaderProps extends Pick<
+  HeaderProps,
+  'variant' | 'counter' | 'actions' | 'description' | 'info' | 'headingTagOverride'
+> {
   title?: React.ReactNode;
 }
 
-export const EditHeader = ({ title, actions, description, counter, info, variant = 'h2', headingTagOverride }: EditHeaderProps) => {
+export const EditHeader = ({
+  title,
+  actions,
+  description,
+  counter,
+  info,
+  variant = 'h2',
+  headingTagOverride,
+}: EditHeaderProps) => {
   const translate = useTranslate();
   const { defaultTitle } = useEditContext();
 
@@ -31,7 +41,14 @@ export const EditHeader = ({ title, actions, description, counter, info, variant
   );
 
   return (
-    <Header variant={variant} actions={headerActions} description={headerDescription} counter={counter} info={info} headingTagOverride={headingTagOverride}>
+    <Header
+      variant={variant}
+      actions={headerActions}
+      description={headerDescription}
+      counter={counter}
+      info={info}
+      headingTagOverride={headingTagOverride}
+    >
       {headerTitle}
     </Header>
   );

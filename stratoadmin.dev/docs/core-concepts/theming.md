@@ -118,18 +118,18 @@ resetTheme();
 
 Cloudscape uses a structured naming convention for tokens:
 
-| Prefix | Covers |
-|--------|--------|
+| Prefix             | Covers                                                   |
+| ------------------ | -------------------------------------------------------- |
 | `colorBackground*` | Background fills (buttons, containers, inputs, overlays) |
-| `colorText*` | Text and icon colors |
-| `colorBorder*` | Border and divider colors |
-| `colorChart*` | Data visualization colors |
-| `space*` | Spacing and layout gaps |
-| `borderRadius*` | Corner radii |
-| `fontFamily*` | Typeface stacks |
-| `fontSize*` | Type scale |
-| `fontWeight*` | Font weights |
-| `shadow*` | Box shadows and elevation |
+| `colorText*`       | Text and icon colors                                     |
+| `colorBorder*`     | Border and divider colors                                |
+| `colorChart*`      | Data visualization colors                                |
+| `space*`           | Spacing and layout gaps                                  |
+| `borderRadius*`    | Corner radii                                             |
+| `fontFamily*`      | Typeface stacks                                          |
+| `fontSize*`        | Type scale                                               |
+| `fontWeight*`      | Font weights                                             |
+| `shadow*`          | Box shadows and elevation                                |
 
 For the complete list of available tokens and their default values, see the [Cloudscape theming documentation](https://cloudscape.design/foundation/visual-foundation/design-tokens/).
 

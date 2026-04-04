@@ -22,11 +22,12 @@ vi.mock('@strato-admin/ra-core', () => ({
 vi.mock('@strato-admin/core', () => ({
   useSchemaRegistry: vi.fn(() => ({ defaultComponents: {} })),
   useSettings: vi.fn(() => ({})),
-  useSettingValue: vi.fn(() => (propValue: any, _settingKey: any, schemaValue?: any) => {
-    if (propValue !== undefined) return propValue;
-    if (schemaValue !== undefined) return schemaValue;
-    return undefined;
-  }),
+  useBulkDeleteMeta: vi.fn((props?: any) => ({
+    title: props?.title ?? 'Delete 2 items',
+    description: props?.description ?? 'Are you sure you want to delete these 2 items?',
+    successMessage: undefined,
+    mutationMode: undefined,
+  })),
 }));
 
 describe('BulkDeleteButton', () => {

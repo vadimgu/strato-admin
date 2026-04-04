@@ -5,11 +5,24 @@ import { FormFieldContext, useFormFieldContext } from './FormFieldContext';
 import { InputProps } from './types';
 
 export interface TextAreaInputProps
-  extends InputProps,
+  extends
+    InputProps,
     Pick<CloudscapeTextareaProps, 'placeholder' | 'disabled' | 'readOnly' | 'rows' | 'autoFocus' | 'spellcheck'> {}
 
 export const TextAreaInput = (props: TextAreaInputProps) => {
-  const { label, source, defaultValue, validate, placeholder, disabled, readOnly, rows, autoFocus, spellcheck, ...rest } = props;
+  const {
+    label,
+    source,
+    defaultValue,
+    validate,
+    placeholder,
+    disabled,
+    readOnly,
+    rows,
+    autoFocus,
+    spellcheck,
+    ...rest
+  } = props;
   const context = useFormFieldContext();
   const inputState =
     context ??

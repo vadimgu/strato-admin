@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useBulkDeleteController, useTranslate, useListContext, useResourceDefinition } from '@strato-admin/ra-core';
-import { useSettingValue } from '@strato-admin/core';
+import { useBulkDeleteMeta } from '@strato-admin/core';
 import Modal from '@cloudscape-design/components/modal';
 import Box from '@cloudscape-design/components/box';
 import SpaceBetween from '@cloudscape-design/components/space-between';
@@ -26,11 +26,20 @@ export const BulkDeleteButton = ({
   const translate = useTranslate();
   const { selectedIds } = useListContext();
   const { options } = useResourceDefinition();
-  const resolve = useSettingValue();
-  const resolvedSuccessMessage = resolve(successMessage, 'bulkDeleteSuccessMessage', 'bulkDeleteSuccessMessage');
-  const evaluatedSuccessMessage = typeof resolvedSuccessMessage === 'function' ? resolvedSuccessMessage(selectedIds?.length ?? 0) : resolvedSuccessMessage;
+  const {
+    title,
+    description,
+    successMessage: resolvedSuccessMessage,
+    mutationMode: resolvedMutationMode,
+  } = useBulkDeleteMeta({ title: dialogTitle, description: dialogDescription, successMessage, mutationMode });
+
+  const evaluatedSuccessMessage =
+    typeof resolvedSuccessMessage === 'function'
+      ? resolvedSuccessMessage(selectedIds?.length ?? 0)
+      : resolvedSuccessMessage;
+
   const { handleDelete, isPending, isLoading } = useBulkDeleteController({
-    mutationMode: resolve(mutationMode, 'mutationMode'),
+    mutationMode: resolvedMutationMode,
     successMessage: evaluatedSuccessMessage,
   });
 
@@ -47,44 +56,24 @@ export const BulkDeleteButton = ({
     setIsOpen(false);
   };
 
-  const handleOpen = () => {
-    setIsOpen(true);
-  };
-
-  const handleClose = () => {
-    setIsOpen(false);
-  };
-  const defaultTitle = translate('strato.message.bulk_delete_title', {
-    smart_count: selectedIds?.length || 0,
-    _: `{smart_count, plural, one {Delete this item} other {Delete these # items}}`,
-  });
-
-  const defaultDescription = translate('strato.message.bulk_delete_content', {
-    smart_count: selectedIds?.length || 0,
-    _: `{
-      smart_count, plural,
-        one {Are you sure you want to delete this item?}
-        other {Are you sure you want to delete these # items?}
-      }`,
-  });
   return (
     <>
       <Button
         variant={variant}
-        onClick={handleOpen}
+        onClick={() => setIsOpen(true)}
         loading={isBusy}
         disabled={isBusy || !selectedIds || selectedIds.length === 0}
       >
         {label || translate('strato.action.delete', { _: 'Delete' })}
       </Button>
       <Modal
-        onDismiss={handleClose}
+        onDismiss={() => setIsOpen(false)}
         visible={isOpen}
         closeAriaLabel={translate('strato.action.close', { _: 'Close' })}
         footer={
           <Box float="right">
             <SpaceBetween direction="horizontal" size="xs">
-              <Button variant="link" onClick={handleClose}>
+              <Button variant="link" onClick={() => setIsOpen(false)}>
                 {translate('strato.action.cancel', { _: 'Cancel' })}
               </Button>
               <Button variant="primary" onClick={handleConfirm} loading={isBusy} data-testid="confirm-bulk-delete">
@@ -93,9 +82,9 @@ export const BulkDeleteButton = ({
             </SpaceBetween>
           </Box>
         }
-        header={dialogTitle || defaultTitle}
+        header={title}
       >
-        {dialogDescription || defaultDescription}
+        {description}
       </Modal>
     </>
   );

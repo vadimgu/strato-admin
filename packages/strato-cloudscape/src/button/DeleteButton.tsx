@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useDeleteController, useTranslate, useResourceDefinition, RaRecord } from '@strato-admin/ra-core';
-import { useSettingValue } from '@strato-admin/core';
+import { useDeleteMeta } from '@strato-admin/core';
 import Modal from '@cloudscape-design/components/modal';
 import Box from '@cloudscape-design/components/box';
 import SpaceBetween from '@cloudscape-design/components/space-between';
@@ -29,10 +29,16 @@ export const DeleteButton = ({
 }: DeleteButtonProps) => {
   const translate = useTranslate();
   const { options } = useResourceDefinition();
-  const resolve = useSettingValue();
+  const {
+    title,
+    description,
+    successMessage: resolvedSuccessMessage,
+    mutationMode: resolvedMutationMode,
+  } = useDeleteMeta({ title: dialogTitle, description: dialogDescription, successMessage, mutationMode });
+
   const { handleDelete, isPending, isLoading } = useDeleteController({
-    mutationMode: resolve(mutationMode, 'mutationMode'),
-    successMessage: successMessage ?? options?.deleteSuccessMessage ?? resolve(undefined, 'deleteSuccessMessage'),
+    mutationMode: resolvedMutationMode,
+    successMessage: resolvedSuccessMessage,
     record,
     redirect,
   });
@@ -49,14 +55,6 @@ export const DeleteButton = ({
     handleDelete();
     setIsOpen(false);
   };
-
-  const defaultTitle = translate('strato.message.delete_title', {
-    _: 'Delete this item',
-  });
-
-  const defaultDescription = translate('strato.message.delete_content', {
-    _: 'Are you sure you want to delete this item?',
-  });
 
   return (
     <>
@@ -85,9 +83,9 @@ export const DeleteButton = ({
             </SpaceBetween>
           </Box>
         }
-        header={dialogTitle || defaultTitle}
+        header={title}
       >
-        {dialogDescription || defaultDescription}
+        {description}
       </Modal>
     </>
   );

@@ -39,6 +39,50 @@ export const useSettingValue = vi.fn(() => (propValue: any, _settingKey: any, sc
 
 export const useConstructedPageTitle = vi.fn((type, label) => `${type} ${label}`);
 
+export const useListMeta = vi.fn((props?: any) => ({
+  title: props?.title,
+  description: props?.description,
+  component: undefined,
+  perPage: undefined,
+  pageSizes: undefined,
+  pageSizeLabel: undefined,
+}));
+
+export const useCreateMeta = vi.fn((props?: any) => ({
+  title: props?.title,
+  description: props?.description,
+  successMessage: undefined,
+  redirect: undefined,
+}));
+
+export const useEditMeta = vi.fn((props?: any) => ({
+  title: props?.title,
+  description: props?.description,
+  successMessage: undefined,
+  redirect: undefined,
+  mutationMode: undefined,
+}));
+
+export const useDetailMeta = vi.fn((props?: any) => ({
+  title: props?.title,
+  description: props?.description,
+  component: undefined,
+}));
+
+export const useBulkDeleteMeta = vi.fn((props?: any) => ({
+  title: props?.title,
+  description: props?.description,
+  successMessage: undefined,
+  mutationMode: undefined,
+}));
+
+export const useDeleteMeta = vi.fn((props?: any) => ({
+  title: props?.title,
+  description: props?.description,
+  successMessage: undefined,
+  mutationMode: undefined,
+}));
+
 export const useCreatePath = vi.fn(() => (params: any) => `/${params.resource}/${params.id}/${params.type}`);
 
 export const SchemaRegistryProvider = vi.fn(({ children }: any) => <>{children}</>);

@@ -1,8 +1,8 @@
-import React, { useMemo, ReactNode, isValidElement } from 'react';
+import React, { useMemo, ReactNode } from 'react';
 import Container from '@cloudscape-design/components/container';
 import SpaceBetween from '@cloudscape-design/components/space-between';
-import { useTranslate, useShowContext, RaRecord } from '@strato-admin/ra-core';
-import { useResourceSchema } from '@strato-admin/core';
+import { useShowContext, RaRecord } from '@strato-admin/ra-core';
+import { useDetailMeta } from '@strato-admin/core';
 import { useSchemaFields } from '../hooks/useSchemaFields';
 import KeyValuePairs from './KeyValuePairs';
 import DetailHeader from './DetailHeader';
@@ -32,31 +32,11 @@ export interface DetailHubProps {
  * </DetailHub>
  */
 export const DetailHub = <RecordType extends RaRecord = RaRecord>(props: DetailHubProps) => {
-  const { title, description, children, actions } = props;
-  const { record, resource, isLoading } = useShowContext<RecordType>();
-  const translate = useTranslate();
-  const { label, detailTitle, detailDescription } = useResourceSchema();
+  const { children, actions } = props;
+  const { record, isLoading } = useShowContext<RecordType>();
+  const { title, description } = useDetailMeta(props);
 
   const { getDetailFields } = useSchemaFields();
-
-  const constructedTitle = useMemo(
-    () => label || translate(`resources.${resource}.name`, { smart_count: 1 }),
-    [label, translate, resource],
-  );
-
-  const finalTitle = useMemo(() => {
-    if (title) return title;
-    if (typeof detailTitle === 'function') return detailTitle(record);
-    if (isValidElement(detailTitle)) return detailTitle;
-    if (detailTitle) return translate(detailTitle as string, record);
-    return constructedTitle;
-  }, [record, title, detailTitle, translate, constructedTitle]);
-
-  const finalDescription = useMemo(() => {
-    if (description) return description;
-    if (typeof detailDescription === 'function') return detailDescription(record);
-    return detailDescription;
-  }, [record, description, detailDescription]);
 
   const { scalarFields, collectionFields } = useMemo(() => getDetailFields(children), [getDetailFields, children]);
 
@@ -68,7 +48,7 @@ export const DetailHub = <RecordType extends RaRecord = RaRecord>(props: DetailH
 
   return (
     <SpaceBetween size="l">
-      <DetailHeader title={finalTitle} description={finalDescription} actions={actions} />
+      <DetailHeader title={title} description={description} actions={actions} />
       {hasScalarFields && (
         <Container>
           {React.Children.count(children) > 0 ? (

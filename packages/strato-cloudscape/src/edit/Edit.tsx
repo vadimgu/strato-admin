@@ -1,11 +1,13 @@
 import React from 'react';
-import { EditBase, useEditContext, type RaRecord, type EditBaseProps, useNotify, useRedirect } from '@strato-admin/ra-core';
 import {
-  ResourceSchemaProvider,
-  useResourceSchema,
-  useConstructedPageTitle,
-  useSettingValue,
-} from '@strato-admin/core';
+  EditBase,
+  useEditContext,
+  type RaRecord,
+  type EditBaseProps,
+  useNotify,
+  useRedirect,
+} from '@strato-admin/ra-core';
+import { ResourceSchemaProvider, useResourceSchema, useEditMeta, useSettings } from '@strato-admin/core';
 import Container from '@cloudscape-design/components/container';
 import { EditHeader } from './EditHeader';
 import Form from '../form/Form';
@@ -42,43 +44,16 @@ const EditUI = ({
   saveButtonLabel?: string;
 }) => {
   const { record, isLoading } = useEditContext();
-  const { label, editTitle, editDescription } = useResourceSchema();
-  const constructedTitle = useConstructedPageTitle('edit', label);
-
-  const finalTitle = React.useMemo(() => {
-    if (isLoading || !record) {
-      return '';
-    }
-    const resolvedTitle = title ?? editTitle ?? constructedTitle;
-    if (typeof resolvedTitle === 'function') {
-      return resolvedTitle(record);
-    }
-    return resolvedTitle;
-  }, [isLoading, record, title, editTitle, constructedTitle]);
-
-  const finalDescription = React.useMemo(() => {
-    if (isLoading || !record) return undefined;
-    const resolvedDescription = description ?? editDescription;
-    if (typeof resolvedDescription === 'function') return resolvedDescription(record);
-    return resolvedDescription;
-  }, [isLoading, record, description, editDescription]);
+  const { title: resolvedTitle, description: resolvedDescription } = useEditMeta({ title, description });
 
   if (isLoading || !record) {
     return null;
   }
-  const finalSaveButtonLabel = saveButtonLabel // || <Message>Save</Message>
-  const finalChildren = children || <Form include={include} exclude={exclude} saveButtonLabel={finalSaveButtonLabel} />;
+
+  const finalChildren = children || <Form include={include} exclude={exclude} saveButtonLabel={saveButtonLabel} />;
 
   return (
-    <Container
-      header={
-        <EditHeader
-          title={finalTitle}
-          description={finalDescription}
-          actions={actions}
-        />
-      }
-    >
+    <Container header={<EditHeader title={resolvedTitle} description={resolvedDescription} actions={actions} />}>
       {finalChildren}
     </Container>
   );
@@ -109,10 +84,12 @@ export const Edit = <RecordType extends RaRecord = any>({
   saveButtonLabel,
   ...props
 }: EditProps<RecordType>) => {
-  const { queryOptions, editTitle } = useResourceSchema(props.resource);
-  const resolve = useSettingValue();
-  const resolvedRedirect = resolve(redirect, 'editRedirect');
-  const editSuccessMessage = resolve(undefined, 'editSuccessMessage');
+  const { editRedirect, editSuccessMessage: schemaSuccessMessage, queryOptions } = useResourceSchema(props.resource);
+  const settings = useSettings();
+  const resolvedRedirect =
+    redirect !== undefined ? redirect : editRedirect !== undefined ? editRedirect : settings.editRedirect;
+  const editSuccessMessage =
+    schemaSuccessMessage ?? (settings.editSuccessMessage as string | React.ReactNode | undefined);
   const notify = useNotify();
   const redirectFn = useRedirect();
 
@@ -131,7 +108,7 @@ export const Edit = <RecordType extends RaRecord = any>({
     <EditBase redirect={resolvedRedirect} queryOptions={queryOptions} {...props} mutationOptions={mutationOptions}>
       <ResourceSchemaProvider resource={props.resource}>
         <EditUI
-          title={title ?? editTitle ?? undefined}
+          title={title ?? undefined}
           actions={actions}
           description={description}
           include={include}
