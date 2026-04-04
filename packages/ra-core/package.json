@@ -1,85 +1,85 @@
 {
-    "name": "@strato-admin/ra-core",
-    "version": "0.3.0",
-    "description": "Core components of react-admin, a frontend Framework for building admin applications on top of REST services, using ES6, React",
-    "files": [
-        "*.md",
-        "dist",
-        "src",
-        "codemods"
-    ],
-    "zshy": "./src/index.ts",
-    "main": "./dist/index.cjs",
-    "module": "./dist/index.js",
-    "types": "./dist/index.d.cts",
-    "type": "module",
-    "exports": {
-        ".": {
-            "types": "./dist/index.d.cts",
-            "import": "./dist/index.js",
-            "require": "./dist/index.cjs"
-        }
-    },
-    "sideEffects": false,
-    "authors": [
-        "François Zaninotto",
-        "Gildas Garcia"
-    ],
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/vadimgu/strato-admin.git",
-        "directory": "packages/ra-core"
-    },
-    "homepage": "https://github.com/vadimgu/strato-admin/tree/main/packages/ra-core#readme",
-    "bugs": "https://github.com/vadimgu/strato-admin/issues",
-    "license": "MIT",
-    "scripts": {
-        "build": "zshy --silent"
-    },
-    "devDependencies": {
-        "@hookform/resolvers": "^3.2.0",
-        "@remix-run/router": "^1.23.2",
-        "@tanstack/react-query": "^5.90.2",
-        "@tanstack/react-query-devtools": "^5.90.2",
-        "@testing-library/react": "^15.0.7",
-        "@tiptap/react": "^3.20.1",
-        "@types/jest": "^29.5.2",
-        "@types/jscodeshift": "^0.11.11",
-        "@types/node": "^20.10.7",
-        "@types/node-polyglot": "^0.4.31",
-        "@types/react": "^19.0.0",
-        "@types/react-dom": "^19.0.0",
-        "echarts": "^5.6.0",
-        "expect": "^27.4.6",
-        "ignore-styles": "~5.0.1",
-        "jscodeshift": "^0.15.2",
-        "react": "^19.0.0",
-        "react-dom": "^19.0.0",
-        "react-hook-form": "^7.65.0",
-        "react-router": "^6.28.1",
-        "react-router-dom": "^6.28.1",
-        "typescript": "^5.1.3",
-        "yup": "^0.32.11",
-        "zod": "^3.22.1",
-        "zshy": "^0.5.0"
-    },
-    "peerDependencies": {
-        "@tanstack/react-query": "^5.83.0",
-        "react": "^18.0.0 || ^19.0.0",
-        "react-dom": "^18.0.0 || ^19.0.0",
-        "react-hook-form": "^7.65.0",
-        "react-router": "^6.28.1 || ^7.1.1",
-        "react-router-dom": "^6.28.1 || ^7.1.1"
-    },
-    "dependencies": {
-        "date-fns": "^3.6.0",
-        "eventemitter3": "^5.0.1",
-        "inflection": "^3.0.0",
-        "jsonexport": "^3.2.0",
-        "lodash": "^4.17.21",
-        "query-string": "^7.1.3",
-        "react-error-boundary": "^4.0.13",
-        "react-is": "^18.2.0 || ^19.0.0"
-    },
-    "gitHead": "19dcb264898c8e01c408eb66ce02c50b67c851ab"
+  "name": "@strato-admin/ra-core",
+  "version": "0.4.0",
+  "description": "Core components of react-admin, a frontend Framework for building admin applications on top of REST services, using ES6, React",
+  "files": [
+    "*.md",
+    "dist",
+    "src",
+    "codemods"
+  ],
+  "zshy": "./src/index.ts",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.cts",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.cts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "sideEffects": false,
+  "authors": [
+    "François Zaninotto",
+    "Gildas Garcia"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vadimgu/strato-admin.git",
+    "directory": "packages/ra-core"
+  },
+  "homepage": "https://github.com/vadimgu/strato-admin/tree/main/packages/ra-core#readme",
+  "bugs": "https://github.com/vadimgu/strato-admin/issues",
+  "license": "MIT",
+  "scripts": {
+    "build": "zshy --silent"
+  },
+  "devDependencies": {
+    "@hookform/resolvers": "^3.2.0",
+    "@remix-run/router": "^1.23.2",
+    "@tanstack/react-query": "^5.90.2",
+    "@tanstack/react-query-devtools": "^5.90.2",
+    "@testing-library/react": "^15.0.7",
+    "@tiptap/react": "^3.20.1",
+    "@types/jest": "^29.5.2",
+    "@types/jscodeshift": "^0.11.11",
+    "@types/node": "^20.10.7",
+    "@types/node-polyglot": "^0.4.31",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "echarts": "^5.6.0",
+    "expect": "^27.4.6",
+    "ignore-styles": "~5.0.1",
+    "jscodeshift": "^0.15.2",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-hook-form": "^7.65.0",
+    "react-router": "^6.28.1",
+    "react-router-dom": "^6.28.1",
+    "typescript": "^5.1.3",
+    "yup": "^0.32.11",
+    "zod": "^3.22.1",
+    "zshy": "^0.5.0"
+  },
+  "peerDependencies": {
+    "@tanstack/react-query": "^5.83.0",
+    "react": "^18.0.0 || ^19.0.0",
+    "react-dom": "^18.0.0 || ^19.0.0",
+    "react-hook-form": "^7.65.0",
+    "react-router": "^6.28.1 || ^7.1.1",
+    "react-router-dom": "^6.28.1 || ^7.1.1"
+  },
+  "dependencies": {
+    "date-fns": "^3.6.0",
+    "eventemitter3": "^5.0.1",
+    "inflection": "^3.0.0",
+    "jsonexport": "^3.2.0",
+    "lodash": "^4.17.21",
+    "query-string": "^7.1.3",
+    "react-error-boundary": "^4.0.13",
+    "react-is": "^18.2.0 || ^19.0.0"
+  },
+  "gitHead": "19dcb264898c8e01c408eb66ce02c50b67c851ab"
 }

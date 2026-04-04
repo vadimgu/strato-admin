@@ -1,6 +1,6 @@
 {
   "name": "@strato-admin/cloudscape",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Strato Admin Cloudscape implementation - UI component library and theme for React Admin",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
