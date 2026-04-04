@@ -2,25 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
-## 0.1.1 (2026-03-18)
+## [0.4.0] - 2026-04-03
 
-### @strato-admin/cloudscape
+### Added
 
-- add confirmation dialog to <BulkDeleteButton>
+- `useListMeta`, `useDetailMeta`, `useEditMeta`, `useCreateMeta`, `useDeleteMeta`, `useBulkDeleteMeta` hooks
 
-### Dependencies
+### Fixed
 
-- Updated all packages to 0.1.1:
-  - `@strato-admin/admin`
-  - `@strato-admin/cloudscape`
-  - `@strato-admin/core`
-  - `@strato-admin/faker-ecommerce`
-  - `@strato-admin/i18n`
-  - `@strato-admin/i18n-cli`
-  - `@strato-admin/language-en`
-  - `@strato-admin/language-fr`
-  - `@strato-admin/ra-core`
-
-## 0.1.0 (2026-03-18)
-
-- Initial release of the Strato Admin framework.
+- `strato-i18n-cli`: fixed translation extraction and compilation

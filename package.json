@@ -17,9 +17,8 @@
     "docs:build": "pnpm demo:build && pnpm --filter docs build",
     "docs:deploy": "pnpm demo:build && pnpm --filter docs deploy",
     "storybook": "pnpm --filter @strato-admin/cloudscape storybook",
-    "changeset": "changeset",
-    "version-packages": "changeset version",
-    "release": "pnpm build && changeset publish"
+    "version": "node scripts/bump-version.js",
+    "release": "pnpm build && pnpm publish -r --no-git-checks"
   },
   "keywords": [],
   "author": "Vadim Gubergrits <vadim.gubergrits@gmail.com>",
@@ -35,7 +34,6 @@
     }
   },
   "devDependencies": {
-    "@changesets/cli": "^2.30.0",
     "@eslint/js": "^10.0.1",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/react": "^16.3.2",
