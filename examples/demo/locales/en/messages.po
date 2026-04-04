@@ -79,14 +79,14 @@ msgid "Name"
 msgstr ""
 
 #: src/resources/products.tsx:40
+#. id: 1cr1mz5
+msgid "Category"
+msgstr ""
+
+#: src/resources/products.tsx:51
 #: src/resources/orders.tsx:32
 #. id: 1c7vrcq
 msgid "Reference"
-msgstr ""
-
-#: src/resources/products.tsx:41
-#. id: 1cr1mz5
-msgid "Category"
 msgstr ""
 
 #: src/resources/products.tsx:52

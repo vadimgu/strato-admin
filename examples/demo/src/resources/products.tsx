@@ -32,12 +32,11 @@ export const productResource = (
     detailDescription="Product"
     editTitle={(record) => <Message vars={{ repr: <RecordRepresentation record={record} /> }}>{`Edit Product - {repr}`}</Message>}
     editDescription="Edit Product"
-    listExclude={['description', 'sales', 'category_id']}
+    listExclude={['description']}
     recordRepresentation="name"
   >
     <TextField source="id" label="ID" link="detail" input={false} />
     <TextField source="name" label="Name" sortable isRequired />
-    <TextField source="reference" label="Reference" sortable isRequired />
     <ReferenceField source="category_id" reference="categories" label="Category" isRequired />
     <CurrencyField
       source="price"
@@ -49,6 +48,7 @@ export const productResource = (
     />
     // Custom field that is not part of Strato Admin
     <StarRatingField source="rating" label="Rating" sortable input={false} />
+    <TextField source="reference" label="Reference" sortable isRequired />
     <NumberField source="stock" label="Stock" sortable />
     <NumberField source="sales" label="Sales" sortable />
     <TextField source="description" label="Description" input={<TextAreaInput source="description" />} />
