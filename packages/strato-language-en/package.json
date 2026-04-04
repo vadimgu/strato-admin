@@ -1,6 +1,6 @@
 {
   "name": "@strato-admin/language-en",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "Strato Admin Language - English",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
